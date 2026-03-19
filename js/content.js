@@ -146,7 +146,7 @@ const SITE_CONTENT = {
     title: "Edward LEE · AI 投資分析",
     description: "分享港股及美股個人選股組合、每週市場回顧與走向預測、熱門行業趨勢分析。以 AI 輔助，捕捉市場先機。",
     ogImage: "assets/images/og-image.jpg",
-    siteUrl: "https://dapper-pastelito-ed88a0.netlify.app",
+    siteUrl: "https://edward10.netlify.app",
   },
 
 };
