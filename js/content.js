@@ -6,146 +6,147 @@ const SITE_CONTENT = {
 
   // ── 基本資料 ──────────────────────────────────────────────
   author: {
-    name: "陳大文",
-    nameEn: "David Chan",
-    tagline: "港股 · 美股 · 宏觀分析",
-    subTagline: "精準捕捉市場先機，深度解讀財報訊號",
-    bio: "十年市場研究經驗，專注港股盈利預警信號、美股財報分析及宏觀趨勢研判。每週定期發布深度分析報告，助你在噪音中找到真正的投資機會。",
-    avatar: "assets/images/profile.webp",   // 換成自己頭像
-    email: "contact@example.com",           // 換成自己電郵（選填）
+    name: "Edward LEE",
+    nameEn: "Edward LEE",
+    tagline: "AI · 港股 · 美股 · 宏觀分析",
+    subTagline: "分享真實投資視野，助你捕捉市場先機",
+    bio: "與各位分享個人投資市場看法，內容涵蓋：個人選股組合參考（港股及美股）、每週市場回顧與下週走向預測、當期熱門行業趨勢與發展分析、投資者常犯錯誤與解決方法、曾經十倍股介紹與研究分享，並隨市場發展持續更新。",
+    avatar: "assets/images/profile.webp",   // 見下方說明如何換頭像
+    email: "",
   },
 
   // ── 精選文章 ──────────────────────────────────────────────
   // platform: "patreon" | "facebook" | "instagram" | "threads" | "medium"
+  // 如需更新文章：改 title、excerpt、date、url 即可
   articles: [
     {
-      title: "港股盈利警告潮：哪些行業最危險？",
-      excerpt: "拆解 2024 年下半年 HKEXNEWS 盈利警告數據，發現地產、零售、餐飲三大板塊集中暴雷，揭示背後的共同因素。",
+      title: "個人選股組合參考（港股 + 美股）",
+      excerpt: "分享個人持倉邏輯與選股思路，涵蓋港股及美股市場，解析每隻股票的入場理由與風險考量。",
+      date: "2025-03-17",
+      platform: "patreon",
+      url: "https://www.patreon.com/edward10",
+    },
+    {
+      title: "每週市場回顧：恒指與標普 500 走向分析",
+      excerpt: "回顧本週港股及美股主要走勢，結合宏觀數據與技術分析，預判下週市場方向及關鍵支撐阻力位。",
+      date: "2025-03-14",
+      platform: "patreon",
+      url: "https://www.patreon.com/edward10",
+    },
+    {
+      title: "當期熱門行業趨勢：AI 硬件供應鏈佈局",
+      excerpt: "深入分析 AI 硬件需求爆發對港股半導體及科技股的影響，哪些相關股票值得重點關注？",
       date: "2025-03-10",
       platform: "patreon",
-      url: "https://www.patreon.com/",      // 換成真實文章連結
+      url: "https://www.patreon.com/edward10",
     },
     {
-      title: "美聯儲點陣圖解讀：2025 下半年利率路徑",
-      excerpt: "逐格分析最新 FOMC 會議紀錄，結合 PCE 通脹走勢，判斷減息時間表對港股科技股的實際影響。",
+      title: "投資者常犯錯誤：追高殺低的心理根源",
+      excerpt: "剖析散戶最常見的行為偏差——追漲殺跌背後的心理機制，以及如何建立系統性紀律克服情緒交易。",
       date: "2025-03-03",
       platform: "facebook",
-      url: "https://www.facebook.com/",    // 換成真實文章連結
+      url: "https://www.facebook.com/28investment",
     },
     {
-      title: "財報季必看：三個判斷管理層信心的指標",
-      excerpt: "從股票回購規模、期權行使價格到分拆派息比率，教你在財報數字背後讀懂管理層對未來業績的真實預期。",
+      title: "十倍股研究：曾經的港股傳奇個股回顧",
+      excerpt: "回顧近年港股市場中出現過的十倍股案例，分析其共同特徵，尋找下一隻潛力大牛股的線索。",
       date: "2025-02-24",
       platform: "patreon",
-      url: "https://www.patreon.com/",     // 換成真實文章連結
+      url: "https://www.patreon.com/edward10",
     },
     {
-      title: "騰訊 FY2024：遊戲復甦，但廣告才是關鍵",
-      excerpt: "深度拆解騰訊全年財報，廣告收入增速超市場預期 12%，微信視頻號商業化進度成下半年最大催化劑。",
+      title: "宏觀視野：美聯儲利率路徑對港股的影響",
+      excerpt: "以 AI 輔助分析美聯儲最新表態，結合聯匯制度下港元利率走勢，判斷對港股資金流向的實際影響。",
       date: "2025-02-17",
-      platform: "threads",
-      url: "https://www.threads.net/",     // 換成真實文章連結
-    },
-    {
-      title: "內幕消息雷達：本週五大值得關注公告",
-      excerpt: "本週 HKEXNEWS 內幕消息中，有五份公告藏有重要訊號。我用量化模型篩出異常成交量配合，逐一分析。",
-      date: "2025-02-10",
       platform: "patreon",
-      url: "https://www.patreon.com/",     // 換成真實文章連結
-    },
-    {
-      title: "黃金突破 3000：避險還是通脹交易？",
-      excerpt: "黃金與美債實際利率的關係在 2024 年底出現罕見背離。剖析背後的央行購金潮與地緣政治因素。",
-      date: "2025-02-03",
-      platform: "instagram",
-      url: "https://www.instagram.com/",   // 換成真實文章連結
+      url: "https://www.patreon.com/edward10",
     },
   ],
 
   // ── Patreon 訂閱 Tier ────────────────────────────────────
+  // 詳細 Tier 內容請到 Patreon 查看，所有 CTA 按鈕直接連去 Patreon
+  // 如需改 price/features，直接改呢度；url 全部指向你嘅 Patreon
   tiers: [
     {
-      name: "基礎訂閱",
-      nameEn: "Basic",
-      price: "HK$68",
-      period: "/ 月",
+      name: "免費跟隨",
+      nameEn: "Free",
+      price: "免費",
+      period: "",
       highlight: false,
       features: [
-        "每月 4 篇精選市場分析",
-        "港股盈利警告週報",
-        "Patreon 社群討論",
+        "定期免費市場分析文章",
+        "Facebook 及 Instagram 公開帖子",
+        "投資基礎知識分享",
+      ],
+      cta: "免費訂閱",
+      url: "https://www.patreon.com/edward10",
+    },
+    {
+      name: "付費訂閱",
+      nameEn: "Pro",
+      price: "查看 Patreon",
+      period: "",
+      highlight: true,
+      features: [
+        "個人選股組合參考（港股 + 美股）",
+        "每週市場回顧與下週走向預測",
+        "熱門行業趨勢與發展深度分析",
+        "投資者常犯錯誤與解決方法",
+        "十倍股研究與分享",
       ],
       cta: "立即訂閱",
-      url: "https://www.patreon.com/",     // 換成真實 Patreon 連結
+      url: "https://www.patreon.com/edward10",
     },
     {
-      name: "進階訂閱",
-      nameEn: "Pro",
-      price: "HK$168",
-      period: "/ 月",
-      highlight: true,                      // 金色 highlight
-      features: [
-        "基礎訂閱全部內容",
-        "每週財報深度拆解",
-        "美股 + 港股雙市場覆蓋",
-        "即時盈利警告通知",
-        "優先問答回覆",
-      ],
-      cta: "最多人選擇",
-      url: "https://www.patreon.com/",     // 換成真實 Patreon 連結
-    },
-    {
-      name: "尊享訂閱",
-      nameEn: "Elite",
-      price: "HK$388",
-      period: "/ 月",
+      name: "支持創作",
+      nameEn: "Support",
+      price: "隨心支持",
+      period: "",
       highlight: false,
       features: [
-        "進階訂閱全部內容",
-        "每月一對一 30 分鐘分析諮詢",
-        "獨家投資組合追蹤報告",
-        "早鳥獨家研究報告",
+        "付費訂閱全部內容",
+        "支持獨立投資分析創作",
+        "優先回覆投資相關問題",
       ],
-      cta: "聯絡了解",
-      url: "https://www.patreon.com/",     // 換成真實 Patreon 連結
+      cta: "了解更多",
+      url: "https://www.patreon.com/edward10",
     },
   ],
 
   // ── 社交連結 ─────────────────────────────────────────────
-  // 順序：Patreon → Facebook → Instagram → Threads
   social: [
     {
       platform: "Patreon",
-      label: "訂閱 Patreon 深度分析",
-      url: "https://www.patreon.com/",     // 換成真實連結
-      highlight: true,                      // 金色 CTA
+      label: "訂閱 Patreon — 深度投資分析",
+      url: "https://www.patreon.com/edward10",
+      highlight: true,
     },
     {
       platform: "Facebook",
-      label: "Facebook 專頁",
-      url: "https://www.facebook.com/",    // 換成真實連結
+      label: "Facebook 專頁 @28investment",
+      url: "https://www.facebook.com/28investment",
       highlight: false,
     },
     {
       platform: "Instagram",
-      label: "Instagram",
-      url: "https://www.instagram.com/",   // 換成真實連結
+      label: "Instagram @edwardleeten",
+      url: "https://www.instagram.com/edwardleeten/",
       highlight: false,
     },
     {
       platform: "Threads",
-      label: "Threads",
-      url: "https://www.threads.net/",     // 換成真實連結
+      label: "Threads @edwardleeten",
+      url: "https://www.threads.com/@edwardleeten",
       highlight: false,
     },
   ],
 
   // ── SEO / OG ─────────────────────────────────────────────
   seo: {
-    title: "陳大文 · 投資分析",
-    description: "專注港股盈利警告、美股財報分析及宏觀趨勢研判。每週深度分析報告，精準捕捉市場先機。",
-    ogImage: "assets/images/og-image.jpg", // 換成真實 OG 圖片
-    siteUrl: "https://yourname.netlify.app", // 換成真實網址
+    title: "Edward LEE · AI 投資分析",
+    description: "分享港股及美股個人選股組合、每週市場回顧與走向預測、熱門行業趨勢分析。以 AI 輔助，捕捉市場先機。",
+    ogImage: "assets/images/og-image.jpg",
+    siteUrl: "https://dapper-pastelito-ed88a0.netlify.app",
   },
 
 };
