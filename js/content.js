@@ -11,7 +11,7 @@ const SITE_CONTENT = {
     tagline: "AI · 港股 · 美股 · 宏觀分析",
     subTagline: "分享真實投資視野，助你捕捉市場先機",
     bio: "與各位分享個人投資市場看法，內容涵蓋：個人選股組合參考（港股及美股）、每週市場回顧與下週走向預測、當期熱門行業趨勢與發展分析、投資者常犯錯誤與解決方法、曾經十倍股介紹與研究分享，並隨市場發展持續更新。",
-    avatar: "assets/images/profile.webp",   // 見下方說明如何換頭像
+    avatar: "https://img.etimg.com/thumb/msid-68631304,width-210,height-158,imgsize-410125,resizemode-75/bull1-getty-1200.jpg",
     email: "",
   },
 
