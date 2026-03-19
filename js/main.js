@@ -82,6 +82,12 @@ function renderHero(author) {
   const container = document.getElementById("hero-content");
   if (!container) return;
 
+  // Background image
+  const bgImg = document.getElementById("hero-bg");
+  if (bgImg && (author.bgImage || author.avatar)) {
+    bgImg.src = esc(author.bgImage || author.avatar);
+  }
+
   const avatarWrap = el("div", { class: "avatar-wrap" });
   const img = el("img", { src: esc(author.avatar), alt: esc(author.name), class: "avatar" });
   const fallback = el("div", { class: "avatar-fallback", style: "display:none", text: author.name.charAt(0) });

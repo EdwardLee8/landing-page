@@ -108,14 +108,43 @@ section + section {
   overflow: hidden;
 }
 
+/* Background image — Augen-style misty emergence */
+.hero-bg-wrap {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hero-bg-img {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 65%;
+  object-fit: cover;
+  object-position: center 30%;
+  opacity: 0.28;
+  -webkit-mask-image: radial-gradient(ellipse 90% 85% at 85% 45%,
+    black 0%, black 25%, rgba(0,0,0,0.5) 50%, transparent 72%);
+  mask-image: radial-gradient(ellipse 90% 85% at 85% 45%,
+    black 0%, black 25%, rgba(0,0,0,0.5) 50%, transparent 72%);
+  filter: grayscale(25%) contrast(1.05) brightness(0.8);
+}
+
 /* Subtle radial glow */
 #hero::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 70% 50% at 60% 30%,
-    rgba(212,166,71,0.05) 0%, transparent 70%);
+  background:
+    radial-gradient(ellipse 50% 60% at 80% 35%,
+      rgba(212,166,71,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 20% 80%,
+      rgba(212,166,71,0.03) 0%, transparent 60%);
   pointer-events: none;
+  z-index: 0;
 }
 
 #hero-content {
