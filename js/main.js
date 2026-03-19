@@ -229,13 +229,17 @@ function initScrollReveal() {
 
   document.querySelectorAll(".section-header").forEach(el => observer.observe(el));
 
-  // Watch for dynamically added .reveal elements
-  const mo = new MutationObserver(() => {
+  // Observe .reveal elements already in the DOM (added by renderAll before this runs)
+  function observeRevealNodes() {
     document.querySelectorAll(".reveal:not(.observed)").forEach(node => {
       node.classList.add("observed");
       observer.observe(node);
     });
-  });
+  }
+  observeRevealNodes();
+
+  // Also watch for any future .reveal elements
+  const mo = new MutationObserver(observeRevealNodes);
   mo.observe(document.body, { childList: true, subtree: true });
 }
 
