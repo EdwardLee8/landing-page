@@ -100,8 +100,8 @@ function renderHero(author) {
 
   container.append(
     avatarWrap,
-    el("h1", { class: "hero-name", text: author.name }),
     el("p", { class: "hero-tagline", text: author.tagline }),
+    el("h1", { class: "hero-name", text: author.name }),
     el("p", { class: "hero-sub", text: author.subTagline }),
     el("p", { class: "hero-bio", text: author.bio }),
     ctaLink
