@@ -16,6 +16,80 @@ const SITE_CONTENT = {
     email: "",
   },
 
+  // ── 個人介紹 ──────────────────────────────────────────────
+  about: {
+    bio: "與各位分享個人投資市場看法，內容涵蓋：個人選股組合參考（港股及美股）、每週市場回顧與下週走向預測、當期熱門行業趨勢與發展分析、投資者常犯錯誤與解決方法、曾經十倍股介紹與研究分享，並隨市場發展持續更新。",
+    highlights: [
+      { label: "專注領域", value: "港股 · 美股 · 宏觀分析" },
+      { label: "分析風格", value: "基本面 + 技術面結合" },
+      { label: "平台", value: "Patreon · Discord · Facebook" },
+    ],
+    platforms: [
+      "Patreon 深度分析文章",
+      "Discord 即時市場討論",
+      "Facebook 公開市場評論",
+      "Instagram 市場動態更新",
+    ],
+  },
+
+  // ── Patreon 內容介紹 ──────────────────────────────────────
+  patreonPage: {
+    description: "Patreon 係我主要嘅深度分析平台，每月定期發布研究報告，幫你在市場噪音中找到真正的投資機會。",
+    features: [
+      {
+        title: "個人選股組合",
+        desc: "港股及美股個人持倉參考，附帶入場理由及目標價分析",
+      },
+      {
+        title: "每週市場回顧",
+        desc: "每週大市走勢回顧，下週重點板塊及事件預測",
+      },
+      {
+        title: "行業深度研究",
+        desc: "熱門行業趨勢與發展分析，捕捉結構性機會",
+      },
+      {
+        title: "財報深度解讀",
+        desc: "重點公司財報逐項拆解，提取市場尚未消化的關鍵訊號",
+      },
+      {
+        title: "十倍股研究",
+        desc: "回顧歷史十倍股的成長路徑，建立選股框架",
+      },
+      {
+        title: "投資者錯誤分析",
+        desc: "常見投資誤區與解決方法，幫你避開致命錯誤",
+      },
+    ],
+    cta: { text: "前往 Patreon 訂閱", url: "https://www.patreon.com/edward10" },
+  },
+
+  // ── 收費 Discord ──────────────────────────────────────────
+  discordPaid: {
+    description: "收費 Discord 係深度討論社群，與一群認真對待投資的朋友即時交流，分享市場機會與操作思路。",
+    channels: [
+      { name: "📊 選股分析", desc: "個股深度分析與入場訊號討論" },
+      { name: "📰 即時新聞解讀", desc: "重要消息第一時間分析影響" },
+      { name: "📈 組合更新", desc: "個人持倉變動即時通知" },
+      { name: "🌏 宏觀討論", desc: "美聯儲、利率、地緣政治對市場的影響" },
+      { name: "💬 問答頻道", desc: "直接向我提問，每週定期回覆" },
+      { name: "📚 學習資源", desc: "投資書籍推薦、學習路徑規劃" },
+    ],
+    cta: { text: "加入收費 Discord", url: "https://www.patreon.com/edward10" },
+  },
+
+  // ── 免費 Discord ──────────────────────────────────────────
+  discordFree: {
+    description: "免費 Discord 開放給所有人，分享基礎市場資訊與投資觀點，歡迎各位加入交流。",
+    channels: [
+      { name: "📢 公告", desc: "最新文章及重要更新通知" },
+      { name: "💹 市場動態", desc: "每日市場開收市簡報" },
+      { name: "🗣️ 自由討論", desc: "港股美股自由討論區" },
+      { name: "📖 免費文章", desc: "公開分析文章分享" },
+    ],
+    cta: { text: "免費加入 Discord", url: "https://discord.gg/" },
+  },
+
   // ── 精選文章 ──────────────────────────────────────────────
   // platform: "patreon" | "facebook" | "instagram" | "threads" | "medium"
   // 如需更新文章：改 title、excerpt、date、url 即可

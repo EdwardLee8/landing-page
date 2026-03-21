@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderAll();
   initScrollReveal();
   initScrollChevron();
+  initNav();
 });
 
 // ── HTML Escape (prevent XSS in content values) ───────────
@@ -71,7 +72,11 @@ function link(url, attrs, ...children) {
 function renderAll() {
   const c = SITE_CONTENT;
   renderHero(c.author);
+  renderAbout(c.about);
   renderArticles(c.articles);
+  renderPatreonPage(c.patreonPage);
+  renderDiscordPaid(c.discordPaid);
+  renderDiscordFree(c.discordFree);
   renderTiers(c.tiers);
   renderSocial(c.social);
   renderFooter(c.author, c.seo);
@@ -112,6 +117,119 @@ function renderHero(author) {
     el("p", { class: "hero-bio", text: author.bio }),
     ctaLink
   );
+}
+
+function renderAbout(about) {
+  const container = document.getElementById("about-content");
+  if (!container || !about) return;
+
+  const highlightsEl = el("div", { class: "about-highlights" });
+  (about.highlights || []).forEach(h => {
+    highlightsEl.appendChild(
+      el("div", { class: "about-highlight-item" },
+        el("span", { class: "about-highlight-label", text: h.label }),
+        el("span", { class: "about-highlight-value", text: h.value })
+      )
+    );
+  });
+
+  const platformsList = el("ul", { class: "about-platforms" });
+  (about.platforms || []).forEach(p => {
+    platformsList.appendChild(
+      el("li", {},
+        el("span", { class: "check", text: "✓" }),
+        p
+      )
+    );
+  });
+
+  container.append(
+    el("div", { class: "about-grid reveal" },
+      el("div", { class: "about-bio-wrap" },
+        el("p", { class: "about-bio", text: about.bio }),
+        highlightsEl
+      ),
+      el("div", { class: "about-platforms-wrap" },
+        el("p", { class: "about-platforms-label", text: "內容平台" }),
+        platformsList
+      )
+    )
+  );
+}
+
+function renderPatreonPage(data) {
+  const container = document.getElementById("patreon-content");
+  if (!container || !data) return;
+
+  const desc = el("p", { class: "content-desc reveal", text: data.description });
+
+  const grid = el("div", { class: "feature-grid" });
+  (data.features || []).forEach((f, i) => {
+    const card = el("div", { class: "feature-card reveal" });
+    card.style.transitionDelay = `${0.05 + i * 0.07}s`;
+    card.append(
+      el("div", { class: "feature-title", text: f.title }),
+      el("p", { class: "feature-desc", text: f.desc })
+    );
+    grid.appendChild(card);
+  });
+
+  const ctaWrap = el("div", { class: "content-cta reveal" });
+  if (data.cta) {
+    ctaWrap.appendChild(link(data.cta.url, { class: "btn-primary", text: data.cta.text }));
+  }
+
+  container.append(desc, grid, ctaWrap);
+}
+
+function renderDiscordPaid(data) {
+  const container = document.getElementById("discord-paid-content");
+  if (!container || !data) return;
+
+  const desc = el("p", { class: "content-desc reveal", text: data.description });
+
+  const channelList = el("div", { class: "channel-list" });
+  (data.channels || []).forEach((ch, i) => {
+    const item = el("div", { class: "channel-item reveal" });
+    item.style.transitionDelay = `${0.05 + i * 0.06}s`;
+    item.append(
+      el("div", { class: "channel-name", text: ch.name }),
+      el("p", { class: "channel-desc", text: ch.desc })
+    );
+    channelList.appendChild(item);
+  });
+
+  const ctaWrap = el("div", { class: "content-cta reveal" });
+  if (data.cta) {
+    ctaWrap.appendChild(link(data.cta.url, { class: "btn-primary", text: data.cta.text }));
+  }
+
+  container.append(desc, channelList, ctaWrap);
+}
+
+function renderDiscordFree(data) {
+  const container = document.getElementById("discord-free-content");
+  if (!container || !data) return;
+
+  const desc = el("p", { class: "content-desc reveal", text: data.description });
+
+  const channelList = el("div", { class: "channel-list channel-list--free" });
+  (data.channels || []).forEach((ch, i) => {
+    const item = el("div", { class: "channel-item reveal" });
+    item.style.transitionDelay = `${0.05 + i * 0.06}s`;
+    item.append(
+      el("div", { class: "channel-name", text: ch.name }),
+      el("p", { class: "channel-desc", text: ch.desc })
+    );
+    channelList.appendChild(item);
+  });
+
+  const ctaWrap = el("div", { class: "content-cta reveal" });
+  if (data.cta) {
+    ctaWrap.appendChild(link(data.cta.url, { class: "btn-primary btn-primary--free", text: data.cta.text }));
+  }
+
+  container.append(desc, channelList, ctaWrap);
 }
 
 function renderArticles(articles) {
@@ -214,6 +332,56 @@ function updateMeta(seo, author) {
   setOg("image", `${safeUrl(seo.siteUrl)}/${esc(seo.ogImage)}`);
   setOg("url", safeUrl(seo.siteUrl));
   setOg("type", "website");
+}
+
+// ── Nav: active highlight + scroll bg + mobile menu ───────
+function initNav() {
+  const nav    = document.getElementById("site-nav");
+  const links  = document.querySelectorAll(".nav-link");
+  const menuBtn = document.getElementById("nav-menu-btn");
+  const navLinks = document.querySelector(".nav-links");
+
+  // Scroll: add background when scrolled
+  window.addEventListener("scroll", () => {
+    nav.classList.toggle("nav-scrolled", window.scrollY > 60);
+  }, { passive: true });
+
+  // Mobile menu toggle
+  if (menuBtn) {
+    menuBtn.addEventListener("click", () => {
+      const open = navLinks.classList.toggle("nav-links-open");
+      menuBtn.classList.toggle("nav-menu-open", open);
+    });
+    // Close on link click
+    links.forEach(l => l.addEventListener("click", () => {
+      navLinks.classList.remove("nav-links-open");
+      menuBtn.classList.remove("nav-menu-open");
+    }));
+  }
+
+  // Active section highlight via IntersectionObserver
+  const sections = ["hero", "about", "patreon", "discord-paid", "discord-free"]
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+
+  if (!sections.length) return;
+
+  const setActive = (id) => {
+    links.forEach(l => {
+      l.classList.toggle("nav-link-active", l.dataset.section === id);
+    });
+  };
+
+  // Set hero active initially
+  setActive("hero");
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) setActive(e.target.id);
+    });
+  }, { threshold: 0.3, rootMargin: "-80px 0px -40% 0px" });
+
+  sections.forEach(s => observer.observe(s));
 }
 
 // ── Scroll Reveal ─────────────────────────────────────────
