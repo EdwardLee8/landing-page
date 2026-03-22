@@ -211,7 +211,7 @@ const SITE_CONTENT = {
     {
       platform: "Threads",
       label: "Threads @edwardleeten",
-      url: "https://www.threads.com/@edwardleeten",
+      url: "https://www.threads.net/@edwardleeten",
       highlight: false,
     },
   ],
