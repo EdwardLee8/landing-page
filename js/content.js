@@ -87,7 +87,7 @@ const SITE_CONTENT = {
       { name: "🗣️ 自由討論", desc: "港股美股自由討論區" },
       { name: "📖 免費文章", desc: "公開分析文章分享" },
     ],
-    cta: { text: "免費加入 Discord", url: "https://discord.gg/" },
+    cta: { text: "免費加入 Discord", url: "https://discord.gg/Y8wk7DCWPR" },
   },
 
   // ── 精選文章 ──────────────────────────────────────────────
