@@ -214,6 +214,12 @@ const SITE_CONTENT = {
       url: "https://www.threads.net/@edwardleeten",
       highlight: false,
     },
+    {
+      platform: "twitter",
+      label: "Twitter / X @EdwardLee239412",
+      url: "https://twitter.com/EdwardLee239412",
+      highlight: false,
+    },
   ],
 
   // ── SEO / OG ─────────────────────────────────────────────
