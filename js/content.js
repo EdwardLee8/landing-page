@@ -5,12 +5,17 @@
 const SITE_CONTENT = {
 
   // ── 基本資料 ──────────────────────────────────────────────
+  // Hero Section — AIDA Framework
+  // Attention  → subTagline：打破慣性思維
+  // Interest   → bio 上半：點解值得留意（20年 + 數字）
+  // Desire     → bio 下半：具體往績勾起渴望
+  // Action     → CTA 按鈕（main.js 渲染）
   author: {
     name: "Edward LEE",
     nameEn: "Edward LEE",
     tagline: "AI · 港股 · 美股 · 宏觀分析",
-    subTagline: "分享真實投資視野，助你捕捉市場先機",
-    bio: "近 20 年投資研究經驗，專注基本面選股與量化策略。公開模擬組合長期跑贏大市，嚴守風險紀律。結合 AI 工具開發自動化策略，涵蓋港股、美股市場分析與即時信號掃瞄。",
+    subTagline: "唔再靠感覺，用近 20 年數據建立你的投資系統",
+    bio: "每個策略都有歷史數據支撐，唔係直覺，唔係消息。近 20 年基本面研究，公開模擬組合 2025 年回報 +36%，同期 Nasdaq 約 +20%，以約五成倉位達成。大部分虧損控制在 15% 以內，讓 APP 跑出 +236%、ANET +290%。",
     avatar: "https://img.etimg.com/thumb/msid-68631304,width-210,height-158,imgsize-410125,resizemode-75/bull1-getty-1200.jpg",
     bgImage: "https://img.etimg.com/thumb/msid-68631304,width-1200,height-800,imgsize-410125,resizemode-75/bull1-getty-1200.jpg",
     email: "",
@@ -18,10 +23,10 @@ const SITE_CONTENT = {
 
   // ── 個人介紹 ──────────────────────────────────────────────
   about: {
-    bio: "擁有近 20 年投資研究經驗，專注基本面選股，擅長閱讀年報及招股書，從財務報表中找出高增長潛力股。公開模擬組合長期跑贏大市 — 2025 年美股組合回報 36%（同期 Nasdaq 約 20%），僅以約 50% 倉位達成。投資風格紀律嚴明：大部分虧損控制在 15% 以內，同時讓贏家持續奔跑（APP +236%、ANET +290%）。近期結合 AI / LLM 工具進行量化回測與策略開發，涵蓋港股、美股及 A 股市場。",
+    bio: "擁有近 20 年投資研究經驗，專注基本面選股，擅長閱讀年報及招股書，從財務數據中識別高增長潛力股。投資風格紀律嚴明：嚴格止損，大部分虧損控制在 15% 以內；同時讓贏家持續奔跑，APP 持有至 +236%、ANET 持有至 +290%。公開模擬組合 2025 年回報 +36%（同期 Nasdaq 約 +20%），僅以約五成倉位達成。近期結合 AI / LLM 工具進行量化回測與策略開發，涵蓋港股、美股及 A 股。過往表現不代表將來回報。",
     highlights: [
       { label: "📊 近 20 年研究經驗", value: "港股 · 美股 · 宏觀分析 · 年報深度閱讀" },
-      { label: "🎯 紀律型風險管理", value: "嚴格止損 15% · 讓利潤奔跑 · 模擬組合持續跑贏大市" },
+      { label: "🎯 紀律型風險管理", value: "止損 15% · 讓利潤奔跑 · 模擬組合持續跑贏大市" },
       { label: "🤖 AI 量化策略開發", value: "Claude Code · Python 回測 · 自動化信號掃瞄" },
     ],
     platforms: [
@@ -33,66 +38,70 @@ const SITE_CONTENT = {
   },
 
   // ── Patreon 內容介紹 ──────────────────────────────────────
+  // TIMER Framework:
+  // T (Time)       → 每週報告，第一時間知道新策略
+  // I (Identity)   → 為認真對待投資回報嘅人而設
+  // M (Money)      → 真實往績：+36% vs Nasdaq +20%
+  // E (Ego)        → 與數據驅動投資者同行
+  // R (Reputation) → 避開散戶常犯嘅追高殺低錯誤
   patreonPage: {
-    description: "Patreon 係我主要嘅深度分析平台，每月定期發布研究報告，幫你在市場噪音中找到真正的投資機會。",
+    description: "為認真對待投資回報的人而設。每週深度報告，每個策略都有歷史數據驗證——唔係嗌你買邊隻，係教你點解呢個策略有效，點樣管理風險。過往表現不代表將來回報。",
     features: [
       {
+        title: "數據驗證策略",
+        desc: "每個買入建議都有回測數據支撐，唔靠直覺唔靠消息，講清入場邏輯與止損水位",
+      },
+      {
         title: "個人選股組合",
-        desc: "港股及美股個人持倉參考，附帶入場理由及目標價分析",
+        desc: "港股及美股真實模擬持倉參考，附入場理由、目標價及風險評估",
       },
       {
         title: "每週市場回顧",
-        desc: "每週大市走勢回顧，下週重點板塊及事件預測",
+        desc: "每週大市走勢深度分析，下週重點板塊、關鍵數據及事件預測",
       },
       {
         title: "行業深度研究",
-        desc: "熱門行業趨勢與發展分析，捕捉結構性機會",
+        desc: "從財務報表識別結構性機會，捕捉市場尚未完全消化的增長訊號",
       },
       {
-        title: "財報深度解讀",
-        desc: "重點公司財報逐項拆解，提取市場尚未消化的關鍵訊號",
+        title: "風險管理實錄",
+        desc: "止損點如何設置、倉位如何控制——大部分虧損控制在 15% 以內的實際操作",
       },
       {
-        title: "十倍股研究",
-        desc: "回顧歷史十倍股的成長路徑，建立選股框架",
-      },
-      {
-        title: "投資者錯誤分析",
-        desc: "常見投資誤區與解決方法，幫你避開致命錯誤",
+        title: "避開散戶陷阱",
+        desc: "拆解「RSI 超買再追」「消息出貨」等常見錯誤，建立正確投資框架",
       },
     ],
-    cta: { text: "前往 Patreon 訂閱", url: "https://www.patreon.com/edward10" },
+    cta: { text: "睇免費報告 →", url: "https://www.patreon.com/edward10" },
   },
 
   // ── 收費 Discord ──────────────────────────────────────────
   discordPaid: {
-    description: "收費 Discord 係深度討論社群，與一群認真對待投資的朋友即時交流，分享市場機會與操作思路。",
+    description: "與一群認真對待投資的人即時交流。市場訊號、操作思路、倉位更新——第一時間同步，唔再獨自摸索。",
     channels: [
       { name: "📊 選股分析", desc: "個股深度分析與入場訊號討論" },
-      { name: "📰 即時新聞解讀", desc: "重要消息第一時間分析影響" },
-      { name: "📈 組合更新", desc: "個人持倉變動即時通知" },
-      { name: "🌏 宏觀討論", desc: "美聯儲、利率、地緣政治對市場的影響" },
-      { name: "💬 問答頻道", desc: "直接向我提問，每週定期回覆" },
-      { name: "📚 學習資源", desc: "投資書籍推薦、學習路徑規劃" },
+      { name: "📰 即時新聞解讀", desc: "重要消息第一時間分析實際影響" },
+      { name: "📈 組合更新", desc: "個人持倉變動即時通知，附操作理由" },
+      { name: "🌏 宏觀討論", desc: "美聯儲、利率、地緣政治對市場的傳導分析" },
+      { name: "💬 問答頻道", desc: "直接提問，每週定期回覆" },
+      { name: "📚 學習資源", desc: "投資書籍推薦、選股框架建立" },
     ],
-    cta: { text: "加入收費 Discord", url: "https://www.patreon.com/edward10" },
+    cta: { text: "立即加入 Discord →", url: "https://www.patreon.com/edward10" },
   },
 
   // ── 免費 Discord ──────────────────────────────────────────
   discordFree: {
-    description: "免費 Discord 開放給所有人，分享基礎市場資訊與投資觀點，歡迎各位加入交流。",
+    description: "先免費試試。加入後你會看到市場分析的角度有多不同——數據說話，唔係感覺說話。",
     channels: [
       { name: "📢 公告", desc: "最新文章及重要更新通知" },
       { name: "💹 市場動態", desc: "每日市場開收市簡報" },
       { name: "🗣️ 自由討論", desc: "港股美股自由討論區" },
       { name: "📖 免費文章", desc: "公開分析文章分享" },
     ],
-    cta: { text: "免費加入 Discord", url: "https://discord.gg/Y8wk7DCWPR" },
+    cta: { text: "免費加入 Discord →", url: "https://discord.gg/Y8wk7DCWPR" },
   },
 
   // ── 精選文章 ──────────────────────────────────────────────
-  // platform: "patreon" | "facebook" | "instagram" | "threads" | "medium"
-  // 如需更新文章：改 title、excerpt、date、url 即可
   articles: [
     {
       title: "港股 IPO：嗚嗚很忙公司介紹",
@@ -139,8 +148,6 @@ const SITE_CONTENT = {
   ],
 
   // ── Patreon 訂閱 Tier ────────────────────────────────────
-  // 詳細 Tier 內容請到 Patreon 查看，所有 CTA 按鈕直接連去 Patreon
-  // 如需改 price/features，直接改呢度；url 全部指向你嘅 Patreon
   tiers: [
     {
       name: "免費跟隨",
@@ -150,10 +157,10 @@ const SITE_CONTENT = {
       highlight: false,
       features: [
         "定期免費市場分析文章",
-        "Facebook 及 Instagram 公開帖子",
-        "投資基礎知識分享",
+        "Facebook 及 Instagram 公開分析",
+        "投資框架基礎知識分享",
       ],
-      cta: "免費訂閱",
+      cta: "睇免費報告 →",
       url: "https://www.patreon.com/edward10",
     },
     {
@@ -163,13 +170,13 @@ const SITE_CONTENT = {
       period: "",
       highlight: true,
       features: [
-        "個人選股組合參考（港股 + 美股）",
-        "每週市場回顧與下週走向預測",
-        "熱門行業趨勢與發展深度分析",
-        "投資者常犯錯誤與解決方法",
-        "十倍股研究與分享",
+        "數據驗證選股策略（港股 + 美股）",
+        "每週市場深度回顧與走向預測",
+        "個人模擬組合持倉參考及操作理由",
+        "風險管理實操：止損設置與倉位控制",
+        "行業深度研究，捕捉結構性機會",
       ],
-      cta: "立即訂閱",
+      cta: "成為訂閱會員 →",
       url: "https://www.patreon.com/edward10",
     },
     {
@@ -180,7 +187,7 @@ const SITE_CONTENT = {
       highlight: false,
       features: [
         "付費訂閱全部內容",
-        "支持獨立投資分析創作",
+        "支持獨立、無利益衝突的投資研究",
         "優先回覆投資相關問題",
       ],
       cta: "了解更多",
@@ -225,7 +232,7 @@ const SITE_CONTENT = {
   // ── SEO / OG ─────────────────────────────────────────────
   seo: {
     title: "Edward LEE · AI 投資分析",
-    description: "分享港股及美股個人選股組合、每週市場回顧與走向預測、熱門行業趨勢分析。以 AI 輔助，捕捉市場先機。",
+    description: "近 20 年基本面研究，公開模擬組合 2025 年回報 +36%（Nasdaq +20%）。數據驗證策略，港股美股深度分析，AI 量化回測。過往表現不代表將來回報。",
     ogImage: "assets/images/og-image.jpg",
     siteUrl: "https://edward10.netlify.app",
   },
