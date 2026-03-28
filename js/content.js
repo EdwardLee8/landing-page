@@ -35,6 +35,12 @@ const SITE_CONTENT = {
       "Facebook 公開市場評論",
       "Instagram 市場動態更新",
     ],
+    stats: [
+      { value: "1,369+", label: "Patreon 訂閱者" },
+      { value: "500+",   label: "深度分析文章" },
+      { value: "2020",   label: "開始年份" },
+      { value: "+36%",   label: "2025 模擬組合回報" },
+    ],
   },
 
   // ── Patreon 內容介紹 ──────────────────────────────────────
@@ -234,7 +240,7 @@ const SITE_CONTENT = {
     title: "Edward LEE · AI 投資分析",
     description: "近 20 年基本面研究，公開模擬組合 2025 年回報 +36%（Nasdaq +20%）。數據驗證策略，港股美股深度分析，AI 量化回測。過往表現不代表將來回報。",
     ogImage: "assets/images/og-image.jpg",
-    siteUrl: "https://edward10.netlify.app",
+    siteUrl: "https://ai10xpro.com",
   },
 
 };

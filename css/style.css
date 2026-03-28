@@ -427,6 +427,40 @@ section + section {
   border-bottom: 1px solid var(--border);
 }
 
+/* ── About Stats ──────────────────────────────────────────── */
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 60px;
+}
+
+.about-stat {
+  padding: 28px 0;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+.about-stat:first-child { padding-left: 0; }
+.about-stat:last-child  { border-right: none; }
+
+.about-stat-value {
+  font-size: 1.75rem;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.about-stat-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
 /* ── Patreon / Discord Shared ────────────────────────────── */
 #patreon      { background: var(--bg); }
 #discord-paid { background: var(--bg-section); }
@@ -813,6 +847,10 @@ footer .container {
   #scroll-chevron { right: 24px; }
 
   .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .about-stats { grid-template-columns: repeat(2, 1fr); }
+  .about-stat:nth-child(2) { border-right: none; }
+  .about-stat:nth-child(3) { border-right: 1px solid var(--border); }
+  .about-stat:nth-child(3), .about-stat:nth-child(4) { border-top: 1px solid var(--border); }
   .feature-grid { grid-template-columns: 1fr; }
   .channel-list { grid-template-columns: 1fr; }
 

@@ -146,7 +146,19 @@ function renderAbout(about) {
     );
   });
 
+  // Stats row
+  const statsEl = el("div", { class: "about-stats reveal" });
+  (about.stats || []).forEach(s => {
+    statsEl.appendChild(
+      el("div", { class: "about-stat" },
+        el("div", { class: "about-stat-value", text: s.value }),
+        el("div", { class: "about-stat-label", text: s.label })
+      )
+    );
+  });
+
   container.append(
+    (about.stats || []).length ? statsEl : null,
     el("div", { class: "about-grid reveal" },
       el("div", { class: "about-bio-wrap" },
         el("p", { class: "about-bio", text: about.bio }),
