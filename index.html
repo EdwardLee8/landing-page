@@ -25,8 +25,6 @@
   <!-- Favicon (inline SVG) -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>析</text></svg>">
 
-  <!-- Fonts (system fonts only — no external requests) -->
-  <!-- Noto Sans TC loaded via Google Fonts for CJK coverage if available -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -40,12 +38,13 @@
     <div class="nav-inner">
       <a class="nav-logo" href="#hero">Edward LEE</a>
       <ul class="nav-links">
-        <li><a class="nav-link" href="#hero"      data-section="hero">首頁</a></li>
-        <li><a class="nav-link" href="#about"     data-section="about">個人介紹</a></li>
-        <li><a class="nav-link" href="#archive"   data-section="archive">文章庫</a></li>
-        <li><a class="nav-link" href="#patreon"   data-section="patreon">Patreon</a></li>
-        <li><a class="nav-link" href="#discord-paid" data-section="discord-paid">收費 Discord</a></li>
+        <li><a class="nav-link" href="#hero"         data-section="hero">首頁</a></li>
+        <li><a class="nav-link" href="#about"        data-section="about">個人介紹</a></li>
+        <li><a class="nav-link" href="#articles"     data-section="articles">免費文章</a></li>
         <li><a class="nav-link" href="#discord-free" data-section="discord-free">免費 Discord</a></li>
+        <li><a class="nav-link" href="#archive"      data-section="archive">Patreon文章庫</a></li>
+        <li><a class="nav-link" href="#tiers"        data-section="tiers">計劃</a></li>
+        <li><a class="nav-link" href="#discord-paid" data-section="discord-paid">收費 Discord</a></li>
       </ul>
       <button class="nav-menu-btn" id="nav-menu-btn" aria-label="選單">
         <span></span><span></span><span></span>
@@ -81,61 +80,18 @@
     </div>
   </section>
 
-  <!-- ── Articles ───────────────────────────────────────── -->
+  <!-- ── Free Articles ──────────────────────────────────── -->
   <section id="articles">
     <div class="container">
       <header class="section-header section-header--split">
         <div>
-          <p class="section-label">精選內容 / Selected</p>
-          <h2 class="section-title">文章</h2>
+          <p class="section-label">免費文章 / Free</p>
+          <h2 class="section-title">免費文章</h2>
         </div>
         <p class="section-subtitle">深度分析，幫你在市場噪音中找到真正的機會</p>
       </header>
       <div id="articles-grid"></div>
-    </div>
-  </section>
-
-  <!-- ── Archive ──────────────────────────────────────────── -->
-  <section id="archive">
-    <div class="container">
-      <header class="section-header section-header--split">
-        <div>
-          <p class="section-label">文章庫 / Archive</p>
-          <h2 class="section-title">全部文章</h2>
-        </div>
-        <p class="section-subtitle">504 篇港股美股分析，可按分類或股票代碼篩選</p>
-      </header>
-      <div id="archive-controls"></div>
-      <div id="archive-grid"></div>
-      <div id="archive-pagination"></div>
-    </div>
-  </section>
-
-  <!-- ── Patreon ───────────────────────────────────────────── -->
-  <section id="patreon">
-    <div class="container">
-      <header class="section-header section-header--split">
-        <div>
-          <p class="section-label">Patreon · 付費訂閱</p>
-          <h2 class="section-title">Patreon</h2>
-        </div>
-        <p class="section-subtitle">深度分析報告，幫你在市場噪音中找到真正機會</p>
-      </header>
-      <div id="patreon-content"></div>
-    </div>
-  </section>
-
-  <!-- ── Discord Paid ───────────────────────────────────────── -->
-  <section id="discord-paid">
-    <div class="container">
-      <header class="section-header section-header--split">
-        <div>
-          <p class="section-label">Discord · 收費頻道</p>
-          <h2 class="section-title">收費 Discord</h2>
-        </div>
-        <p class="section-subtitle">即時市場討論，與志同道合的投資者一起成長</p>
-      </header>
-      <div id="discord-paid-content"></div>
+      <div id="articles-cta"></div>
     </div>
   </section>
 
@@ -153,6 +109,22 @@
     </div>
   </section>
 
+  <!-- ── Patreon Archive ────────────────────────────────────── -->
+  <section id="archive">
+    <div class="container">
+      <header class="section-header section-header--split">
+        <div>
+          <p class="section-label">Patreon文章庫 / Archive</p>
+          <h2 class="section-title">Patreon文章庫</h2>
+        </div>
+        <p class="section-subtitle">504 篇港股美股分析，可按分類或股票代碼篩選</p>
+      </header>
+      <div id="archive-controls"></div>
+      <div id="archive-grid"></div>
+      <div id="archive-pagination"></div>
+    </div>
+  </section>
+
   <!-- ── Tiers ──────────────────────────────────────────── -->
   <section id="tiers">
     <div class="container">
@@ -164,6 +136,20 @@
         <p class="section-subtitle">選擇最適合你的方案，持續獲得深度分析報告</p>
       </header>
       <div id="tiers-wrap"></div>
+    </div>
+  </section>
+
+  <!-- ── Discord Paid ───────────────────────────────────────── -->
+  <section id="discord-paid">
+    <div class="container">
+      <header class="section-header section-header--split">
+        <div>
+          <p class="section-label">Discord · 收費頻道</p>
+          <h2 class="section-title">收費 Discord</h2>
+        </div>
+        <p class="section-subtitle">即時市場討論，與志同道合的投資者一起成長</p>
+      </header>
+      <div id="discord-paid-content"></div>
     </div>
   </section>
 

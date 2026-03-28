@@ -78,9 +78,8 @@ function renderAll() {
   renderHero(c.author);
   renderAbout(c.about);
   renderArticles(c.articles);
-  renderPatreonPage(c.patreonPage);
-  renderDiscordPaid(c.discordPaid);
   renderDiscordFree(c.discordFree);
+  renderDiscordPaid(c.discordPaid);
   renderTiers(c.tiers);
   renderSocial(c.social);
   renderFooter(c.author, c.seo);
@@ -259,6 +258,16 @@ function renderArticles(articles) {
     );
     grid.appendChild(card);
   });
+
+  // CTA button
+  const ctaWrap = document.getElementById("articles-cta");
+  if (ctaWrap) {
+    ctaWrap.className = "content-cta reveal";
+    ctaWrap.appendChild(
+      link("https://www.patreon.com/collection/503820?view=expanded",
+        { class: "btn-primary", text: "睇免費報告 →" })
+    );
+  }
 }
 
 function renderTiers(tiers) {
@@ -502,7 +511,7 @@ function initNav() {
   }
 
   // Active section highlight via IntersectionObserver
-  const sections = ["hero", "about", "archive", "patreon", "discord-paid", "discord-free"]
+  const sections = ["hero", "about", "articles", "discord-free", "archive", "tiers", "discord-paid", "social"]
     .map(id => document.getElementById(id))
     .filter(Boolean);
 
