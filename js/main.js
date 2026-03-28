@@ -6,6 +6,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   renderAll();
+  renderArchive();
   initScrollReveal();
   initScrollChevron();
   initNav();
@@ -337,6 +338,144 @@ function updateMeta(seo, author) {
   setOg("type", "website");
 }
 
+// ── Archive: fetch web_data.json + render searchable grid ─
+function renderArchive() {
+  const controlsEl  = document.getElementById("archive-controls");
+  const gridEl      = document.getElementById("archive-grid");
+  const pageEl      = document.getElementById("archive-pagination");
+  if (!controlsEl || !gridEl) return;
+
+  const PAGE_SIZE = 12;
+  let allPosts  = [];
+  let filtered  = [];
+  let catLabels = {};
+  let activeCat = "all";
+  let searchQ   = "";
+  let page      = 0;
+
+  gridEl.appendChild(el("div", { class: "archive-loading", text: "載入中…" }));
+
+  fetch("web_data.json")
+    .then(r => r.json())
+    .then(data => {
+      allPosts  = data.posts || [];
+      catLabels = data.cat_labels || {};
+      buildControls();
+      applyFilters();
+    })
+    .catch(err => {
+      gridEl.textContent = "";
+      gridEl.appendChild(el("div", { class: "archive-empty", text: "載入失敗：" + err.message }));
+    });
+
+  function buildControls() {
+    controlsEl.textContent = "";
+
+    // Category pills
+    const pillsRow = el("div", { class: "archive-pills" });
+    [{ id: "all", label: "全部" },
+     ...Object.entries(catLabels).map(([id, label]) => ({ id, label }))]
+      .forEach(c => {
+        const pill = el("button", {
+          class: "archive-pill" + (c.id === "all" ? " archive-pill-active" : ""),
+          text: c.label, type: "button"
+        });
+        pill.dataset.cat = c.id;
+        pill.addEventListener("click", () => {
+          activeCat = c.id;
+          page = 0;
+          pillsRow.querySelectorAll(".archive-pill").forEach(p =>
+            p.classList.toggle("archive-pill-active", p.dataset.cat === c.id));
+          applyFilters();
+        });
+        pillsRow.appendChild(pill);
+      });
+
+    // Search input
+    const searchInput = el("input", {
+      class: "archive-search", type: "search",
+      placeholder: "搜尋股票代碼或標題（如：0700、NVDA、DMI）"
+    });
+    searchInput.addEventListener("input", () => {
+      searchQ = searchInput.value.trim().toUpperCase();
+      page = 0;
+      applyFilters();
+    });
+
+    controlsEl.append(pillsRow, searchInput);
+  }
+
+  function applyFilters() {
+    filtered = allPosts.filter(p => {
+      if (activeCat !== "all" && !p.cats.includes(activeCat)) return false;
+      if (!searchQ) return true;
+      const q = searchQ;
+      const hkHit = p.hk.some(c => c === q || c.replace(/^0+/, "") === q.replace(/^0+/, ""));
+      const usHit = p.us.some(c => c === q);
+      const titleHit = p.title.toUpperCase().includes(q);
+      return hkHit || usHit || titleHit;
+    });
+    renderPage();
+  }
+
+  function renderPage() {
+    gridEl.textContent = "";
+    pageEl.textContent = "";
+    const slice = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+    if (!slice.length) {
+      gridEl.appendChild(el("div", { class: "archive-empty", text: "未搵到符合條件嘅文章" }));
+      return;
+    }
+
+    slice.forEach(p => {
+      // Badges
+      const badgesEl = el("div", { class: "archive-card-cats" });
+      p.cats.filter(c => c !== "other").forEach(c => {
+        badgesEl.appendChild(el("span", { class: "archive-badge archive-badge-" + c, text: catLabels[c] || c }));
+      });
+
+      // Stock tags
+      const stocksEl = el("div", { class: "archive-stocks" });
+      [...p.hk.slice(0, 5), ...p.us.slice(0, 3)].forEach(code => {
+        stocksEl.appendChild(el("span", { class: "archive-stock-tag", text: code }));
+      });
+
+      const card = link(p.url, { class: "archive-card reveal" },
+        el("div", { class: "archive-card-top" },
+          el("time", { class: "archive-date", datetime: esc(p.date), text: formatDate(p.date) }),
+          badgesEl
+        ),
+        el("h3", { class: "archive-card-title", text: p.title }),
+        el("p",  { class: "archive-card-preview", text: p.preview }),
+        (p.hk.length || p.us.length) ? stocksEl : null
+      );
+      gridEl.appendChild(card);
+    });
+
+    // Pagination
+    const total = filtered.length;
+    const totalPages = Math.ceil(total / PAGE_SIZE);
+    if (totalPages > 1) {
+      const wrap = el("div", { class: "archive-page-wrap" });
+      const prev = el("button", { class: "archive-page-btn", text: "← 上一頁", type: "button" });
+      const next = el("button", { class: "archive-page-btn", text: "下一頁 →", type: "button" });
+      const info = el("span", { class: "archive-page-info",
+        text: `第 ${page + 1} / ${totalPages} 頁，共 ${total} 篇` });
+      prev.disabled = page === 0;
+      next.disabled = page >= totalPages - 1;
+      prev.addEventListener("click", () => { page--; renderPage(); scrollToArchive(); });
+      next.addEventListener("click", () => { page++; renderPage(); scrollToArchive(); });
+      wrap.append(prev, info, next);
+      pageEl.appendChild(wrap);
+    }
+  }
+
+  function scrollToArchive() {
+    document.getElementById("archive").scrollIntoView({ behavior: "smooth" });
+  }
+}
+
 // ── Nav: active highlight + scroll bg + mobile menu ───────
 function initNav() {
   const nav    = document.getElementById("site-nav");
@@ -363,7 +502,7 @@ function initNav() {
   }
 
   // Active section highlight via IntersectionObserver
-  const sections = ["hero", "about", "patreon", "discord-paid", "discord-free"]
+  const sections = ["hero", "about", "archive", "patreon", "discord-paid", "discord-free"]
     .map(id => document.getElementById(id))
     .filter(Boolean);
 
