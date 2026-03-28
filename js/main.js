@@ -419,8 +419,8 @@ function renderArchive() {
       if (activeCat !== "all" && !p.cats.includes(activeCat)) return false;
       if (!searchQ) return true;
       const q = searchQ;
-      const hkHit = p.hk.some(c => c === q || c.replace(/^0+/, "") === q.replace(/^0+/, ""));
-      const usHit = p.us.some(c => c === q);
+      const hkHit = p.hk.some(s => s.c === q || s.c.replace(/^0+/, "") === q.replace(/^0+/, ""));
+      const usHit = p.us.some(s => s.c === q);
       const titleHit = p.title.toUpperCase().includes(q);
       return hkHit || usHit || titleHit;
     });
