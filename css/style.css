@@ -984,10 +984,19 @@ footer .container {
   font-family: "Courier New", monospace;
   padding: 2px 7px;
   background: rgba(255,255,255,0.05);
+  border: 1px solid transparent;
   border-radius: 2px;
   color: var(--text-muted);
   letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
 }
+.archive-stock-tag:hover { border-color: var(--border-mid); color: var(--text); }
+.archive-stock-tag.stock-bull { color: #86efac; background: rgba(134,239,172,0.07); }
+.archive-stock-tag.stock-bull:hover { border-color: rgba(134,239,172,0.4); }
+.archive-stock-tag.stock-bear { color: #fca5a5; background: rgba(252,165,165,0.07); }
+.archive-stock-tag.stock-bear:hover { border-color: rgba(252,165,165,0.4); }
 
 .archive-empty,
 .archive-loading {

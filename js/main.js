@@ -444,10 +444,27 @@ function renderArchive() {
         badgesEl.appendChild(el("span", { class: "archive-badge archive-badge-" + c, text: catLabels[c] || c }));
       });
 
-      // Stock tags
+      // Stock tags (clickable, with company name + signal colour)
       const stocksEl = el("div", { class: "archive-stocks" });
-      [...p.hk.slice(0, 5), ...p.us.slice(0, 3)].forEach(code => {
-        stocksEl.appendChild(el("span", { class: "archive-stock-tag", text: code }));
+      const allStocks = [
+        ...p.hk.slice(0, 7).map(s => ({ ...s, market: "hk" })),
+        ...p.us.slice(0, 4).map(s => ({ ...s, market: "us" })),
+      ];
+      allStocks.forEach(s => {
+        const label = s.n ? `${s.c} ${s.n}` : s.c;
+        const sigClass = s.s === "b" ? " stock-bull" : s.s === "r" ? " stock-bear" : "";
+        const title = s.s === "b" ? "睇好" : s.s === "r" ? "睇淡" : "點擊搜索";
+        const tag = el("span", { class: "archive-stock-tag" + sigClass, text: label, title });
+        tag.addEventListener("click", (e) => {
+          e.preventDefault();
+          const input = document.querySelector(".archive-search");
+          if (input) {
+            input.value = s.c;
+            input.dispatchEvent(new Event("input"));
+          }
+          document.getElementById("archive").scrollIntoView({ behavior: "smooth" });
+        });
+        stocksEl.appendChild(tag);
       });
 
       const card = link(p.url, { class: "archive-card reveal" },
