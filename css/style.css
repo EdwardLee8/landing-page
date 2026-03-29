@@ -282,24 +282,25 @@ section + section {
   justify-content: center;
 }
 
-/* Hero tagline — tiny label above name */
-.hero-tagline {
-  font-size: 0.7rem;
-  font-weight: 400;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 20px;
+/* Main name */
+.hero-name {
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text);
+  margin-bottom: 16px;
 }
 
-/* Main name — enormous */
-.hero-name {
-  font-size: clamp(3.5rem, 10vw, 8rem);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 0.95;
-  color: var(--text);
-  margin-bottom: 40px;
+/* Tagline — 發掘十倍股, slightly smaller than name */
+.hero-tagline {
+  font-size: clamp(1.6rem, 3.5vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--gold);
+  margin-bottom: 32px;
+  line-height: 1.2;
 }
 
 /* Sub tagline */
