@@ -462,7 +462,7 @@ section + section {
   font-size: 0.8rem;
   color: var(--text-dim);
   line-height: 1.85;
-  max-width: 500px;
+  max-width: 640px;
   margin-bottom: 80px;
   font-style: italic;
 }
