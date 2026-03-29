@@ -1043,6 +1043,14 @@ footer .container {
   margin-bottom: 20px;
 }
 
+.archive-pills--year { margin-top: 4px; }
+.archive-pills--month { display: none; margin-top: 0; }
+
+.archive-pill--sm {
+  padding: 4px 14px;
+  font-size: 0.72rem;
+}
+
 .archive-pill {
   background: transparent;
   border: 1px solid var(--border-mid);

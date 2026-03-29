@@ -426,12 +426,14 @@ function renderArchive() {
   if (!controlsEl || !gridEl) return;
 
   const PAGE_SIZE = 12;
-  let allPosts  = [];
-  let filtered  = [];
-  let catLabels = {};
-  let activeCat = "all";
-  let searchQ   = "";
-  let page      = 0;
+  let allPosts   = [];
+  let filtered   = [];
+  let catLabels  = {};
+  let activeCat  = "all";
+  let activeYear = "all";
+  let activeMon  = "all";
+  let searchQ    = "";
+  let page       = 0;
 
   gridEl.appendChild(el("div", { class: "archive-loading", text: "載入中…" }));
 
@@ -471,6 +473,57 @@ function renderArchive() {
         pillsRow.appendChild(pill);
       });
 
+    // Year pills — derived from data
+    const years = [...new Set(allPosts.map(p => p.date.slice(0, 4)))].sort().reverse();
+    const yearRow = el("div", { class: "archive-pills archive-pills--year" });
+    [{ id: "all", label: "全部年份" }, ...years.map(y => ({ id: y, label: y + " 年" }))]
+      .forEach(y => {
+        const pill = el("button", {
+          class: "archive-pill" + (y.id === activeYear ? " archive-pill-active" : ""),
+          text: y.label, type: "button"
+        });
+        pill.dataset.year = y.id;
+        pill.addEventListener("click", () => {
+          activeYear = y.id;
+          activeMon = "all";
+          page = 0;
+          yearRow.querySelectorAll(".archive-pill").forEach(p =>
+            p.classList.toggle("archive-pill-active", p.dataset.year === y.id));
+          refreshMonthRow();
+          applyFilters();
+        });
+        yearRow.appendChild(pill);
+      });
+
+    // Month pills — shown only when a year is selected
+    const monthRow = el("div", { class: "archive-pills archive-pills--month" });
+
+    function refreshMonthRow() {
+      monthRow.textContent = "";
+      if (activeYear === "all") { monthRow.style.display = "none"; return; }
+      monthRow.style.display = "";
+      const months = [...new Set(
+        allPosts.filter(p => p.date.startsWith(activeYear)).map(p => p.date.slice(5, 7))
+      )].sort();
+      [{ id: "all", label: "全部月份" }, ...months.map(m => ({ id: m, label: parseInt(m) + " 月" }))]
+        .forEach(m => {
+          const pill = el("button", {
+            class: "archive-pill archive-pill--sm" + (m.id === activeMon ? " archive-pill-active" : ""),
+            text: m.label, type: "button"
+          });
+          pill.dataset.mon = m.id;
+          pill.addEventListener("click", () => {
+            activeMon = m.id;
+            page = 0;
+            monthRow.querySelectorAll(".archive-pill").forEach(p =>
+              p.classList.toggle("archive-pill-active", p.dataset.mon === m.id));
+            applyFilters();
+          });
+          monthRow.appendChild(pill);
+        });
+    }
+    refreshMonthRow();
+
     // Search input
     const searchInput = el("input", {
       class: "archive-search", type: "search",
@@ -482,16 +535,18 @@ function renderArchive() {
       applyFilters();
     });
 
-    controlsEl.append(pillsRow, searchInput);
+    controlsEl.append(pillsRow, yearRow, monthRow, searchInput);
   }
 
   function applyFilters() {
     filtered = allPosts.filter(p => {
-      if (activeCat !== "all" && !p.cats.includes(activeCat)) return false;
+      if (activeCat  !== "all" && !p.cats.includes(activeCat))      return false;
+      if (activeYear !== "all" && !p.date.startsWith(activeYear))    return false;
+      if (activeMon  !== "all" && p.date.slice(5, 7) !== activeMon)  return false;
       if (!searchQ) return true;
       const q = searchQ;
-      const hkHit = p.hk.some(s => s.c === q || s.c.replace(/^0+/, "") === q.replace(/^0+/, ""));
-      const usHit = p.us.some(s => s.c === q);
+      const hkHit   = p.hk.some(s => s.c === q || s.c.replace(/^0+/, "") === q.replace(/^0+/, ""));
+      const usHit   = p.us.some(s => s.c === q);
       const titleHit = p.title.toUpperCase().includes(q);
       return hkHit || usHit || titleHit;
     });
