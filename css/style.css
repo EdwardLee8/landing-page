@@ -93,8 +93,9 @@ section + section {
   color: var(--text-muted);
   letter-spacing: 0.02em;
   text-align: right;
-  max-width: 260px;
+  max-width: 340px;
   line-height: 1.7;
+  text-wrap: balance;
 }
 
 /* ── Navigation ──────────────────────────────────────────── */
@@ -612,6 +613,7 @@ section + section {
   line-height: 1.85;
   max-width: 640px;
   margin-bottom: 64px;
+  text-wrap: pretty;
 }
 
 .content-cta {
@@ -948,6 +950,7 @@ footer .container {
   max-width: 500px;
   line-height: 1.7;
   text-align: right;
+  text-wrap: pretty;
 }
 
 /* ── Responsive ───────────────────────────────────────────── */
