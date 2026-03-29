@@ -59,7 +59,7 @@ const SITE_CONTENT = {
   about: {
     stats: [
       { value: "2012",   label: "開始年份（Facebook「發掘十倍股」）" },
-      { value: "1,369+", label: "Patreon 訂閱者" },
+      { value: "19,000+", label: "Facebook 追蹤者" },
       { value: "500+",   label: "深度分析文章" },
       { value: "+36%",   label: "2025 模擬組合回報" },
     ],
@@ -151,7 +151,7 @@ const SITE_CONTENT = {
         "投資框架基礎知識分享",
       ],
       cta: "睇免費報告 →",
-      url: "https://www.patreon.com/edward10",
+      url: "https://www.patreon.com/collection/503820?view=expanded",
     },
     {
       name: "付費訂閱",
