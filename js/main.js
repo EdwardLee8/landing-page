@@ -403,7 +403,7 @@ function renderFooter(author, seo) {
   container.append(
     el("p", { class: "footer-copy", text: `© ${year} ${author.name}. All rights reserved.` }),
     el("p", { class: "footer-disclaimer",
-      text: "本網站所有內容僅供參考及教育目的，不構成任何投資建議。投資涉及風險，過去表現不代表未來回報，讀者應自行判斷及承擔投資決定之責任。"
+      text: "本網站所有內容僅供參考及教育用途，並不構成投資建議、推薦或誘使進行任何投資交易。投資有風險，過去表現不保證未來成果。在作出任何投資決定前，讀者應獨立判斷、評估風險並自行承擔相關責任。"
     })
   );
 }
