@@ -76,6 +76,7 @@ function link(url, attrs, ...children) {
 function renderAll() {
   const c = SITE_CONTENT;
   renderHero(c.author);
+  renderStory(c.story);
   renderAbout(c.about);
   renderArticles(c.articles);
   renderDiscordFree(c.discordFree);
@@ -108,7 +109,7 @@ function renderHero(author) {
     { class: "btn-primary", text: "立即訂閱" }
   );
   // Override href to local anchor for smooth scroll
-  ctaLink.href = "#social";
+  ctaLink.href = "#story";
   ctaLink.removeAttribute("target");
   ctaLink.removeAttribute("rel");
 
@@ -117,36 +118,106 @@ function renderHero(author) {
     el("p", { class: "hero-tagline", text: author.tagline }),
     el("h1", { class: "hero-name", text: author.name }),
     el("p", { class: "hero-sub", text: author.subTagline }),
-    el("p", { class: "hero-bio", text: author.bio }),
     ctaLink
   );
+}
+
+// Helper: render text with \n as <br>
+function textWithBreaks(container, text) {
+  const parts = text.split("\n");
+  parts.forEach((part, i) => {
+    container.appendChild(document.createTextNode(part));
+    if (i < parts.length - 1) container.appendChild(document.createElement("br"));
+  });
+}
+
+function renderStory(story) {
+  const container = document.getElementById("story-content");
+  if (!container || !story) return;
+
+  // Hook — large opening pull-quote
+  const hookEl = el("p", { class: "story-hook reveal" });
+  textWithBreaks(hookEl, story.hook);
+  container.appendChild(hookEl);
+
+  // Journey — grouped in one reveal container
+  const journeyWrap = el("div", { class: "story-journey reveal" });
+  (story.journey || []).forEach(para => {
+    const p = el("p", { class: "story-paragraph" });
+    textWithBreaks(p, para);
+    journeyWrap.appendChild(p);
+  });
+  container.appendChild(journeyWrap);
+
+  // Turning point — emphatic moment
+  if (story.turningPoint) {
+    const tp = el("div", { class: "story-turning-point reveal" });
+    tp.appendChild(el("p", { class: "story-tp-before", text: story.turningPoint.before }));
+    tp.appendChild(el("p", { class: "story-tp-emphasis", text: story.turningPoint.emphasis }));
+    container.appendChild(tp);
+  }
+
+  // Insight
+  if (story.insight) {
+    const insightEl = el("p", { class: "story-insight reveal" });
+    textWithBreaks(insightEl, story.insight);
+    container.appendChild(insightEl);
+  }
+
+  // Three pillars
+  if (story.pillars) {
+    const pillarsWrap = el("div", { class: "story-pillars-wrap reveal" });
+    pillarsWrap.appendChild(el("p", { class: "story-pillars-intro", text: story.pillars.intro }));
+    const grid = el("div", { class: "story-pillars" });
+    (story.pillars.items || []).forEach(item => {
+      grid.appendChild(
+        el("div", { class: "story-pillar" },
+          el("div", { class: "story-pillar-label", text: item.label }),
+          el("p", { class: "story-pillar-desc", text: item.desc })
+        )
+      );
+    });
+    pillarsWrap.appendChild(grid);
+    container.appendChild(pillarsWrap);
+  }
+
+  // AI note — intentionally understated
+  if (story.aiNote) {
+    const aiEl = el("p", { class: "story-aside reveal" });
+    textWithBreaks(aiEl, story.aiNote);
+    container.appendChild(aiEl);
+  }
+
+  // Value proposition
+  const valuePropWrap = el("div", { class: "story-value-prop reveal" });
+  (story.valueProp || []).forEach(para => {
+    const p = el("p", { class: "story-paragraph" });
+    textWithBreaks(p, para);
+    valuePropWrap.appendChild(p);
+  });
+  container.appendChild(valuePropWrap);
+
+  // Closing hook + CTA
+  if (story.closingHook || story.cta) {
+    const closing = el("div", { class: "story-closing reveal" });
+    if (story.closingHook) {
+      const hookP = el("p", { class: "story-closing-hook" });
+      textWithBreaks(hookP, story.closingHook);
+      closing.appendChild(hookP);
+    }
+    if (story.cta) {
+      closing.appendChild(
+        link(story.cta.url, { class: "btn-primary", text: story.cta.text })
+      );
+    }
+    container.appendChild(closing);
+  }
 }
 
 function renderAbout(about) {
   const container = document.getElementById("about-content");
   if (!container || !about) return;
 
-  const highlightsEl = el("div", { class: "about-highlights" });
-  (about.highlights || []).forEach(h => {
-    highlightsEl.appendChild(
-      el("div", { class: "about-highlight-item" },
-        el("span", { class: "about-highlight-label", text: h.label }),
-        el("span", { class: "about-highlight-value", text: h.value })
-      )
-    );
-  });
-
-  const platformsList = el("ul", { class: "about-platforms" });
-  (about.platforms || []).forEach(p => {
-    platformsList.appendChild(
-      el("li", {},
-        el("span", { class: "check", text: "✓" }),
-        p
-      )
-    );
-  });
-
-  // Stats row
   const statsEl = el("div", { class: "about-stats reveal" });
   (about.stats || []).forEach(s => {
     statsEl.appendChild(
@@ -157,19 +228,7 @@ function renderAbout(about) {
     );
   });
 
-  container.append(
-    (about.stats || []).length ? statsEl : null,
-    el("div", { class: "about-grid reveal" },
-      el("div", { class: "about-bio-wrap" },
-        el("p", { class: "about-bio", text: about.bio }),
-        highlightsEl
-      ),
-      el("div", { class: "about-platforms-wrap" },
-        el("p", { class: "about-platforms-label", text: "內容平台" }),
-        platformsList
-      )
-    )
-  );
+  if ((about.stats || []).length) container.appendChild(statsEl);
 }
 
 function renderPatreonPage(data) {
@@ -540,7 +599,7 @@ function initNav() {
   }
 
   // Active section highlight via IntersectionObserver
-  const sections = ["hero", "about", "articles", "discord-free", "archive", "tiers", "discord-paid", "social"]
+  const sections = ["hero", "story", "about", "articles", "discord-free", "archive", "tiers", "discord-paid", "social"]
     .map(id => document.getElementById(id))
     .filter(Boolean);
 
