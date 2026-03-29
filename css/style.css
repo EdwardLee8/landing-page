@@ -96,6 +96,7 @@ section + section {
   max-width: 340px;
   line-height: 1.7;
   text-wrap: balance;
+  word-break: keep-all;
 }
 
 /* ── Navigation ──────────────────────────────────────────── */
@@ -614,6 +615,7 @@ section + section {
   max-width: 640px;
   margin-bottom: 64px;
   text-wrap: pretty;
+  word-break: keep-all;
 }
 
 .content-cta {
@@ -951,6 +953,7 @@ footer .container {
   line-height: 1.7;
   text-align: right;
   text-wrap: pretty;
+  word-break: keep-all;
 }
 
 /* ── Responsive ───────────────────────────────────────────── */
