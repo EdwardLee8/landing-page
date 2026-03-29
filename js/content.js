@@ -218,7 +218,7 @@ const SITE_CONTENT = {
   // ── SEO / OG ─────────────────────────────────────────────
   seo: {
     title: "Edward LEE · 發掘十倍股",
-    description: "2012年起公開記錄港股美股分析。專注業績變化、行業趨勢、資金與情緒——幫你過濾噪音，看到下一步可能發生什麼。過往表現不代表將來回報。",
+    description: "2012年起公開記錄港股美股分析。專注業績變化、行業趨勢、資金與情緒——幫你過濾噪音，看到下一步可能發生什麼。多年來的成果得來不易。",
     ogImage: "assets/images/og-image.jpg",
     siteUrl: "https://ai10xpro.com",
   },
