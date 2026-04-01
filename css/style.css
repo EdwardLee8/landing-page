@@ -342,6 +342,36 @@ section + section {
   color: #080808;
 }
 
+/* Hero CTA group */
+.hero-cta-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border: 1px solid rgba(212,166,71,.45);
+  background: rgba(212,166,71,.08);
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background var(--transition), border-color var(--transition);
+}
+.btn-secondary:hover {
+  background: rgba(212,166,71,.18);
+  border-color: var(--gold);
+  text-decoration: none;
+}
+
 /* Scroll chevron */
 #scroll-chevron {
   position: absolute;

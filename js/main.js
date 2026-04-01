@@ -113,12 +113,18 @@ function renderHero(author) {
   ctaLink.removeAttribute("target");
   ctaLink.removeAttribute("rel");
 
+  const dbLink = el("a", {
+    href: "/hk-stocks-db.html",
+    class: "btn-secondary",
+    text: "港股2025下半年資料庫",
+  });
+
   container.append(
     avatarWrap,
     el("h1", { class: "hero-name", text: author.name }),
     el("p", { class: "hero-tagline", text: author.tagline }),
     el("p", { class: "hero-sub", text: author.subTagline }),
-    ctaLink
+    el("div", { class: "hero-cta-group" }, ctaLink, dbLink)
   );
 }
 
