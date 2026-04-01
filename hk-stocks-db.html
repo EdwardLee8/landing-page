@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:18px;min-height:100vh}
+body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:20px;min-height:100vh}
 #pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
 .pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
 .pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
@@ -137,14 +137,6 @@ td.num.na{color:#555}
       <option>資料不足</option>
     </select>
   </div>
-  <div class="filter-group">
-    <span class="filter-label">業績好壞</span>
-    <select id="f-perf">
-      <option value="">全部</option>
-      <option value="YES">業績好</option>
-      <option value="NO">業績差</option>
-    </select>
-  </div>
   <div class="filter-actions">
     <button class="btn btn-ghost" onclick="resetFilters()">重置</button>
     <button class="btn btn-primary" onclick="applyFilters()">篩選</button>
@@ -256,7 +248,6 @@ function applyFilters() {
   const cap = document.getElementById('f-cap').value;
   const type1m = document.getElementById('f-type1m').value;
   const type3m = document.getElementById('f-type3m').value;
-  const perf = document.getElementById('f-perf').value;
 
   filtered = RAW_DATA.filter(s => {
     if (search && !s.code.toLowerCase().includes(search) && !s.name.toLowerCase().includes(search)) return false;
@@ -264,7 +255,6 @@ function applyFilters() {
     if (cap && s.cap_type !== cap) return false;
     if (type1m && s.type_1m !== type1m) return false;
     if (type3m && s.type_3m !== type3m) return false;
-    if (perf && s.perf_ok !== perf) return false;
     return true;
   });
 
@@ -274,7 +264,7 @@ function applyFilters() {
 }
 
 function resetFilters() {
-  ['f-search','f-industry','f-cap','f-type1m','f-type3m','f-perf'].forEach(function(id) {
+  ['f-search','f-industry','f-cap','f-type1m','f-type3m'].forEach(function(id) {
     const el = document.getElementById(id);
     el.value = '';
   });
