@@ -53,7 +53,7 @@ td{padding:9px 12px;vertical-align:middle;white-space:nowrap}
 td.code{color:#d4a647;font-weight:600;font-size:15px}
 td.name{color:#fff;font-weight:600;max-width:160px;white-space:normal;word-break:break-all}
 td.industry{color:#aaa;font-size:14px}
-td.num{text-align:center;font-size:15px}
+td.num{text-align:center !important;font-size:15px}
 td.num.pos{color:#4caf50}
 td.num.neg{color:#ef5350}
 td.num.na{color:#555}
@@ -164,7 +164,6 @@ td.num.na{color:#555}
       <th onclick="sortBy('cap_type')" data-col="cap_type">市值類型 <span class="sort-icon"></span></th>
       <th onclick="sortBy('rev_growth_h2')" data-col="rev_growth_h2">下半年收入增 <span class="sort-icon"></span></th>
       <th onclick="sortBy('gp_growth_h2')" data-col="gp_growth_h2">下半年毛利增 <span class="sort-icon"></span></th>
-      <th onclick="sortBy('perf_ok')" data-col="perf_ok">業績 <span class="sort-icon"></span></th>
       <th onclick="sortBy('rel_1m')" data-col="rel_1m">1月vs恒指 <span class="sort-icon"></span></th>
       <th onclick="sortBy('rel_3m')" data-col="rel_3m">3月vs恒指 <span class="sort-icon"></span></th>
       <th onclick="sortBy('type_1m')" data-col="type_1m">1月類型 <span class="sort-icon"></span></th>
@@ -327,7 +326,6 @@ function render() {
         '<td>' + capTag(s.cap_type) + '</td>' +
         numCell(s.rev_growth_h2) +
         numCell(s.gp_growth_h2) +
-        '<td>' + perfTag(s.perf_ok) + '</td>' +
         numCell(s.rel_1m) +
         numCell(s.rel_3m) +
         '<td>' + typeTag(s.type_1m) + '</td>' +
