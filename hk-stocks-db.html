@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:14px;min-height:100vh}
+body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:16px;min-height:100vh}
 #pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
 .pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
 .pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
@@ -209,8 +209,8 @@ const RAW_DATA = [{"code":"02938.HK","name":"派格-B(五百)","industry":"藥�
 
 const PAGE_SIZE = 50;
 let filtered = [...RAW_DATA];
-let sortCol = '';
-let sortDir = 1;
+let sortCol = 'mktcap';
+let sortDir = -1;
 let currentPage = 1;
 
 const industries = [...new Set(RAW_DATA.map(s => s.industry).filter(Boolean))].sort((a,b) => a.localeCompare(b,'zh-Hant'));
@@ -377,6 +377,11 @@ function goPage(p) {
 
 document.getElementById('f-search').addEventListener('keydown', function(e) { if (e.key === 'Enter') applyFilters(); });
 
+// Init: sort by market cap descending
+doSort(false);
+document.querySelectorAll('th').forEach(function(th) {
+  if (th.dataset.col === 'mktcap') th.classList.add('sort-desc');
+});
 render();
 </script>
 </body>
