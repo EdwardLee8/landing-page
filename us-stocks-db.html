@@ -74,6 +74,19 @@ td.num.na{color:#555}
 .page-btn:disabled{opacity:.3;cursor:not-allowed}
 .page-info{color:#666;font-size:13px;padding:0 8px}
 .empty{text-align:center;padding:60px 20px;color:#555}
+
+/* ── Multi-select dropdown ─────────────────────────────────── */
+.ms-wrap{position:relative;display:inline-block}
+.ms-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 32px 7px 10px;border-radius:4px;font-size:13px;font-family:inherit;min-width:120px;cursor:pointer;outline:none;transition:border-color .2s;text-align:left;position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ms-btn::after{content:'\25BE';position:absolute;right:10px;top:50%;transform:translateY(-50%);opacity:.6;font-size:11px}
+.ms-wrap.open .ms-btn{border-color:#d4a647}
+.ms-dropdown{position:absolute;top:calc(100% + 4px);left:0;background:#1a1a2e;border:1px solid #2a2a3e;border-radius:4px;min-width:150px;z-index:200;max-height:260px;overflow-y:auto;display:none;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.ms-wrap.open .ms-dropdown{display:block}
+.ms-item{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:13px;transition:background .15s;user-select:none}
+.ms-item:hover{background:#2a2a3e}
+.ms-item input[type=checkbox]{accent-color:#d4a647;width:14px;height:14px;flex-shrink:0;cursor:pointer}
+.ms-clear{padding:7px 14px;font-size:12px;color:#888;cursor:pointer;border-top:1px solid #2a2a3e;text-align:center;transition:color .15s}
+.ms-clear:hover{color:#d4a647}
 </style>
 </head>
 <body>
@@ -108,34 +121,15 @@ td.num.na{color:#555}
   </div>
   <div class="filter-group">
     <span class="filter-label">市值類型</span>
-    <select id="f-cap">
-      <option value="">全部</option>
-      <option>大型股</option>
-      <option>中型股</option>
-      <option>小型股</option>
-    </select>
+    <div class="ms-wrap" id="f-cap"><button class="ms-btn" data-placeholder="全部">全部</button><div class="ms-dropdown"></div></div>
   </div>
   <div class="filter-group">
     <span class="filter-label">1個月類型</span>
-    <select id="f-type1m">
-      <option value="">全部</option>
-      <option>成長股</option>
-      <option>價值股</option>
-      <option>投機股</option>
-      <option>困境股</option>
-      <option>資料不足</option>
-    </select>
+    <div class="ms-wrap" id="f-type1m"><button class="ms-btn" data-placeholder="全部">全部</button><div class="ms-dropdown"></div></div>
   </div>
   <div class="filter-group">
     <span class="filter-label">3個月類型</span>
-    <select id="f-type3m">
-      <option value="">全部</option>
-      <option>成長股</option>
-      <option>價值股</option>
-      <option>投機股</option>
-      <option>困境股</option>
-      <option>資料不足</option>
-    </select>
+    <div class="ms-wrap" id="f-type3m"><button class="ms-btn" data-placeholder="全部">全部</button><div class="ms-dropdown"></div></div>
   </div>
   <div class="filter-actions">
     <button class="btn btn-ghost" onclick="resetFilters()">重置</button>
@@ -235,17 +229,18 @@ function capTag(v) {
 function applyFilters() {
   const search = document.getElementById('f-search').value.trim().toLowerCase();
   const industry = document.getElementById('f-industry').value;
-  const cap = document.getElementById('f-cap').value;
-  const type1m = document.getElementById('f-type1m').value;
-  const type3m = document.getElementById('f-type3m').value;
+  const caps    = msGetById('f-cap');
+  const type1ms = msGetById('f-type1m');
+  const type3ms = msGetById('f-type3m');
+
   filtered = RAW_DATA.filter(function(s) {
     if (search && !s.code.toLowerCase().includes(search) &&
         !s.name.toLowerCase().includes(search) &&
         !s.en_name.toLowerCase().includes(search)) return false;
     if (industry && s.industry !== industry) return false;
-    if (cap && s.cap_type !== cap) return false;
-    if (type1m && s.type_1m !== type1m) return false;
-    if (type3m && s.type_3m !== type3m) return false;
+    if (caps.length    && !caps.includes(s.cap_type))    return false;
+    if (type1ms.length && !type1ms.includes(s.type_1m))  return false;
+    if (type3ms.length && !type3ms.includes(s.type_3m))  return false;
     return true;
   });
   currentPage = 1;
@@ -254,9 +249,8 @@ function applyFilters() {
 }
 
 function resetFilters() {
-  ['f-search','f-industry','f-cap','f-type1m','f-type3m'].forEach(function(id) {
-    document.getElementById(id).value = '';
-  });
+  document.getElementById('f-industry').value = '';
+  ['f-cap','f-type1m','f-type3m'].forEach(function(id) { msClearById(id); });
   filtered = [...RAW_DATA];
   currentPage = 1;
   render();
@@ -346,11 +340,79 @@ function goPage(p) {
 
 document.getElementById('f-search').addEventListener('keydown', function(e) { if(e.key==='Enter') applyFilters(); });
 
+msInit('f-cap',    ['大型股','中型股','小型股']);
+msInit('f-type1m', ['成長股','價值股','投機股','困境股','資料不足']);
+msInit('f-type3m', ['成長股','價值股','投機股','困境股','資料不足']);
+
 doSort(false);
 document.querySelectorAll('th').forEach(function(th) {
   if (th.dataset.col==='mktcap') th.classList.add('sort-desc');
 });
 render();
+
+/* ── Multi-select helpers ───────────────────────────────────── */
+function msInit(wrapperId, opts) {
+  const wrap = document.getElementById(wrapperId);
+  if (!wrap) return;
+  const btn = wrap.querySelector('.ms-btn');
+  const drop = wrap.querySelector('.ms-dropdown');
+  // Build options
+  opts.forEach(function(opt) {
+    const label = document.createElement('label');
+    label.className = 'ms-item';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.value = opt;
+    cb.addEventListener('change', function() { msUpdateBtn(wrap); });
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(opt));
+    drop.appendChild(label);
+  });
+  const clear = document.createElement('div');
+  clear.className = 'ms-clear';
+  clear.textContent = '清除選擇';
+  clear.addEventListener('click', function(e) { e.stopPropagation(); msClear(wrap); });
+  drop.appendChild(clear);
+  btn.addEventListener('click', function(e) { e.stopPropagation(); msToggle(wrap); });
+}
+
+function msToggle(wrap) {
+  const isOpen = wrap.classList.contains('open');
+  document.querySelectorAll('.ms-wrap.open').forEach(function(w) { w.classList.remove('open'); });
+  if (!isOpen) wrap.classList.add('open');
+}
+
+function msClear(wrap) {
+  wrap.querySelectorAll('input[type=checkbox]').forEach(function(cb) { cb.checked = false; });
+  msUpdateBtn(wrap);
+}
+
+function msUpdateBtn(wrap) {
+  const btn = wrap.querySelector('.ms-btn');
+  const selected = msGetSelected(wrap);
+  btn.textContent = selected.length ? selected.join(', ') : (btn.dataset.placeholder || '全部');
+  btn.title = btn.textContent;
+}
+
+function msGetSelected(wrap) {
+  const vals = [];
+  wrap.querySelectorAll('input[type=checkbox]:checked').forEach(function(cb) { vals.push(cb.value); });
+  return vals;
+}
+
+function msGetById(id) {
+  const wrap = document.getElementById(id);
+  return wrap ? msGetSelected(wrap) : [];
+}
+
+function msClearById(id) {
+  const wrap = document.getElementById(id);
+  if (wrap) msClear(wrap);
+}
+
+document.addEventListener('click', function() {
+  document.querySelectorAll('.ms-wrap.open').forEach(function(w) { w.classList.remove('open'); });
+});
+
 </script>
 </body>
 </html>
