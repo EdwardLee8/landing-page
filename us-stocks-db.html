@@ -117,7 +117,7 @@ td.num.na{color:#555}
   </div>
   <div class="filter-group">
     <span class="filter-label">行業</span>
-    <select id="f-industry"><option value="">全部行業</option></select>
+    <div class="ms-wrap" id="f-industry"><button class="ms-btn" data-placeholder="全部行業" style="min-width:140px">全部行業</button><div class="ms-dropdown"></div></div>
   </div>
   <div class="filter-group">
     <span class="filter-label">市值類型</span>
@@ -198,11 +198,7 @@ let sortDir = -1;
 let currentPage = 1;
 
 const industries = [...new Set(RAW_DATA.map(s => s.industry).filter(Boolean))].sort((a,b) => a.localeCompare(b,'zh-Hant'));
-const sel = document.getElementById('f-industry');
-industries.forEach(function(ind) {
-  const o = document.createElement('option');
-  o.value = ind; o.textContent = ind; sel.appendChild(o);
-});
+msInit('f-industry', industries);
 
 function parseNum(v) {
   if (!v || v === '#VALUE!' || v === '' || v === '—') return null;
@@ -228,7 +224,7 @@ function capTag(v) {
 
 function applyFilters() {
   const search = document.getElementById('f-search').value.trim().toLowerCase();
-  const industry = document.getElementById('f-industry').value;
+  const industries_sel = msGetById('f-industry');
   const caps    = msGetById('f-cap');
   const type1ms = msGetById('f-type1m');
   const type3ms = msGetById('f-type3m');
@@ -237,7 +233,7 @@ function applyFilters() {
     if (search && !s.code.toLowerCase().includes(search) &&
         !s.name.toLowerCase().includes(search) &&
         !s.en_name.toLowerCase().includes(search)) return false;
-    if (industry && s.industry !== industry) return false;
+    if (industries_sel.length && !industries_sel.includes(s.industry)) return false;
     if (caps.length    && !caps.includes(s.cap_type))    return false;
     if (type1ms.length && !type1ms.includes(s.type_1m))  return false;
     if (type3ms.length && !type3ms.includes(s.type_3m))  return false;
@@ -249,8 +245,7 @@ function applyFilters() {
 }
 
 function resetFilters() {
-  document.getElementById('f-industry').value = '';
-  ['f-cap','f-type1m','f-type3m'].forEach(function(id) { msClearById(id); });
+  ['f-industry','f-cap','f-type1m','f-type3m'].forEach(function(id) { msClearById(id); });
   filtered = [...RAW_DATA];
   currentPage = 1;
   render();
