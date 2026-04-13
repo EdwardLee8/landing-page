@@ -125,12 +125,18 @@ function renderHero(author) {
     text: "美股2025Q4資料庫",
   });
 
+  const kwLink = el("a", {
+    href: "/us-keywords.html",
+    class: "btn-secondary",
+    text: "美股關鍵字資料庫",
+  });
+
   container.append(
     avatarWrap,
     el("h1", { class: "hero-name", text: author.name }),
     el("p", { class: "hero-tagline", text: author.tagline }),
     el("p", { class: "hero-sub", text: author.subTagline }),
-    el("div", { class: "hero-cta-group" }, ctaLink, dbLink, usDbLink)
+    el("div", { class: "hero-cta-group" }, ctaLink, dbLink, usDbLink, kwLink)
   );
 }
 
