@@ -57,20 +57,22 @@ a:hover{text-decoration:underline}
 .company-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .co-symbol{color:#d4a647;font-weight:700;font-size:15px;font-family:monospace;min-width:64px}
 .co-name{color:#fff;font-weight:600;font-size:14px}
-.co-sector{font-size:12px;color:#888;background:#1a1a2e;padding:2px 8px;border-radius:10px;margin-left:auto}
+.co-sector{font-size:12px;color:#888;background:#1a1a2e;padding:2px 8px;border-radius:10px}
+.co-industry{font-size:11px;color:#666;margin-top:3px}
+.co-summary{font-size:13px;color:#b0a898;line-height:1.6;margin:10px 0 12px;padding:10px 12px;background:#111;border-left:2px solid #d4a64740;border-radius:0 4px 4px 0}
 .kw-list{display:flex;flex-wrap:wrap;gap:6px}
 .kw-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:12px;font-size:12px;cursor:pointer;transition:all .2s;user-select:none}
 .kw-tag:hover{opacity:.8;transform:scale(1.02)}
 .kw-high{background:#1e2a1e;border:1px solid #4caf5044}
 .kw-mid{background:#1e1e2a;border:1px solid #5c6bc044}
 .kw-low{background:#1e1e1e;border:1px solid #33333344}
-.kw-tag .kw-en{font-weight:600;color:#e8e0d0}
-.kw-tag .kw-zh{color:#aaa;font-size:11px}
+.kw-tag .kw-en{font-weight:600;color:#e8e0d0;font-size:13px}
+.kw-tag .kw-zh{color:#999;font-size:12px}
 .kw-tag .kw-dot{color:#555;margin:0 1px}
 .kw-result-card{background:#0d0d14;border:1px solid #1e1e2e;border-radius:6px;padding:16px;margin-bottom:10px}
-.kw-result-header{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
+.kw-result-header{display:flex;align-items:baseline;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .kw-result-en{font-size:16px;font-weight:700;color:#fff}
-.kw-result-zh{font-size:13px;color:#aaa}
+.kw-result-zh{font-size:14px;color:#aaa}
 .kw-result-count{font-size:12px;color:#888;margin-left:auto}
 .kw-co-list{display:flex;flex-wrap:wrap;gap:6px}
 .kw-co-item{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:4px;padding:4px 10px;font-size:13px;cursor:pointer;transition:all .2s;color:#d4a647;font-weight:600;font-family:monospace}
@@ -426,9 +428,10 @@ function renderCorrSearch(q) {
 // ── Render cluster card ───────────────────────────────────
 function renderClusterCard(cl, highlightSyms, autoOpen) {
   const isHighlighted = cl.companies.some(c => highlightSyms.has(c.s));
-  const desc = cl.desc || {};
-  const descEn = desc.en || "";
-  const descZh = desc.zh || "";
+  // desc may be {en, zh} dict or a plain string (legacy fallback)
+  const rawDesc = cl.desc || {};
+  const descEn = typeof rawDesc === "object" ? (rawDesc.en || "") : String(rawDesc);
+  const descZh = typeof rawDesc === "object" ? (rawDesc.zh || "") : "";
 
   // Sub-sector from first keyword (title-case)
   const kws = cl.top_kws || [];
@@ -558,12 +561,14 @@ function searchCo2Kw(query) {
   if (!top.length) { div.innerHTML = `<div class="result-count">找不到相關公司</div>`; return; }
   let html = `<div class="result-count">找到 <b>${matches.length}</b> 間公司，顯示前 ${top.length} 間</div>`;
   for (const { co } of top) {
-    const kws = (co.kws||[]).slice(0,30);
+    const kws = (co.kws||[]).slice(0,25);
     html += `<div class="company-card"><div class="company-header">
       <span class="co-symbol">${hl(co.s,query.toUpperCase())}</span>
       <span class="co-name">${hl(co.n,query)}</span>
       ${co.sec?`<span class="co-sector">${escHtml(co.sec)}</span>`:""}
     </div>`;
+    if (co.ind) html += `<div class="co-industry">${escHtml(co.ind)}</div>`;
+    if (co.sum) html += `<div class="co-summary">${escHtml(co.sum)}</div>`;
     if (kws.length) {
       html += `<div class="kw-list">`;
       for (const kw of kws) {
