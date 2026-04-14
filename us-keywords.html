@@ -299,7 +299,8 @@ async function loadCorrData() {
     SYM_TO_CLUSTER = data.sym_to_cluster || {};
     corrLoaded = true;
     document.getElementById("corr-info").innerHTML =
-      `共 <b>${data.n_clusters}</b> 個相關群組，涵蓋 6,629 對配對（60日 Pearson 相關系數，基準 0.85 建群、0.75 顯示）`;
+      `共 <b>${data.n_clusters}</b> 個相關群組（Complete-linkage，組內每對均 ≥ ${data.thresh_cluster}）` +
+      `，涵蓋 ${data.n_pairs.toLocaleString()} 對配對（60日 Pearson，顯示閾值 ≥ ${data.thresh_display}）`;
     renderCorrAll("");
   } catch(e) {
     document.getElementById("corr-body").innerHTML =
@@ -419,7 +420,8 @@ function renderClusterCard(cl, highlightSyms, autoOpen) {
       <div>
         <div class="cl-title">${escHtml(cl.top_sec || "多行業")}</div>
         <div class="cl-meta">
-          <span>平均相關系數：<span class="cl-corr-avg" style="color:${corrColor}">${cl.avg_corr.toFixed(3)}</span></span>
+          <span>平均：<span class="cl-corr-avg" style="color:${corrColor}">${cl.avg_corr.toFixed(3)}</span></span>
+          <span>最低：<span style="color:${cl.min_corr>=0.85?'#4caf50':cl.min_corr>=0.80?'#8bc34a':'#d4a647'}">${(cl.min_corr||0).toFixed(3)}</span></span>
           ${cl.top_kws && cl.top_kws.length ? `<span>主題：${escHtml(cl.top_kws.slice(0,2).join("、"))}</span>` : ""}
         </div>
       </div>
