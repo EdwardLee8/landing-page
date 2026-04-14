@@ -36,7 +36,7 @@ a:hover{text-decoration:underline}
 .stats-bar b{color:#d4a647}
 
 /* ── Tabs ── */
-.tab-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:0 24px;display:flex}
+.tab-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:0 24px;display:flex;overflow-x:auto}
 .tab{padding:14px 20px;font-size:14px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;user-select:none;white-space:nowrap}
 .tab.active{color:#d4a647;border-bottom-color:#d4a647}
 .tab:hover:not(.active){color:#bbb}
@@ -86,57 +86,50 @@ a:hover{text-decoration:underline}
 .corr-search-box .cs-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#666;font-size:16px;cursor:pointer;display:none}
 .corr-search-box .cs-clear.visible{display:block}
 .corr-search-box .cs-clear:hover{color:#d4a647}
-.corr-info{font-size:12px;color:#555;padding:8px 24px;border-bottom:1px solid #111}
-.corr-info b{color:#d4a647}
+
+/* Threshold toggle */
+.thresh-bar{padding:10px 24px;background:#080808;border-bottom:1px solid #111;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.thresh-label{font-size:12px;color:#666;margin-right:4px}
+.thresh-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#888;padding:5px 14px;border-radius:4px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s}
+.thresh-btn:hover{border-color:#d4a64766;color:#bbb}
+.thresh-btn.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
+.thresh-info{font-size:12px;color:#555;margin-left:4px}
+
 .corr-body{padding:16px 24px 40px}
 
 /* Cluster card */
 .cl-card{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;margin-bottom:12px;overflow:hidden;transition:border-color .2s}
 .cl-card.highlighted{border-color:#d4a647;box-shadow:0 0 0 1px #d4a64733}
-.cl-head{padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;user-select:none}
+.cl-card.sector-card{border-color:#2a2a3e}
+.cl-head{padding:14px 16px;cursor:pointer;display:flex;align-items:flex-start;gap:12px;user-select:none}
 .cl-head:hover{background:#111}
-.cl-badge{background:#d4a64720;border:1px solid #d4a64744;color:#d4a647;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap}
-.cl-title{font-size:15px;font-weight:700;color:#fff;flex:1}
-.cl-meta{font-size:12px;color:#888;display:flex;gap:12px;flex-wrap:wrap}
-.cl-corr-avg{color:#4caf50;font-weight:600}
-.cl-chevron{color:#555;font-size:14px;transition:transform .2s;margin-left:auto}
+.cl-badge{background:#d4a64720;border:1px solid #d4a64744;color:#d4a647;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.cl-badge.sector-badge{background:#1e1e2a;border-color:#3a3a4e;color:#8bc34a}
+.cl-title-wrap{flex:1;min-width:0}
+.cl-title{font-size:15px;font-weight:700;color:#fff}
+.cl-desc-en{font-size:12px;color:#aaa;margin-top:3px;line-height:1.5}
+.cl-desc-zh{font-size:12px;color:#888;margin-top:2px;line-height:1.5}
+.cl-chevron{color:#555;font-size:14px;transition:transform .2s;margin-left:auto;flex-shrink:0;margin-top:2px}
 .cl-card.open .cl-chevron{transform:rotate(180deg)}
 .cl-body{display:none;border-top:1px solid #1a1a2e;padding:14px 16px}
 .cl-card.open .cl-body{display:block}
 
 /* Companies in cluster */
-.cl-companies{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.cl-companies{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .cl-co{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:6px;padding:7px 12px;cursor:pointer;transition:all .2s;min-width:90px}
 .cl-co:hover{border-color:#d4a647;background:#d4a64714}
 .cl-co.target{border-color:#d4a647;background:#d4a64720}
 .cl-co-sym{color:#d4a647;font-weight:700;font-family:monospace;font-size:14px}
 .cl-co-name{color:#888;font-size:11px;margin-top:1px}
 
-/* Top pairs within cluster */
-.cl-pairs-label{font-size:11px;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.cl-pairs{display:flex;flex-direction:column;gap:4px}
-.cl-pair{display:flex;align-items:center;gap:8px;padding:5px 8px;background:#111;border-radius:4px;font-size:12px}
-.cl-pair-syms{color:#d4a647;font-family:monospace;font-weight:700;min-width:100px}
-.cl-pair-bar-wrap{flex:1;height:5px;background:#1a1a2e;border-radius:2px;overflow:hidden}
-.cl-pair-bar{height:100%;border-radius:2px}
-.cl-pair-val{color:#e8e0d0;font-family:monospace;font-weight:600;min-width:36px;text-align:right}
+/* Keywords row */
 .cl-kws{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
 .cl-kw{background:#1e1e2a;border:1px solid #2a2a3e;color:#aaa;font-size:11px;padding:2px 8px;border-radius:8px}
 
 /* Section header */
-.section-hdr{font-size:12px;color:#555;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin:20px 0 10px}
-
-/* Loose pair row */
-.loose-pair{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0d0d14;border:1px solid #1e1e2e;border-radius:6px;margin-bottom:6px}
-.lp-syms{display:flex;gap:8px;align-items:center;min-width:160px}
-.lp-sym{color:#d4a647;font-weight:700;font-family:monospace;font-size:14px;cursor:pointer}
-.lp-sym:hover{text-decoration:underline}
-.lp-arrow{color:#555;font-size:12px}
-.lp-names{flex:1;min-width:0}
-.lp-name{font-size:12px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lp-corr-wrap{display:flex;align-items:center;gap:6px;min-width:100px}
-.lp-corr-bar{height:5px;border-radius:2px;min-width:40px}
-.lp-corr-val{font-size:12px;font-family:monospace;font-weight:700}
+.section-hdr{font-size:12px;color:#555;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #111}
+.section-hdr-lg{font-size:14px;color:#888;font-weight:700;margin:28px 0 10px;display:flex;align-items:center;gap:8px}
+.section-hdr-lg span{font-size:12px;color:#555;font-weight:400}
 
 /* Loading / empty */
 .loading{text-align:center;padding:60px 20px;color:#555}
@@ -165,7 +158,7 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
     <a href="/" class="back-btn">← 返回首頁</a>
     <div>
       <div class="page-title">美股關鍵字資料庫</div>
-      <div class="page-subtitle">US Stocks Business Keywords &amp; Correlation</div>
+      <div class="page-subtitle">US Stocks Business Keywords &amp; Correlation Clusters</div>
     </div>
   </div>
 
@@ -198,7 +191,13 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
       </div>
       <span style="font-size:12px;color:#555">輸入代號找出所屬群組及所有高相關同業</span>
     </div>
-    <div class="corr-info" id="corr-info"></div>
+    <div class="thresh-bar">
+      <span class="thresh-label">相關系數閾值：</span>
+      <button class="thresh-btn active" data-t="0.8" onclick="setThresh('0.8')">0.80 高度相關</button>
+      <button class="thresh-btn" data-t="0.7" onclick="setThresh('0.7')">0.70 中度相關</button>
+      <button class="thresh-btn" data-t="0.6" onclick="setThresh('0.6')">0.60 廣泛相關</button>
+      <span class="thresh-info" id="thresh-info"></span>
+    </div>
     <div class="corr-body" id="corr-body">
       <div class="loading"><div class="spinner"></div>載入群組資料…</div>
     </div>
@@ -235,8 +234,9 @@ if (sessionStorage.getItem(SESSION_KEY) === "1") {
 // ── State ─────────────────────────────────────────────────
 let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {};
 let currentTab = "kw2co", kwSearchTimer = null;
-let CLUSTERS = [], LOOSE_PAIRS = [], SYM_TO_CLUSTER = {};
+let CORR_DATA = null;
 let corrLoaded = false, corrSearchQ = "";
+let currentThresh = "0.8";
 
 // ── Init ──────────────────────────────────────────────────
 async function initApp() {
@@ -292,20 +292,40 @@ function switchTab(tab) {
 // ── Load correlation clusters ────────────────────────────
 async function loadCorrData() {
   try {
-    const r = await fetch("us_corr_clusters.json");
-    const data = await r.json();
-    CLUSTERS = data.clusters;
-    LOOSE_PAIRS = data.loose_pairs || [];
-    SYM_TO_CLUSTER = data.sym_to_cluster || {};
+    const r = await fetch("us_corr_clusters_v2.json");
+    CORR_DATA = await r.json();
     corrLoaded = true;
-    document.getElementById("corr-info").innerHTML =
-      `共 <b>${data.n_clusters}</b> 個相關群組（Complete-linkage，組內每對均 ≥ ${data.thresh_cluster}）` +
-      `，涵蓋 ${data.n_pairs.toLocaleString()} 對配對（60日 Pearson，顯示閾值 ≥ ${data.thresh_display}）`;
-    renderCorrAll("");
+    updateThreshInfo();
+    renderCorrView();
   } catch(e) {
     document.getElementById("corr-body").innerHTML =
       `<div class="empty" style="color:#ef5350">載入失敗: ${e.message}</div>`;
   }
+}
+
+// ── Threshold switching ───────────────────────────────────
+function setThresh(t) {
+  currentThresh = t;
+  document.querySelectorAll(".thresh-btn").forEach(b => b.classList.toggle("active", b.dataset.t === t));
+  if (!corrLoaded) return;
+  updateThreshInfo();
+  if (corrSearchQ) renderCorrSearch(corrSearchQ);
+  else renderCorrView();
+}
+
+function updateThreshInfo() {
+  if (!CORR_DATA) return;
+  const tData = CORR_DATA.by_thresh[currentThresh];
+  const ug = CORR_DATA.unclustered_groups || [];
+  const nPairs = currentThresh === "0.8" ? CORR_DATA.n_pairs_80
+               : currentThresh === "0.7" ? CORR_DATA.n_pairs_70
+               : CORR_DATA.n_pairs_60;
+  document.getElementById("thresh-info").textContent =
+    `${tData.n_clusters} 個群組，涵蓋 ${countClustered(tData)} 間股票，另有 ${CORR_DATA.n_unclustered || ug.reduce((s,g)=>s+g.n,0)} 間未分群（按行業歸組）`;
+}
+
+function countClustered(tData) {
+  return tData.clusters.reduce((s, c) => s + c.n, 0);
 }
 
 // ── Corr search ───────────────────────────────────────────
@@ -314,84 +334,95 @@ function onCorrSearch(val) {
   document.getElementById("cs-clear").classList.toggle("visible", corrSearchQ.length > 0);
   if (!corrLoaded) return;
   if (corrSearchQ) renderCorrSearch(corrSearchQ);
-  else renderCorrAll("");
+  else renderCorrView();
 }
 
 function clearCorrSearch() {
   document.getElementById("corr-search").value = "";
   document.getElementById("cs-clear").classList.remove("visible");
   corrSearchQ = "";
-  renderCorrAll("");
+  if (corrLoaded) renderCorrView();
 }
 
-// Render: search a symbol/name → show its cluster + highlight company
+// ── Render all (default) ──────────────────────────────────
+function renderCorrView() {
+  const tData = CORR_DATA.by_thresh[currentThresh];
+  const clusters = tData.clusters;
+  const ug = CORR_DATA.unclustered_groups || [];
+
+  let html = `<div class="section-hdr">已分群股票 — ${clusters.length} 個群組，每對相關系數 ≥ ${currentThresh}</div>`;
+  for (const cl of clusters) html += renderClusterCard(cl, new Set(), false);
+
+  if (ug.length) {
+    html += `<div class="section-hdr-lg">未分群股票（行業分組）<span>— 與其他股票相關系數均 &lt; 0.60，按行業歸組</span></div>`;
+    for (const g of ug) html += renderSectorGroupCard(g, new Set());
+  }
+
+  document.getElementById("corr-body").innerHTML = html;
+}
+
+// ── Render search result ──────────────────────────────────
 function renderCorrSearch(q) {
+  const tData = CORR_DATA.by_thresh[currentThresh];
+  const clusters = tData.clusters;
+  const symToCluster = tData.sym_to_cluster || {};
+  const ug = CORR_DATA.unclustered_groups || [];
   const ql = q.toLowerCase();
-  // Find matching symbols
+
   const matchSyms = new Set();
-  for (const cl of CLUSTERS) {
+  // Search in clusters
+  for (const cl of clusters) {
     for (const co of cl.companies) {
       if (co.s.toLowerCase().includes(ql) || co.n.toLowerCase().includes(ql))
         matchSyms.add(co.s);
     }
   }
-  // Also check loose pairs
-  for (const p of LOOSE_PAIRS) {
-    if (p.sa.toLowerCase().includes(ql) || p.na.toLowerCase().includes(ql)) matchSyms.add(p.sa);
-    if (p.sb.toLowerCase().includes(ql) || p.nb.toLowerCase().includes(ql)) matchSyms.add(p.sb);
+  // Search in unclustered groups
+  let matchUg = [];
+  for (const g of ug) {
+    const found = g.companies.filter(co => co.s.toLowerCase().includes(ql) || co.n.toLowerCase().includes(ql));
+    if (found.length) matchUg.push({ g, found });
   }
 
-  if (!matchSyms.size) {
+  if (!matchSyms.size && !matchUg.length) {
     document.getElementById("corr-body").innerHTML = `<div class="empty">找不到「${escHtml(q)}」</div>`;
     return;
   }
 
-  // Which clusters contain these symbols?
-  const clusterIdxs = new Set();
+  // Find distinct clusters containing matched symbols
+  const clusterIds = new Set();
   for (const s of matchSyms) {
-    const cid = SYM_TO_CLUSTER[s];
-    if (cid !== undefined) {
-      const idx = CLUSTERS.findIndex(c => c.id === cid);
-      if (idx >= 0) clusterIdxs.add(idx);
-    }
+    const cid = symToCluster[s];
+    if (cid !== undefined) clusterIds.add(cid);
   }
-
-  // Loose pairs involving matched symbols
-  const matchLoose = LOOSE_PAIRS.filter(
-    p => matchSyms.has(p.sa) || matchSyms.has(p.sb)
-  ).slice(0, 30);
 
   let html = "";
-  if (clusterIdxs.size) {
-    html += `<div class="section-hdr">所屬群組（${clusterIdxs.size} 個）</div>`;
-    for (const idx of clusterIdxs) {
-      html += renderClusterCard(CLUSTERS[idx], matchSyms, true);
+  if (clusterIds.size) {
+    html += `<div class="section-hdr">所屬群組（${clusterIds.size} 個）</div>`;
+    for (const cid of clusterIds) {
+      const cl = clusters.find(c => c.id === cid);
+      if (cl) { html += renderClusterCard(cl, matchSyms, true); }
     }
   }
-  if (matchLoose.length) {
-    html += `<div class="section-hdr">其他高相關配對</div>`;
-    for (const p of matchLoose) html += renderLoosePair(p, matchSyms);
+  if (matchUg.length) {
+    html += `<div class="section-hdr">行業分組（未分群）</div>`;
+    for (const { g, found } of matchUg) {
+      const foundSyms = new Set(found.map(c => c.s));
+      html += renderSectorGroupCard(g, foundSyms, true);
+    }
   }
 
   document.getElementById("corr-body").innerHTML = html || `<div class="empty">無群組記錄</div>`;
-  // Auto-open matched clusters
-  clusterIdxs.forEach(idx => openCluster(CLUSTERS[idx].id));
+  clusterIds.forEach(cid => openCluster("cl-" + cid));
+  matchUg.forEach(({ g }) => openCluster("sg-" + g.sec.replace(/\s+/g, "_")));
 }
 
-// Render all clusters (default view)
-function renderCorrAll() {
-  let html = `<div class="section-hdr">群組列表（按規模排序，共 ${CLUSTERS.length} 個）</div>`;
-  for (const cl of CLUSTERS) html += renderClusterCard(cl, new Set(), false);
-  if (LOOSE_PAIRS.length) {
-    html += `<div class="section-hdr" style="margin-top:24px">散對（未歸群，顯示前 ${LOOSE_PAIRS.length} 對）</div>`;
-    for (const p of LOOSE_PAIRS) html += renderLoosePair(p, new Set());
-  }
-  document.getElementById("corr-body").innerHTML = html;
-}
-
+// ── Render cluster card ───────────────────────────────────
 function renderClusterCard(cl, highlightSyms, autoOpen) {
   const isHighlighted = cl.companies.some(c => highlightSyms.has(c.s));
-  const corrColor = cl.avg_corr >= 0.90 ? "#4caf50" : cl.avg_corr >= 0.85 ? "#8bc34a" : "#d4a647";
+  const desc = cl.desc || {};
+  const descEn = desc.en || "";
+  const descZh = desc.zh || "";
 
   const cosHtml = cl.companies.map(co => {
     const isTarget = highlightSyms.has(co.s);
@@ -401,51 +432,49 @@ function renderClusterCard(cl, highlightSyms, autoOpen) {
     </div>`;
   }).join("");
 
-  const topPairs = (cl.pairs || []).slice(0, 8);
-  const pairsHtml = topPairs.map(p => {
-    const barPct = Math.round((p.corr - 0.5) / 0.5 * 100);
-    const col = p.corr >= 0.90 ? "#4caf50" : p.corr >= 0.85 ? "#8bc34a" : "#d4a647";
-    return `<div class="cl-pair">
-      <span class="cl-pair-syms">${escHtml(p.sa)} ↔ ${escHtml(p.sb)}</span>
-      <div class="cl-pair-bar-wrap"><div class="cl-pair-bar" style="width:${barPct}%;background:${col}"></div></div>
-    </div>`;
-  }).join("");
-
   const kwsHtml = (cl.top_kws || []).map(k => `<span class="cl-kw">${escHtml(k)}</span>`).join("");
 
-  return `<div class="cl-card ${isHighlighted ? "highlighted" : ""}" id="cl-${cl.id}">
-    <div class="cl-head" onclick="toggleCluster(${cl.id})">
+  const cardId = "cl-" + cl.id;
+  return `<div class="cl-card ${isHighlighted ? "highlighted" : ""}" id="${cardId}">
+    <div class="cl-head" onclick="toggleCluster('${cardId}')">
       <span class="cl-badge">${cl.n} 間</span>
-      <div>
+      <div class="cl-title-wrap">
         <div class="cl-title">${escHtml(cl.top_sec || "多行業")}</div>
-        <div class="cl-meta">
-          ${cl.top_kws && cl.top_kws.length ? `<span>主題：${escHtml(cl.top_kws.slice(0,2).join("、"))}</span>` : ""}
-        </div>
+        ${descEn ? `<div class="cl-desc-en">${escHtml(descEn)}</div>` : ""}
+        ${descZh ? `<div class="cl-desc-zh">${escHtml(descZh)}</div>` : ""}
       </div>
       <span class="cl-chevron">▼</span>
     </div>
     <div class="cl-body">
       <div class="cl-companies">${cosHtml}</div>
-      ${topPairs.length ? `<div class="cl-pairs-label">最強配對（點擊代號查看關鍵字）</div><div class="cl-pairs">${pairsHtml}</div>` : ""}
       ${kwsHtml ? `<div class="cl-kws">${kwsHtml}</div>` : ""}
     </div>
   </div>`;
 }
 
-function renderLoosePair(p, highlightSyms) {
-  const col = p.corr >= 0.90 ? "#4caf50" : p.corr >= 0.85 ? "#8bc34a" : "#d4a647";
-  const barPct = Math.round((p.corr - 0.5) / 0.5 * 100);
-  return `<div class="loose-pair">
-    <div class="lp-syms">
-      <span class="lp-sym ${highlightSyms.has(p.sa) ? "target" : ""}" onclick="jumpToCompany('${escHtml(p.sa)}')">${escHtml(p.sa)}</span>
-      <span class="lp-arrow">↔</span>
-      <span class="lp-sym ${highlightSyms.has(p.sb) ? "target" : ""}" onclick="jumpToCompany('${escHtml(p.sb)}')">${escHtml(p.sb)}</span>
+// ── Render sector group card (unclustered) ────────────────
+function renderSectorGroupCard(g, highlightSyms, autoOpen) {
+  const cardId = "sg-" + g.sec.replace(/\s+/g, "_");
+  const cosHtml = g.companies.map(co => {
+    const isTarget = highlightSyms.has(co.s);
+    return `<div class="cl-co ${isTarget ? "target" : ""}" onclick="jumpToCompany('${escHtml(co.s)}')">
+      <div class="cl-co-sym">${escHtml(co.s)}</div>
+      <div class="cl-co-name">${escHtml(co.n.length > 18 ? co.n.slice(0,18)+"…" : co.n)}</div>
+    </div>`;
+  }).join("");
+
+  return `<div class="cl-card sector-card" id="${cardId}">
+    <div class="cl-head" onclick="toggleCluster('${cardId}')">
+      <span class="cl-badge sector-badge">${g.n} 間</span>
+      <div class="cl-title-wrap">
+        <div class="cl-title">${escHtml(g.sec)}</div>
+        <div class="cl-desc-en">Stocks in this sector with no strong price co-movement cluster (correlation &lt; 0.60 with peers)</div>
+        <div class="cl-desc-zh">此行業內與其他股票相關系數均低於 0.60，未能歸入相關群組</div>
+      </div>
+      <span class="cl-chevron">▼</span>
     </div>
-    <div class="lp-names">
-      <div class="lp-name">${escHtml(p.na || "")} / ${escHtml(p.nb || "")}</div>
-    </div>
-    <div class="lp-corr-wrap">
-      <div class="lp-corr-bar" style="background:${col};width:${barPct}px;height:5px;border-radius:2px"></div>
+    <div class="cl-body">
+      <div class="cl-companies">${cosHtml}</div>
     </div>
   </div>`;
 }
@@ -453,13 +482,13 @@ function renderLoosePair(p, highlightSyms) {
 // Toggle cluster open/close
 const openClusters = new Set();
 function toggleCluster(id) {
-  const el = document.getElementById("cl-" + id);
+  const el = document.getElementById(id);
   if (!el) return;
   if (openClusters.has(id)) { openClusters.delete(id); el.classList.remove("open"); }
   else { openClusters.add(id); el.classList.add("open"); }
 }
 function openCluster(id) {
-  const el = document.getElementById("cl-" + id);
+  const el = document.getElementById(id);
   if (el && !openClusters.has(id)) { openClusters.add(id); el.classList.add("open"); }
 }
 
