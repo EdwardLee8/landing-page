@@ -91,11 +91,18 @@ a:hover{text-decoration:underline}
 
 /* Threshold toggle */
 .thresh-bar{padding:10px 24px;background:#080808;border-bottom:1px solid #111;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.thresh-label{font-size:12px;color:#666;margin-right:4px}
+.thresh-label{font-size:12px;color:#666;margin-right:4px;white-space:nowrap}
 .thresh-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#888;padding:5px 14px;border-radius:4px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s}
 .thresh-btn:hover{border-color:#d4a64766;color:#bbb}
 .thresh-btn.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
 .thresh-info{font-size:12px;color:#555;margin-left:4px}
+
+/* Sector filter */
+.sector-bar{padding:10px 24px;background:#080808;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sec-btn{background:transparent;border:1px solid #252535;color:#666;padding:4px 12px;border-radius:14px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s;white-space:nowrap}
+.sec-btn:hover{border-color:#555;color:#aaa}
+.sec-btn.active{background:#1a1a2e;border-color:#d4a647;color:#d4a647}
+.sec-count{font-size:10px;color:#555;margin-left:3px}
 
 .corr-body{padding:16px 24px 40px}
 
@@ -201,6 +208,7 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
       <button class="thresh-btn" data-t="0.6" onclick="setThresh('0.6')">0.60 廣泛相關</button>
       <span class="thresh-info" id="thresh-info"></span>
     </div>
+    <div class="sector-bar" id="sector-bar"></div>
     <div class="corr-body" id="corr-body">
       <div class="loading"><div class="spinner"></div>載入群組資料…</div>
     </div>
@@ -240,6 +248,7 @@ let currentTab = "kw2co", kwSearchTimer = null;
 let CORR_DATA = null;
 let corrLoaded = false, corrSearchQ = "";
 let currentThresh = "0.8";
+let currentSector = "";
 
 // ── Init ──────────────────────────────────────────────────
 async function initApp() {
@@ -299,6 +308,7 @@ async function loadCorrData() {
     CORR_DATA = await r.json();
     corrLoaded = true;
     updateThreshInfo();
+    buildSectorBar();
     renderCorrView();
   } catch(e) {
     document.getElementById("corr-body").innerHTML =
@@ -306,12 +316,39 @@ async function loadCorrData() {
   }
 }
 
+// ── Sector filter bar ────────────────────────────────────
+function buildSectorBar() {
+  const tData = CORR_DATA.by_thresh[currentThresh];
+  const count = {};
+  for (const cl of tData.clusters) {
+    const s = cl.top_sec || "Other";
+    count[s] = (count[s] || 0) + 1;
+  }
+  const sectors = Object.keys(count).sort();
+  const total = tData.clusters.length;
+
+  let html = `<button class="sec-btn active" data-sec="" onclick="setSector('')">全部<span class="sec-count">${total}</span></button>`;
+  for (const s of sectors) {
+    html += `<button class="sec-btn" data-sec="${escHtml(s)}" onclick="setSector('${escHtml(s)}')">${escHtml(s)}<span class="sec-count">${count[s]}</span></button>`;
+  }
+  document.getElementById("sector-bar").innerHTML = html;
+}
+
+function setSector(sec) {
+  currentSector = sec;
+  document.querySelectorAll(".sec-btn").forEach(b => b.classList.toggle("active", b.dataset.sec === sec));
+  if (corrSearchQ) renderCorrSearch(corrSearchQ);
+  else renderCorrView();
+}
+
 // ── Threshold switching ───────────────────────────────────
 function setThresh(t) {
   currentThresh = t;
+  currentSector = "";
   document.querySelectorAll(".thresh-btn").forEach(b => b.classList.toggle("active", b.dataset.t === t));
   if (!corrLoaded) return;
   updateThreshInfo();
+  buildSectorBar();
   if (corrSearchQ) renderCorrSearch(corrSearchQ);
   else renderCorrView();
 }
@@ -392,20 +429,29 @@ function buildSubLabels(clusters) {
 function renderCorrView() {
   const tData = CORR_DATA.by_thresh[currentThresh];
   // Sort clusters by sector name then by size (desc)
-  const clusters = [...tData.clusters].sort((a, b) => {
+  const allClusters = [...tData.clusters].sort((a, b) => {
     const sa = (a.top_sec || "").localeCompare(b.top_sec || "");
     return sa !== 0 ? sa : b.n - a.n;
   });
-  const subLabels = buildSubLabels(clusters);
-  const ug = CORR_DATA.unclustered_groups || [];
+  // Build sub-labels from ALL clusters (so disambiguation is consistent)
+  const subLabels = buildSubLabels(allClusters);
+  // Apply sector filter
+  const clusters = currentSector
+    ? allClusters.filter(cl => (cl.top_sec || "") === currentSector)
+    : allClusters;
 
-  let html = `<div class="section-hdr">已分群股票 — ${clusters.length} 個群組，每對相關系數 ≥ ${currentThresh}</div>`;
+  const ug = CORR_DATA.unclustered_groups || [];
+  const ugFiltered = currentSector
+    ? ug.filter(g => (g.sec || "") === currentSector)
+    : [...ug].sort((a, b) => (a.sec || "").localeCompare(b.sec || ""));
+
+  const showingAll = !currentSector;
+  let html = `<div class="section-hdr">已分群股票 — 顯示 ${clusters.length} 個群組${currentSector ? `（${currentSector}）` : ""}，每對相關系數 ≥ ${currentThresh}</div>`;
   for (const cl of clusters) html += renderClusterCard(cl, new Set(), false, subLabels[cl.id]);
 
-  if (ug.length) {
-    const sortedUg = [...ug].sort((a, b) => (a.sec || "").localeCompare(b.sec || ""));
+  if (ugFiltered.length) {
     html += `<div class="section-hdr-lg">未分群股票（行業分組）<span>— 與其他股票相關系數均 &lt; 0.60，按行業歸組</span></div>`;
-    for (const g of sortedUg) html += renderSectorGroupCard(g, new Set());
+    for (const g of ugFiltered) html += renderSectorGroupCard(g, new Set());
   }
 
   document.getElementById("corr-body").innerHTML = html;
@@ -414,9 +460,16 @@ function renderCorrView() {
 // ── Render search result ──────────────────────────────────
 function renderCorrSearch(q) {
   const tData = CORR_DATA.by_thresh[currentThresh];
-  const clusters = tData.clusters;
+  const allClusters = tData.clusters;
+  const subLabels = buildSubLabels(allClusters);
+  // Apply sector filter then search
+  const clusters = currentSector
+    ? allClusters.filter(cl => (cl.top_sec || "") === currentSector)
+    : allClusters;
   const symToCluster = tData.sym_to_cluster || {};
-  const ug = CORR_DATA.unclustered_groups || [];
+  const ug = currentSector
+    ? (CORR_DATA.unclustered_groups || []).filter(g => (g.sec || "") === currentSector)
+    : (CORR_DATA.unclustered_groups || []);
   const ql = q.toLowerCase();
 
   const matchSyms = new Set();
@@ -446,13 +499,12 @@ function renderCorrSearch(q) {
     if (cid !== undefined) clusterIds.add(cid);
   }
 
-  const subLabels = buildSubLabels(clusters);
   let html = "";
   if (clusterIds.size) {
     html += `<div class="section-hdr">所屬群組（${clusterIds.size} 個）</div>`;
     for (const cid of clusterIds) {
       const cl = clusters.find(c => c.id === cid);
-      if (cl) { html += renderClusterCard(cl, matchSyms, true, subLabels[cl.id]); }
+      if (cl) { html += renderClusterCard(cl, matchSyms, true, subLabels[cid]); }
     }
   }
   if (matchUg.length) {
