@@ -106,25 +106,26 @@ a:hover{text-decoration:underline}
 .cl-badge{background:#d4a64720;border:1px solid #d4a64744;color:#d4a647;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap;flex-shrink:0;margin-top:2px}
 .cl-badge.sector-badge{background:#1e1e2a;border-color:#3a3a4e;color:#8bc34a}
 .cl-title-wrap{flex:1;min-width:0}
-.cl-title{font-size:15px;font-weight:700;color:#fff}
-.cl-desc-en{font-size:12px;color:#aaa;margin-top:3px;line-height:1.5}
-.cl-desc-zh{font-size:12px;color:#888;margin-top:2px;line-height:1.5}
-.cl-chevron{color:#555;font-size:14px;transition:transform .2s;margin-left:auto;flex-shrink:0;margin-top:2px}
+.cl-title{font-size:15px;font-weight:700;color:#fff;line-height:1.4}
+.cl-subsec{font-size:12px;color:#d4a64799;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.cl-desc-en{font-size:14px;color:#c8c0b0;margin-top:6px;line-height:1.6}
+.cl-desc-zh{font-size:14px;color:#a09888;margin-top:4px;line-height:1.6}
+.cl-chevron{color:#555;font-size:14px;transition:transform .2s;margin-left:auto;flex-shrink:0;margin-top:3px}
 .cl-card.open .cl-chevron{transform:rotate(180deg)}
-.cl-body{display:none;border-top:1px solid #1a1a2e;padding:14px 16px}
+.cl-body{display:none;border-top:1px solid #1a1a2e;padding:16px 18px}
 .cl-card.open .cl-body{display:block}
 
 /* Companies in cluster */
-.cl-companies{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-.cl-co{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:6px;padding:7px 12px;cursor:pointer;transition:all .2s;min-width:90px}
+.cl-companies{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.cl-co{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:6px;padding:8px 13px;cursor:pointer;transition:all .2s;min-width:96px}
 .cl-co:hover{border-color:#d4a647;background:#d4a64714}
 .cl-co.target{border-color:#d4a647;background:#d4a64720}
 .cl-co-sym{color:#d4a647;font-weight:700;font-family:monospace;font-size:14px}
-.cl-co-name{color:#888;font-size:11px;margin-top:1px}
+.cl-co-name{color:#888;font-size:12px;margin-top:2px}
 
 /* Keywords row */
-.cl-kws{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
-.cl-kw{background:#1e1e2a;border:1px solid #2a2a3e;color:#aaa;font-size:11px;padding:2px 8px;border-radius:8px}
+.cl-kws{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.cl-kw{background:#1e1e2a;border:1px solid #2a2a3e;color:#aaa;font-size:12px;padding:3px 10px;border-radius:8px}
 
 /* Section header */
 .section-hdr{font-size:12px;color:#555;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #111}
@@ -347,15 +348,20 @@ function clearCorrSearch() {
 // ── Render all (default) ──────────────────────────────────
 function renderCorrView() {
   const tData = CORR_DATA.by_thresh[currentThresh];
-  const clusters = tData.clusters;
+  // Sort clusters by sector name then by size (desc)
+  const clusters = [...tData.clusters].sort((a, b) => {
+    const sa = (a.top_sec || "").localeCompare(b.top_sec || "");
+    return sa !== 0 ? sa : b.n - a.n;
+  });
   const ug = CORR_DATA.unclustered_groups || [];
 
   let html = `<div class="section-hdr">已分群股票 — ${clusters.length} 個群組，每對相關系數 ≥ ${currentThresh}</div>`;
   for (const cl of clusters) html += renderClusterCard(cl, new Set(), false);
 
   if (ug.length) {
+    const sortedUg = [...ug].sort((a, b) => (a.sec || "").localeCompare(b.sec || ""));
     html += `<div class="section-hdr-lg">未分群股票（行業分組）<span>— 與其他股票相關系數均 &lt; 0.60，按行業歸組</span></div>`;
-    for (const g of ug) html += renderSectorGroupCard(g, new Set());
+    for (const g of sortedUg) html += renderSectorGroupCard(g, new Set());
   }
 
   document.getElementById("corr-body").innerHTML = html;
@@ -424,22 +430,27 @@ function renderClusterCard(cl, highlightSyms, autoOpen) {
   const descEn = desc.en || "";
   const descZh = desc.zh || "";
 
+  // Sub-sector from first keyword (title-case)
+  const kws = cl.top_kws || [];
+  const subSec = kws.length ? kws[0].replace(/\b\w/g, c => c.toUpperCase()) : "";
+  const secLabel = cl.top_sec || "多行業";
+
   const cosHtml = cl.companies.map(co => {
     const isTarget = highlightSyms.has(co.s);
     return `<div class="cl-co ${isTarget ? "target" : ""}" onclick="jumpToCompany('${escHtml(co.s)}')">
       <div class="cl-co-sym">${escHtml(co.s)}</div>
-      <div class="cl-co-name">${escHtml(co.n.length > 18 ? co.n.slice(0,18)+"…" : co.n)}</div>
+      <div class="cl-co-name">${escHtml(co.n.length > 20 ? co.n.slice(0,20)+"…" : co.n)}</div>
     </div>`;
   }).join("");
 
-  const kwsHtml = (cl.top_kws || []).map(k => `<span class="cl-kw">${escHtml(k)}</span>`).join("");
+  const kwsHtml = kws.slice(1).map(k => `<span class="cl-kw">${escHtml(k)}</span>`).join("");
 
   const cardId = "cl-" + cl.id;
   return `<div class="cl-card ${isHighlighted ? "highlighted" : ""}" id="${cardId}">
     <div class="cl-head" onclick="toggleCluster('${cardId}')">
       <span class="cl-badge">${cl.n} 間</span>
       <div class="cl-title-wrap">
-        <div class="cl-title">${escHtml(cl.top_sec || "多行業")}</div>
+        <div class="cl-title">${escHtml(secLabel)}${subSec ? ` <span style="color:#d4a64799;font-weight:400;font-size:13px">— ${escHtml(subSec)}</span>` : ""}</div>
         ${descEn ? `<div class="cl-desc-en">${escHtml(descEn)}</div>` : ""}
         ${descZh ? `<div class="cl-desc-zh">${escHtml(descZh)}</div>` : ""}
       </div>
