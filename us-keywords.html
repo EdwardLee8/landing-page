@@ -347,27 +347,43 @@ function clearCorrSearch() {
   if (corrLoaded) renderCorrView();
 }
 
-// ── Build unique sub-sector labels (avoid duplicate "Sector — Kw1" titles) ──
+// ── Build unique sub-sector labels — multi-level disambiguation ──
 function buildSubLabels(clusters) {
-  // Count occurrences of (sec, kw0) pairs
-  const count = {};
-  for (const cl of clusters) {
-    const kw0 = (cl.top_kws || [])[0] || "";
-    const key = `${cl.top_sec || ""}|${kw0}`;
-    count[key] = (count[key] || 0) + 1;
-  }
-  // Assign unique sub-label per cluster
+  const tc = s => s.replace(/\b\w/g, c => c.toUpperCase());
+
+  // For each cluster, try using kws[0..n] until the (sec, kws[0..n]) combo is unique
+  // Falls back to appending cluster id if keywords are exhausted
   const labels = {};
-  for (const cl of clusters) {
-    const kws = cl.top_kws || [];
-    const kw0 = kws[0] || "";
-    const key = `${cl.top_sec || ""}|${kw0}`;
-    let sub = kw0 ? kw0.replace(/\b\w/g, c => c.toUpperCase()) : "";
-    if (count[key] > 1 && kws[1]) {
-      // Disambiguate with second keyword
-      sub += " · " + kws[1].replace(/\b\w/g, c => c.toUpperCase());
+
+  // Try depth 1 first, then expand for groups that remain duplicate
+  for (let depth = 1; depth <= 5; depth++) {
+    // Build keys at current depth
+    const keyOf = cl => {
+      const kws = cl.top_kws || [];
+      return (cl.top_sec || "") + "|" + kws.slice(0, depth).join("|");
+    };
+    const count = {};
+    for (const cl of clusters) {
+      const k = keyOf(cl);
+      count[k] = (count[k] || 0) + 1;
     }
-    labels[cl.id] = sub;
+    for (const cl of clusters) {
+      if (labels[cl.id] !== undefined) continue; // already resolved
+      const kws = cl.top_kws || [];
+      if (count[keyOf(cl)] === 1 || depth === 5) {
+        // Unique at this depth → assign label using kws[0..depth-1]
+        const parts = kws.slice(0, depth).filter(Boolean);
+        labels[cl.id] = parts.map(tc).join(" · ");
+      }
+      // else: still duplicate, will try deeper next iteration
+    }
+  }
+  // Final fallback: any still unresolved gets id suffix
+  for (const cl of clusters) {
+    if (labels[cl.id] === undefined || labels[cl.id] === "") {
+      const kws = cl.top_kws || [];
+      labels[cl.id] = (kws[0] ? tc(kws[0]) : (cl.top_sec || "")) + ` #${cl.id}`;
+    }
   }
   return labels;
 }
@@ -474,8 +490,8 @@ function renderClusterCard(cl, highlightSyms, autoOpen, subLabel) {
     </div>`;
   }).join("");
 
-  // Show remaining keywords (skip first 1 or 2 already shown in sub-label)
-  const skipN = subSec && subSec.includes(" · ") ? 2 : subSec ? 1 : 0;
+  // Skip keywords already shown in sub-label (count " · " separators + 1)
+  const skipN = subSec ? (subSec.split(" · ").length) : 0;
   const kwsHtml = kws.slice(skipN).map(k => `<span class="cl-kw">${escHtml(k)}</span>`).join("");
 
   const cardId = "cl-" + cl.id;
