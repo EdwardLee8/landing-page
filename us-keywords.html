@@ -408,7 +408,6 @@ function renderClusterCard(cl, highlightSyms, autoOpen) {
     return `<div class="cl-pair">
       <span class="cl-pair-syms">${escHtml(p.sa)} ↔ ${escHtml(p.sb)}</span>
       <div class="cl-pair-bar-wrap"><div class="cl-pair-bar" style="width:${barPct}%;background:${col}"></div></div>
-      <span class="cl-pair-val" style="color:${col}">${p.corr.toFixed(3)}</span>
     </div>`;
   }).join("");
 
@@ -420,8 +419,6 @@ function renderClusterCard(cl, highlightSyms, autoOpen) {
       <div>
         <div class="cl-title">${escHtml(cl.top_sec || "多行業")}</div>
         <div class="cl-meta">
-          <span>平均：<span class="cl-corr-avg" style="color:${corrColor}">${cl.avg_corr.toFixed(3)}</span></span>
-          <span>最低：<span style="color:${cl.min_corr>=0.85?'#4caf50':cl.min_corr>=0.80?'#8bc34a':'#d4a647'}">${(cl.min_corr||0).toFixed(3)}</span></span>
           ${cl.top_kws && cl.top_kws.length ? `<span>主題：${escHtml(cl.top_kws.slice(0,2).join("、"))}</span>` : ""}
         </div>
       </div>
@@ -449,7 +446,6 @@ function renderLoosePair(p, highlightSyms) {
     </div>
     <div class="lp-corr-wrap">
       <div class="lp-corr-bar" style="background:${col};width:${barPct}px;height:5px;border-radius:2px"></div>
-      <span class="lp-corr-val" style="color:${col}">${p.corr.toFixed(3)}</span>
     </div>
   </div>`;
 }
