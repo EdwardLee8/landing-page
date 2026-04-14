@@ -35,9 +35,13 @@ a:hover{text-decoration:underline}
 
 /* ── Tab bar ── */
 .tab-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:0 24px;display:flex;gap:0}
-.tab{padding:14px 20px;font-size:14px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;user-select:none}
+.tab{padding:14px 20px;font-size:14px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;user-select:none;white-space:nowrap}
 .tab.active{color:#d4a647;border-bottom-color:#d4a647}
 .tab:hover:not(.active){color:#bbb}
+
+/* ── Stats bar ── */
+.stats-bar{padding:8px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:12px;color:#666;display:flex;gap:16px;flex-wrap:wrap}
+.stats-bar b{color:#d4a647}
 
 /* ── Search bar ── */
 .search-wrap{padding:20px 24px;background:#080808;border-bottom:1px solid #111}
@@ -49,12 +53,12 @@ a:hover{text-decoration:underline}
 .search-box .clear-btn.visible{display:block}
 .search-hint{font-size:12px;color:#666;margin-top:8px}
 
-/* ── Results ── */
+/* ── Results (keyword/company tabs) ── */
 .results{padding:0 24px 40px}
 .result-count{font-size:12px;color:#666;padding:12px 0 8px}
 .result-count b{color:#d4a647}
 
-/* Company card (keyword search result) */
+/* Company card */
 .company-card{background:#0d0d14;border:1px solid #1e1e2e;border-radius:6px;padding:14px 16px;margin-bottom:10px;transition:border-color .2s}
 .company-card:hover{border-color:#2a2a3e}
 .company-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
@@ -71,7 +75,7 @@ a:hover{text-decoration:underline}
 .kw-mid{background:#1e1e2a;border:1px solid #5c6bc044}
 .kw-low{background:#1e1e1e;border:1px solid #33333344}
 
-/* Keyword result (company→keyword mode) */
+/* Keyword result */
 .kw-result-card{background:#0d0d14;border:1px solid #1e1e2e;border-radius:6px;padding:16px;margin-bottom:10px}
 .kw-result-header{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
 .kw-result-en{font-size:16px;font-weight:700;color:#fff}
@@ -82,23 +86,65 @@ a:hover{text-decoration:underline}
 .kw-co-item:hover{border-color:#d4a647;background:#d4a64720}
 .kw-co-name{font-size:11px;color:#888;font-family:"Noto Sans TC",sans-serif;font-weight:400;display:block;margin-top:1px}
 
+/* ── Correlation tab ── */
+#corr-panel{display:none;flex-direction:column}
+.corr-filter-bar{padding:14px 24px;background:#080808;border-bottom:1px solid #111;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.corr-filter-bar label{font-size:12px;color:#888;white-space:nowrap}
+.thresh-btns{display:flex;gap:4px}
+.thresh-btn{padding:5px 12px;border-radius:4px;font-size:12px;font-family:inherit;cursor:pointer;border:1px solid #2a2a3e;background:#1a1a2e;color:#aaa;transition:all .2s;font-weight:600}
+.thresh-btn.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
+.corr-search{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:6px 12px;border-radius:4px;font-size:13px;font-family:inherit;outline:none;min-width:200px;transition:border-color .2s}
+.corr-search:focus{border-color:#d4a647}
+.corr-count{font-size:12px;color:#666;padding:8px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e}
+.corr-count b{color:#d4a647}
+
+/* Correlation table */
+.corr-table-wrap{overflow-x:auto;padding-bottom:40px}
+table.corr-tbl{width:100%;border-collapse:collapse;min-width:800px}
+.corr-tbl thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
+.corr-tbl th{padding:10px 14px;text-align:left;font-size:12px;font-weight:700;color:#d4a647;white-space:nowrap;cursor:pointer;user-select:none}
+.corr-tbl th:hover{color:#e8bc5a}
+.corr-tbl th.sort-asc::after{content:" ▲";opacity:.8}
+.corr-tbl th.sort-desc::after{content:" ▼";opacity:.8}
+.corr-tbl th:not(.sort-asc):not(.sort-desc)::after{content:" ⇅";opacity:.3}
+.corr-tbl tbody tr{border-bottom:1px solid #111;transition:background .15s}
+.corr-tbl tbody tr:hover{background:#0d0d14}
+.corr-tbl td{padding:9px 14px;font-size:13px;vertical-align:middle}
+.sym-link{color:#d4a647;font-weight:700;font-family:monospace;cursor:pointer;font-size:14px}
+.sym-link:hover{text-decoration:underline}
+.co-nm{color:#aaa;font-size:12px;margin-top:1px}
+.sector-tag{display:inline-block;padding:2px 7px;border-radius:8px;font-size:11px;color:#888;background:#1a1a2e;border:1px solid #2a2a3e}
+
+/* Correlation bar */
+.corr-cell{display:flex;align-items:center;gap:8px;min-width:110px}
+.corr-bar-wrap{flex:1;height:6px;background:#1a1a2e;border-radius:3px;overflow:hidden}
+.corr-bar{height:100%;border-radius:3px;transition:width .3s}
+.corr-val{font-size:13px;font-weight:700;font-family:monospace;min-width:40px}
+
+/* Keyword overlap cell */
+.kwo-cell{display:flex;align-items:center;gap:6px;min-width:90px}
+.kwo-bar-wrap{flex:1;height:4px;background:#1a1a2e;border-radius:2px;overflow:hidden}
+.kwo-bar{height:100%;border-radius:2px;background:#5c6bc0}
+.kwo-val{font-size:12px;color:#888;min-width:34px}
+
+/* Gap badge */
+.gap-badge{display:inline-block;padding:2px 7px;border-radius:8px;font-size:11px;font-weight:600;background:#1e2a1e;border:1px solid #4caf5022;color:#4caf50}
+
+/* Load more */
+.load-more-btn{display:block;margin:20px auto;padding:10px 32px;background:#1a1a2e;border:1px solid #2a2a3e;color:#aaa;border-radius:6px;font-size:13px;font-family:inherit;cursor:pointer;transition:all .2s}
+.load-more-btn:hover{border-color:#d4a647;color:#d4a647}
+
 /* Loading / empty */
 .loading{text-align:center;padding:60px 20px;color:#555}
 .loading .spinner{width:32px;height:32px;border:2px solid #222;border-top-color:#d4a647;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .empty{text-align:center;padding:60px 20px;color:#555;font-size:14px}
-
-/* Highlight match */
 mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
-
-/* Stats bar */
-.stats-bar{padding:8px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:12px;color:#666;display:flex;gap:16px;flex-wrap:wrap}
-.stats-bar b{color:#d4a647}
 </style>
 </head>
 <body>
 
-<!-- ── Password overlay ───────────────────────────────────── -->
+<!-- ── Password overlay ── -->
 <div id="pw-overlay">
   <div class="pw-box">
     <h2>美股關鍵字資料庫</h2>
@@ -109,52 +155,67 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
   </div>
 </div>
 
-<!-- ── Main app ───────────────────────────────────────────── -->
+<!-- ── Main app ── -->
 <div id="app">
   <div class="page-header">
     <a href="/" class="back-btn">← 返回首頁</a>
     <div>
       <div class="page-title">美股關鍵字資料庫</div>
-      <div class="page-subtitle">US Stocks Business Keywords</div>
+      <div class="page-subtitle">US Stocks Business Keywords &amp; Correlation</div>
     </div>
   </div>
 
   <div class="tab-bar">
     <div class="tab active" data-tab="kw2co" onclick="switchTab('kw2co')">關鍵字 → 公司</div>
     <div class="tab" data-tab="co2kw" onclick="switchTab('co2kw')">公司 → 關鍵字</div>
+    <div class="tab" data-tab="corr" onclick="switchTab('corr')">高相關股票配對</div>
   </div>
 
-  <div class="stats-bar" id="stats-bar">
-    <span>載入中...</span>
-  </div>
+  <div class="stats-bar" id="stats-bar"><span>載入中...</span></div>
 
-  <div class="search-wrap">
-    <div class="search-box">
-      <input type="text" id="search-input" placeholder="搜尋關鍵字（英文或中文）" autocomplete="off" spellcheck="false">
-      <button class="clear-btn" id="clear-btn" title="清除" onclick="clearSearch()">×</button>
+  <!-- ── Keyword / company search panels ── -->
+  <div id="kw-panel">
+    <div class="search-wrap">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="搜尋關鍵字（英文或中文）" autocomplete="off" spellcheck="false">
+        <button class="clear-btn" id="clear-btn" title="清除" onclick="clearSearch()">×</button>
+      </div>
+      <div class="search-hint" id="search-hint">輸入關鍵字，例如：artificial intelligence、人工智能</div>
     </div>
-    <div class="search-hint" id="search-hint">輸入關鍵字，例如：artificial intelligence、人工智能</div>
+    <div class="results" id="results">
+      <div class="empty">請輸入關鍵字開始搜尋</div>
+    </div>
   </div>
 
-  <div class="results" id="results">
-    <div class="empty" id="initial-msg">請輸入關鍵字開始搜尋</div>
+  <!-- ── Correlation table panel ── -->
+  <div id="corr-panel">
+    <div class="corr-filter-bar">
+      <div style="display:flex;align-items:center;gap:8px">
+        <label>最低相關系數：</label>
+        <div class="thresh-btns" id="thresh-btns">
+          <button class="thresh-btn active" data-v="0.75" onclick="setThresh(0.75)">0.75+</button>
+          <button class="thresh-btn" data-v="0.80" onclick="setThresh(0.80)">0.80+</button>
+          <button class="thresh-btn" data-v="0.85" onclick="setThresh(0.85)">0.85+</button>
+          <button class="thresh-btn" data-v="0.90" onclick="setThresh(0.90)">0.90+</button>
+        </div>
+      </div>
+      <input class="corr-search" id="corr-search" placeholder="按代號或公司名稱過濾…" oninput="filterCorr()" autocomplete="off">
+    </div>
+    <div class="corr-count" id="corr-count"></div>
+    <div class="corr-table-wrap" id="corr-table-wrap">
+      <div class="loading"><div class="spinner"></div>載入相關係數資料…</div>
+    </div>
   </div>
 </div>
 
 <script>
-// ── Password gate ─────────────────────────────────────────
-const PW_HASH = "4a8d4c6f2b9e1a3f7c5d0e8b2a4f6c9d1e3b5a7f9c2e4d6a8b0c3f5e7a1d2b4c";
+// ── Password ──────────────────────────────────────────────
 const CORRECT_PW = "US_stock_Key_worD";
 const SESSION_KEY = "us_kw_auth";
 
-function sha256(s) {
-  // Simple check — compare directly (client-side only, not security-critical)
-  return s === CORRECT_PW;
-}
-
 function checkPassword() {
   const val = document.getElementById("pw-input").value;
-  if (sha256(val)) {
+  if (val === CORRECT_PW) {
     sessionStorage.setItem(SESSION_KEY, "1");
     document.getElementById("pw-overlay").style.display = "none";
     document.getElementById("app").style.display = "block";
@@ -165,31 +226,29 @@ function checkPassword() {
     document.getElementById("pw-input").focus();
   }
 }
-
 document.getElementById("pw-submit").addEventListener("click", checkPassword);
 document.getElementById("pw-input").addEventListener("keydown", e => {
   if (e.key === "Enter") checkPassword();
   document.getElementById("pw-error").textContent = "";
 });
-
 if (sessionStorage.getItem(SESSION_KEY) === "1") {
   document.getElementById("pw-overlay").style.display = "none";
   document.getElementById("app").style.display = "block";
   initApp();
 }
 
-// ── App state ─────────────────────────────────────────────
-let DB = [];            // raw JSON array
-let KW_INDEX = {};      // keyword en (lowercase) → {en, zh, companies:[{s,n,sec,w}]}
-let KW_ZH_INDEX = {};   // keyword zh → same entry
-let CO_INDEX = {};      // symbol → {s,n,sec,kws:[{e,z,w}]}
-let currentTab = "kw2co";
-let searchTimer = null;
+// ── State ─────────────────────────────────────────────────
+let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {}, CO_INDEX = {};
+let currentTab = "kw2co", searchTimer = null;
+let CORR_ALL = [], CORR_FILTERED = [], corrLoaded = false;
+let corrThresh = 0.75, corrPage = 0;
+const PAGE_SIZE = 150;
+let corrSortCol = "corr", corrSortAsc = false;
 
+// ── Init ──────────────────────────────────────────────────
 async function initApp() {
   const statsBar = document.getElementById("stats-bar");
-  statsBar.innerHTML = "<span>載入資料中...</span>";
-
+  statsBar.innerHTML = "<span>載入關鍵字資料中…</span>";
   try {
     const resp = await fetch("us_keywords_export.json");
     if (!resp.ok) throw new Error("HTTP " + resp.status);
@@ -198,8 +257,6 @@ async function initApp() {
     statsBar.innerHTML = `<span style="color:#ef5350">載入失敗: ${e.message}</span>`;
     return;
   }
-
-  // Build indexes
   let totalKws = 0;
   for (const co of DB) {
     CO_INDEX[co.s] = co;
@@ -214,17 +271,10 @@ async function initApp() {
       KW_INDEX[key].companies.push({ s: co.s, n: co.n, sec: co.sec || "", w: kw.w || 0.5 });
     }
   }
+  for (const e of Object.values(KW_INDEX)) e.companies.sort((a, b) => b.w - a.w);
+  const nCo = DB.length, nKw = Object.keys(KW_INDEX).length;
+  statsBar.innerHTML = `<span><b>${nCo.toLocaleString()}</b> 間公司</span><span><b>${nKw.toLocaleString()}</b> 個關鍵字</span><span><b>${totalKws.toLocaleString()}</b> 個映射</span>`;
 
-  // Sort companies by weight descending for each keyword
-  for (const entry of Object.values(KW_INDEX)) {
-    entry.companies.sort((a, b) => b.w - a.w);
-  }
-
-  const nCo = DB.length;
-  const nKw = Object.keys(KW_INDEX).length;
-  statsBar.innerHTML = `<span><b>${nCo.toLocaleString()}</b> 間公司</span><span><b>${nKw.toLocaleString()}</b> 個關鍵字</span><span><b>${totalKws.toLocaleString()}</b> 個映射記錄</span>`;
-
-  // Wire up search
   const input = document.getElementById("search-input");
   input.addEventListener("input", () => {
     const val = input.value;
@@ -232,14 +282,19 @@ async function initApp() {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(() => runSearch(val.trim()), 250);
   });
-
-  document.getElementById("initial-msg").textContent = "請輸入關鍵字或公司名稱開始搜尋";
 }
 
+// ── Tab switching ─────────────────────────────────────────
 function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
+  document.getElementById("kw-panel").style.display = (tab === "corr") ? "none" : "block";
+  document.getElementById("corr-panel").style.display = (tab === "corr") ? "flex" : "none";
 
+  if (tab === "corr") {
+    if (!corrLoaded) loadCorrData();
+    return;
+  }
   const input = document.getElementById("search-input");
   const hint = document.getElementById("search-hint");
   if (tab === "kw2co") {
@@ -249,14 +304,145 @@ function switchTab(tab) {
     input.placeholder = "搜尋公司名稱或股票代號";
     hint.textContent = "輸入股票代號或公司名稱，例如：AAPL、Apple";
   }
-
   const val = input.value.trim();
   if (val) runSearch(val);
-  else {
-    document.getElementById("results").innerHTML = '<div class="empty">請輸入搜尋內容</div>';
+  else document.getElementById("results").innerHTML = '<div class="empty">請輸入搜尋內容</div>';
+}
+
+// ── Correlation tab ───────────────────────────────────────
+async function loadCorrData() {
+  try {
+    const resp = await fetch("us_corr_pairs.json");
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
+    const data = await resp.json();
+    CORR_ALL = data.pairs;
+    corrLoaded = true;
+    applyThreshAndFilter();
+  } catch(e) {
+    document.getElementById("corr-table-wrap").innerHTML =
+      `<div class="empty" style="color:#ef5350">載入失敗: ${e.message}</div>`;
   }
 }
 
+function setThresh(v) {
+  corrThresh = v;
+  document.querySelectorAll(".thresh-btn").forEach(b =>
+    b.classList.toggle("active", parseFloat(b.dataset.v) === v));
+  applyThreshAndFilter();
+}
+
+function filterCorr() { applyThreshAndFilter(); }
+
+function applyThreshAndFilter() {
+  const q = (document.getElementById("corr-search").value || "").toLowerCase().trim();
+  CORR_FILTERED = CORR_ALL.filter(p => {
+    if (p.corr < corrThresh) return false;
+    if (!q) return true;
+    return p.sa.toLowerCase().includes(q) || p.sb.toLowerCase().includes(q) ||
+           p.na.toLowerCase().includes(q) || p.nb.toLowerCase().includes(q);
+  });
+  sortCorr();
+  corrPage = 0;
+  renderCorrTable();
+}
+
+function sortCorrBy(col) {
+  if (corrSortCol === col) corrSortAsc = !corrSortAsc;
+  else { corrSortCol = col; corrSortAsc = col !== "corr"; }
+  sortCorr();
+  corrPage = 0;
+  renderCorrTable();
+}
+
+function sortCorr() {
+  const asc = corrSortAsc;
+  CORR_FILTERED.sort((a, b) => {
+    const va = a[corrSortCol] ?? 0, vb = b[corrSortCol] ?? 0;
+    if (typeof va === "string") return asc ? va.localeCompare(vb) : vb.localeCompare(va);
+    return asc ? va - vb : vb - va;
+  });
+}
+
+function corrBarColor(v) {
+  if (v >= 0.90) return "#4caf50";
+  if (v >= 0.85) return "#8bc34a";
+  if (v >= 0.80) return "#d4a647";
+  return "#5c6bc0";
+}
+
+function renderCorrTable() {
+  const total = CORR_FILTERED.length;
+  const shown = Math.min((corrPage + 1) * PAGE_SIZE, total);
+
+  document.getElementById("corr-count").innerHTML =
+    `顯示 <b>${shown.toLocaleString()}</b> / <b>${total.toLocaleString()}</b> 對（基準：60日相關系數 ≥ ${corrThresh}，共分析 2,909 隻股票）`;
+
+  const cols = [
+    { key: "sa",   label: "股票 A" },
+    { key: "sb",   label: "股票 B" },
+    { key: "corr", label: "相關系數" },
+    { key: "kwo",  label: "關鍵字重疊" },
+  ];
+
+  let thHtml = cols.map(c => {
+    const cls = corrSortCol === c.key ? (corrSortAsc ? "sort-asc" : "sort-desc") : "";
+    return `<th class="${cls}" onclick="sortCorrBy('${c.key}')">${c.label}</th>`;
+  }).join("");
+
+  const slice = CORR_FILTERED.slice(0, shown);
+  let rowsHtml = "";
+  for (const p of slice) {
+    const barPct = Math.round((p.corr - 0.5) / 0.5 * 100);
+    const barColor = corrBarColor(p.corr);
+    const kwoPct = Math.round(p.kwo * 100);
+    const isHidden = p.kwo < 0.05 && p.corr >= 0.80;
+
+    rowsHtml += `<tr>
+      <td>
+        <span class="sym-link" onclick="jumpToCompany('${escHtml(p.sa)}')">${escHtml(p.sa)}</span>
+        <div class="co-nm">${escHtml(p.na)}</div>
+        ${p.seca ? `<span class="sector-tag">${escHtml(p.seca)}</span>` : ""}
+      </td>
+      <td>
+        <span class="sym-link" onclick="jumpToCompany('${escHtml(p.sb)}')">${escHtml(p.sb)}</span>
+        <div class="co-nm">${escHtml(p.nb)}</div>
+        ${p.secb ? `<span class="sector-tag">${escHtml(p.secb)}</span>` : ""}
+      </td>
+      <td>
+        <div class="corr-cell">
+          <div class="corr-bar-wrap"><div class="corr-bar" style="width:${barPct}%;background:${barColor}"></div></div>
+          <span class="corr-val" style="color:${barColor}">${p.corr.toFixed(3)}</span>
+        </div>
+      </td>
+      <td>
+        <div class="kwo-cell">
+          <div class="kwo-bar-wrap"><div class="kwo-bar" style="width:${kwoPct}%"></div></div>
+          <span class="kwo-val">${(p.kwo * 100).toFixed(1)}%</span>
+          ${isHidden ? '<span class="gap-badge" title="高聯動、低關鍵字重疊">隱藏連結</span>' : ""}
+        </div>
+      </td>
+    </tr>`;
+  }
+
+  const loadMoreHtml = shown < total
+    ? `<tr><td colspan="4" style="text-align:center;padding:16px">
+        <button class="load-more-btn" onclick="loadMoreCorr()">載入更多（還有 ${(total - shown).toLocaleString()} 對）</button>
+       </td></tr>`
+    : "";
+
+  document.getElementById("corr-table-wrap").innerHTML = `
+    <table class="corr-tbl">
+      <thead><tr>${thHtml}</tr></thead>
+      <tbody>${rowsHtml}${loadMoreHtml}</tbody>
+    </table>`;
+}
+
+function loadMoreCorr() {
+  corrPage++;
+  renderCorrTable();
+}
+
+// ── Keyword search logic ──────────────────────────────────
 function clearSearch() {
   const input = document.getElementById("search-input");
   input.value = "";
@@ -264,24 +450,6 @@ function clearSearch() {
   document.getElementById("clear-btn").classList.remove("visible");
   document.getElementById("results").innerHTML = '<div class="empty">請輸入搜尋內容</div>';
 }
-
-function hl(text, query) {
-  if (!query) return escHtml(text);
-  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return escHtml(text).replace(new RegExp(escaped, "gi"), m => `<mark>${m}</mark>`);
-}
-
-function escHtml(s) {
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-}
-
-function kwColor(w) {
-  if (w >= 0.8) return "kw-high";
-  if (w >= 0.6) return "kw-mid";
-  return "kw-low";
-}
-
-// ── Search logic ──────────────────────────────────────────
 
 function runSearch(query) {
   if (!query) {
@@ -295,34 +463,20 @@ function runSearch(query) {
 function searchKw2Co(query) {
   const q = query.toLowerCase();
   const results = [];
-
-  // Exact key match first
   const exactEn = KW_INDEX[q];
   if (exactEn) results.push({ entry: exactEn, score: 2 });
-
-  // Partial match on English keys
   for (const [key, entry] of Object.entries(KW_INDEX)) {
     if (key === q) continue;
-    if (key.includes(q)) {
-      results.push({ entry, score: 1 });
-    }
+    if (key.includes(q)) results.push({ entry, score: 1 });
   }
-  // Chinese match
   for (const [zh, entry] of Object.entries(KW_ZH_INDEX)) {
-    const alreadyIn = results.some(r => r.entry === entry);
-    if (!alreadyIn && zh.includes(query)) {
+    if (!results.some(r => r.entry === entry) && zh.includes(query))
       results.push({ entry, score: 1.5 });
-    }
   }
-
   results.sort((a, b) => b.score - a.score || b.entry.companies.length - a.entry.companies.length);
   const top = results.slice(0, 50);
-
   const resultsDiv = document.getElementById("results");
-  if (!top.length) {
-    resultsDiv.innerHTML = `<div class="result-count">找不到相關關鍵字</div>`;
-    return;
-  }
+  if (!top.length) { resultsDiv.innerHTML = `<div class="result-count">找不到相關關鍵字</div>`; return; }
 
   let html = `<div class="result-count">找到 <b>${results.length}</b> 個關鍵字，顯示前 ${top.length} 個</div>`;
   for (const { entry } of top) {
@@ -336,13 +490,11 @@ function searchKw2Co(query) {
       <div class="kw-co-list">`;
     for (const co of cos) {
       html += `<div class="kw-co-item" onclick="jumpToCompany('${escHtml(co.s)}')">
-        ${escHtml(co.s)}
-        <span class="kw-co-name">${escHtml(co.n.length > 22 ? co.n.slice(0,22)+"…" : co.n)}</span>
+        ${escHtml(co.s)}<span class="kw-co-name">${escHtml(co.n.length > 22 ? co.n.slice(0,22)+"…" : co.n)}</span>
       </div>`;
     }
-    if (entry.companies.length > 60) {
+    if (entry.companies.length > 60)
       html += `<div style="font-size:12px;color:#666;align-self:center;padding:4px 8px">…還有 ${entry.companies.length - 60} 間</div>`;
-    }
     html += `</div></div>`;
   }
   resultsDiv.innerHTML = html;
@@ -351,22 +503,16 @@ function searchKw2Co(query) {
 function searchCo2Kw(query) {
   const q = query.toLowerCase();
   const matches = [];
-
   for (const co of DB) {
     const symMatch = co.s.toLowerCase().includes(q);
     const nameMatch = co.n.toLowerCase().includes(q);
-    if (symMatch || nameMatch) {
+    if (symMatch || nameMatch)
       matches.push({ co, score: symMatch ? (co.s.toLowerCase() === q ? 3 : 2) : 1 });
-    }
   }
   matches.sort((a, b) => b.score - a.score);
   const top = matches.slice(0, 30);
-
   const resultsDiv = document.getElementById("results");
-  if (!top.length) {
-    resultsDiv.innerHTML = `<div class="result-count">找不到相關公司</div>`;
-    return;
-  }
+  if (!top.length) { resultsDiv.innerHTML = `<div class="result-count">找不到相關公司</div>`; return; }
 
   let html = `<div class="result-count">找到 <b>${matches.length}</b> 間公司，顯示前 ${top.length} 間</div>`;
   for (const { co } of top) {
@@ -408,6 +554,20 @@ function searchByKw(kw) {
   input.value = kw;
   document.getElementById("clear-btn").classList.add("visible");
   runSearch(kw);
+}
+
+function hl(text, query) {
+  if (!query) return escHtml(text);
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return escHtml(text).replace(new RegExp(escaped, "gi"), m => `<mark>${m}</mark>`);
+}
+function escHtml(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function kwColor(w) {
+  if (w >= 0.8) return "kw-high";
+  if (w >= 0.6) return "kw-mid";
+  return "kw-low";
 }
 </script>
 </body>
