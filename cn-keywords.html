@@ -204,6 +204,12 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
       <span style="font-size:12px;color:#555">輸入代號找出所屬群組及所有高相關同業</span>
     </div>
     <div class="thresh-bar">
+      <span class="thresh-label">計算方法：</span>
+      <button class="thresh-btn active" data-method="pearson" onclick="setMethod('pearson')">Pearson 線性</button>
+      <button class="thresh-btn" data-method="spearman" onclick="setMethod('spearman')">Spearman 排名</button>
+      <button class="thresh-btn" data-method="beta_adj" onclick="setMethod('beta_adj')">Beta 調整</button>
+    </div>
+    <div class="thresh-bar" style="border-top:none;padding-top:2px">
       <span class="thresh-label">相關系數閾值：</span>
       <button class="thresh-btn active" data-t="0.8" onclick="setThresh('0.8')">0.80 高度相關</button>
       <button class="thresh-btn" data-t="0.7" onclick="setThresh('0.7')">0.70 中度相關</button>
@@ -255,9 +261,26 @@ let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {};
 let currentTab = "kw2co", kwSearchTimer = null;
 let CORR_DATA = null;
 let corrLoaded = false, corrSearchQ = "";
-let currentThresh = "0.8";
-let currentSector = "";
+let currentThresh  = "0.8";
+let currentSector  = "";
 let currentMinSize = 1;
+let currentMethod  = "pearson";
+
+function getMethodData() {
+  return CORR_DATA.by_method ? CORR_DATA.by_method[currentMethod] : CORR_DATA;
+}
+
+function setMethod(m) {
+  currentMethod = m;
+  currentSector = "";
+  document.querySelectorAll(".thresh-btn[data-method]").forEach(b =>
+    b.classList.toggle("active", b.dataset.method === m));
+  if (!corrLoaded) return;
+  updateThreshInfo();
+  buildSectorBar();
+  if (corrSearchQ) renderCorrSearch(corrSearchQ);
+  else renderCorrView();
+}
 
 // ── Init ──────────────────────────────────────────────────
 async function initApp() {
@@ -327,7 +350,7 @@ async function loadCorrData() {
 
 // ── Sector filter bar ────────────────────────────────────
 function buildSectorBar() {
-  const tData = CORR_DATA.by_thresh[currentThresh];
+  const tData = getMethodData().by_thresh[currentThresh];
   const filtered = tData.clusters.filter(cl => cl.n >= currentMinSize);
   const count = {};
   for (const cl of filtered) {
@@ -376,13 +399,13 @@ function setMinSize(m) {
 
 function updateThreshInfo() {
   if (!CORR_DATA) return;
-  const tData = CORR_DATA.by_thresh[currentThresh];
-  const ug = CORR_DATA.unclustered_groups || [];
+  const tData = getMethodData().by_thresh[currentThresh];
+  const ug = getMethodData().unclustered_groups || [];
   const filtered = tData.clusters.filter(cl => cl.n >= currentMinSize);
   const filteredStocks = filtered.reduce((s,c)=>s+c.n,0);
   const minTxt = currentMinSize > 1 ? `（≥${currentMinSize} 股）` : "";
   document.getElementById("thresh-info").textContent =
-    `${filtered.length} 個群組${minTxt}，涵蓋 ${filteredStocks} 間股票，另有 ${CORR_DATA.n_unclustered || ug.reduce((s,g)=>s+g.n,0)} 間未分群`;
+    `${filtered.length} 個群組${minTxt}，涵蓋 ${filteredStocks} 間股票，另有 ${getMethodData().n_unclustered || ug.reduce((s,g)=>s+g.n,0)} 間未分群`;
 }
 
 // ── Corr search ───────────────────────────────────────────
@@ -425,7 +448,7 @@ function buildSubLabels(clusters) {
 
 // ── Render all (default) ──────────────────────────────────
 function renderCorrView() {
-  const tData = CORR_DATA.by_thresh[currentThresh];
+  const tData = getMethodData().by_thresh[currentThresh];
   const allClusters = [...tData.clusters]
     .filter(cl => cl.n >= currentMinSize)
     .sort((a, b) => {
@@ -437,7 +460,7 @@ function renderCorrView() {
     ? allClusters.filter(cl => (cl.top_sec || "") === currentSector)
     : allClusters;
 
-  const ug = CORR_DATA.unclustered_groups || [];
+  const ug = getMethodData().unclustered_groups || [];
   const ugFiltered = currentSector
     ? ug.filter(g => (g.sec || "") === currentSector)
     : [...ug].sort((a, b) => (a.sec || "").localeCompare(b.sec || ""));
@@ -456,7 +479,7 @@ function renderCorrView() {
 
 // ── Render search result ──────────────────────────────────
 function renderCorrSearch(q) {
-  const tData = CORR_DATA.by_thresh[currentThresh];
+  const tData = getMethodData().by_thresh[currentThresh];
   const allClusters = tData.clusters.filter(cl => cl.n >= currentMinSize);
   const subLabels = buildSubLabels(allClusters);
   const clusters = currentSector
@@ -464,8 +487,8 @@ function renderCorrSearch(q) {
     : allClusters;
   const symToCluster = tData.sym_to_cluster || {};
   const ug = currentSector
-    ? (CORR_DATA.unclustered_groups || []).filter(g => (g.sec || "") === currentSector)
-    : (CORR_DATA.unclustered_groups || []);
+    ? (getMethodData().unclustered_groups || []).filter(g => (g.sec || "") === currentSector)
+    : (getMethodData().unclustered_groups || []);
   const ql = q.toLowerCase();
 
   const matchSyms = new Set();
