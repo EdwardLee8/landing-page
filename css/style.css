@@ -118,14 +118,14 @@ section + section {
 }
 
 .nav-inner {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 48px;
+  padding: 0 32px;
   height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
+  gap: 24px;
 }
 
 .nav-logo {
@@ -142,19 +142,20 @@ section + section {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 36px;
+  gap: 22px;
   list-style: none;
 }
 
 .nav-link {
   font-size: 0.68rem;
   font-weight: 400;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
   color: var(--text-muted);
   position: relative;
   transition: color var(--transition);
   padding-bottom: 2px;
+  white-space: nowrap;
 }
 .nav-link::after {
   content: '';
@@ -170,6 +171,37 @@ section + section {
 .nav-link:hover::after { width: 100%; }
 .nav-link-active { color: var(--gold) !important; }
 .nav-link-active::after { width: 100% !important; }
+
+/* Dropdown */
+.nav-dropdown-wrap { position: relative; }
+.nav-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10,10,18,0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  list-style: none;
+  padding: 6px 0;
+  min-width: 130px;
+  z-index: 200;
+}
+.nav-dropdown-wrap:hover .nav-dropdown-menu { display: block; }
+.nav-dropdown-menu li a {
+  display: block;
+  padding: 9px 18px;
+  font-size: 0.66rem;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  transition: color var(--transition);
+  white-space: nowrap;
+}
+.nav-dropdown-menu li a:hover { color: var(--gold); }
 
 /* Mobile hamburger */
 .nav-menu-btn {
@@ -1010,6 +1042,23 @@ footer .container {
   }
   .nav-links-open { display: flex; }
   .nav-links li { width: 100%; }
+  /* Expand dropdown inline on mobile */
+  .nav-dropdown-wrap:hover .nav-dropdown-menu,
+  .nav-dropdown-menu {
+    display: block;
+    position: static;
+    transform: none;
+    background: none;
+    backdrop-filter: none;
+    border: none;
+    padding: 0;
+    min-width: unset;
+  }
+  .nav-dropdown-menu li a {
+    padding: 10px 24px 10px 36px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
   .nav-link {
     display: block;
     padding: 14px 24px;
