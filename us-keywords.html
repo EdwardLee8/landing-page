@@ -202,10 +202,23 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
       <span style="font-size:12px;color:#555">輸入代號找出所屬群組及所有高相關同業</span>
     </div>
     <div class="thresh-bar">
+      <span class="thresh-label">計算方法：</span>
+      <button class="thresh-btn active" data-method="pearson" onclick="setMethod('pearson')">Pearson 線性</button>
+      <button class="thresh-btn" data-method="spearman" onclick="setMethod('spearman')">Spearman 排名</button>
+      <button class="thresh-btn" data-method="beta_adj" onclick="setMethod('beta_adj')">Beta 調整</button>
+      <button class="thresh-btn" data-method="louvain" onclick="setMethod('louvain')">Louvain 社群</button>
+    </div>
+    <div class="thresh-bar" style="border-top:none;padding-top:2px">
       <span class="thresh-label">相關系數閾值：</span>
       <button class="thresh-btn active" data-t="0.8" onclick="setThresh('0.8')">0.80 高度相關</button>
       <button class="thresh-btn" data-t="0.7" onclick="setThresh('0.7')">0.70 中度相關</button>
       <button class="thresh-btn" data-t="0.6" onclick="setThresh('0.6')">0.60 廣泛相關</button>
+      <button class="thresh-btn" data-t="0.5" onclick="setThresh('0.5')">0.50 弱相關</button>
+      <span style="margin-left:16px;margin-right:4px;font-size:12px;color:#666;white-space:nowrap">最小組員數：</span>
+      <button class="thresh-btn active" data-m="1" onclick="setMinSize(1)">全部</button>
+      <button class="thresh-btn" data-m="3" onclick="setMinSize(3)">≥ 3</button>
+      <button class="thresh-btn" data-m="5" onclick="setMinSize(5)">≥ 5</button>
+      <button class="thresh-btn" data-m="10" onclick="setMinSize(10)">≥ 10</button>
       <span class="thresh-info" id="thresh-info"></span>
     </div>
     <div class="sector-bar" id="sector-bar"></div>
@@ -247,8 +260,38 @@ let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {};
 let currentTab = "kw2co", kwSearchTimer = null;
 let CORR_DATA = null;
 let corrLoaded = false, corrSearchQ = "";
-let currentThresh = "0.8";
-let currentSector = "";
+let currentThresh  = "0.8";
+let currentSector  = "";
+let currentMinSize = 1;
+let currentMethod  = "pearson";
+
+function getMethodData() {
+  return CORR_DATA.by_method ? CORR_DATA.by_method[currentMethod] : CORR_DATA;
+}
+
+function setMethod(m) {
+  currentMethod = m;
+  currentSector = "";
+  document.querySelectorAll(".thresh-btn[data-method]").forEach(b =>
+    b.classList.toggle("active", b.dataset.method === m));
+  if (!corrLoaded) return;
+  updateThreshInfo();
+  buildSectorBar();
+  if (corrSearchQ) renderCorrSearch(corrSearchQ);
+  else renderCorrView();
+}
+
+function setMinSize(m) {
+  currentMinSize = m;
+  currentSector = "";
+  document.querySelectorAll(".thresh-btn[data-m]").forEach(b =>
+    b.classList.toggle("active", +b.dataset.m === m));
+  if (!corrLoaded) return;
+  updateThreshInfo();
+  buildSectorBar();
+  if (corrSearchQ) renderCorrSearch(corrSearchQ);
+  else renderCorrView();
+}
 
 // ── Init ──────────────────────────────────────────────────
 async function initApp() {
@@ -318,14 +361,15 @@ async function loadCorrData() {
 
 // ── Sector filter bar ────────────────────────────────────
 function buildSectorBar() {
-  const tData = CORR_DATA.by_thresh[currentThresh];
+  const tData = getMethodData().by_thresh[currentThresh];
+  const filtered = tData.clusters.filter(cl => cl.n >= currentMinSize);
   const count = {};
-  for (const cl of tData.clusters) {
+  for (const cl of filtered) {
     const s = cl.top_sec || "Other";
     count[s] = (count[s] || 0) + 1;
   }
   const sectors = Object.keys(count).sort();
-  const total = tData.clusters.length;
+  const total = filtered.length;
 
   let html = `<button class="sec-btn active" data-sec="" onclick="setSector('')">全部<span class="sec-count">${total}</span></button>`;
   for (const s of sectors) {
@@ -345,7 +389,7 @@ function setSector(sec) {
 function setThresh(t) {
   currentThresh = t;
   currentSector = "";
-  document.querySelectorAll(".thresh-btn").forEach(b => b.classList.toggle("active", b.dataset.t === t));
+  document.querySelectorAll(".thresh-btn[data-t]").forEach(b => b.classList.toggle("active", b.dataset.t === t));
   if (!corrLoaded) return;
   updateThreshInfo();
   buildSectorBar();
@@ -355,13 +399,13 @@ function setThresh(t) {
 
 function updateThreshInfo() {
   if (!CORR_DATA) return;
-  const tData = CORR_DATA.by_thresh[currentThresh];
-  const ug = CORR_DATA.unclustered_groups || [];
-  const nPairs = currentThresh === "0.8" ? CORR_DATA.n_pairs_80
-               : currentThresh === "0.7" ? CORR_DATA.n_pairs_70
-               : CORR_DATA.n_pairs_60;
+  const tData = getMethodData().by_thresh[currentThresh];
+  const ug = getMethodData().unclustered_groups || [];
+  const filtered = tData.clusters.filter(cl => cl.n >= currentMinSize);
+  const filteredStocks = filtered.reduce((s,c)=>s+c.n,0);
+  const minTxt = currentMinSize > 1 ? `（≥${currentMinSize} 股）` : "";
   document.getElementById("thresh-info").textContent =
-    `${tData.n_clusters} 個群組，涵蓋 ${countClustered(tData)} 間股票，另有 ${CORR_DATA.n_unclustered || ug.reduce((s,g)=>s+g.n,0)} 間未分群（按行業歸組）`;
+    `${filtered.length} 個群組${minTxt}，涵蓋 ${filteredStocks} 間股票，另有 ${getMethodData().n_unclustered || ug.reduce((s,g)=>s+g.n,0)} 間未分群（按行業歸組）`;
 }
 
 function countClustered(tData) {
@@ -427,26 +471,25 @@ function buildSubLabels(clusters) {
 
 // ── Render all (default) ──────────────────────────────────
 function renderCorrView() {
-  const tData = CORR_DATA.by_thresh[currentThresh];
-  // Sort clusters by sector name then by size (desc)
-  const allClusters = [...tData.clusters].sort((a, b) => {
-    const sa = (a.top_sec || "").localeCompare(b.top_sec || "");
-    return sa !== 0 ? sa : b.n - a.n;
-  });
-  // Build sub-labels from ALL clusters (so disambiguation is consistent)
+  const tData = getMethodData().by_thresh[currentThresh];
+  const allClusters = [...tData.clusters]
+    .filter(cl => cl.n >= currentMinSize)
+    .sort((a, b) => {
+      const sa = (a.top_sec || "").localeCompare(b.top_sec || "");
+      return sa !== 0 ? sa : b.n - a.n;
+    });
   const subLabels = buildSubLabels(allClusters);
-  // Apply sector filter
   const clusters = currentSector
     ? allClusters.filter(cl => (cl.top_sec || "") === currentSector)
     : allClusters;
 
-  const ug = CORR_DATA.unclustered_groups || [];
+  const ug = getMethodData().unclustered_groups || [];
   const ugFiltered = currentSector
     ? ug.filter(g => (g.sec || "") === currentSector)
     : [...ug].sort((a, b) => (a.sec || "").localeCompare(b.sec || ""));
 
-  const showingAll = !currentSector;
-  let html = `<div class="section-hdr">已分群股票 — 顯示 ${clusters.length} 個群組${currentSector ? `（${currentSector}）` : ""}，每對相關系數 ≥ ${currentThresh}</div>`;
+  const minTxt = currentMinSize > 1 ? `（≥${currentMinSize} 股）` : "";
+  let html = `<div class="section-hdr">已分群股票 — 顯示 ${clusters.length} 個群組${minTxt}${currentSector ? `（${currentSector}）` : ""}，每對相關系數 ≥ ${currentThresh}</div>`;
   for (const cl of clusters) html += renderClusterCard(cl, new Set(), false, subLabels[cl.id]);
 
   if (ugFiltered.length) {
@@ -459,8 +502,8 @@ function renderCorrView() {
 
 // ── Render search result ──────────────────────────────────
 function renderCorrSearch(q) {
-  const tData = CORR_DATA.by_thresh[currentThresh];
-  const allClusters = tData.clusters;
+  const tData = getMethodData().by_thresh[currentThresh];
+  const allClusters = tData.clusters.filter(cl => cl.n >= currentMinSize);
   const subLabels = buildSubLabels(allClusters);
   // Apply sector filter then search
   const clusters = currentSector
@@ -468,8 +511,8 @@ function renderCorrSearch(q) {
     : allClusters;
   const symToCluster = tData.sym_to_cluster || {};
   const ug = currentSector
-    ? (CORR_DATA.unclustered_groups || []).filter(g => (g.sec || "") === currentSector)
-    : (CORR_DATA.unclustered_groups || []);
+    ? (getMethodData().unclustered_groups || []).filter(g => (g.sec || "") === currentSector)
+    : (getMethodData().unclustered_groups || []);
   const ql = q.toLowerCase();
 
   const matchSyms = new Set();
