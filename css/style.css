@@ -383,6 +383,51 @@ section + section {
   align-items: center;
 }
 
+.hero-tool-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hero-tool-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-tool-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.6;
+  min-width: 44px;
+  text-align: right;
+}
+
+.btn-tool {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 16px;
+  border: 1px solid rgba(212,166,71,0.35);
+  border-radius: 2px;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(212,166,71,0.8);
+  text-decoration: none;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+  white-space: nowrap;
+}
+.btn-tool:hover {
+  background: rgba(212,166,71,0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+  text-decoration: none;
+}
+
 .btn-secondary {
   display: inline-flex;
   align-items: center;

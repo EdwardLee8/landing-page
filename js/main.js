@@ -113,30 +113,31 @@ function renderHero(author) {
   ctaLink.removeAttribute("target");
   ctaLink.removeAttribute("rel");
 
-  const dbLink = el("a", {
-    href: "/hk-stocks-db.html",
-    class: "btn-secondary",
-    text: "港股2025下半年資料庫",
-  });
+  // Data tools rows
+  const dbRow = el("div", { class: "hero-tool-row" });
+  dbRow.append(
+    el("span", { class: "hero-tool-label", text: "資料庫" }),
+    el("a", { href: "/hk-stocks-db.html", class: "btn-tool", text: "港股" }),
+    el("a", { href: "/us-stocks-db.html", class: "btn-tool", text: "美股" })
+  );
 
-  const usDbLink = el("a", {
-    href: "/us-stocks-db.html",
-    class: "btn-secondary",
-    text: "美股2025Q4資料庫",
-  });
-
-  const kwLink = el("a", {
-    href: "/us-keywords.html",
-    class: "btn-secondary",
-    text: "美股關鍵字資料庫",
-  });
+  const kwRow = el("div", { class: "hero-tool-row" });
+  kwRow.append(
+    el("span", { class: "hero-tool-label", text: "關鍵字" }),
+    el("a", { href: "/hk-keywords.html", class: "btn-tool", text: "港股" }),
+    el("a", { href: "/us-keywords.html", class: "btn-tool", text: "美股" }),
+    el("a", { href: "/cn-keywords.html", class: "btn-tool", text: "A股" })
+  );
 
   container.append(
     avatarWrap,
     el("h1", { class: "hero-name", text: author.name }),
     el("p", { class: "hero-tagline", text: author.tagline }),
     el("p", { class: "hero-sub", text: author.subTagline }),
-    el("div", { class: "hero-cta-group" }, ctaLink, dbLink, usDbLink, kwLink)
+    el("div", { class: "hero-cta-group" },
+      ctaLink,
+      el("div", { class: "hero-tool-group" }, dbRow, kwRow)
+    )
   );
 }
 
