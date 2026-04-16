@@ -125,12 +125,13 @@ a:hover{text-decoration:underline}
 .cl-card.open .cl-body{display:block}
 
 /* Companies in cluster */
-.cl-companies{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-.cl-co{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:6px;padding:8px 13px;cursor:pointer;transition:all .2s;min-width:96px}
+.cl-companies{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.cl-co{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:6px;padding:8px 13px;cursor:pointer;transition:all .2s;display:flex;flex-wrap:wrap;align-items:baseline;gap:0 10px}
 .cl-co:hover{border-color:#d4a647;background:#d4a64714}
 .cl-co.target{border-color:#d4a647;background:#d4a64720}
-.cl-co-sym{color:#d4a647;font-weight:700;font-family:monospace;font-size:14px}
-.cl-co-name{color:#888;font-size:12px;margin-top:2px}
+.cl-co-sym{color:#d4a647;font-weight:700;font-family:monospace;font-size:14px;flex-shrink:0}
+.cl-co-name{color:#888;font-size:12px}
+.cl-co-sum{color:#7a7a8a;font-size:12px;line-height:1.5;margin-top:4px;width:100%}
 
 /* Keywords row */
 .cl-kws{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
@@ -256,7 +257,7 @@ if (sessionStorage.getItem(SESSION_KEY) === "1") {
 }
 
 // ── State ─────────────────────────────────────────────────
-let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {};
+let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {}, SYM_TO_SUM = {};
 let currentTab = "kw2co", kwSearchTimer = null;
 let CORR_DATA = null;
 let corrLoaded = false, corrSearchQ = "";
@@ -302,6 +303,7 @@ async function initApp() {
     document.getElementById("stats-bar").innerHTML = `<span style="color:#ef5350">載入失敗: ${e.message}</span>`;
     return;
   }
+  for (const co of DB) if (co.sum) SYM_TO_SUM[co.s] = co.sum;
   let totalKws = 0;
   for (const co of DB) {
     if (!co.kws) continue;
@@ -579,9 +581,12 @@ function renderClusterCard(cl, highlightSyms, autoOpen, subLabel) {
 
   const cosHtml = cl.companies.map(co => {
     const isTarget = highlightSyms.has(co.s);
+    const sum = SYM_TO_SUM[co.s] || "";
+    const sumShort = sum.length > 120 ? sum.slice(0,120)+"…" : sum;
     return `<div class="cl-co ${isTarget ? "target" : ""}" onclick="jumpToCompany('${escHtml(co.s)}')">
       <div class="cl-co-sym">${escHtml(co.s)}</div>
       <div class="cl-co-name">${escHtml(co.n.length > 20 ? co.n.slice(0,20)+"…" : co.n)}</div>
+      ${sumShort ? `<div class="cl-co-sum">${escHtml(sumShort)}</div>` : ""}
     </div>`;
   }).join("");
 
@@ -612,9 +617,12 @@ function renderSectorGroupCard(g, highlightSyms, autoOpen) {
   const cardId = "sg-" + g.sec.replace(/\s+/g, "_");
   const cosHtml = g.companies.map(co => {
     const isTarget = highlightSyms.has(co.s);
+    const sum = SYM_TO_SUM[co.s] || "";
+    const sumShort = sum.length > 120 ? sum.slice(0,120)+"…" : sum;
     return `<div class="cl-co ${isTarget ? "target" : ""}" onclick="jumpToCompany('${escHtml(co.s)}')">
       <div class="cl-co-sym">${escHtml(co.s)}</div>
       <div class="cl-co-name">${escHtml(co.n.length > 18 ? co.n.slice(0,18)+"…" : co.n)}</div>
+      ${sumShort ? `<div class="cl-co-sum">${escHtml(sumShort)}</div>` : ""}
     </div>`;
   }).join("");
 
