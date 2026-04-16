@@ -177,7 +177,7 @@ section + section {
 .nav-dropdown-menu {
   display: none;
   position: absolute;
-  top: calc(100% + 14px);
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(10,10,18,0.97);
@@ -186,8 +186,8 @@ section + section {
   border: 1px solid var(--border);
   border-radius: 4px;
   list-style: none;
-  padding: 6px 0;
-  min-width: 130px;
+  padding: 20px 0 6px;
+  min-width: 160px;
   z-index: 200;
 }
 .nav-dropdown-wrap:hover .nav-dropdown-menu { display: block; }

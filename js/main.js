@@ -136,7 +136,6 @@ function renderHero(author) {
     el("p", { class: "hero-tagline", text: author.tagline }),
     el("p", { class: "hero-sub", text: author.subTagline }),
     el("div", { class: "hero-cta-group" },
-      ctaLink,
       el("div", { class: "hero-tool-group" }, dbRow, kwRow)
     )
   );
