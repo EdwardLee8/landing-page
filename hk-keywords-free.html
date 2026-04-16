@@ -591,6 +591,8 @@ function renderClusterCard(cl, highlightSyms, autoOpen, subLabel) {
     const m = co.s.match(/^8(\d{4}\.HK)$/);
     return !(m && allSyms.has(m[1]));
   });
+  // Skip cluster if only 1 company remains after dedup
+  if (companies.length < 2) return "";
 
   const cosHtml = companies.map(co => {
     const isTarget = highlightSyms.has(co.s);
@@ -613,7 +615,7 @@ function renderClusterCard(cl, highlightSyms, autoOpen, subLabel) {
   const cardId = "cl-" + cl.id;
   return `<div class="cl-card ${isHighlighted ? "highlighted" : ""}" id="${cardId}">
     <div class="cl-head" onclick="toggleCluster('${cardId}')">
-      <span class="cl-badge">${cl.n} 間</span>
+      <span class="cl-badge">${companies.length} 間</span>
       <div class="cl-title-wrap">
         <div class="cl-title">${escHtml(secLabel)}${subSec ? ` <span style="color:#d4a64799;font-weight:400;font-size:13px">— ${escHtml(subSec)}</span>` : ""}</div>
         ${descEn ? `<div class="cl-desc-en">${escHtml(descEn)}</div>` : ""}
