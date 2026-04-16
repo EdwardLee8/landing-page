@@ -130,9 +130,9 @@ a:hover{text-decoration:underline}
 .cl-co{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:6px;padding:8px 13px;cursor:pointer;transition:all .2s;display:flex;flex-wrap:wrap;align-items:baseline;gap:0 10px}
 .cl-co:hover{border-color:#d4a647;background:#d4a64714}
 .cl-co.target{border-color:#d4a647;background:#d4a64720}
-.cl-co-sym{color:#d4a647;font-weight:700;font-family:monospace;font-size:14px;flex-shrink:0}
-.cl-co-name{color:#888;font-size:12px}
-.cl-co-namez{color:#666;font-size:11px}
+.cl-co-sym{color:#d4a647;font-weight:700;font-family:monospace;font-size:13px;flex-shrink:0}
+.cl-co-namez{color:#ccc;font-size:13px;font-weight:500}
+.cl-co-name{color:#555;font-size:11px}
 .cl-co-sum{color:#7a7a8a;font-size:12px;line-height:1.5;margin-top:4px;width:100%}
 
 /* Keywords row */
@@ -259,7 +259,7 @@ if (sessionStorage.getItem(SESSION_KEY) === "1") {
 }
 
 // ── State ─────────────────────────────────────────────────
-let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {}, SYM_TO_SUM = {};
+let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {}, SYM_TO_SUM = {}, SYM_TO_NZ = {};
 let currentTab = "kw2co", kwSearchTimer = null;
 let CORR_DATA = null;
 let corrLoaded = false, corrSearchQ = "";
@@ -320,6 +320,7 @@ async function initApp() {
   }
   for (const e of Object.values(KW_INDEX)) e.companies.sort((a, b) => b.w - a.w);
   for (const co of DB) if (co.sum) SYM_TO_SUM[co.s] = co.sum;
+  for (const co of DB) if (co.nz) SYM_TO_NZ[co.s] = co.nz;
   document.getElementById("stats-bar").innerHTML =
     `<span><b>${DB.length.toLocaleString()}</b> 間公司</span>` +
     `<span><b>${Object.keys(KW_INDEX).length.toLocaleString()}</b> 個關鍵字</span>` +
@@ -369,15 +370,15 @@ function buildSectorBar() {
   const filtered = tData.clusters.filter(cl => cl.n >= currentMinSize);
   const count = {};
   for (const cl of filtered) {
-    const s = cl.top_sec || "Other";
-    count[s] = (count[s] || 0) + 1;
+    const s = cl.top_sec || "";
+    if (s) count[s] = (count[s] || 0) + 1;
   }
   const sectors = Object.keys(count).sort();
   const total = filtered.length;
 
   let html = `<button class="sec-btn active" data-sec="" onclick="setSector('')">全部<span class="sec-count">${total}</span></button>`;
   for (const s of sectors) {
-    html += `<button class="sec-btn" data-sec="${escHtml(s)}" onclick="setSector('${escHtml(s)}')">${escHtml(s)}<span class="sec-count">${count[s]}</span></button>`;
+    html += `<button class="sec-btn" data-sec="${escHtml(s)}" onclick="setSector('${escHtml(s)}')">${escHtml(secZh(s))}<span class="sec-count">${count[s]}</span></button>`;
   }
   document.getElementById("sector-bar").innerHTML = html;
 }
@@ -450,6 +451,22 @@ function buildSubLabels(clusters) {
   return labels;
 }
 
+// ── Sector name translation ───────────────────────────────
+const SEC_ZH = {
+  "Financial Services": "金融服務",
+  "Basic Materials": "基礎原材料",
+  "Industrials": "工業",
+  "Energy": "能源",
+  "Communication Services": "通訊服務",
+  "Consumer Cyclical": "可選消費",
+  "Consumer Defensive": "必需消費",
+  "Healthcare": "醫療保健",
+  "Real Estate": "房地產",
+  "Technology": "科技",
+  "Utilities": "公用事業",
+};
+function secZh(s) { return SEC_ZH[s] || s || ""; }
+
 // ── Render all (default) ──────────────────────────────────
 function renderCorrView() {
   const tData = getMethodData().by_thresh[currentThresh];
@@ -464,18 +481,31 @@ function renderCorrView() {
     ? allClusters.filter(cl => (cl.top_sec || "") === currentSector)
     : allClusters;
 
+  // Build set of all syms already in clusters (for UG dedup)
+  const clusterSyms = new Set();
+  for (const cl of allClusters) for (const co of cl.companies) clusterSyms.add(co.s);
+
   const ug = getMethodData().unclustered_groups || [];
   const ugFiltered = currentSector
     ? ug.filter(g => (g.sec || "") === currentSector)
     : [...ug].sort((a, b) => (a.sec || "").localeCompare(b.sec || ""));
 
+  // Split named-sector vs mixed clusters
+  const namedClusters = clusters.filter(cl => cl.top_sec);
+  const mixedClusters = clusters.filter(cl => !cl.top_sec);
+
   const minTxt = currentMinSize > 1 ? `（≥${currentMinSize} 股）` : "";
-  let html = `<div class="section-hdr">已分群股票 — 顯示 ${clusters.length} 個群組${minTxt}${currentSector ? `（${currentSector}）` : ""}，每對相關系數 ≥ ${currentThresh}</div>`;
-  for (const cl of clusters) html += renderClusterCard(cl, new Set(), false, subLabels[cl.id]);
+  let html = `<div class="section-hdr">已分群股票 — 顯示 ${clusters.length} 個群組${minTxt}${currentSector ? `（${secZh(currentSector)}）` : ""}，每對相關系數 ≥ ${currentThresh}</div>`;
+  for (const cl of namedClusters) html += renderClusterCard(cl, new Set(), false, subLabels[cl.id]);
+
+  if (mixedClusters.length) {
+    html += `<div class="section-hdr-lg">跨行業群組<span>— ${mixedClusters.length} 個群組，股票跨越多個行業</span></div>`;
+    for (const cl of mixedClusters) html += renderClusterCard(cl, new Set(), false, subLabels[cl.id]);
+  }
 
   if (ugFiltered.length) {
-    html += `<div class="section-hdr-lg">未分群股票（行業分組）<span>— 與其他股票相關系數均 &lt; 0.60，按行業歸組</span></div>`;
-    for (const g of ugFiltered) html += renderSectorGroupCard(g, new Set());
+    html += `<div class="section-hdr-lg">未分群股票（按行業歸組）<span>— 與其他股票相關系數均 &lt; 0.60</span></div>`;
+    for (const g of ugFiltered) html += renderSectorGroupCard(g, new Set(), false, clusterSyms);
   }
 
   document.getElementById("corr-body").innerHTML = html;
@@ -498,13 +528,17 @@ function renderCorrSearch(q) {
   const matchSyms = new Set();
   for (const cl of clusters) {
     for (const co of cl.companies) {
-      if (co.s.toLowerCase().includes(ql) || co.n.toLowerCase().includes(ql) || (co.nz||"").includes(q))
+      const nz = SYM_TO_NZ[co.s] || "";
+      if (co.s.toLowerCase().includes(ql) || co.n.toLowerCase().includes(ql) || nz.includes(q))
         matchSyms.add(co.s);
     }
   }
   let matchUg = [];
   for (const g of ug) {
-    const found = g.companies.filter(co => co.s.toLowerCase().includes(ql) || co.n.toLowerCase().includes(ql) || (co.nz||"").includes(q));
+    const found = g.companies.filter(co => {
+      const nz = SYM_TO_NZ[co.s] || "";
+      return co.s.toLowerCase().includes(ql) || co.n.toLowerCase().includes(ql) || nz.includes(q);
+    });
     if (found.length) matchUg.push({ g, found });
   }
 
@@ -549,18 +583,26 @@ function renderClusterCard(cl, highlightSyms, autoOpen, subLabel) {
   const kws = cl.top_kws || [];
   const subSec = subLabel !== undefined ? subLabel
     : (kws.length ? kws[0].replace(/\b\w/g, c => c.toUpperCase()) : "");
-  const secLabel = cl.top_sec || "多行業";
+  const secLabel = secZh(cl.top_sec) || "跨行業";
 
-  const cosHtml = cl.companies.map(co => {
+  // Filter out R-shares when their regular counterpart is also in this cluster
+  const allSyms = new Set(cl.companies.map(co => co.s));
+  const companies = cl.companies.filter(co => {
+    const m = co.s.match(/^8(\d{4}\.HK)$/);
+    return !(m && allSyms.has(m[1]));
+  });
+
+  const cosHtml = companies.map(co => {
     const isTarget = highlightSyms.has(co.s);
-    const nameShort = co.n.length > 20 ? co.n.slice(0,20)+"…" : co.n;
-    const nameZShort = co.nz && co.nz.length > 10 ? co.nz.slice(0,10)+"…" : (co.nz||"");
+    const nz = SYM_TO_NZ[co.s] || co.nz || "";
+    const nzShort = nz.length > 12 ? nz.slice(0,12)+"…" : nz;
+    const enShort = co.n.length > 20 ? co.n.slice(0,20)+"…" : co.n;
     const sum = SYM_TO_SUM[co.s] || "";
     const sumShort = sum.length > 120 ? sum.slice(0,120)+"…" : sum;
     return `<div class="cl-co ${isTarget ? "target" : ""}" onclick="jumpToCompany('${escHtml(co.s)}')">
       <div class="cl-co-sym">${escHtml(co.s.replace(".HK",""))}</div>
-      <div class="cl-co-name">${escHtml(nameShort)}</div>
-      ${nameZShort ? `<div class="cl-co-namez">${escHtml(nameZShort)}</div>` : ""}
+      ${nzShort ? `<div class="cl-co-namez">${escHtml(nzShort)}</div>` : ""}
+      <div class="cl-co-name">${escHtml(enShort)}</div>
       ${sumShort ? `<div class="cl-co-sum">${escHtml(sumShort)}</div>` : ""}
     </div>`;
   }).join("");
@@ -587,28 +629,31 @@ function renderClusterCard(cl, highlightSyms, autoOpen, subLabel) {
 }
 
 // ── Render sector group card (unclustered) ────────────────
-function renderSectorGroupCard(g, highlightSyms, autoOpen) {
+function renderSectorGroupCard(g, highlightSyms, autoOpen, excludeSyms) {
   const cardId = "sg-" + g.sec.replace(/\s+/g, "_");
-  const cosHtml = g.companies.map(co => {
+  const exclude = excludeSyms || new Set();
+  const companies = g.companies.filter(co => !exclude.has(co.s));
+  if (!companies.length) return "";
+  const cosHtml = companies.map(co => {
     const isTarget = highlightSyms.has(co.s);
-    const nameShort = co.n.length > 18 ? co.n.slice(0,18)+"…" : co.n;
-    const nameZShort = co.nz && co.nz.length > 10 ? co.nz.slice(0,10)+"…" : (co.nz||"");
+    const nz = SYM_TO_NZ[co.s] || co.nz || "";
+    const nzShort = nz.length > 12 ? nz.slice(0,12)+"…" : nz;
+    const enShort = co.n.length > 18 ? co.n.slice(0,18)+"…" : co.n;
     const sum = SYM_TO_SUM[co.s] || "";
     const sumShort = sum.length > 120 ? sum.slice(0,120)+"…" : sum;
     return `<div class="cl-co ${isTarget ? "target" : ""}" onclick="jumpToCompany('${escHtml(co.s)}')">
       <div class="cl-co-sym">${escHtml(co.s.replace(".HK",""))}</div>
-      <div class="cl-co-name">${escHtml(nameShort)}</div>
-      ${nameZShort ? `<div class="cl-co-namez">${escHtml(nameZShort)}</div>` : ""}
+      ${nzShort ? `<div class="cl-co-namez">${escHtml(nzShort)}</div>` : ""}
+      <div class="cl-co-name">${escHtml(enShort)}</div>
       ${sumShort ? `<div class="cl-co-sum">${escHtml(sumShort)}</div>` : ""}
     </div>`;
   }).join("");
 
   return `<div class="cl-card sector-card" id="${cardId}">
     <div class="cl-head" onclick="toggleCluster('${cardId}')">
-      <span class="cl-badge sector-badge">${g.n} 間</span>
+      <span class="cl-badge sector-badge">${companies.length} 間</span>
       <div class="cl-title-wrap">
-        <div class="cl-title">${escHtml(g.sec)}</div>
-        <div class="cl-desc-en">Stocks in this sector with no strong price co-movement cluster (correlation &lt; 0.60 with peers)</div>
+        <div class="cl-title">${escHtml(secZh(g.sec))}</div>
         <div class="cl-desc-zh">此行業內與其他股票相關系數均低於 0.60，未能歸入相關群組</div>
       </div>
       <span class="cl-chevron">▼</span>
