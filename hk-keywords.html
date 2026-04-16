@@ -259,7 +259,7 @@ if (sessionStorage.getItem(SESSION_KEY) === "1") {
 }
 
 // ── State ─────────────────────────────────────────────────
-let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {}, SYM_TO_SUM = {}, SYM_TO_NZ = {};
+let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {}, KW_TO_ZH = {}, SYM_TO_SUM = {}, SYM_TO_NZ = {};
 let currentTab = "kw2co", kwSearchTimer = null;
 let CORR_DATA = null;
 let corrLoaded = false, corrSearchQ = "";
@@ -319,6 +319,7 @@ async function initApp() {
     }
   }
   for (const e of Object.values(KW_INDEX)) e.companies.sort((a, b) => b.w - a.w);
+  for (const [k, v] of Object.entries(KW_INDEX)) if (v.zh) KW_TO_ZH[k] = v.zh;
   for (const co of DB) if (co.sum) SYM_TO_SUM[co.s] = co.sum;
   for (const co of DB) if (co.nz) SYM_TO_NZ[co.s] = co.nz;
   document.getElementById("stats-bar").innerHTML =
@@ -432,6 +433,7 @@ function clearCorrSearch() {
 // ── Build unique sub-sector labels — multi-level disambiguation ──
 function buildSubLabels(clusters) {
   const tc = s => s.replace(/\b\w/g, c => c.toUpperCase());
+  const kwLabel = k => KW_TO_ZH[k.toLowerCase().trim()] || tc(k);
   const labels = {};
   for (let depth = 1; depth <= 5; depth++) {
     const keyOf = cl => (cl.top_sec||"") + "|" + (cl.top_kws||[]).slice(0,depth).join("|");
@@ -441,12 +443,12 @@ function buildSubLabels(clusters) {
       if (labels[cl.id] !== undefined) continue;
       const kws = cl.top_kws || [];
       if (count[keyOf(cl)] === 1 || depth === 5) {
-        labels[cl.id] = kws.slice(0,depth).filter(Boolean).map(tc).join(" · ");
+        labels[cl.id] = kws.slice(0,depth).filter(Boolean).map(kwLabel).join(" · ");
       }
     }
   }
   for (const cl of clusters) {
-    if (!labels[cl.id]) labels[cl.id] = (cl.top_kws?.[0]?tc(cl.top_kws[0]):(cl.top_sec||""))+` #${cl.id}`;
+    if (!labels[cl.id]) labels[cl.id] = (cl.top_kws?.[0] ? kwLabel(cl.top_kws[0]) : (cl.top_sec||""))+` #${cl.id}`;
   }
   return labels;
 }
