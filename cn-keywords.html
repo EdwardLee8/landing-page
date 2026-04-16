@@ -263,7 +263,7 @@ if (sessionStorage.getItem(SESSION_KEY) === "1") {
 }
 
 // ── State ─────────────────────────────────────────────────
-let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {}, KW_TO_ZH = {}, SYM_TO_SUM = {}, SYM_TO_NZ = {};
+let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {}, KW_TO_ZH = {}, SYM_TO_SUM = {}, SYM_TO_NZ = {}, SYM_TO_MCAP = {};
 let currentTab = "kw2co", kwSearchTimer = null;
 let CORR_DATA = null;
 let corrLoaded = false, corrSearchQ = "";
@@ -299,6 +299,7 @@ async function initApp() {
   }
   for (const co of DB) if (co.sum) SYM_TO_SUM[co.s] = co.sum;
   for (const co of DB) if (co.nz) SYM_TO_NZ[co.s] = co.nz;
+  for (const co of DB) SYM_TO_MCAP[co.s] = co.mcap || 0;
   let totalKws = 0;
   for (const co of DB) {
     if (!co.kws) continue;
@@ -312,7 +313,7 @@ async function initApp() {
       KW_INDEX[key].companies.push({ s: co.s, n: co.n, nz: co.nz || "", sec: co.sec || "", w: kw.w || 0.5 });
     }
   }
-  for (const e of Object.values(KW_INDEX)) e.companies.sort((a, b) => b.w - a.w);
+  for (const e of Object.values(KW_INDEX)) e.companies.sort((a, b) => (SYM_TO_MCAP[b.s]||0) - (SYM_TO_MCAP[a.s]||0));
   for (const [k, v] of Object.entries(KW_INDEX)) if (v.zh) KW_TO_ZH[k] = v.zh;
   document.getElementById("stats-bar").innerHTML =
     `<span><b>${DB.length.toLocaleString()}</b> 間公司</span>` +
@@ -587,7 +588,7 @@ function renderClusterCard(cl, highlightSyms, autoOpen, subLabel) {
     : (kws.length ? kws[0].replace(/\b\w/g, c => c.toUpperCase()) : "");
   const secLabel = secZh(cl.top_sec) || "跨行業";
 
-  const cosHtml = cl.companies.map(co => {
+  const cosHtml = [...cl.companies].sort((a,b)=>(SYM_TO_MCAP[b.s]||0)-(SYM_TO_MCAP[a.s]||0)).map(co => {
     const isTarget = highlightSyms.has(co.s);
     const nz = co.nz || SYM_TO_NZ[co.s] || "";
     const nzShort = nz.length > 12 ? nz.slice(0,12)+"…" : nz;
