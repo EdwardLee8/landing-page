@@ -396,23 +396,23 @@ section + section {
 }
 
 .hero-tool-label {
-  font-size: 0.62rem;
+  font-size: 1.24rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-muted);
   opacity: 0.6;
-  min-width: 44px;
+  min-width: 64px;
   text-align: right;
 }
 
 .btn-tool {
   display: inline-flex;
   align-items: center;
-  padding: 7px 16px;
+  padding: 9px 20px;
   border: 1px solid rgba(212,166,71,0.35);
   border-radius: 2px;
-  font-size: 0.66rem;
+  font-size: 1.32rem;
   font-weight: 500;
   letter-spacing: 0.10em;
   text-transform: uppercase;
@@ -426,6 +426,10 @@ section + section {
   border-color: var(--gold);
   color: var(--gold);
   text-decoration: none;
+}
+.btn-tool-free {
+  border-style: dashed;
+  opacity: 0.75;
 }
 
 .btn-secondary {
