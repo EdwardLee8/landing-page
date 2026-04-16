@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港股關鍵字資料庫 (完整版)</title>
+<title>港股關鍵字資料庫 (免費會員版)</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>港</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -158,7 +158,7 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 <div id="pw-overlay">
   <div class="pw-box">
     <h2>港股關鍵字資料庫</h2>
-    <p>此頁面受密碼保護</p>
+    <p>免費會員版 · 此頁面受密碼保護</p>
     <input type="password" id="pw-input" placeholder="輸入密碼" autocomplete="off" maxlength="64">
     <button id="pw-submit">進入</button>
     <div class="pw-error" id="pw-error"></div>
@@ -170,7 +170,7 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
   <div class="page-header">
     <a href="/" class="back-btn">← 返回首頁</a>
     <div>
-      <div class="page-title">港股關鍵字資料庫 <span style="color:#d4a647;font-size:14px;font-weight:400">(完整版)</span></div>
+      <div class="page-title">港股關鍵字資料庫 <span style="color:#d4a647;font-size:14px;font-weight:400">(免費會員版)</span></div>
       <div class="page-subtitle">HK Stocks Business Keywords &amp; Correlation Clusters</div>
     </div>
   </div>
@@ -206,10 +206,8 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
     </div>
     <div class="thresh-bar">
       <span class="thresh-label">計算方法：</span>
-      <button class="thresh-btn active" data-method="pearson" onclick="setMethod('pearson')">Pearson 線性</button>
-      <button class="thresh-btn" data-method="spearman" onclick="setMethod('spearman')">Spearman 排名</button>
-      <button class="thresh-btn" data-method="beta_adj" onclick="setMethod('beta_adj')">Beta 調整</button>
-      <button class="thresh-btn" data-method="louvain" onclick="setMethod('louvain')">Louvain 社群</button>
+      <button class="thresh-btn active" data-method="pearson">Pearson 線性</button>
+      <span style="font-size:12px;color:#555;margin-left:8px">（免費版僅提供 Pearson 線性相關）</span>
     </div>
     <div class="thresh-bar" style="border-top:none;padding-top:2px">
       <span class="thresh-label">相關系數閾值：</span>
@@ -233,8 +231,8 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 
 <script>
 // ── Password ──────────────────────────────────────────────
-const CORRECT_PW = "HK_stock_Key_worD";
-const SESSION_KEY = "hk_kw_auth";
+const CORRECT_PW = "ai10xpro";
+const SESSION_KEY = "hk_kw_free_auth";
 function checkPassword() {
   if (document.getElementById("pw-input").value === CORRECT_PW) {
     sessionStorage.setItem(SESSION_KEY, "1");
@@ -353,7 +351,7 @@ function switchTab(tab) {
 // ── Load correlation clusters ────────────────────────────
 async function loadCorrData() {
   try {
-    const r = await fetch("hk_corr_clusters.json");
+    const r = await fetch("hk_corr_clusters_free.json");
     CORR_DATA = await r.json();
     corrLoaded = true;
     updateThreshInfo();
