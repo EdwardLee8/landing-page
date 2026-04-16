@@ -75,10 +75,14 @@ a:hover{text-decoration:underline}
 .kw-result-zh{font-size:16px;font-weight:700;color:#fff}
 .kw-result-en{font-size:13px;color:#777}
 .kw-result-count{font-size:12px;color:#888;margin-left:auto}
-.kw-co-list{display:flex;flex-wrap:wrap;gap:6px}
-.kw-co-item{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:4px;padding:4px 10px;font-size:13px;cursor:pointer;transition:all .2s;color:#d4a647;font-weight:600;font-family:monospace}
-.kw-co-item:hover{border-color:#d4a647;background:#d4a64720}
-.kw-co-name{font-size:11px;color:#888;font-family:inherit;font-weight:400;display:block;margin-top:1px}
+.kw-co-list{display:flex;flex-direction:column;gap:6px}
+.kw-co-item{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:6px;padding:10px 14px;cursor:pointer;transition:all .2s}
+.kw-co-item:hover{border-color:#d4a647;background:#d4a64710}
+.kw-co-header{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.kw-co-sym{color:#d4a647;font-weight:700;font-family:monospace;font-size:13px;flex-shrink:0}
+.kw-co-namez{color:#ddd;font-size:13px;font-weight:500}
+.kw-co-name{color:#666;font-size:11px}
+.kw-co-sum{color:#888;font-size:12px;line-height:1.5;margin-top:4px}
 
 /* ── Correlation cluster panel ── */
 #corr-panel{display:none}
@@ -704,8 +708,17 @@ function searchKw2Co(query) {
     </div><div class="kw-co-list">`;
     for (const co of cos) {
       const sym = co.s;
-      const displayName = co.nz || (co.n.length>22?co.n.slice(0,22)+"…":co.n);
-      html += `<div class="kw-co-item" onclick="jumpToCompany('${escHtml(co.s)}')">${escHtml(sym)}<span class="kw-co-name">${escHtml(displayName)}</span></div>`;
+      const namez = co.nz || "";
+      const namen = co.n.length>30?co.n.slice(0,30)+"…":co.n;
+      const sum = (SYM_TO_SUM[co.s]||"").slice(0,100);
+      html += `<div class="kw-co-item" onclick="jumpToCompany('${escHtml(co.s)}')">
+        <div class="kw-co-header">
+          <span class="kw-co-sym">${escHtml(sym)}</span>
+          <span class="kw-co-namez">${escHtml(namez||namen)}</span>
+          ${namez?`<span class="kw-co-name">${escHtml(namen)}</span>`:""}
+        </div>
+        ${sum?`<div class="kw-co-sum">${escHtml(sum)}</div>`:""}
+      </div>`;
     }
     if (entry.companies.length > 60) html += `<div style="font-size:12px;color:#666;align-self:center;padding:4px 8px">…還有 ${entry.companies.length-60} 間</div>`;
     html += `</div></div>`;
