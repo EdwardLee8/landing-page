@@ -256,14 +256,16 @@ function applyFilters() {
   const sec    = document.getElementById("sel-sector").value;
   const betaF  = document.getElementById("sel-beta").value;
   const typeF  = document.getElementById("sel-type").value;
-  const mcapVal = +document.getElementById("sel-mcap").value;
-  const toVal   = +document.getElementById("sel-to").value;
-  const r2Val   = +document.getElementById("sel-r2").value;
+  const mcapStr = document.getElementById("sel-mcap").value;
+  const toStr   = document.getElementById("sel-to").value;
+  const r2Str   = document.getElementById("sel-r2").value;
 
-  // DEBUG: 輸出篩選值到 console
-  console.log(`applyFilters: typeF=${typeF}, mcapVal=${mcapVal}, toVal=${toVal}, r2Val=${r2Val}`);
+  // 確保正確解析科學計數法
+  const mcapVal = parseFloat(mcapStr);
+  const toVal   = parseFloat(toStr);
+  const r2Val   = parseFloat(r2Str);
 
-  // 股票類型決定預設篩選範圍（只有冇選其他條件時）
+  // 股票類型決定預設篩選範圍
   let minR2, maxR2, minM, minTo;
 
   if (typeF === "independent") {
@@ -276,18 +278,18 @@ function applyFilters() {
     // 市場相關股：R² ≥ 0.1
     minR2 = 0.1;
     maxR2 = 1.0;
-    // 用戶選擇優先：如果選咗具體市值，用用戶嘅選擇；如果選「全部」(0)，先用預設 1e9
-    minM = (mcapVal > 0) ? mcapVal : 1e9;
-    minTo = (toVal > 0) ? toVal : 1e6;
+    minM = mcapVal;  // 直接使用選擇值（0 或具體數值）
+    minTo = toVal;   // 直接使用選擇值（0 或具體數值）
+    // 如果用戶選「全部」(0)，使用預設
+    if (minM === 0) minM = 1e9;
+    if (minTo === 0) minTo = 1e6;
   } else {
     // 全部：無預設限制，用戶選擇生效
-    minR2 = (r2Val > 0) ? r2Val : 0;
+    minR2 = r2Val;   // 直接使用選擇值（0 或具體數值）
     maxR2 = 1.0;
-    minM = (mcapVal > 0) ? mcapVal : 0;
-    minTo = (toVal > 0) ? toVal : 0;
+    minM = mcapVal;  // 直接使用選擇值（0 或具體數值）
+    minTo = toVal;   // 直接使用選擇值（0 或具體數值）
   }
-
-  console.log(`決定後: minM=${minM}, minTo=${minTo}, minR2=${minR2}`);
 
   // 篩選邏輯
   filtered = ALL_DATA.filter(r => {
@@ -302,13 +304,13 @@ function applyFilters() {
     // 行業篩選
     if (sec && r.sec !== sec) return false;
 
-    // 市值篩選（>= minM）
-    if (minM > 0 && (r.mcap || 0) < minM) return false;
+    // 市值篩選：如果 minM > 0，只顯示 mcap >= minM 嘅股票
+    if (minM > 0 && (r.mcap ?? 0) < minM) return false;
 
-    // 成交額篩選（>= minTo）
-    if (minTo > 0 && (r.to || 0) < minTo) return false;
+    // 成交額篩選：如果 minTo > 0，只顯示 to >= minTo 嘅股票
+    if (minTo > 0 && (r.to ?? 0) < minTo) return false;
 
-    // R² 篩選（minR2 <= r2 < maxR2）
+    // R² 篩選：minR2 <= r2 < maxR2
     const r2 = r.r2 ?? 0;
     if (r2 < minR2 || r2 >= maxR2) return false;
 
