@@ -125,7 +125,7 @@ function renderHero(author) {
   kwRow.append(
     el("span", { class: "hero-tool-label", text: "關鍵字" }),
     el("a", { href: "/hk-keywords.html", class: "btn-tool", text: "港股" }),
-    el("a", { href: "/hk-keywords-free.html", class: "btn-tool btn-tool-free", text: "港股(免費)" }),
+    el("a", { href: "/hk-keywords-free.html", class: "btn-tool btn-tool-free", text: "港股(免密碼)" }),
     el("a", { href: "/us-keywords.html", class: "btn-tool", text: "美股" }),
     el("a", { href: "/cn-keywords.html", class: "btn-tool", text: "A股" })
   );
