@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港股關鍵字資料庫 (免費會員版)</title>
+<title>港股關鍵字資料庫 (免密碼)</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>港</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,19 +14,8 @@ body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font
 a{color:#d4a647;text-decoration:none}
 a:hover{text-decoration:underline}
 
-/* ── Password ── */
-#pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
-.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
-.pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
-.pw-box p{font-size:13px;color:#888;margin-bottom:16px}
-.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:10px 14px;border-radius:4px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;transition:border-color .2s}
-.pw-box input:focus{border-color:#d4a647}
-.pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
-.pw-box button:hover{background:#e8bc5a}
-.pw-error{color:#ef5350;font-size:12px;margin-top:8px;min-height:18px}
-
 /* ── Layout ── */
-#app{display:none}
+#app{display:block}
 .page-header{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px;transition:background .2s;white-space:nowrap}
 .back-btn:hover{background:#d4a64720;text-decoration:none}
@@ -158,23 +147,12 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 </head>
 <body>
 
-<!-- ── Password overlay ── -->
-<div id="pw-overlay">
-  <div class="pw-box">
-    <h2>港股關鍵字資料庫</h2>
-    <p>免費會員版 · 此頁面受密碼保護</p>
-    <input type="password" id="pw-input" placeholder="輸入密碼" autocomplete="off" maxlength="64">
-    <button id="pw-submit">進入</button>
-    <div class="pw-error" id="pw-error"></div>
-  </div>
-</div>
-
 <!-- ── App ── -->
 <div id="app">
   <div class="page-header">
     <a href="/" class="back-btn">← 返回首頁</a>
     <div>
-      <div class="page-title">港股關鍵字資料庫 <span style="color:#d4a647;font-size:14px;font-weight:400">(免費會員版)</span></div>
+      <div class="page-title">港股關鍵字資料庫 <span style="color:#d4a647;font-size:14px;font-weight:400">(免密碼)</span></div>
       <div class="page-subtitle">HK Stocks Business Keywords &amp; Correlation Clusters</div>
     </div>
   </div>
@@ -234,31 +212,6 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 </div>
 
 <script>
-// ── Password ──────────────────────────────────────────────
-const CORRECT_PW = "ai10xpro";
-const SESSION_KEY = "hk_kw_free_auth";
-function checkPassword() {
-  if (document.getElementById("pw-input").value === CORRECT_PW) {
-    sessionStorage.setItem(SESSION_KEY, "1");
-    document.getElementById("pw-overlay").style.display = "none";
-    document.getElementById("app").style.display = "block";
-    initApp();
-  } else {
-    document.getElementById("pw-error").textContent = "密碼錯誤，請重試";
-    document.getElementById("pw-input").value = "";
-    document.getElementById("pw-input").focus();
-  }
-}
-document.getElementById("pw-submit").addEventListener("click", checkPassword);
-document.getElementById("pw-input").addEventListener("keydown", e => {
-  if (e.key === "Enter") checkPassword();
-  document.getElementById("pw-error").textContent = "";
-});
-if (sessionStorage.getItem(SESSION_KEY) === "1") {
-  document.getElementById("pw-overlay").style.display = "none";
-  document.getElementById("app").style.display = "block";
-  initApp();
-}
 
 // ── State ─────────────────────────────────────────────────
 let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {}, KW_TO_ZH = {}, SYM_TO_SUM = {}, SYM_TO_NZ = {}, SYM_TO_MCAP = {};
@@ -800,6 +753,8 @@ function escHtml(s) {
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 function kwColor(w) { return w>=0.8?"kw-high":w>=0.6?"kw-mid":"kw-low"; }
+
+initApp();
 </script>
 </body>
 </html>
