@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股 Beta 調整升跌幅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:14px;min-height:100vh}
+a{color:#d4a647;text-decoration:none}
+a:hover{text-decoration:underline}
+.page-header{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px;transition:background .2s}
+.back-btn:hover{background:#d4a64720;text-decoration:none}
+.page-title{font-size:18px;font-weight:700;color:#fff}
+.page-subtitle{font-size:12px;color:#888;margin-top:2px}
+.filter-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:12px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.filter-group{display:flex;flex-direction:column;gap:4px}
+.filter-label{font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+select,input[type=text]{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 10px;border-radius:4px;font-size:13px;font-family:inherit;min-width:120px;cursor:pointer;outline:none;transition:border-color .2s}
+select:focus,input[type=text]:focus{border-color:#d4a647}
+input[type=text]{min-width:180px}
+.filter-actions{display:flex;gap:8px;align-items:flex-end;margin-left:auto}
+.btn{padding:7px 16px;border-radius:4px;font-size:13px;font-family:inherit;cursor:pointer;border:none;transition:all .2s;font-weight:600}
+.btn-primary{background:#d4a647;color:#080808}
+.btn-primary:hover{background:#e8bc5a}
+.btn-ghost{background:transparent;border:1px solid #444;color:#aaa}
+.btn-ghost:hover{border-color:#d4a647;color:#d4a647}
+.stats-bar{padding:8px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:12px;color:#888;display:flex;gap:16px;flex-wrap:wrap}
+.stats-bar span b{color:#d4a647;font-size:13px}
+.table-wrap{overflow-x:auto;padding:0 0 40px}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
+th{padding:9px 10px;text-align:left;font-size:13px;font-weight:700;color:#d4a647;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:#e8bc5a}
+th.sort-asc .si::after{content:" ▲"}
+th.sort-desc .si::after{content:" ▼"}
+th:not(.sort-asc):not(.sort-desc) .si::after{content:" ⇅";opacity:.4}
+th.right{text-align:right}
+tbody tr{border-bottom:1px solid #1a1a2e;transition:background .15s}
+tbody tr:hover{background:#1a1a2e}
+td{padding:8px 10px;vertical-align:middle;white-space:nowrap;font-size:13px}
+td.code{color:#d4a647;font-weight:600;font-size:14px}
+td.name{color:#fff;font-weight:600;max-width:160px;white-space:normal;word-break:break-all}
+td.ind{color:#aaa;font-size:12px;max-width:120px;white-space:normal}
+td.num{text-align:right;font-size:13px;font-variant-numeric:tabular-nums}
+td.num.pos{color:#4caf50}
+td.num.neg{color:#ef5350}
+td.num.na{color:#555}
+td.beta{text-align:right;font-size:13px;font-variant-numeric:tabular-nums}
+td.beta.hi{color:#ff9800}
+td.beta.lo{color:#64b5f6}
+td.beta.neg{color:#ef5350}
+td.beta.norm{color:#e8e0d0}
+.pagination{display:flex;justify-content:center;align-items:center;gap:6px;padding:20px 24px;flex-wrap:wrap}
+.page-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#aaa;padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s}
+.page-btn:hover,.page-btn.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
+.page-btn:disabled{opacity:.3;cursor:not-allowed}
+.page-info{color:#666;font-size:13px;padding:0 8px}
+.empty{text-align:center;padding:60px 20px;color:#555}
+.legend{display:flex;flex-wrap:wrap;gap:10px;padding:10px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:11px;color:#888}
+.legend-item{display:flex;align-items:center;gap:4px}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <a class="back-btn" href="/">← 返回主頁</a>
+  <div>
+    <div class="page-title">美股 Beta 調整升跌幅</div>
+    <div class="page-subtitle" id="subtitle">載入中...</div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-group">
+    <span class="filter-label">搜尋</span>
+    <input type="text" id="q" placeholder="股票代碼 / 名稱" oninput="applyFilters()">
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">行業</span>
+    <select id="sel-sector" onchange="applyFilters()"><option value="">全部行業</option></select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Beta 範圍</span>
+    <select id="sel-beta" onchange="applyFilters()">
+      <option value="">全部</option>
+      <option value="neg">負 Beta (&lt;0)</option>
+      <option value="lo">低 Beta (0–0.8)</option>
+      <option value="norm">正常 (0.8–1.5)</option>
+      <option value="hi">高 Beta (&gt;1.5)</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">排序</span>
+    <select id="sel-sort" onchange="applySortFromDropdown()">
+      <option value="ret_badj_21d_desc">1個月Beta調整↓</option>
+      <option value="ret_badj_63d_desc">3個月Beta調整↓</option>
+      <option value="ret_21d_desc">1個月升跌↓</option>
+      <option value="ret_63d_desc">3個月升跌↓</option>
+      <option value="beta_desc">Beta↓</option>
+      <option value="beta_asc">Beta↑</option>
+    </select>
+  </div>
+  <div class="filter-actions">
+    <button class="btn btn-ghost" onclick="resetFilters()">重置</button>
+  </div>
+</div>
+
+<div class="legend">
+  <span style="color:#aaa;font-weight:600;margin-right:4px">Beta：</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#ef5350"></span> 負 Beta</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#64b5f6"></span> 低 (0–0.8)</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#e8e0d0"></span> 正常 (0.8–1.5)</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#ff9800"></span> 高 (&gt;1.5)</span>
+  <span style="margin-left:16px;color:#aaa;font-weight:600;margin-right:4px">Beta調整升跌：</span>
+  <span style="color:#888">= 升跌幅 ÷ |Beta|，剔除系統性風險影響</span>
+</div>
+
+<div class="stats-bar">
+  <span>顯示 <b id="cnt">—</b> 隻股票</span>
+  <span>數據截至 <b id="updated">—</b></span>
+  <span>基準：S&amp;P500 ETF (SPY)</span>
+</div>
+
+<div class="table-wrap">
+  <table id="tbl">
+    <thead>
+      <tr>
+        <th onclick="sortBy('s')">代碼 <span class="si"></span></th>
+        <th onclick="sortBy('nz')">名稱 <span class="si"></span></th>
+        <th onclick="sortBy('ind')">行業 <span class="si"></span></th>
+        <th onclick="sortBy('beta')" class="right">Beta <span class="si"></span></th>
+        <th onclick="sortBy('ret_5d')" class="right">5日升跌 <span class="si"></span></th>
+        <th onclick="sortBy('ret_21d')" class="right">1月升跌 <span class="si"></span></th>
+        <th onclick="sortBy('ret_63d')" class="right">3月升跌 <span class="si"></span></th>
+        <th onclick="sortBy('ret_126d')" class="right">6月升跌 <span class="si"></span></th>
+        <th onclick="sortBy('ret_252d')" class="right">1年升跌 <span class="si"></span></th>
+        <th onclick="sortBy('ret_badj_21d')" class="right" style="color:#ff9800">1月Beta調整 <span class="si"></span></th>
+        <th onclick="sortBy('ret_badj_63d')" class="right" style="color:#ff9800">3月Beta調整 <span class="si"></span></th>
+        <th onclick="sortBy('ret_badj_126d')" class="right" style="color:#ff9800">6月Beta調整 <span class="si"></span></th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+<div class="pagination" id="pag"></div>
+
+<script>
+const PAGE_SIZE = 50;
+let ALL_DATA = [];
+let filtered  = [];
+let sortCol   = "ret_badj_21d";
+let sortDir   = -1;
+let curPage   = 1;
+
+function fmtPct(v) {
+  if (v == null) return '<td class="num na">—</td>';
+  const cls = v > 0 ? "pos" : v < 0 ? "neg" : "";
+  const s = (v > 0 ? "+" : "") + v.toFixed(1) + "%";
+  return `<td class="num ${cls}">${s}</td>`;
+}
+
+function fmtBeta(v) {
+  if (v == null) return '<td class="beta na">—</td>';
+  let cls = "norm";
+  if (v < 0)   cls = "neg";
+  else if (v < 0.8)  cls = "lo";
+  else if (v > 1.5)  cls = "hi";
+  return `<td class="beta ${cls}">${v.toFixed(2)}</td>`;
+}
+
+function rowVal(r, col) {
+  if (col === "s")         return r.s;
+  if (col === "nz")        return r.nz || r.ne;
+  if (col === "ind")       return r.ind;
+  if (col === "beta")      return r.beta ?? null;
+  if (col === "ret_5d")    return r.ret?.["5d"] ?? null;
+  if (col === "ret_21d")   return r.ret?.["21d"] ?? null;
+  if (col === "ret_63d")   return r.ret?.["63d"] ?? null;
+  if (col === "ret_126d")  return r.ret?.["126d"] ?? null;
+  if (col === "ret_252d")  return r.ret?.["252d"] ?? null;
+  if (col === "ret_badj_21d")  return r.ret_badj?.["21d"] ?? null;
+  if (col === "ret_badj_63d")  return r.ret_badj?.["63d"] ?? null;
+  if (col === "ret_badj_126d") return r.ret_badj?.["126d"] ?? null;
+  return null;
+}
+
+function sortBy(col) {
+  if (sortCol === col) { sortDir *= -1; }
+  else { sortCol = col; sortDir = col==="s"||col==="nz"||col==="ind" ? 1 : -1; }
+  applyFilters();
+}
+
+function applySortFromDropdown() {
+  const v = document.getElementById("sel-sort").value;
+  const [c, dir] = v.split(/_(?=asc|desc)/);
+  sortCol = c; sortDir = dir === "desc" ? -1 : 1;
+  applyFilters();
+}
+
+function applyFilters() {
+  const q    = document.getElementById("q").value.toLowerCase();
+  const sec  = document.getElementById("sel-sector").value;
+  const betaF = document.getElementById("sel-beta").value;
+
+  filtered = ALL_DATA.filter(r => {
+    if (q && !r.s.toLowerCase().includes(q) && !(r.nz||"").includes(q) && !(r.ne||"").toLowerCase().includes(q)) return false;
+    if (sec && r.sec !== sec) return false;
+    if (betaF) {
+      const b = r.beta ?? 0;
+      if (betaF === "neg"  && b >= 0)  return false;
+      if (betaF === "lo"   && (b < 0 || b >= 0.8))  return false;
+      if (betaF === "norm" && (b < 0.8 || b > 1.5)) return false;
+      if (betaF === "hi"   && b <= 1.5) return false;
+    }
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    const av = rowVal(a, sortCol), bv = rowVal(b, sortCol);
+    if (av == null && bv == null) return 0;
+    if (av == null) return 1;
+    if (bv == null) return -1;
+    if (typeof av === "string") return av.localeCompare(bv) * sortDir;
+    return (av - bv) * sortDir;
+  });
+
+  document.getElementById("cnt").textContent = filtered.length;
+  curPage = 1;
+  renderTable();
+  renderPag();
+  updateSortHeaders();
+}
+
+function updateSortHeaders() {
+  document.querySelectorAll("th").forEach(th => {
+    th.classList.remove("sort-asc", "sort-desc");
+    const oc = th.getAttribute("onclick") || "";
+    const m = oc.match(/sortBy\('(.+?)'\)/);
+    if (m && m[1] === sortCol) {
+      th.classList.add(sortDir === 1 ? "sort-asc" : "sort-desc");
+    }
+  });
+}
+
+function renderTable() {
+  const start = (curPage - 1) * PAGE_SIZE;
+  const rows  = filtered.slice(start, start + PAGE_SIZE);
+  const tb = document.getElementById("tbody");
+  tb.innerHTML = rows.map(r => `<tr>
+    <td class="code">${r.s}</td>
+    <td class="name">${r.nz || r.ne || r.s}</td>
+    <td class="ind">${r.ind || r.sec || "—"}</td>
+    ${fmtBeta(r.beta)}
+    ${fmtPct(r.ret?.["5d"])}
+    ${fmtPct(r.ret?.["21d"])}
+    ${fmtPct(r.ret?.["63d"])}
+    ${fmtPct(r.ret?.["126d"])}
+    ${fmtPct(r.ret?.["252d"])}
+    ${fmtPct(r.ret_badj?.["21d"])}
+    ${fmtPct(r.ret_badj?.["63d"])}
+    ${fmtPct(r.ret_badj?.["126d"])}
+  </tr>`).join("");
+}
+
+function renderPag() {
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
+  const pag = document.getElementById("pag");
+  if (total <= 1) { pag.innerHTML = ""; return; }
+  let html = `<button class="page-btn" ${curPage===1?"disabled":""} onclick="goPage(${curPage-1})">‹</button>`;
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || Math.abs(i - curPage) <= 2) {
+      html += `<button class="page-btn ${i===curPage?"active":""}" onclick="goPage(${i})">${i}</button>`;
+    } else if (Math.abs(i - curPage) === 3) {
+      html += `<span class="page-info">…</span>`;
+    }
+  }
+  html += `<button class="page-btn" ${curPage===total?"disabled":""} onclick="goPage(${curPage+1})">›</button>`;
+  html += `<span class="page-info">${curPage} / ${total} 頁</span>`;
+  pag.innerHTML = html;
+}
+
+function goPage(p) { curPage = p; renderTable(); renderPag(); window.scrollTo(0,0); }
+
+function resetFilters() {
+  document.getElementById("q").value = "";
+  document.getElementById("sel-sector").value = "";
+  document.getElementById("sel-beta").value = "";
+  document.getElementById("sel-sort").value = "ret_badj_21d_desc";
+  sortCol = "ret_badj_21d"; sortDir = -1;
+  applyFilters();
+}
+
+fetch("us_beta_export.json")
+  .then(r => r.json())
+  .then(d => {
+    ALL_DATA = d.data;
+    document.getElementById("updated").textContent = d.updated;
+    document.getElementById("subtitle").textContent =
+      `${ALL_DATA.length} 隻美股 · Beta 及升跌幅分析 · 基準：S&P500 ETF (SPY)`;
+
+    const sectors = [...new Set(ALL_DATA.map(r => r.sec).filter(Boolean))].sort();
+    const sel = document.getElementById("sel-sector");
+    sectors.forEach(s => { const o = document.createElement("option"); o.value=s; o.textContent=s; sel.appendChild(o); });
+
+    applyFilters();
+  })
+  .catch(e => {
+    document.getElementById("subtitle").textContent = "載入失敗";
+    document.getElementById("tbody").innerHTML = '<tr><td colspan="12" class="empty">載入數據失敗</td></tr>';
+  });
+</script>
+</body>
+</html>
