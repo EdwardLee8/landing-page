@@ -130,20 +130,13 @@ function renderHero(author) {
     el("a", { href: "/cn-keywords.html", class: "btn-tool", text: "A股" })
   );
 
-  const betaRow = el("div", { class: "hero-tool-row" });
-  betaRow.append(
-    el("span", { class: "hero-tool-label", text: "Alpha" }),
-    el("a", { href: "/hk-beta.html", class: "btn-tool", text: "港股" }),
-    el("a", { href: "/us-beta.html", class: "btn-tool", text: "美股" })
-  );
-
   container.append(
     avatarWrap,
     el("h1", { class: "hero-name", text: author.name }),
     el("p", { class: "hero-tagline", text: author.tagline }),
     el("p", { class: "hero-sub", text: author.subTagline }),
     el("div", { class: "hero-cta-group" },
-      el("div", { class: "hero-tool-group" }, dbRow, kwRow, betaRow)
+      el("div", { class: "hero-tool-group" }, dbRow, kwRow)
     )
   );
 }
