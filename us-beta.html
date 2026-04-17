@@ -78,6 +78,14 @@ td.r2.hi{color:#d4a647}
 
 <div class="filter-bar">
   <div class="filter-group">
+    <span class="filter-label">股票類型</span>
+    <select id="sel-type" onchange="applyFilters()">
+      <option value="related">市場相關股 (R²≥0.1)</option>
+      <option value="independent">獨立股 (R²&lt;0.1)</option>
+      <option value="all">全部股票</option>
+    </select>
+  </div>
+  <div class="filter-group">
     <span class="filter-label">搜尋</span>
     <input type="text" id="q" placeholder="股票代碼 / 名稱" oninput="applyFilters()">
   </div>
@@ -132,6 +140,10 @@ td.r2.hi{color:#d4a647}
   <div><b style="color:#d4a647">Beta</b>= 股票對 S&amp;P500 嘅敏感度。Beta=1：同步；Beta=2：波幅兩倍；Beta&lt;0：反向</div>
   <div><b style="color:#d4a647">R²（決定係數）</b>= Beta 嘅可靠度（0–1）。R²&lt;0.1 代表該股票同 S&amp;P500 相關性極低，Beta 僅供參考</div>
   <div style="color:#666">※ 注意：ClickHouse OHLCV 未調整 stock split，極端值（e.g. 升/跌&gt;100%）可能係 split data artifact</div>
+</div>
+
+<div id="info-banner" style="display:none;background:#2a1a1a;border:1px solid #6f4e37;padding:12px 24px;margin:0;font-size:12px;color:#daa520;line-height:1.6">
+  <b>⚠️ 獨立股區域</b>：呢啲股票 R² &lt; 0.1，即係同 S&amp;P500 基本冇關係。升跌主要由公司個別事件決定（業績、融資、重組等），唔受市場整體趨勢影響。Alpha 值喺呢度冇太大意義，投資風險較高。
 </div>
 
 <div class="stats-bar">
@@ -238,16 +250,32 @@ function applyFilters() {
   const q      = document.getElementById("q").value.toLowerCase();
   const sec    = document.getElementById("sel-sector").value;
   const betaF  = document.getElementById("sel-beta").value;
-  const minM   = +document.getElementById("sel-mcap").value;
-  const minTo  = +document.getElementById("sel-to").value;
-  const minR2  = +document.getElementById("sel-r2").value;
+  const typeF  = document.getElementById("sel-type").value;
+
+  let minM   = +document.getElementById("sel-mcap").value;
+  let minTo  = +document.getElementById("sel-to").value;
+  let minR2  = +document.getElementById("sel-r2").value;
+  let maxR2  = 1.0;
+
+  if (typeF === "related") {
+    minR2 = 0.1; maxR2 = 1.0;
+    minM = minM || 1e9;
+    minTo = minTo || 1e7;
+  } else if (typeF === "independent") {
+    minR2 = 0.0; maxR2 = 0.1;
+    minM = 0; minTo = 0;
+  } else {
+    minM = minM || 0;
+    minTo = minTo || 0;
+  }
 
   filtered = ALL_DATA.filter(r => {
     if (q && !r.s.toLowerCase().includes(q) && !(r.nz||"").includes(q) && !(r.ne||"").toLowerCase().includes(q)) return false;
     if (sec && r.sec !== sec) return false;
     if (minM  && (r.mcap || 0) < minM)  return false;
     if (minTo && (r.to   || 0) < minTo) return false;
-    if (minR2 && (r.r2   || 0) < minR2) return false;
+    const r2 = r.r2 ?? 0;
+    if (r2 < minR2 || r2 >= maxR2) return false;
     if (betaF) {
       const b = r.beta ?? 0;
       if (betaF === "neg"  && b >= 0)  return false;
@@ -268,6 +296,12 @@ function applyFilters() {
   });
 
   document.getElementById("cnt").textContent = filtered.length;
+  const banner = document.getElementById("info-banner");
+  if (typeF === "independent") {
+    banner.style.display = "block";
+  } else {
+    banner.style.display = "none";
+  }
   curPage = 1;
   renderTable();
   renderPag();
@@ -331,6 +365,7 @@ function resetFilters() {
   document.getElementById("q").value = "";
   document.getElementById("sel-sector").value = "";
   document.getElementById("sel-beta").value = "";
+  document.getElementById("sel-type").value = "related";
   document.getElementById("sel-mcap").value = "1e9";
   document.getElementById("sel-to").value = "1e7";
   document.getElementById("sel-r2").value = "0.1";
