@@ -81,7 +81,7 @@ td.r2.hi{color:#d4a647}
 <div class="filter-bar">
   <div class="filter-group">
     <span class="filter-label">股票類型</span>
-    <select id="sel-type" onchange="applyFilters()">
+    <select id="sel-type">
       <option value="related">市場相關股 (R²≥0.1)</option>
       <option value="independent">獨立股 (R²&lt;0.1)</option>
       <option value="all">全部股票</option>
@@ -89,15 +89,15 @@ td.r2.hi{color:#d4a647}
   </div>
   <div class="filter-group">
     <span class="filter-label">搜尋</span>
-    <input type="text" id="q" placeholder="股票代碼 / 名稱" oninput="applyFilters()">
+    <input type="text" id="q" placeholder="股票代碼 / 名稱">
   </div>
   <div class="filter-group">
     <span class="filter-label">行業</span>
-    <select id="sel-sector" onchange="applyFilters()"><option value="">全部行業</option></select>
+    <select id="sel-sector"><option value="">全部行業</option></select>
   </div>
   <div class="filter-group">
     <span class="filter-label">市值 (HKD)</span>
-    <select id="sel-mcap" onchange="applyFilters()">
+    <select id="sel-mcap">
       <option value="1e9">≥ 10億 (預設)</option>
       <option value="0">全部</option>
       <option value="1e10">≥ 100億</option>
@@ -106,7 +106,7 @@ td.r2.hi{color:#d4a647}
   </div>
   <div class="filter-group">
     <span class="filter-label">20日成交額</span>
-    <select id="sel-to" onchange="applyFilters()">
+    <select id="sel-to">
       <option value="1e6">≥ 100萬 (預設)</option>
       <option value="0">全部</option>
       <option value="1e7">≥ 1000萬</option>
@@ -115,7 +115,7 @@ td.r2.hi{color:#d4a647}
   </div>
   <div class="filter-group">
     <span class="filter-label">Beta 可靠度 R²</span>
-    <select id="sel-r2" onchange="applyFilters()">
+    <select id="sel-r2">
       <option value="0.1">≥ 0.10 (預設)</option>
       <option value="0">全部</option>
       <option value="0.3">≥ 0.30 (強)</option>
@@ -124,7 +124,7 @@ td.r2.hi{color:#d4a647}
   </div>
   <div class="filter-group">
     <span class="filter-label">Beta 範圍</span>
-    <select id="sel-beta" onchange="applyFilters()">
+    <select id="sel-beta">
       <option value="">全部</option>
       <option value="neg">負 Beta (&lt;0)</option>
       <option value="lo">低 (0–0.8)</option>
@@ -133,6 +133,7 @@ td.r2.hi{color:#d4a647}
     </select>
   </div>
   <div class="filter-actions">
+    <button class="btn btn-primary" onclick="applyFilters()">套用篩選</button>
     <button class="btn btn-ghost" onclick="resetFilters()">重置</button>
   </div>
 </div>
@@ -254,20 +255,22 @@ function applyFilters() {
   const sec    = document.getElementById("sel-sector").value;
   const betaF  = document.getElementById("sel-beta").value;
   const typeF  = document.getElementById("sel-type").value;
+  const mcapVal = document.getElementById("sel-mcap").value;
+  const toVal   = document.getElementById("sel-to").value;
+  const r2Val   = document.getElementById("sel-r2").value;
 
-  // Adjust defaults based on type
-  let minM   = +document.getElementById("sel-mcap").value;
-  let minTo  = +document.getElementById("sel-to").value;
-  let minR2  = +document.getElementById("sel-r2").value;
+  let minM   = mcapVal ? +mcapVal : 0;
+  let minTo  = toVal ? +toVal : 0;
+  let minR2  = r2Val ? +r2Val : 0;
   let maxR2  = 1.0;
 
   if (typeF === "related") {
     minR2 = 0.1; maxR2 = 1.0;
-    minM = minM || 1e9;
-    minTo = minTo || 1e6;
+    if (!minM) minM = 1e9;
+    if (!minTo) minTo = 1e6;
   } else if (typeF === "independent") {
     minR2 = 0.0; maxR2 = 0.1;
-    minM = 0; minTo = 0;  // 寬鬆條件
+    minM = 0; minTo = 0;
   } else {
     minM = minM || 0;
     minTo = minTo || 0;
