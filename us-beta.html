@@ -266,11 +266,11 @@ function applyFilters() {
   let minR2, maxR2, minM, minTo;
 
   if (typeF === "independent") {
-    // 獨立股：R² < 0.1，其他冇限制
+    // 獨立股：R² < 0.1，用戶嘅市值/成交額選擇生效
     minR2 = 0.0;
     maxR2 = 0.1;
-    minM = 0;
-    minTo = 0;
+    minM = mcapVal;
+    minTo = toVal;
   } else if (typeF === "related") {
     // 市場相關股：R² ≥ 0.1
     minR2 = 0.1;
