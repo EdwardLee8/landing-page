@@ -132,7 +132,7 @@ function renderHero(author) {
 
   const betaRow = el("div", { class: "hero-tool-row" });
   betaRow.append(
-    el("span", { class: "hero-tool-label", text: "Beta調整" }),
+    el("span", { class: "hero-tool-label", text: "Alpha" }),
     el("a", { href: "/hk-beta.html", class: "btn-tool", text: "港股" }),
     el("a", { href: "/us-beta.html", class: "btn-tool", text: "美股" })
   );

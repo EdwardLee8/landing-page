@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>美股 Beta 調整升跌幅</title>
+<title>美股 Alpha 超額回報</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -24,14 +24,12 @@ select:focus,input[type=text]:focus{border-color:#d4a647}
 input[type=text]{min-width:180px}
 .filter-actions{display:flex;gap:8px;align-items:flex-end;margin-left:auto}
 .btn{padding:7px 16px;border-radius:4px;font-size:13px;font-family:inherit;cursor:pointer;border:none;transition:all .2s;font-weight:600}
-.btn-primary{background:#d4a647;color:#080808}
-.btn-primary:hover{background:#e8bc5a}
 .btn-ghost{background:transparent;border:1px solid #444;color:#aaa}
 .btn-ghost:hover{border-color:#d4a647;color:#d4a647}
 .stats-bar{padding:8px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:12px;color:#888;display:flex;gap:16px;flex-wrap:wrap}
 .stats-bar span b{color:#d4a647;font-size:13px}
 .table-wrap{overflow-x:auto;padding:0 0 40px}
-table{width:100%;border-collapse:collapse;min-width:1100px}
+table{width:100%;border-collapse:collapse;min-width:1280px}
 thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
 th{padding:9px 10px;text-align:left;font-size:13px;font-weight:700;color:#d4a647;white-space:nowrap;cursor:pointer;user-select:none}
 th:hover{color:#e8bc5a}
@@ -49,20 +47,23 @@ td.num{text-align:right;font-size:13px;font-variant-numeric:tabular-nums}
 td.num.pos{color:#4caf50}
 td.num.neg{color:#ef5350}
 td.num.na{color:#555}
-td.beta{text-align:right;font-size:13px;font-variant-numeric:tabular-nums}
+td.num.alpha-col{font-weight:700}
+td.beta{text-align:right;font-variant-numeric:tabular-nums}
 td.beta.hi{color:#ff9800}
 td.beta.lo{color:#64b5f6}
 td.beta.neg{color:#ef5350}
 td.beta.norm{color:#e8e0d0}
+td.r2{text-align:right;font-variant-numeric:tabular-nums}
+td.r2.low{color:#666}
+td.r2.mid{color:#aaa}
+td.r2.hi{color:#d4a647}
 .pagination{display:flex;justify-content:center;align-items:center;gap:6px;padding:20px 24px;flex-wrap:wrap}
 .page-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#aaa;padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s}
 .page-btn:hover,.page-btn.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
 .page-btn:disabled{opacity:.3;cursor:not-allowed}
 .page-info{color:#666;font-size:13px;padding:0 8px}
 .empty{text-align:center;padding:60px 20px;color:#555}
-.legend{display:flex;flex-wrap:wrap;gap:10px;padding:10px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:11px;color:#888}
-.legend-item{display:flex;align-items:center;gap:4px}
-.legend-dot{width:8px;height:8px;border-radius:50%}
+.legend{display:flex;flex-wrap:wrap;gap:12px;padding:10px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:11px;color:#888;line-height:1.7}
 </style>
 </head>
 <body>
@@ -70,7 +71,7 @@ td.beta.norm{color:#e8e0d0}
 <div class="page-header">
   <a class="back-btn" href="/">← 返回主頁</a>
   <div>
-    <div class="page-title">美股 Beta 調整升跌幅</div>
+    <div class="page-title">美股 Alpha 超額回報</div>
     <div class="page-subtitle" id="subtitle">載入中...</div>
   </div>
 </div>
@@ -85,24 +86,40 @@ td.beta.norm{color:#e8e0d0}
     <select id="sel-sector" onchange="applyFilters()"><option value="">全部行業</option></select>
   </div>
   <div class="filter-group">
+    <span class="filter-label">市值 (USD)</span>
+    <select id="sel-mcap" onchange="applyFilters()">
+      <option value="1e9">≥ 10億 (預設)</option>
+      <option value="0">全部</option>
+      <option value="1e10">≥ 100億</option>
+      <option value="1e11">≥ 1000億</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">20日成交額</span>
+    <select id="sel-to" onchange="applyFilters()">
+      <option value="1e7">≥ 1000萬 (預設)</option>
+      <option value="0">全部</option>
+      <option value="1e8">≥ 1億</option>
+      <option value="1e9">≥ 10億</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Beta 可靠度 R²</span>
+    <select id="sel-r2" onchange="applyFilters()">
+      <option value="0.1">≥ 0.10 (預設)</option>
+      <option value="0">全部</option>
+      <option value="0.3">≥ 0.30 (強)</option>
+      <option value="0.5">≥ 0.50 (很強)</option>
+    </select>
+  </div>
+  <div class="filter-group">
     <span class="filter-label">Beta 範圍</span>
     <select id="sel-beta" onchange="applyFilters()">
       <option value="">全部</option>
       <option value="neg">負 Beta (&lt;0)</option>
-      <option value="lo">低 Beta (0–0.8)</option>
+      <option value="lo">低 (0–0.8)</option>
       <option value="norm">正常 (0.8–1.5)</option>
-      <option value="hi">高 Beta (&gt;1.5)</option>
-    </select>
-  </div>
-  <div class="filter-group">
-    <span class="filter-label">排序</span>
-    <select id="sel-sort" onchange="applySortFromDropdown()">
-      <option value="ret_badj_21d_desc">1個月Beta調整↓</option>
-      <option value="ret_badj_63d_desc">3個月Beta調整↓</option>
-      <option value="ret_21d_desc">1個月升跌↓</option>
-      <option value="ret_63d_desc">3個月升跌↓</option>
-      <option value="beta_desc">Beta↓</option>
-      <option value="beta_asc">Beta↑</option>
+      <option value="hi">高 (&gt;1.5)</option>
     </select>
   </div>
   <div class="filter-actions">
@@ -111,19 +128,17 @@ td.beta.norm{color:#e8e0d0}
 </div>
 
 <div class="legend">
-  <span style="color:#aaa;font-weight:600;margin-right:4px">Beta：</span>
-  <span class="legend-item"><span class="legend-dot" style="background:#ef5350"></span> 負 Beta</span>
-  <span class="legend-item"><span class="legend-dot" style="background:#64b5f6"></span> 低 (0–0.8)</span>
-  <span class="legend-item"><span class="legend-dot" style="background:#e8e0d0"></span> 正常 (0.8–1.5)</span>
-  <span class="legend-item"><span class="legend-dot" style="background:#ff9800"></span> 高 (&gt;1.5)</span>
-  <span style="margin-left:16px;color:#aaa;font-weight:600;margin-right:4px">Beta調整升跌：</span>
-  <span style="color:#888">= 升跌幅 ÷ |Beta|，剔除系統性風險影響</span>
+  <div><b style="color:#d4a647">Alpha（超額回報）</b>= 股票升跌 − Beta × S&amp;P500升跌；代表剔除市場影響後，股票自身嘅表現</div>
+  <div><b style="color:#d4a647">Beta</b>= 股票對 S&amp;P500 嘅敏感度。Beta=1：同步；Beta=2：波幅兩倍；Beta&lt;0：反向</div>
+  <div><b style="color:#d4a647">R²（決定係數）</b>= Beta 嘅可靠度（0–1）。R²&lt;0.1 代表該股票同 S&amp;P500 相關性極低，Beta 僅供參考</div>
+  <div style="color:#666">※ 注意：ClickHouse OHLCV 未調整 stock split，極端值（e.g. 升/跌&gt;100%）可能係 split data artifact</div>
 </div>
 
 <div class="stats-bar">
   <span>顯示 <b id="cnt">—</b> 隻股票</span>
   <span>數據截至 <b id="updated">—</b></span>
-  <span>基準：S&amp;P500 ETF (SPY)</span>
+  <span>基準：<b id="bm">SPY</b></span>
+  <span id="bm-rets"></span>
 </div>
 
 <div class="table-wrap">
@@ -133,15 +148,18 @@ td.beta.norm{color:#e8e0d0}
         <th onclick="sortBy('s')">代碼 <span class="si"></span></th>
         <th onclick="sortBy('nz')">名稱 <span class="si"></span></th>
         <th onclick="sortBy('ind')">行業 <span class="si"></span></th>
+        <th onclick="sortBy('mcap')" class="right">市值 <span class="si"></span></th>
+        <th onclick="sortBy('to')" class="right">20日成交 <span class="si"></span></th>
         <th onclick="sortBy('beta')" class="right">Beta <span class="si"></span></th>
-        <th onclick="sortBy('ret_5d')" class="right">5日升跌 <span class="si"></span></th>
+        <th onclick="sortBy('r2')" class="right">R² <span class="si"></span></th>
         <th onclick="sortBy('ret_21d')" class="right">1月升跌 <span class="si"></span></th>
         <th onclick="sortBy('ret_63d')" class="right">3月升跌 <span class="si"></span></th>
         <th onclick="sortBy('ret_126d')" class="right">6月升跌 <span class="si"></span></th>
         <th onclick="sortBy('ret_252d')" class="right">1年升跌 <span class="si"></span></th>
-        <th onclick="sortBy('ret_badj_21d')" class="right" style="color:#ff9800">1月Beta調整 <span class="si"></span></th>
-        <th onclick="sortBy('ret_badj_63d')" class="right" style="color:#ff9800">3月Beta調整 <span class="si"></span></th>
-        <th onclick="sortBy('ret_badj_126d')" class="right" style="color:#ff9800">6月Beta調整 <span class="si"></span></th>
+        <th onclick="sortBy('alpha_21d')" class="right" style="color:#ff9800">1月Alpha <span class="si"></span></th>
+        <th onclick="sortBy('alpha_63d')" class="right" style="color:#ff9800">3月Alpha <span class="si"></span></th>
+        <th onclick="sortBy('alpha_126d')" class="right" style="color:#ff9800">6月Alpha <span class="si"></span></th>
+        <th onclick="sortBy('alpha_252d')" class="right" style="color:#ff9800">1年Alpha <span class="si"></span></th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
@@ -153,15 +171,31 @@ td.beta.norm{color:#e8e0d0}
 const PAGE_SIZE = 50;
 let ALL_DATA = [];
 let filtered  = [];
-let sortCol   = "ret_badj_21d";
+let sortCol   = "alpha_21d";
 let sortDir   = -1;
 let curPage   = 1;
 
-function fmtPct(v) {
+function fmtPct(v, bold=false) {
   if (v == null) return '<td class="num na">—</td>';
   const cls = v > 0 ? "pos" : v < 0 ? "neg" : "";
   const s = (v > 0 ? "+" : "") + v.toFixed(1) + "%";
-  return `<td class="num ${cls}">${s}</td>`;
+  return `<td class="num ${cls} ${bold?'alpha-col':''}">${s}</td>`;
+}
+
+function fmtMcap(v) {
+  if (v == null) return '<td class="num na">—</td>';
+  if (v >= 1e12) return `<td class="num">${(v/1e12).toFixed(2)}T</td>`;
+  if (v >= 1e9)  return `<td class="num">${(v/1e9).toFixed(1)}B</td>`;
+  if (v >= 1e6)  return `<td class="num">${(v/1e6).toFixed(1)}M</td>`;
+  return `<td class="num">${(v/1e3).toFixed(0)}K</td>`;
+}
+
+function fmtTurnover(v) {
+  if (v == null) return '<td class="num na">—</td>';
+  if (v >= 1e9) return `<td class="num">${(v/1e9).toFixed(2)}B</td>`;
+  if (v >= 1e6) return `<td class="num">${(v/1e6).toFixed(1)}M</td>`;
+  if (v >= 1e3) return `<td class="num">${(v/1e3).toFixed(0)}K</td>`;
+  return `<td class="num">${v.toFixed(0)}</td>`;
 }
 
 function fmtBeta(v) {
@@ -173,43 +207,47 @@ function fmtBeta(v) {
   return `<td class="beta ${cls}">${v.toFixed(2)}</td>`;
 }
 
+function fmtR2(v) {
+  if (v == null) return '<td class="r2 na">—</td>';
+  let cls = "low";
+  if (v >= 0.5) cls = "hi";
+  else if (v >= 0.2) cls = "mid";
+  return `<td class="r2 ${cls}">${v.toFixed(2)}</td>`;
+}
+
 function rowVal(r, col) {
-  if (col === "s")         return r.s;
-  if (col === "nz")        return r.nz || r.ne;
-  if (col === "ind")       return r.ind;
-  if (col === "beta")      return r.beta ?? null;
-  if (col === "ret_5d")    return r.ret?.["5d"] ?? null;
-  if (col === "ret_21d")   return r.ret?.["21d"] ?? null;
-  if (col === "ret_63d")   return r.ret?.["63d"] ?? null;
-  if (col === "ret_126d")  return r.ret?.["126d"] ?? null;
-  if (col === "ret_252d")  return r.ret?.["252d"] ?? null;
-  if (col === "ret_badj_21d")  return r.ret_badj?.["21d"] ?? null;
-  if (col === "ret_badj_63d")  return r.ret_badj?.["63d"] ?? null;
-  if (col === "ret_badj_126d") return r.ret_badj?.["126d"] ?? null;
+  if (col === "s")     return r.s;
+  if (col === "nz")    return r.nz || r.ne;
+  if (col === "ind")   return r.ind;
+  if (col === "mcap")  return r.mcap ?? null;
+  if (col === "to")    return r.to ?? null;
+  if (col === "beta")  return r.beta ?? null;
+  if (col === "r2")    return r.r2 ?? null;
+  if (col.startsWith("ret_"))   return r.ret?.[col.slice(4)] ?? null;
+  if (col.startsWith("alpha_")) return r.alpha?.[col.slice(6)] ?? null;
   return null;
 }
 
 function sortBy(col) {
   if (sortCol === col) { sortDir *= -1; }
-  else { sortCol = col; sortDir = col==="s"||col==="nz"||col==="ind" ? 1 : -1; }
-  applyFilters();
-}
-
-function applySortFromDropdown() {
-  const v = document.getElementById("sel-sort").value;
-  const [c, dir] = v.split(/_(?=asc|desc)/);
-  sortCol = c; sortDir = dir === "desc" ? -1 : 1;
+  else { sortCol = col; sortDir = (col==="s"||col==="nz"||col==="ind") ? 1 : -1; }
   applyFilters();
 }
 
 function applyFilters() {
-  const q    = document.getElementById("q").value.toLowerCase();
-  const sec  = document.getElementById("sel-sector").value;
-  const betaF = document.getElementById("sel-beta").value;
+  const q      = document.getElementById("q").value.toLowerCase();
+  const sec    = document.getElementById("sel-sector").value;
+  const betaF  = document.getElementById("sel-beta").value;
+  const minM   = +document.getElementById("sel-mcap").value;
+  const minTo  = +document.getElementById("sel-to").value;
+  const minR2  = +document.getElementById("sel-r2").value;
 
   filtered = ALL_DATA.filter(r => {
     if (q && !r.s.toLowerCase().includes(q) && !(r.nz||"").includes(q) && !(r.ne||"").toLowerCase().includes(q)) return false;
     if (sec && r.sec !== sec) return false;
+    if (minM  && (r.mcap || 0) < minM)  return false;
+    if (minTo && (r.to   || 0) < minTo) return false;
+    if (minR2 && (r.r2   || 0) < minR2) return false;
     if (betaF) {
       const b = r.beta ?? 0;
       if (betaF === "neg"  && b >= 0)  return false;
@@ -255,15 +293,18 @@ function renderTable() {
     <td class="code">${r.s}</td>
     <td class="name">${r.nz || r.ne || r.s}</td>
     <td class="ind">${r.ind || r.sec || "—"}</td>
+    ${fmtMcap(r.mcap)}
+    ${fmtTurnover(r.to)}
     ${fmtBeta(r.beta)}
-    ${fmtPct(r.ret?.["5d"])}
+    ${fmtR2(r.r2)}
     ${fmtPct(r.ret?.["21d"])}
     ${fmtPct(r.ret?.["63d"])}
     ${fmtPct(r.ret?.["126d"])}
     ${fmtPct(r.ret?.["252d"])}
-    ${fmtPct(r.ret_badj?.["21d"])}
-    ${fmtPct(r.ret_badj?.["63d"])}
-    ${fmtPct(r.ret_badj?.["126d"])}
+    ${fmtPct(r.alpha?.["21d"], true)}
+    ${fmtPct(r.alpha?.["63d"], true)}
+    ${fmtPct(r.alpha?.["126d"], true)}
+    ${fmtPct(r.alpha?.["252d"], true)}
   </tr>`).join("");
 }
 
@@ -290,9 +331,19 @@ function resetFilters() {
   document.getElementById("q").value = "";
   document.getElementById("sel-sector").value = "";
   document.getElementById("sel-beta").value = "";
-  document.getElementById("sel-sort").value = "ret_badj_21d_desc";
-  sortCol = "ret_badj_21d"; sortDir = -1;
+  document.getElementById("sel-mcap").value = "1e9";
+  document.getElementById("sel-to").value = "1e7";
+  document.getElementById("sel-r2").value = "0.1";
+  sortCol = "alpha_21d"; sortDir = -1;
   applyFilters();
+}
+
+function fmtBmRets(bm) {
+  const parts = [];
+  if (bm["21d"]  != null) parts.push(`1月 ${bm["21d"]>0?"+":""}${bm["21d"].toFixed(1)}%`);
+  if (bm["63d"]  != null) parts.push(`3月 ${bm["63d"]>0?"+":""}${bm["63d"].toFixed(1)}%`);
+  if (bm["252d"] != null) parts.push(`1年 ${bm["252d"]>0?"+":""}${bm["252d"].toFixed(1)}%`);
+  return "S&P500 " + parts.join(" · ");
 }
 
 fetch("us_beta_export.json")
@@ -300,8 +351,10 @@ fetch("us_beta_export.json")
   .then(d => {
     ALL_DATA = d.data;
     document.getElementById("updated").textContent = d.updated;
+    document.getElementById("bm").textContent = d.benchmark;
+    document.getElementById("bm-rets").textContent = fmtBmRets(d.ret_bm);
     document.getElementById("subtitle").textContent =
-      `${ALL_DATA.length} 隻美股 · Beta 及升跌幅分析 · 基準：S&P500 ETF (SPY)`;
+      `${ALL_DATA.length} 隻美股 · Alpha 超額回報 · 基準：S&P500 ETF (SPY)`;
 
     const sectors = [...new Set(ALL_DATA.map(r => r.sec).filter(Boolean))].sort();
     const sel = document.getElementById("sel-sector");
@@ -310,8 +363,8 @@ fetch("us_beta_export.json")
     applyFilters();
   })
   .catch(e => {
-    document.getElementById("subtitle").textContent = "載入失敗";
-    document.getElementById("tbody").innerHTML = '<tr><td colspan="12" class="empty">載入數據失敗</td></tr>';
+    document.getElementById("subtitle").textContent = "載入失敗: " + e.message;
+    document.getElementById("tbody").innerHTML = '<tr><td colspan="15" class="empty">載入數據失敗</td></tr>';
   });
 </script>
 </body>
