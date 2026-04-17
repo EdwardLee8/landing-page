@@ -248,38 +248,62 @@ function sortBy(col) {
 }
 
 function applyFilters() {
+  // 讀取用戶選擇
   const q      = document.getElementById("q").value.toLowerCase();
   const sec    = document.getElementById("sel-sector").value;
   const betaF  = document.getElementById("sel-beta").value;
   const typeF  = document.getElementById("sel-type").value;
-  const mcapVal = document.getElementById("sel-mcap").value;
-  const toVal   = document.getElementById("sel-to").value;
-  const r2Val   = document.getElementById("sel-r2").value;
+  const mcapVal = +document.getElementById("sel-mcap").value;
+  const toVal   = +document.getElementById("sel-to").value;
+  const r2Val   = +document.getElementById("sel-r2").value;
 
-  let minM   = mcapVal ? +mcapVal : 0;
-  let minTo  = toVal ? +toVal : 0;
-  let minR2  = r2Val ? +r2Val : 0;
-  let maxR2  = 1.0;
+  // 股票類型決定預設篩選範圍（只有冇選其他條件時）
+  let minR2, maxR2, minM, minTo;
 
-  if (typeF === "related") {
-    minR2 = 0.1; maxR2 = 1.0;
-    if (!minM) minM = 1e9;
-    if (!minTo) minTo = 1e7;
-  } else if (typeF === "independent") {
-    minR2 = 0.0; maxR2 = 0.1;
-    minM = 0; minTo = 0;
+  if (typeF === "independent") {
+    // 獨立股：R² < 0.1，其他冇限制
+    minR2 = 0.0;
+    maxR2 = 0.1;
+    minM = 0;
+    minTo = 0;
+  } else if (typeF === "related") {
+    // 市場相關股：R² ≥ 0.1，預設市值10億、成交1000萬
+    minR2 = 0.1;
+    maxR2 = 1.0;
+    minM = mcapVal || 1e9;
+    minTo = toVal || 1e7;
   } else {
-    minM = minM || 0;
-    minTo = minTo || 0;
+    // 全部：無預設限制，用戶選擇生效
+    minR2 = r2Val || 0;
+    maxR2 = 1.0;
+    minM = mcapVal || 0;
+    minTo = toVal || 0;
   }
 
+  // 篩選邏輯
   filtered = ALL_DATA.filter(r => {
-    if (q && !r.s.toLowerCase().includes(q) && !(r.nz||"").includes(q) && !(r.ne||"").toLowerCase().includes(q)) return false;
+    // 搜尋：代碼/中文名/英文名
+    if (q) {
+      const matchCode = r.s.toLowerCase().includes(q);
+      const matchZh = (r.nz || "").includes(q);
+      const matchEn = (r.ne || "").toLowerCase().includes(q);
+      if (!matchCode && !matchZh && !matchEn) return false;
+    }
+
+    // 行業篩選
     if (sec && r.sec !== sec) return false;
-    if (minM  && (r.mcap || 0) < minM)  return false;
-    if (minTo && (r.to   || 0) < minTo) return false;
+
+    // 市值篩選（>= minM）
+    if (minM > 0 && (r.mcap || 0) < minM) return false;
+
+    // 成交額篩選（>= minTo）
+    if (minTo > 0 && (r.to || 0) < minTo) return false;
+
+    // R² 篩選（minR2 <= r2 < maxR2）
     const r2 = r.r2 ?? 0;
     if (r2 < minR2 || r2 >= maxR2) return false;
+
+    // Beta 篩選
     if (betaF) {
       const b = r.beta ?? 0;
       if (betaF === "neg"  && b >= 0)  return false;
@@ -287,6 +311,7 @@ function applyFilters() {
       if (betaF === "norm" && (b < 0.8 || b > 1.5)) return false;
       if (betaF === "hi"   && b <= 1.5) return false;
     }
+
     return true;
   });
 
