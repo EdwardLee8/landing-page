@@ -260,6 +260,9 @@ function applyFilters() {
   const toVal   = +document.getElementById("sel-to").value;
   const r2Val   = +document.getElementById("sel-r2").value;
 
+  // DEBUG: 輸出篩選值到 console
+  console.log(`applyFilters: typeF=${typeF}, mcapVal=${mcapVal}, toVal=${toVal}, r2Val=${r2Val}`);
+
   // 股票類型決定預設篩選範圍（只有冇選其他條件時）
   let minR2, maxR2, minM, minTo;
 
@@ -270,18 +273,21 @@ function applyFilters() {
     minM = 0;
     minTo = 0;
   } else if (typeF === "related") {
-    // 市場相關股：R² ≥ 0.1，預設市值10億、成交100萬
+    // 市場相關股：R² ≥ 0.1
     minR2 = 0.1;
     maxR2 = 1.0;
-    minM = mcapVal || 1e9;
-    minTo = toVal || 1e6;
+    // 用戶選擇優先：如果選咗具體市值，用用戶嘅選擇；如果選「全部」(0)，先用預設 1e9
+    minM = (mcapVal > 0) ? mcapVal : 1e9;
+    minTo = (toVal > 0) ? toVal : 1e6;
   } else {
     // 全部：無預設限制，用戶選擇生效
-    minR2 = r2Val || 0;
+    minR2 = (r2Val > 0) ? r2Val : 0;
     maxR2 = 1.0;
-    minM = mcapVal || 0;
-    minTo = toVal || 0;
+    minM = (mcapVal > 0) ? mcapVal : 0;
+    minTo = (toVal > 0) ? toVal : 0;
   }
+
+  console.log(`決定後: minM=${minM}, minTo=${minTo}, minR2=${minR2}`);
 
   // 篩選邏輯
   filtered = ALL_DATA.filter(r => {
