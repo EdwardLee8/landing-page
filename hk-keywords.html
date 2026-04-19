@@ -237,10 +237,15 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 
 <script>
 // ── Password ──────────────────────────────────────────────
-const CORRECT_PW = "HK_stock_Key_worD";
+const _PW_HASH = "a5885ef58965f19d0ce0db26e6ffca8751c1691c98eff119c71bda7fea28cbe6";
 const SESSION_KEY = "hk_kw_auth";
-function checkPassword() {
-  if (document.getElementById("pw-input").value === CORRECT_PW) {
+async function _sha256(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function checkPassword() {
+  const h = await _sha256(document.getElementById("pw-input").value);
+  if (h === _PW_HASH) {
     sessionStorage.setItem(SESSION_KEY, "1");
     document.getElementById("pw-overlay").style.display = "none";
     document.getElementById("app").style.display = "block";

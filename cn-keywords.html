@@ -237,10 +237,15 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 
 <script>
 // ── Password ──────────────────────────────────────────────
-const CORRECT_PW = "CN_stock_Key_worD";
+const _PW_HASH = "9eaaa349072153688cc7742ce3aae7c6418c23e7715d31213f4a96d4c00a5a13";
 const SESSION_KEY = "cn_kw_auth";
-function checkPassword() {
-  if (document.getElementById("pw-input").value === CORRECT_PW) {
+async function _sha256(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function checkPassword() {
+  const h = await _sha256(document.getElementById("pw-input").value);
+  if (h === _PW_HASH) {
     sessionStorage.setItem(SESSION_KEY, "1");
     document.getElementById("pw-overlay").style.display = "none";
     document.getElementById("app").style.display = "block";

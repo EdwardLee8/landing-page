@@ -168,9 +168,14 @@ td.num.na{color:#555}
 <div class="pagination" id="pagination"></div>
 
 <script>
-function checkPassword() {
-  const val = document.getElementById('pw-input').value;
-  if (val === 'ai10xpro') {
+const _PW_HASH = "2c4a535d01a62814d347c0c0255d9a620f54e09a7522e2f576c6a3c41445342a";
+async function _sha256(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function checkPassword() {
+  const h = await _sha256(document.getElementById('pw-input').value);
+  if (h === _PW_HASH) {
     document.getElementById('pw-overlay').style.display = 'none';
     sessionStorage.setItem('hkdb_auth', '1');
   } else {
