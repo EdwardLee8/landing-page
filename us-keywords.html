@@ -233,14 +233,28 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 // ── Password ──────────────────────────────────────────────
 const _PW_HASH = "ab7c623277f907b207318c07e8641ff5b745d7a189b12823e0cb545130008a6a";
 const SESSION_KEY = "us_kw_auth";
+let _pw = sessionStorage.getItem(SESSION_KEY + "_pw") || "";
 async function _sha256(s) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
 }
+async function _decryptEnc(b64, pw) {
+  const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const salt = raw.slice(0, 16), nonce = raw.slice(16, 28), ct = raw.slice(28);
+  const keyMat = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" },
+    keyMat, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce }, key, ct);
+  return JSON.parse(new TextDecoder().decode(plain));
+}
 async function checkPassword() {
-  const h = await _sha256(document.getElementById("pw-input").value);
+  const raw = document.getElementById("pw-input").value;
+  const h = await _sha256(raw);
   if (h === _PW_HASH) {
+    _pw = raw;
     sessionStorage.setItem(SESSION_KEY, "1");
+    sessionStorage.setItem(SESSION_KEY + "_pw", _pw);
     document.getElementById("pw-overlay").style.display = "none";
     document.getElementById("app").style.display = "block";
     initApp();
@@ -255,7 +269,7 @@ document.getElementById("pw-input").addEventListener("keydown", e => {
   if (e.key === "Enter") checkPassword();
   document.getElementById("pw-error").textContent = "";
 });
-if (sessionStorage.getItem(SESSION_KEY) === "1") {
+if (sessionStorage.getItem(SESSION_KEY) === "1" && _pw) {
   document.getElementById("pw-overlay").style.display = "none";
   document.getElementById("app").style.display = "block";
   initApp();
@@ -302,8 +316,8 @@ function setMinSize(m) {
 // ── Init ──────────────────────────────────────────────────
 async function initApp() {
   try {
-    const r = await fetch("us_keywords_export.json");
-    DB = await r.json();
+    const r = await fetch("us_keywords_export.enc");
+    DB = await _decryptEnc(await r.text(), _pw);
   } catch(e) {
     document.getElementById("stats-bar").innerHTML = `<span style="color:#ef5350">載入失敗: ${e.message}</span>`;
     return;
@@ -354,8 +368,8 @@ function switchTab(tab) {
 // ── Load correlation clusters ────────────────────────────
 async function loadCorrData() {
   try {
-    const r = await fetch("us_corr_clusters_v2.json");
-    CORR_DATA = await r.json();
+    const r = await fetch("us_corr_clusters_v2.enc");
+    CORR_DATA = await _decryptEnc(await r.text(), _pw);
     corrLoaded = true;
     updateThreshInfo();
     buildSectorBar();
