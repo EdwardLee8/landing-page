@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ETF 基準比較報告</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+       background: #f8fafc; color: #1e293b; font-size: 13px; }
+.header { background: linear-gradient(135deg, #1e3a5f, #1e40af); color: #fff; padding: 20px 32px; }
+.header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.header p  { opacity: 0.8; font-size: 12px; }
+.method-box { background: #fff; border-left: 4px solid #3b82f6;
+              margin: 16px 24px; padding: 12px 16px; border-radius: 4px;
+              font-size: 12px; line-height: 1.7; color: #475569; }
+.method-box strong { color: #1e3a5f; }
+.tabs { display: flex; gap: 4px; padding: 12px 24px 0; border-bottom: 2px solid #e2e8f0; }
+.tab-btn { padding: 8px 20px; border: none; background: #e2e8f0;
+           border-radius: 6px 6px 0 0; cursor: pointer; font-size: 13px; font-weight: 600; color: #64748b; }
+.tab-btn.active { background: #1e40af; color: #fff; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.period-tabs { display: flex; gap: 6px; padding: 14px 24px 8px; flex-wrap: wrap; align-items: center; }
+.period-btn { padding: 5px 14px; border: 2px solid #cbd5e1; background: #fff;
+              border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; color: #475569; }
+.period-btn.active { border-color: #1e40af; background: #1e40af; color: #fff; }
+.filter-bar { padding: 8px 24px 12px; display: flex; gap: 8px; flex-wrap: wrap;
+              align-items: center; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
+.filter-label { font-size: 12px; font-weight: 700; color: #1e3a5f; white-space: nowrap; }
+.filter-group { display: flex; align-items: center; gap: 5px; }
+.filter-group label { font-size: 11px; color: #64748b; font-weight: 600; white-space: nowrap; }
+.filter-group select { font-size: 11px; padding: 3px 6px; border: 1px solid #cbd5e1;
+                       border-radius: 4px; max-width: 130px; }
+.filter-group input[type=range] { width: 80px; }
+.range-val { font-size: 11px; color: #1e40af; font-weight: 700; min-width: 26px; }
+.reset-btn { padding: 3px 10px; background: #e2e8f0; border: none; border-radius: 4px;
+             cursor: pointer; font-size: 11px; color: #475569; font-weight: 600; }
+.reset-btn:hover { background: #cbd5e1; }
+.count-sel { font-size: 11px; padding: 2px 4px; border: 1px solid #cbd5e1; border-radius: 4px; }
+tr.rank-hidden, tr.filter-hidden { display: none; }
+.period-section { padding: 0 24px 24px; display: none; }
+.period-section.active { display: block; }
+.period-stats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;
+                padding-top: 12px; align-items: center; }
+.stat-chip { padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+.stat-chip.good    { background: #dcfce7; color: #166534; }
+.stat-chip.neutral { background: #fee2e2; color: #991b1b; }
+.stat-chip.info    { background: #dbeafe; color: #1e40af; }
+.stat-chip.dim     { background: #f1f5f9; color: #64748b; }
+.loading { padding: 40px; text-align: center; color: #94a3b8; font-size: 14px; }
+.table-wrap { overflow-x: auto; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.etf-table { width: 100%; border-collapse: collapse; background: #fff; }
+.etf-table th { background: #1e3a5f; color: #e2e8f0; padding: 9px 10px;
+                text-align: left; font-size: 11px; position: sticky; top: 0; white-space: nowrap; }
+.etf-table td { padding: 7px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+.etf-table tr:hover td { background: #f8fafc; }
+td.rank { color: #94a3b8; font-size: 11px; }
+td.sym  { font-weight: 700; color: #1e40af; font-size: 12px; white-space: nowrap; }
+td.name { max-width: 220px; font-size: 11px; color: #475569; }
+td.reg  { font-size: 11px; color: #64748b; }
+td.num  { text-align: right; white-space: nowrap; }
+td.aum  { color: #94a3b8; font-size: 11px; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px;
+         font-size: 10px; font-weight: 700; white-space: nowrap; }
+.ac-equity        { background: #dbeafe; color: #1e40af; }
+.ac-fixed-income  { background: #fef3c7; color: #92400e; }
+.ac-commodity     { background: #fce7f3; color: #9d174d; }
+.ac-real-estate   { background: #ecfdf5; color: #065f46; }
+.ac-alternative   { background: #f3e8ff; color: #6b21a8; }
+.ac-multi-asset   { background: #f1f5f9; color: #475569; }
+.ac-unknown       { background: #f1f5f9; color: #94a3b8; }
+.sbar   { position: relative; background: #e2e8f0; border-radius: 4px; height: 18px; width: 110px; overflow: hidden; }
+.sfill  { height: 100%; }
+.slabel { position: absolute; inset: 0; display: flex; align-items: center;
+          justify-content: center; font-size: 11px; font-weight: 700; color: #1e293b; }
+.grid-cell { white-space: nowrap; }
+.mcell { display: inline-block; width: 14px; height: 14px; margin: 1px;
+         border-radius: 2px; font-size: 8px; line-height: 14px; text-align: center; cursor: default; }
+.empty { padding: 24px; color: #94a3b8; text-align: center; }
+.desc-wrap { cursor: pointer; }
+.desc-dot  { display: inline-block; margin-left: 4px; font-size: 10px;
+             color: #93c5fd; vertical-align: super; }
+#desc-popup { display: none; position: fixed; z-index: 999; max-width: 360px;
+              background: #1e293b; color: #e2e8f0; padding: 12px 14px;
+              border-radius: 8px; font-size: 12px; line-height: 1.7;
+              box-shadow: 0 8px 24px rgba(0,0,0,0.3); pointer-events: none; }
+#desc-popup.show { display: block; }
+
+#pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
+.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
+.pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
+.pw-box p{font-size:13px;color:#888;margin-bottom:16px}
+.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:10px 14px;border-radius:4px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;transition:border-color .2s}
+.pw-box input:focus{border-color:#1e40af}
+.pw-box button{width:100%;background:#1e40af;color:#fff;border:none;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
+.pw-box button:hover{background:#2563eb}
+.pw-error{color:#ef5350;font-size:12px;margin-top:8px;min-height:18px}
+#etf-app{display:none}
+</style></head>
+<body>
+
+<div id="pw-overlay">
+  <div class="pw-box">
+    <h2>ETF 基準比較報告</h2>
+    <p>此工具需要密碼存取</p>
+    <input type="password" id="pw-input" placeholder="輸入密碼" autocomplete="off" maxlength="64">
+    <button id="pw-submit">進入</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+<div id="etf-app">
+
+<div id="etf-app">
+
+<div class="header">
+    <h1>ETF 一致性基準比較報告</h1>
+    <p>生成時間：2026-04-20 04:31 &nbsp;|&nbsp; 資料來源：ClickHouse quant.daily_ohlcv</p>
+</div>
+<div class="method-box">
+    <strong>方法論：月份一致性評分（避免單月爆升扭曲結果）</strong><br>
+    每月 ETF 回報 &gt; 基準 → <strong style="color:#16a34a">+1 分</strong>，
+    &lt; 基準 → <strong style="color:#dc2626">-1 分</strong>。一致性分數 = 各月加總。<br>
+    月份格顏色：<span style="background:#15803d;color:#fff;padding:1px 6px;border-radius:3px">▲強勝</span>
+    <span style="background:#86efac;color:#166534;padding:1px 6px;border-radius:3px">▲輕勝</span>
+    <span style="background:#fca5a5;color:#991b1b;padding:1px 6px;border-radius:3px">▼輕輸</span>
+    <span style="background:#dc2626;color:#fff;padding:1px 6px;border-radius:3px">▼大輸</span>
+    &nbsp;|&nbsp; <strong>HK 基準：2800.HK（盈富基金）&nbsp; US 基準：SPY（標普500）</strong>
+</div>
+
+<div class="tabs">
+    <button class="tab-btn active" data-mkt="HK" onclick="switchMarket('HK')">🇭🇰 港股 ETF</button>
+    <button class="tab-btn" data-mkt="US" onclick="switchMarket('US')">🇺🇸 美股 ETF</button>
+</div>
+
+        <div class="tab-content  active" id="tab-HK">
+            <div class="period-tabs"><button class="period-btn  active" data-period="12M" onclick="switchPeriod('HK','12M')">12M</button> <button class="period-btn" data-period="6M" onclick="switchPeriod('HK','6M')">6M</button> <button class="period-btn" data-period="3M" onclick="switchPeriod('HK','3M')">3M</button> <button class="period-btn" data-period="1M" onclick="switchPeriod('HK','1M')">1M</button></div>
+            
+    <div class="filter-bar">
+        <span class="filter-label">篩選：</span>
+        <div class="filter-group"><label>資產類別</label>
+            <select id="filter-ac-HK" onchange="applyFilters('HK')">
+                <option value="">全部</option><option value="alternative">Alternative</option>
+<option value="commodity">Commodity</option>
+<option value="equity">Equity</option>
+<option value="fixed-income">Fixed Income</option>
+<option value="multi-asset">Multi-Asset</option>
+<option value="real-estate">Real Estate</option></select></div>
+        <div class="filter-group"><label>地區</label>
+            <select id="filter-region-HK" onchange="applyFilters('HK')">
+                <option value="">全部</option><option value="developed-intl">Developed Intl</option>
+<option value="emerging">Emerging</option>
+<option value="global">Global</option>
+<option value="us">US</option></select></div>
+        <div class="filter-group"><label>ETF類型</label>
+            <select id="filter-type-HK" onchange="applyFilters('HK')">
+                <option value="">全部</option><option value="廣泛市場">廣泛市場</option>
+<option value="槓桿">槓桿</option>
+<option value="行業">行業</option></select></div>
+        <div class="filter-group"><label>基金公司</label>
+            <select id="filter-family-HK" onchange="applyFilters('HK')">
+                <option value="">全部</option><option value="CSOP">CSOP</option>
+<option value="Mirae Asset">Mirae Asset</option>
+<option value="China AMC">China AMC</option>
+<option value="Premia">Premia</option>
+<option value="BlackRock/iShares">BlackRock/iShares</option>
+<option value="Bosera">Bosera</option>
+<option value="Hang Seng">Hang Seng</option>
+<option value="Samsung asset manage">Samsung asset manage</option>
+<option value="E Fund">E Fund</option>
+<option value="Harvest Global Inves">Harvest Global Inves</option>
+<option value="DWS Investment S.A. ">DWS Investment S.A. </option>
+<option value="BOCI">BOCI</option>
+<option value="Amundi Hong Kong Ltd">Amundi Hong Kong Ltd</option>
+<option value="MicroBit Capital Man">MicroBit Capital Man</option></select></div>
+        <div class="filter-group"><label>資產規模</label>
+            <select id="filter-aum-HK" onchange="applyFilters('HK')">
+                <option value="0">全部</option>
+                <option value="1">&gt; $1B</option><option value="5">&gt; $5B</option>
+                <option value="10">&gt; $10B</option><option value="50">&gt; $50B</option>
+            </select></div>
+        <div class="filter-group"><label>最低一致性分</label>
+            <input type="range" id="filter-score-HK" min="-12" max="12" value="-12"
+                   oninput="applyFilters('HK')">
+            <span class="range-val" id="score-val-HK">-12</span></div>
+        <button class="reset-btn" onclick="resetFilters('HK')">重置</button>
+    </div>
+            <div class="period-section active" id="HK-12M"></div><div class="period-section " id="HK-6M"></div><div class="period-section " id="HK-3M"></div><div class="period-section " id="HK-1M"></div>
+        </div>
+        <div class="tab-content" id="tab-US">
+            <div class="period-tabs"><button class="period-btn  active" data-period="12M" onclick="switchPeriod('US','12M')">12M</button> <button class="period-btn" data-period="6M" onclick="switchPeriod('US','6M')">6M</button> <button class="period-btn" data-period="3M" onclick="switchPeriod('US','3M')">3M</button> <button class="period-btn" data-period="1M" onclick="switchPeriod('US','1M')">1M</button></div>
+            
+    <div class="filter-bar">
+        <span class="filter-label">篩選：</span>
+        <div class="filter-group"><label>資產類別</label>
+            <select id="filter-ac-US" onchange="applyFilters('US')">
+                <option value="">全部</option><option value="alternative">Alternative</option>
+<option value="commodity">Commodity</option>
+<option value="equity">Equity</option>
+<option value="fixed-income">Fixed Income</option>
+<option value="multi-asset">Multi-Asset</option>
+<option value="real-estate">Real Estate</option></select></div>
+        <div class="filter-group"><label>地區</label>
+            <select id="filter-region-US" onchange="applyFilters('US')">
+                <option value="">全部</option><option value="developed-intl">Developed Intl</option>
+<option value="emerging">Emerging</option>
+<option value="global">Global</option>
+<option value="us">US</option></select></div>
+        <div class="filter-group"><label>ETF類型</label>
+            <select id="filter-type-US" onchange="applyFilters('US')">
+                <option value="">全部</option><option value="反向">反向</option>
+<option value="廣泛市場">廣泛市場</option>
+<option value="槓桿">槓桿</option>
+<option value="行業">行業</option></select></div>
+        <div class="filter-group"><label>基金公司</label>
+            <select id="filter-family-US" onchange="applyFilters('US')">
+                <option value="">全部</option><option value="BlackRock/iShares">BlackRock/iShares</option>
+<option value="First Trust">First Trust</option>
+<option value="Invesco">Invesco</option>
+<option value="State Street/SPDR">State Street/SPDR</option>
+<option value="Innovator ETFs">Innovator ETFs</option>
+<option value="ProShares">ProShares</option>
+<option value="Global X">Global X</option>
+<option value="Direxion">Direxion</option>
+<option value="Vanguard">Vanguard</option>
+<option value="WisdomTree">WisdomTree</option>
+<option value="Fidelity Investments">Fidelity Investments</option>
+<option value="JPMorgan">JPMorgan</option>
+<option value="Franklin Templeton I">Franklin Templeton I</option>
+<option value="VanEck">VanEck</option></select></div>
+        <div class="filter-group"><label>資產規模</label>
+            <select id="filter-aum-US" onchange="applyFilters('US')">
+                <option value="0">全部</option>
+                <option value="1">&gt; $1B</option><option value="5">&gt; $5B</option>
+                <option value="10">&gt; $10B</option><option value="50">&gt; $50B</option>
+            </select></div>
+        <div class="filter-group"><label>最低一致性分</label>
+            <input type="range" id="filter-score-US" min="-12" max="12" value="-12"
+                   oninput="applyFilters('US')">
+            <span class="range-val" id="score-val-US">-12</span></div>
+        <button class="reset-btn" onclick="resetFilters('US')">重置</button>
+    </div>
+            <div class="period-section active" id="US-12M"></div><div class="period-section " id="US-6M"></div><div class="period-section " id="US-3M"></div><div class="period-section " id="US-1M"></div>
+        </div>
+</div>
+<script>
+function switchMarket(mkt) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.mkt === mkt));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.toggle('active', t.id === 'tab-' + mkt));
+}
+function switchPeriod(mkt, period) {
+    document.querySelectorAll(`#tab-${mkt} .period-btn`).forEach(b =>
+        b.classList.toggle('active', b.dataset.period === period));
+    document.querySelectorAll(`#tab-${mkt} .period-section`).forEach(s =>
+        s.classList.toggle('active', s.id === mkt + '-' + period));
+    applyFilters(mkt);
+}
+function _getFilters(mkt) {
+    return {
+        ac:     document.getElementById('filter-ac-'     + mkt)?.value || '',
+        region: document.getElementById('filter-region-' + mkt)?.value || '',
+        type:   document.getElementById('filter-type-'   + mkt)?.value || '',
+        family: document.getElementById('filter-family-' + mkt)?.value || '',
+        minAum: parseFloat(document.getElementById('filter-aum-'   + mkt)?.value || '0'),
+        minScore: parseInt(document.getElementById('filter-score-' + mkt)?.value || '-99'),
+    };
+}
+function _activeTbl(mkt) {
+    const period = document.querySelector(`#tab-${mkt} .period-btn.active`)?.dataset.period;
+    return period ? `tbl-${mkt}-${period}` : null;
+}
+function applyFilters(mkt) {
+    const f = _getFilters(mkt);
+    const scoreEl = document.getElementById('score-val-' + mkt);
+    if (scoreEl) scoreEl.textContent = f.minScore >= 0 ? '+' + f.minScore : String(f.minScore);
+    const tblId = _activeTbl(mkt);
+    if (!tblId) return;
+    const rows = document.querySelectorAll(`#${tblId} .etf-row`);
+    rows.forEach(r => {
+        const score = parseInt(r.querySelector('.slabel')?.textContent?.split('/')[0]) || 0;
+        const match =
+            (!f.ac     || r.dataset.ac     === f.ac)     &&
+            (!f.region || r.dataset.region === f.region) &&
+            (!f.type   || r.dataset.type   === f.type)   &&
+            (!f.family || r.dataset.family === f.family) &&
+            (parseFloat(r.dataset.aum || '0') >= f.minAum) &&
+            (score >= f.minScore);
+        r.classList.toggle('filter-hidden', !match);
+    });
+    const countSel = document.querySelector(`#${tblId}`)?.closest('.period-section')?.querySelector('.count-sel');
+    _applyCountLimit(tblId, countSel ? parseInt(countSel.value) : 50);
+}
+function applyCount(sel) { _applyCountLimit(sel.dataset.tbl, parseInt(sel.value)); }
+function _applyCountLimit(tblId, limit) {
+    let shown = 0;
+    document.querySelectorAll(`#${tblId} .etf-row`).forEach(r => {
+        if (r.classList.contains('filter-hidden')) { r.classList.add('rank-hidden'); return; }
+        shown++;
+        r.classList.toggle('rank-hidden', shown > limit);
+    });
+}
+function resetFilters(mkt) {
+    ['filter-ac-','filter-region-','filter-type-','filter-family-','filter-aum-'].forEach(id => {
+        const el = document.getElementById(id + mkt);
+        if (el) el.value = el.tagName === 'SELECT' ? '' : '0';
+    });
+    const s = document.getElementById('filter-score-' + mkt);
+    if (s) s.value = '-12';
+    const sv = document.getElementById('score-val-' + mkt);
+    if (sv) sv.textContent = '-12';
+    applyFilters(mkt);
+}
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.tab-btn')[0]?.click();
+    const popup = document.createElement('div');
+    popup.id = 'desc-popup';
+    document.body.appendChild(popup);
+    document.addEventListener('mouseover', e => {
+        const w = e.target.closest('.desc-wrap');
+        if (!w) { popup.classList.remove('show'); return; }
+        const d = w.dataset.desc; if (!d) return;
+        popup.textContent = d; popup.classList.add('show');
+    });
+    document.addEventListener('mousemove', e => {
+        if (!popup.classList.contains('show')) return;
+        const x = e.clientX + 14, y = e.clientY + 14;
+        popup.style.left = Math.min(x, window.innerWidth - popup.offsetWidth - 10) + 'px';
+        popup.style.top  = (y + popup.offsetHeight > window.innerHeight - 10
+            ? e.clientY - popup.offsetHeight - 10 : y) + 'px';
+    });
+    document.addEventListener('mouseout', e => {
+        if (!e.target.closest('.desc-wrap')) popup.classList.remove('show');
+    });
+});
+
+const _cache = {};
+function scoreBar(score, max) {
+    const pct = (score + max) / (2 * max) * 100;
+    const c = score > 0 ? '#22c55e' : score < 0 ? '#ef4444' : '#9ca3af';
+    return `<div class="sbar"><div class="sfill" style="width:${pct.toFixed(0)}%;background:${c}"></div><span class="slabel">${score >= 0 ? '+' : ''}${score}/${max}</span></div>`;
+}
+function monthlyGrid(mx, ml) {
+    return mx.map((exc, i) => {
+        let bg, txt;
+        if      (exc >  0.03) { bg='#15803d'; txt='#fff'; }
+        else if (exc >  0.01) { bg='#86efac'; txt='#166534'; }
+        else if (exc >  0)    { bg='#d1fae5'; txt='#166534'; }
+        else if (exc > -0.01) { bg='#fee2e2'; txt='#991b1b'; }
+        else if (exc > -0.03) { bg='#fca5a5'; txt='#991b1b'; }
+        else                  { bg='#dc2626'; txt='#fff'; }
+        const s = exc > 0 ? '▲' : '▼';
+        return `<span class="mcell" style="background:${bg};color:${txt}" title="${ml[i]}: ${(exc*100).toFixed(1)}%">${s}</span>`;
+    }).join('');
+}
+function retSpan(v) {
+    const c = v > 0 ? '#16a34a' : v < 0 ? '#dc2626' : '#6b7280';
+    const s = (v >= 0 ? '+' : '') + (v * 100).toFixed(1) + '%';
+    return `<span style="color:${c};font-weight:600">${s}</span>`;
+}
+function acCls(ac) { return ac ? ac.toLowerCase().replace(/ /g,'-') : 'unknown'; }
+function buildRow(e, i, defaultShow) {
+    const cls = acCls(e.ac);
+    const aum = e.aum > 0 ? `$${e.aum.toFixed(1)}B` : '—';
+    const desc = (e.desc || '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    const nameCell = desc
+        ? `<span class="desc-wrap" data-desc="${desc}">${e.name}<span class=desc-dot>ℹ</span></span>`
+        : e.name;
+    const hidden = i >= defaultShow ? ' rank-hidden' : '';
+    return `<tr class="etf-row${hidden}" data-ac="${cls}" data-region="${e.reg||''}" data-type="${e.type||''}" data-family="${e.fam||''}" data-aum="${e.aum}">
+        <td class="rank">#${e.rank}</td>
+        <td class="sym">${e.sym}</td>
+        <td class="name">${nameCell}</td>
+        <td><span class="badge ac-${cls}">${e.ac||'—'}</span></td>
+        <td class="reg">${e.reg||'—'}</td>
+        <td class="score-cell">${scoreBar(e.score, e.max)}</td>
+        <td class="grid-cell">${monthlyGrid(e.mx, e.ml)}</td>
+        <td class="num">${retSpan(e.ret)}</td>
+        <td class="num">${retSpan(e.bret)}</td>
+        <td class="num">${retSpan(e.xret)}</td>
+        <td class="num aum">${aum}</td>
+    </tr>`;
+}
+async function loadPeriod(mkt, period) {
+    const key = `${mkt}_${period}`;
+    if (!_cache[key]) {
+        const section = document.getElementById(`${mkt}-${period}`);
+        section.innerHTML = '<div class="loading">載入中…</div>';
+        const resp = await fetch(`data/${key}.json`);
+        _cache[key] = await resp.json();
+    }
+    const d = _cache[key];
+    const total = d.total, beats = d.beats;
+    const countOpts = [50,100,200,500].filter(v => v < total)
+        .map(v => `<option value="${v}"${v===50?' selected':''}>${v}</option>`)
+        .join('') + `<option value="${total}">全部(${total})</option>`;
+    const tbody = d.etfs.map((e,i) => buildRow(e, i, 50)).join('');
+    document.getElementById(`${mkt}-${period}`).innerHTML = `
+        <div class="period-stats">
+            <span class="stat-chip good">${beats} ETF 跑贏 (${Math.round(beats/total*100)}%)</span>
+            <span class="stat-chip neutral">${total-beats} 跑輸</span>
+            <span class="stat-chip info">平均一致性分 ${d.avg >= 0 ? '+' : ''}${d.avg}</span>
+            <span class="stat-chip dim">基準：${d.bench} | 共 ${total} 隻</span>
+            <span style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:#64748b">
+                顯示 <select class="count-sel" data-tbl="tbl-${mkt}-${period}" onchange="applyCount(this)">${countOpts}</select> 筆
+            </span>
+        </div>
+        <div class="table-wrap"><table class="etf-table" id="tbl-${mkt}-${period}">
+            <thead><tr><th>#</th><th>Symbol</th><th>基金名稱</th><th>資產類別</th><th>地區</th>
+            <th>一致性分數</th><th>月份走勢 ▲跑贏 ▼跑輸</th><th>總回報</th><th>基準回報</th><th>超額回報</th><th>AUM</th>
+            </tr></thead><tbody>${tbody}</tbody>
+        </table></div>`;
+}
+// Override switchPeriod to trigger fetch in static mode
+const _switchPeriodBase = switchPeriod;
+function switchPeriod(mkt, period) {
+    document.querySelectorAll(`#tab-${mkt} .period-btn`).forEach(b =>
+        b.classList.toggle('active', b.dataset.period === period));
+    document.querySelectorAll(`#tab-${mkt} .period-section`).forEach(s =>
+        s.classList.toggle('active', s.id === mkt + '-' + period));
+    loadPeriod(mkt, period).then(() => applyFilters(mkt));
+}
+// Override switchMarket to load first period
+const _switchMarketBase = switchMarket;
+function switchMarket(mkt) {
+    _switchMarketBase(mkt);
+    const period = document.querySelector(`#tab-${mkt} .period-btn.active`)?.dataset.period;
+    if (period) loadPeriod(mkt, period).then(() => applyFilters(mkt));
+}
+
+const _PW_HASH = "fe3bcc2fac5b6f1c3641a404061737542219fcc5c366c213e8ca9ed0eaa3d409";
+const _SESSION = "etf_report_auth";
+async function _sha256(s) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function checkPw() {
+    const val = document.getElementById("pw-input").value;
+    const h = await _sha256(val);
+    if (h === _PW_HASH) {
+        sessionStorage.setItem(_SESSION, "1");
+        document.getElementById("pw-overlay").style.display = "none";
+        document.getElementById("etf-app").style.display = "block";
+        switchMarket("HK");
+    } else {
+        document.getElementById("pw-error").textContent = "密碼錯誤，請重試";
+        document.getElementById("pw-input").value = "";
+        document.getElementById("pw-input").focus();
+    }
+}
+document.getElementById("pw-submit").addEventListener("click", checkPw);
+document.getElementById("pw-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") checkPw();
+    document.getElementById("pw-error").textContent = "";
+});
+if (sessionStorage.getItem(_SESSION) === "1") {
+    document.getElementById("pw-overlay").style.display = "none";
+    document.getElementById("etf-app").style.display = "block";
+    switchMarket("HK");
+}
+</script>
+</body></html>
