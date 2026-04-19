@@ -22,4 +22,10 @@
 
 /etf-report/data/*
   Cache-Control: public, max-age=3600
-  X-Robots-Tag: noindex
+  X-Robots-Tag: noindex, noai, noimageai
+
+/etf-report/*
+  X-Robots-Tag: noindex, noai
+
+/*.json
+  X-Robots-Tag: noindex, noai

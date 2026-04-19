@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, noai, noimageai">
 <title>ETF 基準比較報告</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -113,7 +114,7 @@ td.aum  { color: #94a3b8; font-size: 11px; }
 
 <div class="header">
     <h1>ETF 一致性基準比較報告</h1>
-    <p>生成時間：2026-04-20 04:31 &nbsp;|&nbsp; 資料來源：ClickHouse quant.daily_ohlcv</p>
+    <p>生成時間：2026-04-20 04:55 &nbsp;|&nbsp; 資料來源：ClickHouse quant.daily_ohlcv</p>
 </div>
 <div class="method-box">
     <strong>方法論：月份一致性評分（避免單月爆升扭曲結果）</strong><br>
@@ -241,7 +242,19 @@ td.aum  { color: #94a3b8; font-size: 11px; }
             <div class="period-section active" id="US-12M"></div><div class="period-section " id="US-6M"></div><div class="period-section " id="US-3M"></div><div class="period-section " id="US-1M"></div>
         </div>
 </div>
-<script>
+<script>window._ENCRYPTED = true;
+async function _decryptEnc(b64, password) {
+    const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const salt = raw.slice(0, 16), nonce = raw.slice(16, 28), ct = raw.slice(28);
+    const km = await crypto.subtle.importKey('raw',
+        new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey(
+        {name:'PBKDF2', salt, iterations:100000, hash:'SHA-256'},
+        km, {name:'AES-GCM', length:256}, false, ['decrypt']);
+    const dec = await crypto.subtle.decrypt({name:'AES-GCM', iv:nonce}, key, ct);
+    return JSON.parse(new TextDecoder().decode(dec));
+}
+
 function switchMarket(mkt) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.mkt === mkt));
     document.querySelectorAll('.tab-content').forEach(t => t.classList.toggle('active', t.id === 'tab-' + mkt));
@@ -383,8 +396,14 @@ async function loadPeriod(mkt, period) {
     if (!_cache[key]) {
         const section = document.getElementById(`${mkt}-${period}`);
         section.innerHTML = '<div class="loading">載入中…</div>';
-        const resp = await fetch(`data/${key}.json`);
-        _cache[key] = await resp.json();
+        if (window._ENCRYPTED) {
+            const resp = await fetch(`data/${key}.enc`);
+            const b64 = await resp.text();
+            _cache[key] = await _decryptEnc(b64, _pw);
+        } else {
+            const resp = await fetch(`data/${key}.json`);
+            _cache[key] = await resp.json();
+        }
     }
     const d = _cache[key];
     const total = d.total, beats = d.beats;
@@ -427,6 +446,7 @@ function switchMarket(mkt) {
 
 const _PW_HASH = "fe3bcc2fac5b6f1c3641a404061737542219fcc5c366c213e8ca9ed0eaa3d409";
 const _SESSION = "etf_report_auth";
+let _pw = null;  // raw password kept in-memory for decryption; never persisted
 async function _sha256(s) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
@@ -435,6 +455,7 @@ async function checkPw() {
     const val = document.getElementById("pw-input").value;
     const h = await _sha256(val);
     if (h === _PW_HASH) {
+        _pw = val;
         sessionStorage.setItem(_SESSION, "1");
         document.getElementById("pw-overlay").style.display = "none";
         document.getElementById("etf-app").style.display = "block";
@@ -450,10 +471,11 @@ document.getElementById("pw-input").addEventListener("keydown", e => {
     if (e.key === "Enter") checkPw();
     document.getElementById("pw-error").textContent = "";
 });
+// On reload within same session, re-ask password (needed for decryption key)
+// sessionStorage flag only tracks if user authenticated this session
 if (sessionStorage.getItem(_SESSION) === "1") {
-    document.getElementById("pw-overlay").style.display = "none";
-    document.getElementById("etf-app").style.display = "block";
-    switchMarket("HK");
+    // Still need password for decryption — show gate again if tab was reloaded
+    document.getElementById("pw-input").focus();
 }
 </script>
 </body></html>
