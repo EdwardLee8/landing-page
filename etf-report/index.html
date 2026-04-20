@@ -425,8 +425,7 @@ async function loadPeriod(mkt, period) {
             </tr></thead><tbody>${tbody}</tbody>
         </table></div>`;
 }
-// Override switchPeriod to trigger fetch in static mode
-const _switchPeriodBase = switchPeriod;
+// Static-mode switchPeriod: fetch data then apply filters
 function switchPeriod(mkt, period) {
     document.querySelectorAll(`#tab-${mkt} .period-btn`).forEach(b =>
         b.classList.toggle('active', b.dataset.period === period));
@@ -434,10 +433,10 @@ function switchPeriod(mkt, period) {
         s.classList.toggle('active', s.id === mkt + '-' + period));
     loadPeriod(mkt, period).then(() => applyFilters(mkt));
 }
-// Override switchMarket to load first period
-const _switchMarketBase = switchMarket;
+// Static-mode switchMarket: toggle tabs then load active period
 function switchMarket(mkt) {
-    _switchMarketBase(mkt);
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.mkt === mkt));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.toggle('active', t.id === 'tab-' + mkt));
     const period = document.querySelector(`#tab-${mkt} .period-btn.active`)?.dataset.period;
     if (period) loadPeriod(mkt, period).then(() => applyFilters(mkt));
 }
