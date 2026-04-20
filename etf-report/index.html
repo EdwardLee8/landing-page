@@ -390,6 +390,7 @@ function buildRow(e, i, defaultShow) {
     </tr>`;
 }
 async function loadPeriod(mkt, period) {
+    if (window._ENCRYPTED && !_pw) return;
     const key = `${mkt}_${period}`;
     if (!_cache[key]) {
         const section = document.getElementById(`${mkt}-${period}`);
@@ -448,9 +449,13 @@ async function _sha256(s) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
 }
+let _pwChecking = false;
 async function checkPw() {
+    if (_pwChecking) return;
+    _pwChecking = true;
     const val = document.getElementById("pw-input").value;
     const h = await _sha256(val);
+    _pwChecking = false;
     if (h === _PW_HASH) {
         _pw = val;
         sessionStorage.setItem(_SESSION, "1");
