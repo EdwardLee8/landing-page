@@ -168,8 +168,14 @@ td.num.na{color:#555}
 <div class="pagination" id="pagination"></div>
 
 <script>
-function checkPassword() {
-  if (document.getElementById('pw-input').value === 'Us_2025Q4') {
+const _PW_HASH = "10c5bd68eb8eed0b5397e40b7cd4265dbc9e956193320b5f2b96dfc20ff5d467";
+async function _sha256(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function checkPassword() {
+  const h = await _sha256(document.getElementById('pw-input').value);
+  if (h === _PW_HASH) {
     document.getElementById('pw-overlay').style.display = 'none';
     sessionStorage.setItem('usdb_auth', '1');
   } else {

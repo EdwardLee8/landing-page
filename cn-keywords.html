@@ -279,6 +279,8 @@ if (sessionStorage.getItem(SESSION_KEY) === "1" && _pw) {
   document.getElementById("pw-overlay").style.display = "none";
   document.getElementById("app").style.display = "block";
   initApp();
+} else if (sessionStorage.getItem(SESSION_KEY) === "1" && !_pw) {
+  sessionStorage.removeItem(SESSION_KEY);
 }
 
 // ── State ─────────────────────────────────────────────────
