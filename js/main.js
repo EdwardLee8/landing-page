@@ -120,8 +120,8 @@ function renderHero(author) {
   const freeRow = el("div", { class: "hero-tool-row" });
   freeRow.append(
     el("span", { class: "hero-tool-label", text: "免費" }),
-    el("a", { href: "/hk-stocks-db.html", class: "btn-tool btn-tool-free", text: "港股業績 (取密 Telegram)" }),
-    el("a", { href: "/hk-keywords-free.html", class: "btn-tool btn-tool-free", text: "港股關鍵字" })
+    el("a", { href: "/hk-stocks-db.html", class: "btn-tool btn-tool-free", text: "港股業績 (Patreon取密碼)" }),
+    el("a", { href: "/hk-keywords-free.html", class: "btn-tool btn-tool-free", text: "港股關鍵字(免密碼)" })
   );
 
   container.append(
