@@ -168,7 +168,7 @@ td.num.na{color:#555}
 <div class="pagination" id="pagination"></div>
 
 <script>
-const _PW_HASH = "10c5bd68eb8eed0b5397e40b7cd4265dbc9e956193320b5f2b96dfc20ff5d467";
+const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
 async function _sha256(s) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
@@ -177,7 +177,7 @@ async function checkPassword() {
   const h = await _sha256(document.getElementById('pw-input').value);
   if (h === _PW_HASH) {
     document.getElementById('pw-overlay').style.display = 'none';
-    sessionStorage.setItem('usdb_auth', '1');
+    sessionStorage.setItem('unified_auth', '1');
   } else {
     document.getElementById('pw-error').textContent = '密碼錯誤，請再試';
     document.getElementById('pw-input').value = '';
@@ -185,7 +185,7 @@ async function checkPassword() {
   }
 }
 document.addEventListener('DOMContentLoaded', function() {
-  if (sessionStorage.getItem('usdb_auth') === '1') {
+  if (sessionStorage.getItem('unified_auth') === '1') {
     document.getElementById('pw-overlay').style.display = 'none';
   } else {
     document.getElementById('pw-input').focus();

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>投資分析 — 資料庫入口</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>庫</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
+a{color:#d4a647;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Password overlay */
+#pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
+.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:10px;padding:44px 40px;text-align:center;width:100%;max-width:380px}
+.pw-logo{font-size:32px;margin-bottom:12px}
+.pw-box h2{font-size:20px;font-weight:700;color:#fff;margin-bottom:6px}
+.pw-box p{font-size:13px;color:#666;margin-bottom:24px}
+.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:12px 16px;border-radius:6px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.2em;margin-bottom:12px;transition:border-color .2s}
+.pw-box input:focus{border-color:#d4a647}
+.pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:12px;border-radius:6px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
+.pw-box button:hover{background:#e8bc5a}
+.pw-error{color:#ef5350;font-size:12px;margin-top:10px;min-height:18px}
+
+/* Dashboard */
+#dashboard{display:none;padding:32px 24px 60px;max-width:860px;margin:0 auto}
+.dash-header{text-align:center;padding:40px 0 32px}
+.dash-header h1{font-size:26px;font-weight:700;color:#fff;margin-bottom:8px}
+.dash-header p{font-size:13px;color:#666}
+.dash-header .month-badge{display:inline-block;background:#d4a64720;border:1px solid #d4a64740;color:#d4a647;font-size:12px;font-weight:600;padding:4px 12px;border-radius:12px;margin-top:10px}
+.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.db-card{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:22px 20px;cursor:pointer;transition:all .2s;display:block;text-decoration:none}
+.db-card:hover{border-color:#d4a647;background:#0d0d1c;transform:translateY(-1px);text-decoration:none}
+.db-icon{font-size:26px;margin-bottom:12px}
+.db-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px}
+.db-desc{font-size:12px;color:#666;line-height:1.6}
+.db-tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;margin-top:10px}
+.tag-hk{background:#1e2a1e;color:#66bb6a;border:1px solid #4caf5033}
+.tag-us{background:#1e1e2a;color:#5c9bdd;border:1px solid #5c9bdd33}
+.tag-cn{background:#2a1e1e;color:#ef5350;border:1px solid #ef535033}
+.tag-etf{background:#2a2a1e;color:#ffca28;border:1px solid #ffca2833}
+.logout{text-align:center;margin-top:40px}
+.logout button{background:none;border:1px solid #333;color:#555;padding:8px 20px;border-radius:6px;font-size:13px;font-family:inherit;cursor:pointer;transition:all .2s}
+.logout button:hover{border-color:#666;color:#aaa}
+</style>
+</head>
+<body>
+
+<!-- Password overlay -->
+<div id="pw-overlay">
+  <div class="pw-box">
+    <div class="pw-logo">🔐</div>
+    <h2>投資分析資料庫</h2>
+    <p>請輸入本月密碼</p>
+    <input type="password" id="pw-input" placeholder="密碼" autocomplete="off" maxlength="64">
+    <button id="pw-submit">進入</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard">
+  <div class="dash-header">
+    <h1>投資分析資料庫</h1>
+    <p>選擇要查閱的資料庫</p>
+    <div class="month-badge" id="month-badge"></div>
+  </div>
+
+  <div class="db-grid">
+    <a href="hk-keywords-pro.html" class="db-card">
+      <div class="db-icon">🇭🇰</div>
+      <div class="db-title">港股關鍵字資料庫</div>
+      <div class="db-desc">港股上市公司業務關鍵字、相關性分組，可按主題篩選</div>
+      <span class="db-tag tag-hk">港股</span>
+    </a>
+    <a href="hk-stocks-pro.html" class="db-card">
+      <div class="db-icon">📊</div>
+      <div class="db-title">港股 2025 下半年資料庫</div>
+      <div class="db-desc">港股財務數據、相對強弱、市值分類篩選</div>
+      <span class="db-tag tag-hk">港股</span>
+    </a>
+    <a href="us-keywords.html" class="db-card">
+      <div class="db-icon">🇺🇸</div>
+      <div class="db-title">美股關鍵字資料庫</div>
+      <div class="db-desc">美股上市公司業務關鍵字、相關性分組，可按主題篩選</div>
+      <span class="db-tag tag-us">美股</span>
+    </a>
+    <a href="us-stocks-db.html" class="db-card">
+      <div class="db-icon">📈</div>
+      <div class="db-title">美股資料庫</div>
+      <div class="db-desc">美股財務數據、相對強弱、市值分類篩選</div>
+      <span class="db-tag tag-us">美股</span>
+    </a>
+    <a href="cn-keywords.html" class="db-card">
+      <div class="db-icon">🇨🇳</div>
+      <div class="db-title">A 股關鍵字資料庫</div>
+      <div class="db-desc">A 股上市公司業務關鍵字、相關性分組，可按主題篩選</div>
+      <span class="db-tag tag-cn">A 股</span>
+    </a>
+    <a href="etf-report/" class="db-card">
+      <div class="db-icon">🗂️</div>
+      <div class="db-title">ETF 報告</div>
+      <div class="db-desc">港股、美股 ETF 分類、回報及資產規模概覽</div>
+      <span class="db-tag tag-etf">ETF</span>
+    </a>
+  </div>
+
+  <div class="logout">
+    <button onclick="logout()">登出（清除本次 Session）</button>
+  </div>
+</div>
+
+<script>
+const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
+
+async function _sha256(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function checkPassword() {
+  const val = document.getElementById("pw-input").value;
+  if (!val) return;
+  const h = await _sha256(val);
+  if (h === _PW_HASH) {
+    sessionStorage.setItem("unified_auth", "1");
+    sessionStorage.setItem("unified_auth_pw", val);
+    showDashboard();
+  } else {
+    document.getElementById("pw-error").textContent = "密碼錯誤，請再試";
+    document.getElementById("pw-input").value = "";
+    document.getElementById("pw-input").focus();
+  }
+}
+
+function showDashboard() {
+  document.getElementById("pw-overlay").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+  const now = new Date();
+  document.getElementById("month-badge").textContent =
+    now.getFullYear() + " 年 " + (now.getMonth() + 1) + " 月";
+}
+
+function logout() {
+  sessionStorage.removeItem("unified_auth");
+  sessionStorage.removeItem("unified_auth_pw");
+  location.reload();
+}
+
+document.getElementById("pw-submit").addEventListener("click", checkPassword);
+document.getElementById("pw-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") checkPassword();
+  document.getElementById("pw-error").textContent = "";
+});
+
+if (sessionStorage.getItem("unified_auth") === "1") {
+  showDashboard();
+} else {
+  document.getElementById("pw-input").focus();
+}
+</script>
+</body>
+</html>

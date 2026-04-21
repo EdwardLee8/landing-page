@@ -238,7 +238,7 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 <script>
 // ── Password ──────────────────────────────────────────────
 const _PW_HASH = "9eaaa349072153688cc7742ce3aae7c6418c23e7715d31213f4a96d4c00a5a13";
-const SESSION_KEY = "cn_kw_auth";
+const SESSION_KEY = "unified_auth";
 let _pw = sessionStorage.getItem(SESSION_KEY + "_pw") || "";
 async function _sha256(s) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));

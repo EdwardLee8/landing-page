@@ -442,9 +442,9 @@ function switchMarket(mkt) {
     if (period) loadPeriod(mkt, period).then(() => applyFilters(mkt));
 }
 
-const _PW_HASH = "fe3bcc2fac5b6f1c3641a404061737542219fcc5c366c213e8ca9ed0eaa3d409";
-const _SESSION = "etf_report_auth";
-let _pw = null;  // raw password kept in-memory for decryption; never persisted
+const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
+const _SESSION = "unified_auth";
+let _pw = sessionStorage.getItem("unified_auth_pw") || null;
 async function _sha256(s) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
@@ -459,6 +459,7 @@ async function checkPw() {
     if (h === _PW_HASH) {
         _pw = val;
         sessionStorage.setItem(_SESSION, "1");
+        sessionStorage.setItem("unified_auth_pw", val);
         document.getElementById("pw-overlay").style.display = "none";
         document.getElementById("etf-app").style.display = "block";
         switchMarket("HK");
@@ -473,10 +474,11 @@ document.getElementById("pw-input").addEventListener("keydown", e => {
     if (e.key === "Enter") checkPw();
     document.getElementById("pw-error").textContent = "";
 });
-// On reload within same session, re-ask password (needed for decryption key)
-// sessionStorage flag only tracks if user authenticated this session
-if (sessionStorage.getItem(_SESSION) === "1") {
-    // Still need password for decryption — show gate again if tab was reloaded
+if (sessionStorage.getItem(_SESSION) === "1" && _pw) {
+    document.getElementById("pw-overlay").style.display = "none";
+    document.getElementById("etf-app").style.display = "block";
+    switchMarket("HK");
+} else if (sessionStorage.getItem(_SESSION) === "1") {
     document.getElementById("pw-input").focus();
 }
 </script>
