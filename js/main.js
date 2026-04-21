@@ -98,10 +98,7 @@ function renderHero(author) {
   }
 
   const avatarWrap = el("div", { class: "avatar-wrap" });
-  const img = el("img", { src: esc(author.avatar), alt: esc(author.name), class: "avatar" });
-  const fallback = el("div", { class: "avatar-fallback", style: "display:none", text: author.name.charAt(0) });
-  img.onerror = () => { img.style.display = "none"; fallback.style.display = "flex"; };
-  avatarWrap.appendChild(img);
+  const fallback = el("div", { class: "avatar-fallback", text: author.name.charAt(0) });
   avatarWrap.appendChild(fallback);
 
   const ctaLink = link(

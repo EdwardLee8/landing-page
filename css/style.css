@@ -231,8 +231,8 @@ section + section {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 0 80px;
+  justify-content: center;
+  padding: 120px 0 80px;
   position: relative;
   overflow: hidden;
 }
@@ -253,13 +253,13 @@ section + section {
   height: 100%;
   width: 65%;
   object-fit: cover;
-  object-position: center 30%;
-  opacity: 0.28;
+  object-position: center 55%;
+  opacity: 0.38;
   -webkit-mask-image: radial-gradient(ellipse 90% 85% at 85% 45%,
     black 0%, black 25%, rgba(0,0,0,0.5) 50%, transparent 72%);
   mask-image: radial-gradient(ellipse 90% 85% at 85% 45%,
     black 0%, black 25%, rgba(0,0,0,0.5) 50%, transparent 72%);
-  filter: grayscale(25%) contrast(1.05) brightness(0.8);
+  filter: grayscale(15%) contrast(1.1) brightness(0.85);
 }
 
 /* Subtle radial glow */
@@ -379,7 +379,7 @@ section + section {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -387,6 +387,7 @@ section + section {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  align-items: flex-start;
 }
 
 .hero-tool-row {
@@ -435,6 +436,7 @@ section + section {
 .btn-unified-entry {
   display: inline-flex;
   align-items: center;
+  align-self: flex-start;
   padding: 13px 28px;
   background: rgba(212,166,71,0.12);
   border: 1px solid var(--gold);
