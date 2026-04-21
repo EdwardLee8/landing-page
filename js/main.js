@@ -97,10 +97,6 @@ function renderHero(author) {
     bgImg.src = esc(author.bgImage || author.avatar);
   }
 
-  const avatarWrap = el("div", { class: "avatar-wrap" });
-  const fallback = el("div", { class: "avatar-fallback", text: author.name.charAt(0) });
-  avatarWrap.appendChild(fallback);
-
   const ctaLink = link(
     SITE_CONTENT.social.find(s => s.highlight)?.url || "#social",
     { class: "btn-primary", text: "立即訂閱" }
@@ -122,7 +118,6 @@ function renderHero(author) {
   );
 
   container.append(
-    avatarWrap,
     el("h1", { class: "hero-name", text: author.name }),
     el("p", { class: "hero-tagline", text: author.tagline }),
     el("p", { class: "hero-sub", text: author.subTagline }),
