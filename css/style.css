@@ -121,7 +121,7 @@ section + section {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 32px;
-  height: 68px;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -147,15 +147,15 @@ section + section {
 }
 
 .nav-link {
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.65);
-  padding: 7px 14px;
+  color: rgba(255,255,255,0.85);
+  padding: 8px 16px;
   border-radius: 20px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.14);
   white-space: nowrap;
   transition: background var(--transition), color var(--transition), border-color var(--transition);
 }
