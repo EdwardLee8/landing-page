@@ -1144,6 +1144,33 @@ footer .container {
   #hero-content { padding: 0 24px; }
   #scroll-chevron { right: 24px; }
 
+  .hero-tool-group { width: 100%; }
+
+  .hero-tool-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .hero-tool-label {
+    width: 100%;
+    text-align: left;
+    min-width: unset;
+    margin-bottom: 2px;
+  }
+
+  .btn-tool {
+    flex: 1 1 auto;
+    white-space: normal;
+    text-align: center;
+    font-size: 1.1rem;
+  }
+
+  .btn-unified-entry {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
   .about-grid { grid-template-columns: 1fr; gap: 40px; }
   .about-stats { grid-template-columns: repeat(2, 1fr); }
   .about-stat:nth-child(2) { border-right: none; }
