@@ -113,21 +113,15 @@ function renderHero(author) {
   ctaLink.removeAttribute("target");
   ctaLink.removeAttribute("rel");
 
-  // Data tools rows
-  const dbRow = el("div", { class: "hero-tool-row" });
-  dbRow.append(
-    el("span", { class: "hero-tool-label", text: "資料庫" }),
-    el("a", { href: "/hk-stocks-db.html", class: "btn-tool", text: "港股" }),
-    el("a", { href: "/us-stocks-db.html", class: "btn-tool", text: "美股" })
-  );
+  // Unified entry button (prominent)
+  const unifiedEntry = el("a", { href: "/login.html", class: "btn-unified-entry", text: "🔐  會員資料庫完整入口 →" });
 
-  const kwRow = el("div", { class: "hero-tool-row" });
-  kwRow.append(
-    el("span", { class: "hero-tool-label", text: "關鍵字" }),
-    el("a", { href: "/hk-keywords.html", class: "btn-tool", text: "港股" }),
-    el("a", { href: "/hk-keywords-free.html", class: "btn-tool btn-tool-free", text: "港股(免密碼)" }),
-    el("a", { href: "/us-keywords.html", class: "btn-tool", text: "美股" }),
-    el("a", { href: "/cn-keywords.html", class: "btn-tool", text: "A股" })
+  // Free tools row
+  const freeRow = el("div", { class: "hero-tool-row" });
+  freeRow.append(
+    el("span", { class: "hero-tool-label", text: "免費" }),
+    el("a", { href: "/hk-stocks-db.html", class: "btn-tool btn-tool-free", text: "港股業績 (取密 Telegram)" }),
+    el("a", { href: "/hk-keywords-free.html", class: "btn-tool btn-tool-free", text: "港股關鍵字" })
   );
 
   container.append(
@@ -136,7 +130,7 @@ function renderHero(author) {
     el("p", { class: "hero-tagline", text: author.tagline }),
     el("p", { class: "hero-sub", text: author.subTagline }),
     el("div", { class: "hero-cta-group" },
-      el("div", { class: "hero-tool-group" }, dbRow, kwRow)
+      el("div", { class: "hero-tool-group" }, unifiedEntry, freeRow)
     )
   );
 }

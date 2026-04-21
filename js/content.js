@@ -10,8 +10,8 @@ const SITE_CONTENT = {
     nameEn: "Edward LEE",
     tagline: "發掘十倍股",
     subTagline: "港股 · 美股 · 宏觀分析",
-    avatar: "https://img.etimg.com/thumb/msid-68631304,width-210,height-158,imgsize-410125,resizemode-75/bull1-getty-1200.jpg",
-    bgImage: "https://img.etimg.com/thumb/msid-68631304,width-1200,height-800,imgsize-410125,resizemode-75/bull1-getty-1200.jpg",
+    avatar: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=210&h=158&auto=format&fit=crop&q=80",
+    bgImage: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1920&auto=format&fit=crop&q=80",
     email: "",
   },
 

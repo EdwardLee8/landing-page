@@ -432,6 +432,29 @@ section + section {
   opacity: 0.75;
 }
 
+.btn-unified-entry {
+  display: inline-flex;
+  align-items: center;
+  padding: 13px 28px;
+  background: rgba(212,166,71,0.12);
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  color: var(--gold);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background var(--transition), color var(--transition);
+  margin-bottom: 6px;
+  white-space: nowrap;
+}
+.btn-unified-entry:hover {
+  background: var(--gold);
+  color: #080808;
+  text-decoration: none;
+}
+
 .btn-secondary {
   display: inline-flex;
   align-items: center;
