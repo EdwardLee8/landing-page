@@ -250,15 +250,15 @@ section + section {
   right: 0;
   top: 0;
   height: 100%;
-  width: 65%;
+  width: 100%;
   object-fit: cover;
-  object-position: center 55%;
-  opacity: 0.38;
-  -webkit-mask-image: radial-gradient(ellipse 90% 85% at 85% 45%,
-    black 0%, black 25%, rgba(0,0,0,0.5) 50%, transparent 72%);
-  mask-image: radial-gradient(ellipse 90% 85% at 85% 45%,
-    black 0%, black 25%, rgba(0,0,0,0.5) 50%, transparent 72%);
-  filter: grayscale(15%) contrast(1.1) brightness(0.85);
+  object-position: right center;
+  opacity: 0.85;
+  -webkit-mask-image: radial-gradient(ellipse 110% 110% at 78% 50%,
+    black 0%, black 35%, rgba(0,0,0,0.65) 58%, rgba(0,0,0,0.1) 78%, transparent 92%);
+  mask-image: radial-gradient(ellipse 110% 110% at 78% 50%,
+    black 0%, black 35%, rgba(0,0,0,0.65) 58%, rgba(0,0,0,0.1) 78%, transparent 92%);
+  filter: grayscale(0%) contrast(1.05) brightness(0.88);
 }
 
 /* Subtle radial glow */

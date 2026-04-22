@@ -11,7 +11,7 @@ const SITE_CONTENT = {
     tagline: "發掘十倍股",
     subTagline: "港股 · 美股 · 宏觀分析",
     avatar: "assets/bg-bull.jpg",
-    bgImage: "assets/bg-bull.jpg",
+    bgImage: "assets/hero-bg.jpg",
     email: "",
   },
 
