@@ -1,10 +1,17 @@
-"""Encrypt IRM survey pipeline data for landing-page static hosting."""
-import base64, json, os, shutil
+"""Encrypt IRM survey pipeline data for landing-page static hosting.
+
+Usage:
+  py -3.12 encrypt_irm.py <unified_password>
+"""
+import base64, json, os, sys
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-PASSWORD = "CN_stock_Key_worD"
+if len(sys.argv) < 2:
+    print("Usage: py -3.12 encrypt_irm.py <unified_password>")
+    sys.exit(1)
+PASSWORD = sys.argv[1]
 IRM_PIPELINE_DIR = os.path.join(os.path.dirname(__file__), "..", "irm-survey-pipeline")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(BASE_DIR, "cn_irm_data")

@@ -145,9 +145,7 @@ td.date{color:#aaa;font-size:13px;white-space:nowrap}
 </div>
 
 <script>
-const _PW_HASH = "9eaaa349072153688cc7742ce3aae7c6418c23e7715d31213f4a96d4c00a5a13";
-const _SESS_KEY = "cn_irm_auth";
-const _SESS_PW  = "cn_irm_pw";
+const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
 
 async function _sha256(s) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
@@ -170,8 +168,8 @@ async function checkPassword() {
   const h = await _sha256(pw);
   if (h === _PW_HASH) {
     document.getElementById("pw-overlay").style.display = "none";
-    sessionStorage.setItem(_SESS_KEY, "1");
-    sessionStorage.setItem(_SESS_PW, pw);
+    sessionStorage.setItem("unified_auth", "1");
+    sessionStorage.setItem("unified_auth_pw", pw);
     loadAndInit(pw);
   } else {
     const err = document.getElementById("pw-error");
@@ -182,10 +180,13 @@ async function checkPassword() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  if (sessionStorage.getItem(_SESS_KEY) === "1") {
+  const pw = sessionStorage.getItem("unified_auth_pw") || "";
+  if (sessionStorage.getItem("unified_auth") === "1" && pw) {
     document.getElementById("pw-overlay").style.display = "none";
-    const pw = sessionStorage.getItem(_SESS_PW);
-    if (pw) loadAndInit(pw);
+    loadAndInit(pw);
+  } else if (sessionStorage.getItem("unified_auth") === "1" && !pw) {
+    sessionStorage.removeItem("unified_auth");
+    document.getElementById("pw-input").focus();
   } else {
     document.getElementById("pw-input").focus();
     document.getElementById("pw-input").addEventListener("keydown", e => {
