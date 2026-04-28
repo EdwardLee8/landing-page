@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A股(深圳)最新業務資料庫</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080808;color:#e8e0d0;font-family:"Noto Sans SC","Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
+#pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
+.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
+.pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
+.pw-box p{font-size:13px;color:#888;margin-bottom:24px}
+.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:10px 14px;border-radius:4px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;transition:border-color .2s}
+.pw-box input:focus{border-color:#d4a647}
+.pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
+.pw-box button:hover{background:#e8bc5a}
+.pw-error{color:#ef5350;font-size:12px;margin-top:8px;min-height:18px}
+a{color:#d4a647;text-decoration:none}
+a:hover{text-decoration:underline}
+.page-header{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px;transition:background .2s;white-space:nowrap}
+.back-btn:hover{background:#d4a64720;text-decoration:none}
+.page-title{font-size:20px;font-weight:700;color:#fff}
+.page-subtitle{font-size:12px;color:#888;margin-top:2px}
+.filter-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:14px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.filter-group{display:flex;flex-direction:column;gap:4px}
+.filter-label{font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+input[type=text]{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 10px;border-radius:4px;font-size:13px;font-family:inherit;min-width:220px;outline:none;transition:border-color .2s}
+input[type=text]:focus{border-color:#d4a647}
+.filter-actions{display:flex;gap:8px;align-items:flex-end;margin-left:auto}
+.btn{padding:7px 16px;border-radius:4px;font-size:13px;font-family:inherit;cursor:pointer;border:none;transition:all .2s;font-weight:600}
+.btn-ghost{background:transparent;border:1px solid #444;color:#aaa}
+.btn-ghost:hover{border-color:#d4a647;color:#d4a647}
+.stats-bar{padding:10px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:12px;color:#888;display:flex;gap:16px;flex-wrap:wrap}
+.stats-bar span b{color:#d4a647;font-size:14px}
+.table-wrap{overflow-x:auto;padding:0 0 40px}
+table{width:100%;border-collapse:collapse;min-width:600px}
+thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
+th{padding:10px 14px;text-align:left;font-size:13px;font-weight:700;color:#d4a647;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:#e8bc5a}
+th.sort-asc .si::after{content:" ▲"}
+th.sort-desc .si::after{content:" ▼"}
+th:not(.sort-asc):not(.sort-desc) .si::after{content:" ⇅";opacity:.4}
+tbody tr{border-bottom:1px solid #1a1a2e;transition:background .15s;cursor:pointer}
+tbody tr:hover{background:#1a1a2e}
+td{padding:10px 14px;vertical-align:middle}
+td.code{color:#d4a647;font-weight:700;font-size:14px;white-space:nowrap}
+td.name{color:#fff;font-weight:600}
+td.num{text-align:center;color:#aaa;font-size:13px}
+td.date{color:#aaa;font-size:13px;white-space:nowrap}
+.pagination{display:flex;justify-content:center;align-items:center;gap:6px;padding:20px 24px;flex-wrap:wrap}
+.page-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#aaa;padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s}
+.page-btn:hover,.page-btn.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
+.page-btn:disabled{opacity:.3;cursor:not-allowed}
+.page-info{color:#666;font-size:13px;padding:0 8px}
+.empty{text-align:center;padding:60px 20px;color:#555}
+
+/* Modal */
+#modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto}
+#modal-overlay.open{display:flex}
+.modal{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;width:100%;max-width:860px;margin:auto;position:relative}
+.modal-head{padding:20px 24px;border-bottom:1px solid #1e1e2e;display:flex;align-items:baseline;gap:12px}
+.modal-head .m-code{color:#d4a647;font-size:18px;font-weight:700}
+.modal-head .m-name{color:#fff;font-size:16px;font-weight:600}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:#666;font-size:20px;cursor:pointer;line-height:1;padding:4px 8px;transition:color .2s}
+.modal-close:hover{color:#fff}
+.modal-body{padding:20px 24px;max-height:70vh;overflow-y:auto}
+.session-item{margin-bottom:16px;border:1px solid #1e1e2e;border-radius:6px;overflow:hidden}
+.session-head{background:#111120;padding:10px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.session-head:hover{background:#1a1a2e}
+.session-date{color:#d4a647;font-size:13px;font-weight:700;white-space:nowrap}
+.session-toggle{margin-left:auto;color:#666;font-size:12px}
+.session-body{display:none;padding:16px;font-size:13px;line-height:1.8;color:#c8c0b0;white-space:pre-wrap;word-break:break-all;background:#080810;border-top:1px solid #1e1e2e}
+.session-item.expanded .session-body{display:block}
+.session-item.expanded .session-toggle::after{content:"▲ 收起"}
+.session-item:not(.expanded) .session-toggle::after{content:"▼ 展開"}
+.loading-msg{text-align:center;padding:40px;color:#666;font-size:14px}
+</style>
+</head>
+<body>
+
+<div id="pw-overlay">
+  <div class="pw-box">
+    <h2>A股(深圳)最新業務資料庫</h2>
+    <p>請輸入密碼以繼續</p>
+    <p style="font-size:13px;color:#d4a647;margin-bottom:8px;">密碼可到 Patreon 聊天區獲取</p>
+    <input type="password" id="pw-input" placeholder="密碼" autocomplete="off">
+    <button onclick="checkPassword()">進入</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<div class="page-header">
+  <a href="/login.html" class="back-btn">&#8592; 返回入口</a>
+  <div>
+    <div class="page-title">A股(深圳)最新業務資料庫</div>
+    <div class="page-subtitle" id="page-subtitle">載入中…</div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-group">
+    <span class="filter-label">搜尋</span>
+    <input type="text" id="f-search" placeholder="股票代碼 / 公司名稱">
+  </div>
+  <div class="filter-actions">
+    <button class="btn btn-ghost" onclick="resetFilters()">重置</button>
+  </div>
+</div>
+
+<div class="stats-bar" id="stats-bar"><span>載入中…</span></div>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th onclick="sortBy('code')" data-col="code">代碼 <span class="si"></span></th>
+      <th onclick="sortBy('name')" data-col="name">公司名稱 <span class="si"></span></th>
+      <th onclick="sortBy('records')" data-col="records" style="text-align:center">調研記錄 <span class="si"></span></th>
+      <th onclick="sortBy('latest')" data-col="latest">最新日期 <span class="si"></span></th>
+      <th onclick="sortBy('earliest')" data-col="earliest">最早日期 <span class="si"></span></th>
+    </tr>
+  </thead>
+  <tbody id="table-body"></tbody>
+</table>
+<div class="empty" id="empty-state" style="display:none">找不到符合條件的公司</div>
+</div>
+
+<div class="pagination" id="pagination"></div>
+
+<!-- Modal -->
+<div id="modal-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="m-code" id="m-code"></span>
+      <span class="m-name" id="m-name"></span>
+    </div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const _PW_HASH = "9eaaa349072153688cc7742ce3aae7c6418c23e7715d31213f4a96d4c00a5a13";
+const _SESS_KEY = "cn_irm_auth";
+const _SESS_PW  = "cn_irm_pw";
+
+async function _sha256(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+async function _decryptEnc(b64, pw) {
+  const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const salt = raw.slice(0,16), nonce = raw.slice(16,28), ct = raw.slice(28);
+  const km = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    {name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"},
+    km, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({name:"AES-GCM", iv:nonce}, key, ct);
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+async function checkPassword() {
+  const pw = document.getElementById("pw-input").value;
+  const h = await _sha256(pw);
+  if (h === _PW_HASH) {
+    document.getElementById("pw-overlay").style.display = "none";
+    sessionStorage.setItem(_SESS_KEY, "1");
+    sessionStorage.setItem(_SESS_PW, pw);
+    loadAndInit(pw);
+  } else {
+    const err = document.getElementById("pw-error");
+    err.textContent = "密碼錯誤，請再試";
+    document.getElementById("pw-input").value = "";
+    document.getElementById("pw-input").focus();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  if (sessionStorage.getItem(_SESS_KEY) === "1") {
+    document.getElementById("pw-overlay").style.display = "none";
+    const pw = sessionStorage.getItem(_SESS_PW);
+    if (pw) loadAndInit(pw);
+  } else {
+    document.getElementById("pw-input").focus();
+    document.getElementById("pw-input").addEventListener("keydown", e => {
+      if (e.key === "Enter") checkPassword();
+    });
+  }
+});
+
+// ── Data & state ───────────────────────────────────────────
+let ALL = [];
+let filtered = [];
+let sortCol = "latest";
+let sortDir = -1;
+let currentPage = 1;
+const PAGE_SIZE = 50;
+let _pw = "";
+
+async function loadAndInit(pw) {
+  _pw = pw;
+  try {
+    const r = await fetch("cn_irm_index.enc");
+    const enc = await r.text();
+    ALL = await _decryptEnc(enc, pw);
+    // Normalize: parse dateRange into latest/earliest
+    ALL.forEach(d => {
+      const parts = (d.dateRange || "").split("~").map(s => s.trim());
+      d.earliest = parts[0] || "";
+      d.latest   = parts[1] || parts[0] || "";
+    });
+    const dates = ALL.map(d => d.latest).filter(Boolean).sort();
+    const maxDate = dates[dates.length - 1] || "";
+    document.getElementById("page-subtitle").textContent =
+      `深圳交易所投資者關係活動記錄 · 共 ${ALL.length} 家公司 · 數據截至 ${maxDate}`;
+    initApp();
+  } catch(e) {
+    alert("數據載入失敗，請重試：" + e.message);
+  }
+}
+
+function initApp() {
+  document.getElementById("f-search").addEventListener("input", applyFilters);
+  applyFilters();
+}
+
+function resetFilters() {
+  document.getElementById("f-search").value = "";
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById("f-search").value.trim().toLowerCase();
+  filtered = ALL.filter(d => {
+    if (q && !d.code.toLowerCase().includes(q) && !d.name.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  currentPage = 1;
+  updateSort();
+  renderStats();
+  renderTable();
+  renderPagination();
+}
+
+function sortBy(col) {
+  const ths = document.querySelectorAll("th[data-col]");
+  if (sortCol === col) {
+    sortDir = -sortDir;
+  } else {
+    sortCol = col;
+    sortDir = col === "records" ? -1 : -1;
+  }
+  ths.forEach(th => {
+    th.classList.remove("sort-asc","sort-desc");
+    if (th.dataset.col === col) th.classList.add(sortDir === 1 ? "sort-asc" : "sort-desc");
+  });
+  currentPage = 1;
+  updateSort();
+  renderTable();
+  renderPagination();
+}
+
+function updateSort() {
+  filtered.sort((a, b) => {
+    let av = a[sortCol], bv = b[sortCol];
+    if (sortCol === "records") { av = +av; bv = +bv; }
+    if (av < bv) return -sortDir;
+    if (av > bv) return sortDir;
+    return 0;
+  });
+  const ths = document.querySelectorAll("th[data-col]");
+  ths.forEach(th => {
+    th.classList.remove("sort-asc","sort-desc");
+    if (th.dataset.col === sortCol) th.classList.add(sortDir === 1 ? "sort-asc" : "sort-desc");
+  });
+}
+
+function renderStats() {
+  const sb = document.getElementById("stats-bar");
+  sb.innerHTML = `<span>顯示 <b>${filtered.length}</b> / ${ALL.length} 家公司</span>`;
+}
+
+function renderTable() {
+  const tbody = document.getElementById("table-body");
+  const empty = document.getElementById("empty-state");
+  if (!filtered.length) {
+    tbody.innerHTML = "";
+    empty.style.display = "";
+    return;
+  }
+  empty.style.display = "none";
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const rows = filtered.slice(start, start + PAGE_SIZE);
+  tbody.innerHTML = rows.map(d => `
+    <tr onclick="openStock('${d.code}','${escHtml(d.name)}')">
+      <td class="code">${d.code}</td>
+      <td class="name">${escHtml(d.name)}</td>
+      <td class="num">${d.records}</td>
+      <td class="date">${d.latest || "—"}</td>
+      <td class="date">${d.earliest || "—"}</td>
+    </tr>`).join("");
+}
+
+function renderPagination() {
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
+  const pg = document.getElementById("pagination");
+  if (total <= 1) { pg.innerHTML = ""; return; }
+  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?"disabled":""}>‹</button>`;
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || Math.abs(i - currentPage) <= 2) {
+      html += `<button class="page-btn${i===currentPage?" active":""}" onclick="goPage(${i})">${i}</button>`;
+    } else if (Math.abs(i - currentPage) === 3) {
+      html += `<span class="page-info">…</span>`;
+    }
+  }
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?"disabled":""}>›</button>`;
+  html += `<span class="page-info">第 ${currentPage} / ${total} 頁</span>`;
+  pg.innerHTML = html;
+}
+
+function goPage(p) {
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
+  if (p < 1 || p > total) return;
+  currentPage = p;
+  renderTable();
+  renderPagination();
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+function escHtml(s) {
+  return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ── Modal ──────────────────────────────────────────────────
+async function openStock(code, name) {
+  document.getElementById("m-code").textContent = code;
+  document.getElementById("m-name").textContent = name;
+  document.getElementById("modal-body").innerHTML = '<div class="loading-msg">載入中…</div>';
+  document.getElementById("modal-overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+  try {
+    const r = await fetch(`cn_irm_data/${code}.enc`);
+    if (!r.ok) throw new Error("找不到檔案 (" + r.status + ")");
+    const enc = await r.text();
+    const data = await _decryptEnc(enc, _pw);
+    renderSessions(data.sessions || []);
+  } catch(e) {
+    document.getElementById("modal-body").innerHTML =
+      `<div class="loading-msg" style="color:#ef5350">載入失敗：${escHtml(e.message)}</div>`;
+  }
+}
+
+function renderSessions(sessions) {
+  if (!sessions.length) {
+    document.getElementById("modal-body").innerHTML = '<div class="loading-msg">暫無記錄</div>';
+    return;
+  }
+  sessions = sessions.slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  const html = sessions.map((s, i) => {
+    const text = (s.chunks || []).map(c => c.text || "").join("\n").trim();
+    return `
+      <div class="session-item${i===0?" expanded":""}">
+        <div class="session-head" onclick="toggleSession(this)">
+          <span class="session-date">${escHtml(s.date || "未知日期")}</span>
+          <span class="session-toggle"></span>
+        </div>
+        <div class="session-body">${escHtml(text)}</div>
+      </div>`;
+  }).join("");
+  document.getElementById("modal-body").innerHTML = html;
+}
+
+function toggleSession(head) {
+  head.closest(".session-item").classList.toggle("expanded");
+}
+
+function closeModal() {
+  document.getElementById("modal-overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+document.getElementById("modal-overlay").addEventListener("click", function(e) {
+  if (e.target === this) closeModal();
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeModal();
+});
+</script>
+</body>
+</html>
