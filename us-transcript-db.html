@@ -274,6 +274,17 @@ tbody tr.row-neutral{border-left:3px solid #444}
 </div>
 <div class="pagination" id="pagination"></div>
 
+<div class="methodology" style="max-width:1320px;margin:32px auto 24px;padding:20px 24px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:10px;color:#aaa;font-size:13px;line-height:1.7">
+  <div style="color:#d4a647;font-weight:700;font-size:14px;margin-bottom:10px">📊 計算方法</div>
+  <div><b style="color:#ccc">訊號分數</b>（max 100）= 業績指引動量(35) + 情緒水平+變化(30) + RS%(25) + 新主題(10)</div>
+  <div style="margin-top:6px"><b style="color:#ccc">業績指引</b>：MiniMax LLM 從業績會 prep section 判斷 forward guidance vs prior（raised/maintained/lowered/none）。連續 2 季 raised 加 10 分 momentum bonus</div>
+  <div style="margin-top:6px"><b style="color:#ccc">情緒</b>：MiniMax LLM 評分 -1.0 ~ +1.0；最新水平(20) + 對上一季 QoQ delta(±10)</div>
+  <div style="margin-top:6px"><b style="color:#ccc">RS%</b>：股價 ÷ SPY 比率（過去 63+ 交易日）喺所有美股嘅百分位（0-100）— 來自股價資料庫</div>
+  <div style="margin-top:6px"><b style="color:#ccc">新主題</b>：MiniMax LLM 對比過去 2 季 key topics 提取本季新出現嘅主題；過濾過短(&lt;3 chars)、泛濫詞("growth")、重複</div>
+  <div style="margin-top:6px"><b style="color:#ccc">業績會日期</b>：從 Seeking Alpha earnings card 提取真實業績會議日期（非文章發表日期）</div>
+  <div style="margin-top:6px"><b style="color:#ccc">行業</b>：TradingView API 為主；缺失嘅由共享關鍵字嘅同行公司多數行業推斷（≥3 個同行 + 佔 ≥40%）</div>
+</div>
+
 <!-- Detail Modal -->
 <div id="modal-overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
@@ -698,6 +709,7 @@ function renderModalTabs(detail) {
       const hasBull = bLen > 0, hasBear = beLen > 0;
       return `<tr>
         <td style="color:#d4a647;font-weight:700;white-space:nowrap">${escHtml(q.quarter||"")}</td>
+        <td style="color:#999;white-space:nowrap;font-size:12px">${escHtml(q.call_date||"—")}</td>
         <td>${guid}</td>
         <td class="${sentClass}">${(q.sentiment||0).toFixed(2)}</td>
         <td>${hasBull?`<button class="expand-btn" onclick="toggleExpand(this)">Bull (${bLen})</button>
@@ -708,7 +720,7 @@ function renderModalTabs(detail) {
     }).join("");
     document.getElementById("tab-history").innerHTML = `
       <table class="hist-table">
-        <thead><tr><th>季度</th><th>指引</th><th>情緒</th><th>Bull</th><th>Bear</th></tr></thead>
+        <thead><tr><th>季度</th><th>業績會日期</th><th>指引</th><th>情緒</th><th>Bull</th><th>Bear</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>`;
   }
