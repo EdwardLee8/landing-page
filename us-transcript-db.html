@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股業績電話會議資料庫</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
+a{color:#d4a647;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Password overlay */
+#pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
+.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
+.pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
+.pw-box p{font-size:13px;color:#888;margin-bottom:24px}
+.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:10px 14px;border-radius:4px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;transition:border-color .2s}
+.pw-box input:focus{border-color:#d4a647}
+.pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
+.pw-box button:hover{background:#e8bc5a}
+.pw-error{color:#ef5350;font-size:12px;margin-top:8px;min-height:18px}
+
+/* Layout */
+.page-header{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px;transition:background .2s;white-space:nowrap}
+.back-btn:hover{background:#d4a64720;text-decoration:none}
+.page-title{font-size:20px;font-weight:700;color:#fff}
+.page-subtitle{font-size:12px;color:#888;margin-top:2px}
+
+/* Filter bar */
+.filter-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:14px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.filter-group{display:flex;flex-direction:column;gap:4px}
+.filter-label{font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+input[type=text]{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 10px;border-radius:4px;font-size:13px;font-family:inherit;min-width:200px;outline:none;transition:border-color .2s}
+input[type=text]:focus{border-color:#d4a647}
+.filter-actions{display:flex;gap:8px;align-items:flex-end;margin-left:auto}
+.btn{padding:7px 14px;border-radius:4px;font-size:13px;font-family:inherit;cursor:pointer;border:none;transition:all .2s;font-weight:600}
+.btn-ghost{background:transparent;border:1px solid #444;color:#aaa}
+.btn-ghost:hover{border-color:#d4a647;color:#d4a647}
+.btn-toggle{background:#1a1a2e;border:1px solid #2a2a3e;color:#888;padding:6px 12px;border-radius:4px;font-size:12px;font-family:inherit;cursor:pointer;transition:all .2s;font-weight:600}
+.btn-toggle.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
+
+/* Multi-select dropdown */
+.ms-wrap{position:relative}
+.ms-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 10px;border-radius:4px;font-size:13px;font-family:inherit;cursor:pointer;min-width:140px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:6px;white-space:nowrap}
+.ms-btn:hover{border-color:#d4a647}
+.ms-btn::after{content:"▾";color:#888;font-size:11px}
+.ms-drop{display:none;position:absolute;top:100%;left:0;z-index:200;background:#0d0d14;border:1px solid #2a2a3e;border-radius:4px;min-width:180px;max-height:260px;overflow-y:auto;margin-top:2px;box-shadow:0 4px 16px rgba(0,0,0,.6)}
+.ms-wrap.open .ms-drop{display:block}
+.ms-opt{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s}
+.ms-opt:hover{background:#1a1a2e}
+.ms-opt input[type=checkbox]{accent-color:#d4a647;cursor:pointer}
+.guidance-checks{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.gchk{display:flex;align-items:center;gap:4px;font-size:12px;color:#aaa;cursor:pointer;white-space:nowrap}
+.gchk input[type=checkbox]{accent-color:#d4a647;cursor:pointer}
+
+/* Stats bar */
+.stats-bar{padding:10px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:12px;color:#888;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.stats-bar b{color:#d4a647}
+
+/* Table */
+.table-wrap{overflow-x:auto;padding:0 0 40px}
+table{width:100%;border-collapse:collapse;min-width:900px}
+thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
+th{padding:10px 12px;text-align:left;font-size:12px;font-weight:700;color:#d4a647;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:#e8bc5a}
+th.sort-asc .si::after{content:" ▲"}
+th.sort-desc .si::after{content:" ▼"}
+th:not(.sort-asc):not(.sort-desc) .si::after{content:" ⇅";opacity:.4}
+tbody tr{border-bottom:1px solid #1a1a2e;transition:background .15s;cursor:pointer}
+tbody tr:hover{background:#1a1a2e!important}
+td{padding:9px 12px;vertical-align:middle;font-size:13px}
+td.sym{color:#d4a647;font-weight:700;font-size:14px;white-space:nowrap}
+td.co-name{color:#fff;font-weight:600;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+td.sector{color:#888;font-size:12px;white-space:nowrap}
+td.quarter{color:#aaa;font-size:12px;white-space:nowrap}
+
+/* Row coloring */
+tbody tr.row-bull{background:#0d2010;border-left:3px solid #4caf50}
+tbody tr.row-bear{background:#1e0808;border-left:3px solid #ef5350}
+tbody tr.row-mixed{border-left:3px solid #ffa000}
+tbody tr.row-neutral{border-left:3px solid #444}
+
+/* Signal badge */
+.sig-badge{display:inline-flex;align-items:center;justify-content:center;width:40px;height:22px;border-radius:11px;font-size:12px;font-weight:700}
+.sig-high{background:#1a3a2a;color:#4caf50;border:1px solid #4caf5044}
+.sig-mid{background:#2a2800;color:#ffa000;border:1px solid #ffa00044}
+.sig-low{background:#2a1a1a;color:#ef5350;border:1px solid #ef535044}
+
+/* Guidance badge */
+.guid{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.guid-raised{background:#1a3a1a;color:#66bb6a;border:1px solid #4caf5033}
+.guid-maintained{background:#1e1e2a;color:#888;border:1px solid #44444444}
+.guid-lowered{background:#2a1a1a;color:#ef7070;border:1px solid #ef535033}
+.guid-none{background:#1a1a1a;color:#555;border:1px solid #33333333}
+
+/* Sentiment */
+.sent-pos{color:#66bb6a;font-weight:700}
+.sent-neg{color:#ef7070;font-weight:700}
+.sent-neu{color:#888}
+
+/* RS pct */
+.rs-high{color:#66bb6a;font-weight:700}
+.rs-mid{color:#ffa000}
+.rs-low{color:#ef7070}
+
+/* Theme chips */
+.theme-chip{display:inline-block;padding:2px 7px;border-radius:9px;font-size:11px;background:#1a1a3a;color:#82b1ff;border:1px solid #3949ab44;margin:1px}
+
+/* Pagination */
+.pagination{display:flex;justify-content:center;align-items:center;gap:6px;padding:20px 24px;flex-wrap:wrap}
+.page-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#aaa;padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s}
+.page-btn:hover,.page-btn.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
+.page-btn:disabled{opacity:.3;cursor:not-allowed}
+.page-info{color:#666;font-size:13px;padding:0 8px}
+.empty{text-align:center;padding:60px 20px;color:#555}
+
+/* Modal */
+#modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto}
+#modal-overlay.open{display:flex}
+.modal{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;width:100%;max-width:900px;margin:auto;position:relative}
+.modal-head{padding:18px 24px;border-bottom:1px solid #1e1e2e;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.modal-head .m-sym{color:#d4a647;font-size:20px;font-weight:700}
+.modal-head .m-name{color:#fff;font-size:15px;font-weight:600}
+.modal-head .m-meta{color:#666;font-size:12px;margin-left:auto}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:#666;font-size:20px;cursor:pointer;line-height:1;padding:4px 8px;transition:color .2s}
+.modal-close:hover{color:#fff}
+
+/* Tabs */
+.tab-bar{display:flex;gap:0;border-bottom:1px solid #1e1e2e;background:#080810;overflow-x:auto}
+.tab-btn{padding:11px 18px;background:none;border:none;color:#666;cursor:pointer;font-size:13px;font-family:inherit;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.tab-btn.active{color:#d4a647;border-bottom-color:#d4a647}
+.tab-btn:hover:not(.active){color:#bbb}
+.tab-content{display:none;padding:20px 24px;max-height:70vh;overflow-y:auto}
+.tab-content.active{display:block}
+
+/* Tab 1: Analysis */
+.thesis-section{margin-bottom:20px}
+.thesis-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #1e1e2e}
+.thesis-title.bull{color:#66bb6a}
+.thesis-title.bear{color:#ef7070}
+.thesis-title.target{color:#d4a647}
+.thesis-title.theme{color:#82b1ff}
+.thesis-ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.thesis-ul li{padding:8px 12px;background:#111120;border-radius:4px;font-size:13px;line-height:1.6;color:#c8c0b0;border-left:3px solid transparent}
+.thesis-ul.bull-list li{border-left-color:#4caf5044}
+.thesis-ul.bear-list li{border-left-color:#ef535044}
+.target-grid{display:flex;flex-wrap:wrap;gap:8px}
+.target-card{background:#111120;border:1px solid #1e1e2e;border-radius:6px;padding:10px 14px;min-width:160px}
+.target-card .t-metric{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.target-card .t-value{font-size:17px;font-weight:700;color:#d4a647}
+.target-card .t-period{font-size:11px;color:#666;margin-top:2px}
+.target-card .t-qual{font-size:11px;color:#555;font-style:italic}
+.theme-area{display:flex;flex-wrap:wrap;gap:6px}
+
+/* Tab 2: History */
+.hist-table{width:100%;border-collapse:collapse}
+.hist-table th{text-align:left;font-size:11px;color:#888;font-weight:600;padding:6px 10px;border-bottom:1px solid #1e1e2e;text-transform:uppercase;letter-spacing:.5px}
+.hist-table td{padding:8px 10px;border-bottom:1px solid #111120;font-size:13px;vertical-align:top}
+.hist-table tr:last-child td{border-bottom:none}
+.expand-btn{background:none;border:1px solid #2a2a3e;color:#888;font-size:11px;padding:2px 8px;border-radius:3px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
+.expand-btn:hover{border-color:#d4a647;color:#d4a647}
+.expand-area{display:none;margin-top:8px;padding:8px 10px;background:#080810;border-radius:4px;font-size:12px;color:#aaa}
+.expand-area ul{padding-left:16px}
+.expand-area ul li{margin-bottom:4px;line-height:1.5}
+.expand-area.open{display:block}
+
+/* Tab 3: Keywords */
+.kw-table{width:100%;border-collapse:collapse}
+.kw-table th{text-align:left;font-size:11px;color:#888;font-weight:600;padding:7px 10px;border-bottom:1px solid #1e1e2e;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.kw-table td{padding:8px 10px;border-bottom:1px solid #111120;font-size:13px}
+.kw-table tr:last-child td{border-bottom:none}
+.kw-pos{color:#66bb6a;font-weight:700}
+.kw-neg{color:#ef7070;font-weight:700}
+.kw-neu{color:#aaa}
+.win-bar{display:inline-flex;align-items:center;gap:6px}
+.win-rate-bar{width:48px;height:6px;background:#1a1a2e;border-radius:3px;overflow:hidden}
+.win-rate-fill{height:100%;border-radius:3px;background:#d4a647}
+.empty-kw{color:#555;font-size:13px;text-align:center;padding:24px}
+
+/* Tab 4: Peers */
+.peer-table{width:100%;border-collapse:collapse}
+.peer-table th{text-align:left;font-size:11px;color:#888;font-weight:600;padding:7px 10px;border-bottom:1px solid #1e1e2e;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.peer-table td{padding:8px 10px;border-bottom:1px solid #111120;font-size:13px}
+.peer-table tr:last-child td{border-bottom:none}
+.peer-sym{color:#d4a647;font-weight:700}
+
+.loading-msg{text-align:center;padding:40px;color:#666;font-size:14px}
+</style>
+</head>
+<body>
+
+<div id="pw-overlay">
+  <div class="pw-box">
+    <h2>美股業績電話會議資料庫</h2>
+    <p>請輸入密碼以繼續</p>
+    <input type="password" id="pw-input" placeholder="密碼" autocomplete="off" maxlength="64">
+    <button onclick="checkPassword()">進入</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<div class="page-header">
+  <a href="/login.html" class="back-btn">&#8592; 返回入口</a>
+  <div>
+    <div class="page-title">美股業績電話會議資料庫</div>
+    <div class="page-subtitle" id="page-subtitle">載入中…</div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-group">
+    <div class="filter-label">搜尋</div>
+    <input type="text" id="f-search" placeholder="Ticker 或公司名稱" oninput="applyFilters()">
+  </div>
+  <div class="filter-group">
+    <div class="filter-label">行業</div>
+    <div class="ms-wrap" id="ms-sector">
+      <button class="ms-btn" onclick="msToggle(this.parentElement)">全部行業</button>
+      <div class="ms-drop" id="ms-sector-drop"></div>
+    </div>
+  </div>
+  <div class="filter-group">
+    <div class="filter-label">業績指引</div>
+    <div class="guidance-checks">
+      <label class="gchk"><input type="checkbox" value="raised" onchange="applyFilters()" checked> ↑ Raised</label>
+      <label class="gchk"><input type="checkbox" value="maintained" onchange="applyFilters()" checked> → Maintained</label>
+      <label class="gchk"><input type="checkbox" value="lowered" onchange="applyFilters()" checked> ↓ Lowered</label>
+      <label class="gchk"><input type="checkbox" value="none" onchange="applyFilters()" checked> — N/A</label>
+    </div>
+  </div>
+  <div class="filter-group">
+    <div class="filter-label">快速篩選</div>
+    <div style="display:flex;gap:6px">
+      <button class="btn-toggle" id="btn-rs75" onclick="toggleFilter('rs75')">RS ≥ 75</button>
+      <button class="btn-toggle" id="btn-sig70" onclick="toggleFilter('sig70')">訊號 ≥ 70</button>
+      <button class="btn-toggle" id="btn-newthemes" onclick="toggleFilter('newthemes')">🆕 有新主題</button>
+    </div>
+  </div>
+  <div class="filter-actions">
+    <button class="btn btn-ghost" onclick="resetFilters()">重置</button>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <span>顯示 <b id="s-count">—</b> / <b id="s-total">—</b> 隻</span>
+  <span>🔥 強勢訊號(≥70): <b id="s-high">—</b></span>
+  <span>↑ Raised: <b id="s-raised">—</b></span>
+  <span>最新數據: <b id="s-date">—</b></span>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th onclick="sortBy('symbol')"><span class="si">Ticker</span></th>
+        <th onclick="sortBy('name')"><span class="si">公司</span></th>
+        <th onclick="sortBy('sector')"><span class="si">行業</span></th>
+        <th onclick="sortBy('signal_score')"><span class="si">訊號</span></th>
+        <th onclick="sortBy('guidance')"><span class="si">業績指引</span></th>
+        <th onclick="sortBy('sentiment_latest')"><span class="si">情緒</span></th>
+        <th onclick="sortBy('rs_pct')"><span class="si">RS%</span></th>
+        <th onclick="sortBy('latest_quarter')"><span class="si">最新季度</span></th>
+        <th><span>🆕 新主題</span></th>
+      </tr>
+    </thead>
+    <tbody id="tbl-body"></tbody>
+  </table>
+  <div id="empty-msg" class="empty" style="display:none">沒有符合條件的股票</div>
+</div>
+<div class="pagination" id="pagination"></div>
+
+<!-- Detail Modal -->
+<div id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-head">
+      <span class="m-sym" id="m-sym"></span>
+      <span class="m-name" id="m-name"></span>
+      <span class="m-meta" id="m-meta"></span>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('analysis',this)">📋 最新分析</button>
+      <button class="tab-btn" onclick="switchTab('history',this)">📈 歷史趨勢</button>
+      <button class="tab-btn" onclick="switchTab('keywords',this)">🔑 關鍵字信號</button>
+      <button class="tab-btn" onclick="switchTab('peers',this)">👥 同業比較</button>
+    </div>
+    <div id="tab-analysis" class="tab-content active">
+      <div class="loading-msg">載入中…</div>
+    </div>
+    <div id="tab-history" class="tab-content">
+      <div class="loading-msg">載入中…</div>
+    </div>
+    <div id="tab-keywords" class="tab-content">
+      <div class="loading-msg">載入中…</div>
+    </div>
+    <div id="tab-peers" class="tab-content">
+      <div class="loading-msg">載入中…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
+
+// ── State ────────────────────────────────────────────────────────────────────
+let ALL = [], filtered = [];
+let sortCol = "signal_score", sortDir = -1;
+let currentPage = 1;
+const PAGE_SIZE = 50;
+let _pw = "";
+let detailCache = {};
+let fRS75 = false, fSig70 = false, fNewThemes = false;
+let _sectors = [];
+
+// ── Crypto ───────────────────────────────────────────────────────────────────
+async function _sha256(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+
+async function _decryptEnc(b64, pw) {
+  const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const salt = raw.slice(0,16), nonce = raw.slice(16,28), ct = raw.slice(28);
+  const km = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw),
+    "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    {name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"},
+    km, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({name:"AES-GCM", iv:nonce}, key, ct);
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+// ── Auth ─────────────────────────────────────────────────────────────────────
+async function checkPassword() {
+  const pw = document.getElementById("pw-input").value;
+  if (!pw) return;
+  const h = await _sha256(pw);
+  if (h === _PW_HASH) {
+    document.getElementById("pw-overlay").style.display = "none";
+    sessionStorage.setItem("unified_auth", "1");
+    sessionStorage.setItem("unified_auth_pw", pw);
+    loadAndInit(pw);
+  } else {
+    document.getElementById("pw-error").textContent = "密碼錯誤，請再試";
+    document.getElementById("pw-input").value = "";
+    document.getElementById("pw-input").focus();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("pw-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") checkPassword();
+    document.getElementById("pw-error").textContent = "";
+  });
+  const pw = sessionStorage.getItem("unified_auth_pw") || "";
+  if (sessionStorage.getItem("unified_auth") === "1" && pw) {
+    document.getElementById("pw-overlay").style.display = "none";
+    loadAndInit(pw);
+  } else if (sessionStorage.getItem("unified_auth") === "1" && !pw) {
+    sessionStorage.removeItem("unified_auth");
+    document.getElementById("pw-input").focus();
+  } else {
+    document.getElementById("pw-input").focus();
+  }
+});
+
+// ── Data Loading ──────────────────────────────────────────────────────────────
+async function loadAndInit(pw) {
+  _pw = pw;
+  try {
+    const r = await fetch("us_transcript_index.enc?" + Date.now());
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    ALL = await _decryptEnc(await r.text(), pw);
+    buildSectorOptions();
+    applyFilters();
+    updateStats();
+  } catch(e) {
+    document.getElementById("page-subtitle").textContent = "載入失敗：" + e.message;
+  }
+}
+
+// ── Sectors ───────────────────────────────────────────────────────────────────
+function buildSectorOptions() {
+  _sectors = [...new Set(ALL.map(d => d.sector).filter(Boolean))].sort();
+  const drop = document.getElementById("ms-sector-drop");
+  drop.innerHTML = _sectors.map(s =>
+    `<label class="ms-opt"><input type="checkbox" value="${escHtml(s)}" checked onchange="applyFilters()"> ${escHtml(s)}</label>`
+  ).join("");
+}
+
+function msToggle(wrap) {
+  wrap.classList.toggle("open");
+  document.addEventListener("click", function closer(e) {
+    if (!wrap.contains(e.target)) { wrap.classList.remove("open"); document.removeEventListener("click", closer); }
+  }, {once: false, capture: false});
+}
+
+function msGetSelected(dropId) {
+  return [...document.querySelectorAll(`#${dropId} input[type=checkbox]`)]
+    .filter(c => c.checked).map(c => c.value);
+}
+
+// ── Filters ───────────────────────────────────────────────────────────────────
+function toggleFilter(key) {
+  if (key === "rs75")      { fRS75 = !fRS75; document.getElementById("btn-rs75").classList.toggle("active", fRS75); }
+  if (key === "sig70")     { fSig70 = !fSig70; document.getElementById("btn-sig70").classList.toggle("active", fSig70); }
+  if (key === "newthemes") { fNewThemes = !fNewThemes; document.getElementById("btn-newthemes").classList.toggle("active", fNewThemes); }
+  applyFilters();
+}
+
+function resetFilters() {
+  document.getElementById("f-search").value = "";
+  fRS75 = false; fSig70 = false; fNewThemes = false;
+  ["btn-rs75","btn-sig70","btn-newthemes"].forEach(id => document.getElementById(id).classList.remove("active"));
+  document.querySelectorAll(".guidance-checks input[type=checkbox]").forEach(c => c.checked = true);
+  document.querySelectorAll("#ms-sector-drop input[type=checkbox]").forEach(c => c.checked = true);
+  document.querySelector("#ms-sector .ms-btn").textContent = "全部行業";
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById("f-search").value.toLowerCase().trim();
+  const selSectors = msGetSelected("ms-sector-drop");
+  const selGuidance = [...document.querySelectorAll(".guidance-checks input[type=checkbox]")]
+    .filter(c => c.checked).map(c => c.value);
+
+  // Update sector button label
+  const sectorBtn = document.querySelector("#ms-sector .ms-btn");
+  sectorBtn.textContent = selSectors.length === _sectors.length ? "全部行業" :
+    selSectors.length === 0 ? "全部行業" : selSectors.length + " 個行業";
+
+  filtered = ALL.filter(d => {
+    if (q && !d.symbol.toLowerCase().includes(q) && !(d.name||"").toLowerCase().includes(q)) return false;
+    if (selSectors.length < _sectors.length && !selSectors.includes(d.sector)) return false;
+    const g = d.guidance_history && d.guidance_history[0] ? d.guidance_history[0] : "none";
+    if (!selGuidance.includes(g)) return false;
+    if (fRS75 && (d.rs_pct || 0) < 75) return false;
+    if (fSig70 && (d.signal_score || 0) < 70) return false;
+    if (fNewThemes && (!d.new_themes || d.new_themes.length === 0)) return false;
+    return true;
+  });
+
+  updateSort();
+  currentPage = 1;
+  renderTable();
+  renderPagination();
+  updateStats();
+}
+
+// ── Sort ──────────────────────────────────────────────────────────────────────
+function sortBy(col) {
+  if (col === sortCol) { sortDir = -sortDir; }
+  else { sortCol = col; sortDir = -1; }
+  document.querySelectorAll("th").forEach(th => th.classList.remove("sort-asc","sort-desc"));
+  const cols = ["symbol","name","sector","signal_score","guidance","sentiment_latest","rs_pct","latest_quarter"];
+  const idx = cols.indexOf(col);
+  if (idx >= 0) {
+    const ths = document.querySelectorAll("thead th");
+    ths[idx].classList.add(sortDir === -1 ? "sort-desc" : "sort-asc");
+  }
+  updateSort();
+  renderTable();
+  renderPagination();
+}
+
+function updateSort() {
+  const guidanceOrder = {"raised":3,"maintained":2,"lowered":1,"none":0};
+  filtered.sort((a, b) => {
+    let va, vb;
+    switch(sortCol) {
+      case "symbol":          va = a.symbol; vb = b.symbol; break;
+      case "name":            va = a.name||""; vb = b.name||""; break;
+      case "sector":          va = a.sector||""; vb = b.sector||""; break;
+      case "signal_score":    va = a.signal_score||0; vb = b.signal_score||0; break;
+      case "guidance":
+        va = guidanceOrder[a.guidance_history&&a.guidance_history[0]||"none"]||0;
+        vb = guidanceOrder[b.guidance_history&&b.guidance_history[0]||"none"]||0;
+        break;
+      case "sentiment_latest": va = a.sentiment_latest||0; vb = b.sentiment_latest||0; break;
+      case "rs_pct":          va = a.rs_pct||0; vb = b.rs_pct||0; break;
+      case "latest_quarter":  va = a.latest_date||""; vb = b.latest_date||""; break;
+      default:                va = a.signal_score||0; vb = b.signal_score||0;
+    }
+    if (va < vb) return sortDir;
+    if (va > vb) return -sortDir;
+    return 0;
+  });
+}
+
+// ── Render Table ──────────────────────────────────────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById("tbl-body");
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page = filtered.slice(start, start + PAGE_SIZE);
+
+  if (page.length === 0) {
+    tbody.innerHTML = "";
+    document.getElementById("empty-msg").style.display = "block";
+    return;
+  }
+  document.getElementById("empty-msg").style.display = "none";
+
+  tbody.innerHTML = page.map(d => {
+    const guid = d.guidance_history && d.guidance_history[0] ? d.guidance_history[0] : "none";
+    const rowClass = rowColorClass(guid, d.sentiment_latest, d.rs_pct);
+    const sigClass = d.signal_score >= 70 ? "sig-high" : d.signal_score >= 50 ? "sig-mid" : "sig-low";
+    const sentClass = d.sentiment_latest > 0.3 ? "sent-pos" : d.sentiment_latest < -0.1 ? "sent-neg" : "sent-neu";
+    const rsClass   = d.rs_pct >= 75 ? "rs-high" : d.rs_pct >= 50 ? "rs-mid" : "rs-low";
+    const themes = (d.new_themes || []).slice(0, 2).map(t => `<span class="theme-chip">${escHtml(t)}</span>`).join("");
+    const guidHtml = guidanceBadge(guid);
+    const histDots = (d.guidance_history || []).slice(1, 4).map(g =>
+      g==="raised"?"<span style='color:#4caf50'>↑</span>":g==="lowered"?"<span style='color:#ef5350'>↓</span>":"<span style='color:#555'>→</span>"
+    ).join("");
+
+    return `<tr class="${rowClass}" onclick="openStock('${escHtml(d.symbol)}','${escHtml(d.name||d.symbol)}','${escHtml(d.sector||"")}','${escHtml(d.latest_quarter||"")}')">
+      <td class="sym">${escHtml(d.symbol)}</td>
+      <td class="co-name" title="${escHtml(d.name||"")}"> ${escHtml(d.name||d.symbol)}</td>
+      <td class="sector">${escHtml(d.sector||"—")}</td>
+      <td><span class="sig-badge ${sigClass}">${d.signal_score||0}</span></td>
+      <td>${guidHtml} <span style="font-size:11px;color:#444">${histDots}</span></td>
+      <td class="${sentClass}">${(d.sentiment_latest||0).toFixed(2)}</td>
+      <td class="${rsClass}">${d.rs_pct ? d.rs_pct.toFixed(0) : "—"}</td>
+      <td class="quarter">${escHtml(d.latest_quarter||"—")}</td>
+      <td>${themes || "<span style='color:#333;font-size:11px'>—</span>"}</td>
+    </tr>`;
+  }).join("");
+}
+
+function rowColorClass(guidance, sentiment, rs) {
+  if (guidance === "raised" && sentiment > 0.3 && rs > 75) return "row-bull";
+  if (guidance === "lowered") return "row-bear";
+  if (guidance === "raised" || (guidance === "maintained" && rs > 60)) return "row-mixed";
+  return "row-neutral";
+}
+
+function guidanceBadge(g) {
+  const map = {
+    raised:     ["↑ Raised",     "guid-raised"],
+    maintained: ["→ Maintained", "guid-maintained"],
+    lowered:    ["↓ Lowered",    "guid-lowered"],
+    none:       ["— N/A",        "guid-none"],
+  };
+  const [label, cls] = map[g] || map["none"];
+  return `<span class="guid ${cls}">${label}</span>`;
+}
+
+// ── Pagination ────────────────────────────────────────────────────────────────
+function renderPagination() {
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
+  const pg = document.getElementById("pagination");
+  if (total <= 1) { pg.innerHTML = ""; return; }
+
+  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?"disabled":""}>‹</button>`;
+  const pages = [];
+  if (total <= 7) {
+    for (let i=1;i<=total;i++) pages.push(i);
+  } else {
+    pages.push(1);
+    if (currentPage > 3) pages.push("…");
+    for (let i=Math.max(2,currentPage-1);i<=Math.min(total-1,currentPage+1);i++) pages.push(i);
+    if (currentPage < total-2) pages.push("…");
+    pages.push(total);
+  }
+  pages.forEach(p => {
+    if (p === "…") html += `<span class="page-info">…</span>`;
+    else html += `<button class="page-btn ${p===currentPage?"active":""}" onclick="goPage(${p})">${p}</button>`;
+  });
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?"disabled":""}>›</button>`;
+  html += `<span class="page-info">${filtered.length} 隻</span>`;
+  pg.innerHTML = html;
+}
+
+function goPage(p) {
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
+  if (p < 1 || p > total) return;
+  currentPage = p;
+  renderTable();
+  renderPagination();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+// ── Stats Bar ─────────────────────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById("s-count").textContent = filtered.length;
+  document.getElementById("s-total").textContent = ALL.length;
+  document.getElementById("s-high").textContent = filtered.filter(d=>d.signal_score>=70).length;
+  document.getElementById("s-raised").textContent = filtered.filter(d=>d.guidance_history&&d.guidance_history[0]==="raised").length;
+  const dates = ALL.map(d=>d.latest_date).filter(Boolean).sort();
+  document.getElementById("s-date").textContent = dates.length ? dates[dates.length-1] : "—";
+  document.getElementById("page-subtitle").textContent =
+    `${ALL.length} 隻美股業績電話紀錄 · 含 bull/bear thesis · 關鍵字回報信號`;
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+async function openStock(symbol, name, sector, quarter) {
+  document.getElementById("m-sym").textContent = symbol;
+  document.getElementById("m-name").textContent = name;
+  document.getElementById("m-meta").textContent = sector + (quarter ? " · " + quarter : "");
+  document.getElementById("modal-overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+
+  // Reset tabs
+  switchTab("analysis", document.querySelector(".tab-btn"));
+  ["analysis","history","keywords","peers"].forEach(t =>
+    document.getElementById("tab-"+t).innerHTML = '<div class="loading-msg">載入中…</div>'
+  );
+
+  // Load detail (lazy, cached)
+  if (!detailCache[symbol]) {
+    try {
+      const r = await fetch(`us_transcript_data/${symbol}.enc`);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      detailCache[symbol] = await _decryptEnc(await r.text(), _pw);
+    } catch(e) {
+      ["analysis","history","keywords","peers"].forEach(t =>
+        document.getElementById("tab-"+t).innerHTML = `<div class="loading-msg" style="color:#ef5350">載入失敗：${escHtml(e.message)}</div>`
+      );
+      return;
+    }
+  }
+  renderModalTabs(detailCache[symbol]);
+}
+
+function closeModal() {
+  document.getElementById("modal-overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+function switchTab(name, btn) {
+  document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("tab-"+name).classList.add("active");
+  if (btn) btn.classList.add("active");
+}
+
+// ── Modal Tabs Render ─────────────────────────────────────────────────────────
+function renderModalTabs(detail) {
+  const quarters = detail.quarters || [];
+  const latest = quarters[0] || {};
+
+  // Tab 1: Latest Analysis
+  const bull = (latest.bull_thesis || []);
+  const bear = (latest.bear_thesis || []);
+  const targets = (latest.concrete_targets || []);
+  const themes = (latest.new_themes || []);
+
+  let a1 = "";
+  if (bull.length) {
+    a1 += `<div class="thesis-section">
+      <div class="thesis-title bull">📈 Bull Thesis — ${escHtml(latest.quarter||"最新季度")}</div>
+      <ul class="thesis-ul bull-list">${bull.map(t=>`<li>${escHtml(t)}</li>`).join("")}</ul>
+    </div>`;
+  }
+  if (bear.length) {
+    a1 += `<div class="thesis-section">
+      <div class="thesis-title bear">⚠️ Bear Thesis / 風險</div>
+      <ul class="thesis-ul bear-list">${bear.map(t=>`<li>${escHtml(t)}</li>`).join("")}</ul>
+    </div>`;
+  }
+  if (targets.length) {
+    a1 += `<div class="thesis-section">
+      <div class="thesis-title target">🎯 Management Guidance Targets</div>
+      <div class="target-grid">${targets.map(t=>`
+        <div class="target-card">
+          <div class="t-metric">${escHtml(t.metric||"")}</div>
+          <div class="t-value">${escHtml(t.value||"")}</div>
+          <div class="t-period">${escHtml(t.period||"")}</div>
+          <div class="t-qual">${escHtml(t.qualifier||"")}</div>
+        </div>`).join("")}</div>
+    </div>`;
+  }
+  if (themes.length) {
+    a1 += `<div class="thesis-section">
+      <div class="thesis-title theme">🆕 Emerging Themes（首次出現）</div>
+      <div class="theme-area">${themes.map(t=>`<span class="theme-chip">${escHtml(t)}</span>`).join("")}</div>
+    </div>`;
+  }
+  if (!bull.length && !bear.length) {
+    a1 = `<div class="loading-msg" style="color:#555">此季度暫無 LLM 分析數據</div>`;
+  }
+  document.getElementById("tab-analysis").innerHTML = a1;
+
+  // Tab 2: History
+  if (!quarters.length) {
+    document.getElementById("tab-history").innerHTML = `<div class="loading-msg" style="color:#555">暫無歷史數據</div>`;
+  } else {
+    let rows = quarters.map((q, qi) => {
+      const guid = guidanceBadge(q.guidance_tone || "none");
+      const sentClass = q.sentiment > 0.3 ? "sent-pos" : q.sentiment < -0.1 ? "sent-neg" : "sent-neu";
+      const bLen = (q.bull_thesis||[]).length, beLen = (q.bear_thesis||[]).length;
+      const hasBull = bLen > 0, hasBear = beLen > 0;
+      return `<tr>
+        <td style="color:#d4a647;font-weight:700;white-space:nowrap">${escHtml(q.quarter||"")}</td>
+        <td style="color:#888;font-size:12px;white-space:nowrap">${escHtml(q.date||"")}</td>
+        <td>${guid}</td>
+        <td class="${sentClass}">${(q.sentiment||0).toFixed(2)}</td>
+        <td>${hasBull?`<button class="expand-btn" onclick="toggleExpand(this)">Bull (${bLen})</button>
+          <div class="expand-area"><ul>${(q.bull_thesis||[]).map(t=>`<li>${escHtml(t)}</li>`).join("")}</ul></div>`:"—"}</td>
+        <td>${hasBear?`<button class="expand-btn" onclick="toggleExpand(this)">Bear (${beLen})</button>
+          <div class="expand-area"><ul>${(q.bear_thesis||[]).map(t=>`<li>${escHtml(t)}</li>`).join("")}</ul></div>`:"—"}</td>
+      </tr>`;
+    }).join("");
+    document.getElementById("tab-history").innerHTML = `
+      <table class="hist-table">
+        <thead><tr><th>季度</th><th>日期</th><th>指引</th><th>情緒</th><th>Bull</th><th>Bear</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  // Tab 3: Keywords
+  const kws = detail.keyword_signals || [];
+  if (!kws.length) {
+    document.getElementById("tab-keywords").innerHTML = `<div class="empty-kw">暫無關鍵字回報數據（需 ClickHouse keyword_return_correlation 數據）</div>`;
+  } else {
+    const kwRows = kws.map(k => {
+      const retClass = k.avg_20d_return > 3 ? "kw-pos" : k.avg_20d_return < -1 ? "kw-neg" : "kw-neu";
+      const winPct = Math.round((k.win_rate||0)*100);
+      return `<tr>
+        <td>${escHtml(k.keyword||k.kw||"")}</td>
+        <td class="${retClass}">${k.avg_20d_return > 0 ? "+" : ""}${(k.avg_20d_return||0).toFixed(1)}%</td>
+        <td><div class="win-bar"><div class="win-rate-bar"><div class="win-rate-fill" style="width:${winPct}%"></div></div>${winPct}%</div></td>
+        <td style="color:#666">${k.company_count||0}</td>
+      </tr>`;
+    }).join("");
+    document.getElementById("tab-keywords").innerHTML = `
+      <table class="kw-table">
+        <thead><tr><th>關鍵字</th><th>20日均回報</th><th>勝率</th><th>覆蓋公司</th></tr></thead>
+        <tbody>${kwRows}</tbody>
+      </table>`;
+  }
+
+  // Tab 4: Peers
+  const peers = detail.peer_comparison || [];
+  if (!peers.length) {
+    document.getElementById("tab-peers").innerHTML = `<div class="loading-msg" style="color:#555">暫無同業比較數據（需 ClickHouse company_keywords 數據）</div>`;
+  } else {
+    const peerRows = peers.map(p => {
+      const rsClass = p.rs_pct >= 75 ? "rs-high" : p.rs_pct >= 50 ? "rs-mid" : "rs-low";
+      return `<tr>
+        <td class="peer-sym">${escHtml(p.symbol||"")}</td>
+        <td class="${rsClass}">${p.rs_pct ? p.rs_pct.toFixed(0) : "—"}</td>
+        <td style="color:#888;font-size:12px">${p.shared_keywords||0} 個</td>
+        <td>${guidanceBadge(p.guidance_latest||"none")}</td>
+      </tr>`;
+    }).join("");
+    document.getElementById("tab-peers").innerHTML = `
+      <p style="font-size:12px;color:#666;margin-bottom:12px">按共同業務關鍵字數排名，RS% 由高至低顯示</p>
+      <table class="peer-table">
+        <thead><tr><th>Ticker</th><th>RS%</th><th>共同主題</th><th>最新指引</th></tr></thead>
+        <tbody>${peerRows}</tbody>
+      </table>`;
+  }
+}
+
+function toggleExpand(btn) {
+  const area = btn.nextElementSibling;
+  area.classList.toggle("open");
+}
+
+// ── Util ──────────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+</script>
+</body>
+</html>

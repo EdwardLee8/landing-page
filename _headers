@@ -39,3 +39,8 @@
   Cache-Control: public, max-age=3600
   X-Robots-Tag: noindex, noai, noimageai
   Content-Type: text/plain; charset=utf-8
+
+/us_transcript_data/*.enc
+  Cache-Control: public, max-age=3600
+  X-Robots-Tag: noindex, noai, noimageai
+  Content-Type: text/plain; charset=utf-8
