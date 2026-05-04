@@ -717,7 +717,7 @@ function renderModalTabs(detail) {
   // Tab 3: Keywords
   const kws = detail.keyword_signals || [];
   if (!kws.length) {
-    document.getElementById("tab-keywords").innerHTML = `<div class="empty-kw">暫無關鍵字回報數據（需 ClickHouse keyword_return_correlation 數據）</div>`;
+    document.getElementById("tab-keywords").innerHTML = `<div class="empty-kw">暫無關鍵字回報數據</div>`;
   } else {
     const kwRows = kws.map(k => {
       const retClass = k.avg_20d_return > 3 ? "kw-pos" : k.avg_20d_return < -1 ? "kw-neg" : "kw-neu";
