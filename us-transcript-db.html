@@ -698,7 +698,6 @@ function renderModalTabs(detail) {
       const hasBull = bLen > 0, hasBear = beLen > 0;
       return `<tr>
         <td style="color:#d4a647;font-weight:700;white-space:nowrap">${escHtml(q.quarter||"")}</td>
-        <td style="color:#888;font-size:12px;white-space:nowrap">${escHtml(q.date||"")}</td>
         <td>${guid}</td>
         <td class="${sentClass}">${(q.sentiment||0).toFixed(2)}</td>
         <td>${hasBull?`<button class="expand-btn" onclick="toggleExpand(this)">Bull (${bLen})</button>
@@ -709,7 +708,7 @@ function renderModalTabs(detail) {
     }).join("");
     document.getElementById("tab-history").innerHTML = `
       <table class="hist-table">
-        <thead><tr><th>季度</th><th>日期</th><th>指引</th><th>情緒</th><th>Bull</th><th>Bear</th></tr></thead>
+        <thead><tr><th>季度</th><th>指引</th><th>情緒</th><th>Bull</th><th>Bear</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>`;
   }
