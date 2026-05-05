@@ -155,6 +155,10 @@ tbody tr.row-neutral{border-left:3px solid #444}
 .target-card .t-value{font-size:17px;font-weight:700;color:#d4a647}
 .target-card .t-period{font-size:11px;color:#666;margin-top:2px}
 .target-card .t-qual{font-size:11px;color:#555;font-style:italic}
+.target-card .t-yoy{font-size:12px;font-weight:600;margin-top:5px;padding-top:5px;border-top:1px solid #1e1e2e}
+.target-card .t-yoy.yoy-up{color:#4caf50}
+.target-card .t-yoy.yoy-down{color:#ef5350}
+.target-card .t-yoy-basis{font-size:10px;color:#666;font-weight:400;margin-left:4px}
 .theme-area{display:flex;flex-wrap:wrap;gap:6px}
 
 /* Tab 2: History */
@@ -678,13 +682,19 @@ function renderModalTabs(detail) {
   if (targets.length) {
     a1 += `<div class="thesis-section">
       <div class="thesis-title target">🎯 Management Guidance Targets</div>
-      <div class="target-grid">${targets.map(t=>`
-        <div class="target-card">
+      <div class="target-grid">${targets.map(t=>{
+        const hasYoy = t.implied_yoy_pct != null;
+        const yoyUp = hasYoy && t.implied_yoy_pct >= 0;
+        const yoyStr = hasYoy ? `${t.implied_yoy_pct >= 0 ? "+" : ""}${t.implied_yoy_pct.toFixed(1)}%` : "";
+        const yoyBasis = hasYoy && t.prior_yr_actual ? `vs ${escHtml(t.prior_yr_actual)}` : "";
+        return `<div class="target-card">
           <div class="t-metric">${escHtml(t.metric||"")}</div>
           <div class="t-value">${escHtml(t.value||"")}</div>
           <div class="t-period">${escHtml(t.period||"")}</div>
           <div class="t-qual">${escHtml(t.qualifier||"")}</div>
-        </div>`).join("")}</div>
+          ${hasYoy ? `<div class="t-yoy ${yoyUp?"yoy-up":"yoy-down"}">YoY ${yoyStr}<span class="t-yoy-basis">${yoyBasis}</span></div>` : ""}
+        </div>`;
+      }).join("")}</div>
     </div>`;
   }
   if (themes.length) {
