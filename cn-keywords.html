@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>港</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
+<script src="js/opencc.full.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
@@ -413,6 +413,8 @@ async function initApp() {
   } catch(e) {
     DB_HK = DB_CN; // fallback if opencc-js failed to load
     console.error("OpenCC 轉換失敗，使用簡體:", e);
+    const sb = document.getElementById("stats-bar");
+    if (sb) sb.innerHTML += `<span style="color:#ef5350">⚠ 繁體轉換引擎載入失敗，僅顯示簡體</span>`;
   }
   applyZhMode();
   document.getElementById("search-input").addEventListener("input", e => {
