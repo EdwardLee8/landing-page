@@ -280,13 +280,13 @@ tbody tr.row-neutral{border-left:3px solid #444}
 
 <div class="methodology" style="max-width:1320px;margin:32px auto 24px;padding:20px 24px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:10px;color:#aaa;font-size:13px;line-height:1.7">
   <div style="color:#d4a647;font-weight:700;font-size:14px;margin-bottom:10px">📊 計算方法</div>
-  <div><b style="color:#ccc">訊號分數</b>（max 100）= 業績指引動量(35) + 情緒水平+變化(30) + RS%(25) + 新主題(10)</div>
-  <div style="margin-top:6px"><b style="color:#ccc">業績指引</b>：MiniMax LLM 從業績會 prep section 判斷 forward guidance vs prior（raised/maintained/lowered/none）。連續 2 季 raised 加 10 分 momentum bonus</div>
-  <div style="margin-top:6px"><b style="color:#ccc">情緒</b>：MiniMax LLM 評分 -1.0 ~ +1.0；最新水平(20) + 對上一季 QoQ delta(±10)</div>
-  <div style="margin-top:6px"><b style="color:#ccc">RS%</b>：股價 ÷ SPY 比率（過去 63+ 交易日）喺所有美股嘅百分位（0-100）— 來自股價資料庫</div>
-  <div style="margin-top:6px"><b style="color:#ccc">新主題</b>：MiniMax LLM 對比過去 2 季 key topics 提取本季新出現嘅主題；過濾過短(&lt;3 chars)、泛濫詞("growth")、重複</div>
-  <div style="margin-top:6px"><b style="color:#ccc">業績會日期</b>：從 Seeking Alpha earnings card 提取真實業績會議日期（非文章發表日期）</div>
-  <div style="margin-top:6px"><b style="color:#ccc">行業</b>：TradingView API 為主；缺失嘅由共享關鍵字嘅同行公司多數行業推斷（≥3 個同行 + 佔 ≥40%）</div>
+  <div><b style="color:#ccc">訊號分數</b>（滿分 100）= 業績指引(35) + 情緒(30) + 強勢程度(25) + 新主題(10)</div>
+  <div style="margin-top:6px"><b style="color:#ccc">業績指引</b>：AI 閱讀業績電話會內容，判斷管理層對下季展望係上調、維持定下調。連續兩季上調會額外加分</div>
+  <div style="margin-top:6px"><b style="color:#ccc">情緒</b>：AI 判斷管理層講話整體係樂觀定悲觀（-1 最負面，+1 最正面），並考慮與上季相比有否改善</div>
+  <div style="margin-top:6px"><b style="color:#ccc">強勢程度（RS%）</b>：過去三個月股價走勢相對大市（標普 500）嘅強弱，100 = 最強，0 = 最弱</div>
+  <div style="margin-top:6px"><b style="color:#ccc">新主題</b>：AI 找出今季業績電話會中，相比過去兩季新出現嘅討論重點</div>
+  <div style="margin-top:6px"><b style="color:#ccc">業績會日期</b>：業績電話會議召開嘅真實日期（非新聞報導發布日期）</div>
+  <div style="margin-top:6px"><b style="color:#ccc">行業</b>：根據公司業務分類；部分較少人認識嘅公司，以同類型公司嘅行業作推斷</div>
 </div>
 
 <!-- Detail Modal -->
@@ -657,7 +657,11 @@ function switchTab(name, btn) {
 
 // ── Modal Tabs Render ─────────────────────────────────────────────────────────
 function renderModalTabs(detail) {
-  const quarters = detail.quarters || [];
+  const quarters = (detail.quarters || []).slice().sort((a, b) => {
+    const da = a.call_date || a.quarter || "";
+    const db = b.call_date || b.quarter || "";
+    return db.localeCompare(da);
+  });
   const latest = quarters[0] || {};
 
   // Tab 1: Latest Analysis
