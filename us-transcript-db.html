@@ -657,11 +657,13 @@ function switchTab(name, btn) {
 
 // ── Modal Tabs Render ─────────────────────────────────────────────────────────
 function renderModalTabs(detail) {
-  const quarters = (detail.quarters || []).slice().sort((a, b) => {
-    const da = a.call_date || a.quarter || "";
-    const db = b.call_date || b.quarter || "";
-    return db.localeCompare(da);
-  });
+  function qSortKey(q) {
+    if (q.call_date && /^\d{4}-\d{2}-\d{2}/.test(q.call_date)) return q.call_date;
+    const m = (q.quarter || "").match(/Q([1-4])\s+(\d{4})/);
+    if (m) return `${m[2]}-${["03","06","09","12"][+m[1]-1]}-01`;
+    return q.call_date || q.quarter || "";
+  }
+  const quarters = (detail.quarters || []).slice().sort((a, b) => qSortKey(b).localeCompare(qSortKey(a)));
   const latest = quarters[0] || {};
 
   // Tab 1: Latest Analysis
