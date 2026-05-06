@@ -111,6 +111,9 @@ a:hover{text-decoration:underline}
 .theme-n{font-size:11px;color:#888;margin-left:auto;font-family:Consolas,monospace}
 .theme-q1{display:flex;gap:10px;font-size:11.5px;font-family:Consolas,monospace;color:#aaa;margin-top:4px}
 .theme-cos{margin-top:10px;padding-top:8px;border-top:1px dashed #2a2a3e}
+.sort-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#aaa;padding:4px 10px;font-size:12px;border-radius:4px;cursor:pointer;margin-left:4px}
+.sort-btn.active{background:#d4a647;color:#000;border-color:#d4a647;font-weight:600}
+.sort-btn:hover{border-color:#d4a647}
 
 /* ── Correlation cluster panel ── */
 #corr-panel{display:none}
@@ -230,6 +233,11 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
         <button class="clear-btn" id="clear-btn" onclick="clearKwSearch()">×</button>
       </div>
       <div class="search-hint" id="search-hint">輸入關鍵字，例如：银行、科技</div>
+      <div style="margin-top:8px;display:flex;align-items:center;gap:4px;font-size:12px;color:#888">
+        排序：
+        <button class="sort-btn active" data-k="ry" onclick="setSortKey('ry')">營收 YoY</button>
+        <button class="sort-btn" data-k="gy" onclick="setSortKey('gy')">毛利 YoY</button>
+      </div>
     </div>
     <div class="results" id="results"><div class="empty">請輸入關鍵字開始搜尋</div></div>
   </div>
@@ -271,7 +279,12 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 
   <!-- Theme panel -->
   <div id="theme-panel" style="display:none">
-    <div class="corr-toolbar"><span style="font-size:13px;color:#aaa">A 股概念主題（67 個主題、12 一級板塊）— Q1 2026 業績匯總，按營收 YoY 排序</span></div>
+    <div class="corr-toolbar">
+      <span style="font-size:13px;color:#aaa">A 股概念主題（67 主題 / 12 板塊）— Q1 2026 業績匯總</span>
+      <span style="margin-left:auto;font-size:12px;color:#888">排序：</span>
+      <button class="sort-btn active" data-k="ry" onclick="setSortKey('ry')">營收 YoY</button>
+      <button class="sort-btn" data-k="gy" onclick="setSortKey('gy')">毛利 YoY</button>
+    </div>
     <div class="corr-body" id="theme-body"><div class="loading"><div class="spinner"></div>載入主題資料…</div></div>
   </div>
 </div>
@@ -847,6 +860,7 @@ function searchKw2Co(query) {
     const agg = aggKwQ1(entry.companies);
     const aggHtml = agg ? `<span class="kw-q1-summary">
       <span>Q1 營收 YoY: ${fmtPct(agg.revYoy)}</span>
+      <span>毛利 YoY: ${fmtPct(agg.gpYoy)}</span>
       <span>淨利 YoY: ${fmtPct(agg.niYoy)}</span>
       <span style="color:#666">(${agg.n}/${entry.companies.length} 已公告)</span>
     </span>` : `<span class="kw-q1-summary" style="opacity:.5">Q1 數據暫缺</span>`;
@@ -954,19 +968,23 @@ function renderCoQ1(co) {
   const q = co.q1;
   return `<div class="q1-line">
     <span class="q1-cell">營收: <b>${fmtAmt(q.rev)}</b> ${fmtPct(q.ry)}</span>
+    <span class="q1-cell">毛利: <b>${fmtAmt(q.gp)}</b> ${fmtPct(q.gy)}</span>
     <span class="q1-cell">淨利: <b>${fmtAmt(q.ni)}</b> ${fmtPct(q.ny)}</span>
-    <span class="q1-cell">ROE: <b>${fmtNum(q.roe,2)}%</b></span>
+    <span class="q1-cell">ROE: <b>${q.roe==null?"—":fmtNum(q.roe,2)+"%"}</b></span>
     <span class="q1-cell">P/OCF: <b>${q.pocf==null||q.pocf<=0?"—":fmtNum(q.pocf,1)+"x"}</b></span>
   </div>`;
 }
 function aggKwQ1(companies) {
-  // sum revenue & net income for those with q1; back-out 2025 via YoY
-  let rev26=0, rev25=0, ni26=0, ni25=0, n=0;
+  let rev26=0, rev25=0, gp26=0, gp25=0, ni26=0, ni25=0, n=0;
   for (const co of companies) {
     const q = co.q1; if (!q) continue;
     if (q.rev != null && q.ry != null) {
       const r25 = q.rev / (1 + q.ry/100);
       if (isFinite(r25)) { rev26 += q.rev; rev25 += r25; }
+    }
+    if (q.gp != null && q.gy != null) {
+      const g25 = q.gp / (1 + q.gy/100);
+      if (isFinite(g25)) { gp26 += q.gp; gp25 += g25; }
     }
     if (q.ni != null && q.ny != null) {
       const n25 = q.ni / (1 + q.ny/100);
@@ -978,8 +996,17 @@ function aggKwQ1(companies) {
   return {
     n,
     revYoy: rev25 ? (rev26/rev25 - 1)*100 : null,
+    gpYoy:  gp25  ? (gp26/gp25  - 1)*100 : null,
     niYoy:  ni25  ? (ni26/ni25  - 1)*100 : null,
   };
+}
+let SORT_KEY = 'ry';
+function setSortKey(k) {
+  SORT_KEY = k;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b.dataset.k===k));
+  const inp = document.getElementById('search-input');
+  if (inp && inp.value) runKwSearch(inp.value);
+  if (themesLoaded && document.getElementById('theme-panel').style.display==='block') renderThemeView();
 }
 // ── Theme tab ──
 let THEMES_DATA = null, themesLoaded = false;
@@ -1000,13 +1027,13 @@ function renderThemeView() {
   const byCat = {};
   for (const t of themes) (byCat[t.cat] ||= []).push(t);
   // categories sorted by ry desc
-  const catOrder = categories.slice().sort((a,b) => (b.ry??-999)-(a.ry??-999));
+  const catOrder = categories.slice().sort((a,b) => (b[SORT_KEY]??-999)-(a[SORT_KEY]??-999));
   let html = '';
   for (const c of catOrder) {
-    const ts = (byCat[c.cat]||[]).slice().sort((a,b)=>(b.ry??-999)-(a.ry??-999));
+    const ts = (byCat[c.cat]||[]).slice().sort((a,b)=>(b[SORT_KEY]??-999)-(a[SORT_KEY]??-999));
     html += `<div class="theme-cat"><div class="theme-cat-h">
       <span class="theme-cat-name">${escHtml(c.cat)}</span>
-      <span class="theme-cat-meta">${c.n} 公司 · ${c.nQ1} 已公告 · 營收YoY ${fmtPct(c.ry)} · 淨利YoY ${fmtPct(c.ny)}</span>
+      <span class="theme-cat-meta">${c.n} 公司 · ${c.nQ1} 已公告 · 營收YoY ${fmtPct(c.ry)} · 毛利YoY ${fmtPct(c.gy)} · 淨利YoY ${fmtPct(c.ny)}</span>
     </div><div class="theme-grid">`;
     for (const t of ts) {
       html += `<div class="theme-card" onclick="toggleTheme(this,'${escHtml(t.tz)}')">
@@ -1015,7 +1042,7 @@ function renderThemeView() {
           <span class="theme-en">${escHtml(t.te)}</span>
           <span class="theme-n">${t.n}/${t.nQ1}</span>
         </div>
-        <div class="theme-q1">營收 ${fmtPct(t.ry)} · 淨利 ${fmtPct(t.ny)}</div>
+        <div class="theme-q1">營收 ${fmtPct(t.ry)} · 毛利 ${fmtPct(t.gy)} · 淨利 ${fmtPct(t.ny)}</div>
       </div>`;
     }
     html += `</div></div>`;
@@ -1048,9 +1075,8 @@ function toggleTheme(el, tz) {
 }
 
 function sortByRevYoy(arr) {
-  // companies w/ q1 by ry desc, then those without q1
   return arr.slice().sort((a,b) => {
-    const ay = a.q1?.ry, by = b.q1?.ry;
+    const ay = a.q1?.[SORT_KEY], by = b.q1?.[SORT_KEY];
     if (ay==null && by==null) return 0;
     if (ay==null) return 1;
     if (by==null) return -1;
