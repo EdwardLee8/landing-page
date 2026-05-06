@@ -85,6 +85,33 @@ a:hover{text-decoration:underline}
 .kw-co-name{color:#666;font-size:11px}
 .kw-co-sum{color:#888;font-size:12px;line-height:1.5;margin-top:4px}
 
+/* ── Q1 2026 metrics ── */
+.q1-line{display:flex;flex-wrap:wrap;gap:10px 14px;font-size:11.5px;font-family:Consolas,monospace;color:#aaa;margin-top:6px;padding-top:6px;border-top:1px dashed #2a2a3e}
+.q1-cell{white-space:nowrap}
+.q1-cell b{color:#ccc;font-weight:500}
+.q1-up{color:#4ade80}
+.q1-dn{color:#ef5350}
+.q1-na{color:#555;font-style:italic}
+.kw-q1-summary{display:inline-flex;gap:10px;margin-left:auto;font-family:Consolas,monospace;font-size:12px;color:#888}
+.kw-q1-summary span{white-space:nowrap}
+.q1-noq{opacity:.55}
+
+/* ── Theme panel ── */
+.theme-cat{background:#0d0d14;border:1px solid #1e1e2e;border-radius:6px;padding:14px 16px;margin:14px 24px}
+.theme-cat-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;border-bottom:1px solid #1f1f2e;padding-bottom:8px}
+.theme-cat-name{font-size:18px;font-weight:700;color:#d4a647}
+.theme-cat-meta{font-size:12px;color:#888;font-family:Consolas,monospace}
+.theme-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.theme-card{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:6px;padding:10px 12px;cursor:pointer;transition:all .15s}
+.theme-card:hover{border-color:#d4a647;background:#d4a64710}
+.theme-card.open{border-color:#d4a647;grid-column:1/-1;cursor:default}
+.theme-card-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.theme-name{font-size:14px;font-weight:600;color:#fff}
+.theme-en{font-size:11px;color:#666}
+.theme-n{font-size:11px;color:#888;margin-left:auto;font-family:Consolas,monospace}
+.theme-q1{display:flex;gap:10px;font-size:11.5px;font-family:Consolas,monospace;color:#aaa;margin-top:4px}
+.theme-cos{margin-top:10px;padding-top:8px;border-top:1px dashed #2a2a3e}
+
 /* ── Correlation cluster panel ── */
 #corr-panel{display:none}
 .corr-toolbar{padding:14px 24px;background:#080808;border-bottom:1px solid #111;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
@@ -185,6 +212,7 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
       <div class="tab active" data-tab="kw2co" onclick="switchTab('kw2co')">關鍵字 → 公司</div>
       <div class="tab" data-tab="co2kw" onclick="switchTab('co2kw')">公司 → 關鍵字</div>
       <div class="tab" data-tab="corr"  onclick="switchTab('corr')">高相關股票群組</div>
+      <div class="tab" data-tab="theme" onclick="switchTab('theme')">概念主題</div>
     </div>
     <div style="display:flex;align-items:center;padding:0 12px;gap:4px;font-size:12px">
       <button id="zh-hk-btn" class="zh-toggle" onclick="setZhMode('hk')" style="padding:4px 10px;border:1px solid #2a2a3a;background:#0d0d14;color:#888;cursor:pointer;border-radius:3px;font-size:12px">繁</button>
@@ -239,6 +267,12 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
     <div class="corr-body" id="corr-body">
       <div class="loading"><div class="spinner"></div>載入群組資料…</div>
     </div>
+  </div>
+
+  <!-- Theme panel -->
+  <div id="theme-panel" style="display:none">
+    <div class="corr-toolbar"><span style="font-size:13px;color:#aaa">A 股概念主題（67 個主題、12 一級板塊）— Q1 2026 業績匯總，按營收 YoY 排序</span></div>
+    <div class="corr-body" id="theme-body"><div class="loading"><div class="spinner"></div>載入主題資料…</div></div>
   </div>
 </div>
 
@@ -429,9 +463,11 @@ async function initApp() {
 function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
-  document.getElementById("kw-panel").style.display   = tab === "corr" ? "none" : "block";
+  document.getElementById("kw-panel").style.display   = (tab==="kw2co"||tab==="co2kw") ? "block" : "none";
   document.getElementById("corr-panel").style.display = tab === "corr" ? "block" : "none";
+  document.getElementById("theme-panel").style.display = tab === "theme" ? "block" : "none";
   if (tab === "corr" && !corrLoaded) loadCorrData();
+  if (tab === "theme" && !themesLoaded) loadThemesData();
   if (tab === "kw2co") {
     document.getElementById("search-input").placeholder = "搜尋關鍵字（英文或中文）";
     document.getElementById("search-hint").textContent  = "輸入關鍵字，例如：银行、科技";
@@ -806,24 +842,33 @@ function searchKw2Co(query) {
   if (!top.length) { div.innerHTML = `<div class="result-count">找不到相關關鍵字</div>`; return; }
   let html = `<div class="result-count">找到 <b>${results.length}</b> 個關鍵字，顯示前 ${top.length} 個</div>`;
   for (const { entry } of top) {
-    const cos = entry.companies.slice(0, 60);
+    const sortedAll = sortByRevYoy(entry.companies);
+    const cos = sortedAll.slice(0, 60);
+    const agg = aggKwQ1(entry.companies);
+    const aggHtml = agg ? `<span class="kw-q1-summary">
+      <span>Q1 營收 YoY: ${fmtPct(agg.revYoy)}</span>
+      <span>淨利 YoY: ${fmtPct(agg.niYoy)}</span>
+      <span style="color:#666">(${agg.n}/${entry.companies.length} 已公告)</span>
+    </span>` : `<span class="kw-q1-summary" style="opacity:.5">Q1 數據暫缺</span>`;
     html += `<div class="kw-result-card"><div class="kw-result-header">
       ${entry.zh ? `<span class="kw-result-zh">${hl(entry.zh, query)}</span>` : ""}
       <span class="kw-result-en">${hl(entry.en, query)}</span>
       <span class="kw-result-count">${entry.companies.length} 間</span>
+      ${aggHtml}
     </div><div class="kw-co-list">`;
     for (const co of cos) {
       const sym = co.s;
       const namez = co.nz || "";
       const namen = co.n.length>30?co.n.slice(0,30)+"…":co.n;
       const sum = (SYM_TO_SUM[co.s]||"").slice(0,100);
-      html += `<div class="kw-co-item" onclick="jumpToCompany('${escHtml(co.s)}')">
+      html += `<div class="kw-co-item ${co.q1?"":"q1-noq"}" onclick="jumpToCompany('${escHtml(co.s)}')">
         <div class="kw-co-header">
           <span class="kw-co-sym">${escHtml(sym)}</span>
           <span class="kw-co-namez">${escHtml(namez||namen)}</span>
           ${namez?`<span class="kw-co-name">${escHtml(namen)}</span>`:""}
         </div>
         ${sum?`<div class="kw-co-sum">${escHtml(sum)}</div>`:""}
+        ${renderCoQ1(co)}
       </div>`;
     }
     if (entry.companies.length > 60) html += `<div style="font-size:12px;color:#666;align-self:center;padding:4px 8px">…還有 ${entry.companies.length-60} 間</div>`;
@@ -856,6 +901,7 @@ function searchCo2Kw(query) {
     </div>`;
     if (co.ind) html += `<div class="co-industry">${escHtml(co.ind)}</div>`;
     if (co.sum) html += `<div class="co-summary">${escHtml(co.sum)}</div>`;
+    html += renderCoQ1(co);
     if (kws.length) {
       html += `<div class="kw-list">`;
       for (const kw of kws) {
@@ -884,6 +930,132 @@ function searchByKw(kw) {
   input.value = kw;
   document.getElementById("clear-btn").classList.add("visible");
   runKwSearch(kw);
+}
+
+// ── Q1 2026 helpers ──
+function fmtAmt(v) {
+  if (v == null || isNaN(v)) return "—";
+  const a = Math.abs(v);
+  if (a >= 1e8)  return (v/1e8).toFixed(2)  + "億";
+  if (a >= 1e4)  return (v/1e4).toFixed(0)  + "萬";
+  return v.toFixed(0);
+}
+function fmtPct(v) {
+  if (v == null || isNaN(v)) return "—";
+  const cls = v >= 0 ? "q1-up" : "q1-dn";
+  return `<span class="${cls}">${v>=0?"+":""}${v.toFixed(1)}%</span>`;
+}
+function fmtNum(v, dp) {
+  if (v == null || isNaN(v)) return "—";
+  return v.toFixed(dp==null?2:dp);
+}
+function renderCoQ1(co) {
+  if (!co.q1) return `<div class="q1-line q1-na">Q1 2026: 暫無業績公告</div>`;
+  const q = co.q1;
+  return `<div class="q1-line">
+    <span class="q1-cell">營收: <b>${fmtAmt(q.rev)}</b> ${fmtPct(q.ry)}</span>
+    <span class="q1-cell">淨利: <b>${fmtAmt(q.ni)}</b> ${fmtPct(q.ny)}</span>
+    <span class="q1-cell">ROE: <b>${fmtNum(q.roe,2)}%</b></span>
+    <span class="q1-cell">P/OCF: <b>${q.pocf==null||q.pocf<=0?"—":fmtNum(q.pocf,1)+"x"}</b></span>
+  </div>`;
+}
+function aggKwQ1(companies) {
+  // sum revenue & net income for those with q1; back-out 2025 via YoY
+  let rev26=0, rev25=0, ni26=0, ni25=0, n=0;
+  for (const co of companies) {
+    const q = co.q1; if (!q) continue;
+    if (q.rev != null && q.ry != null) {
+      const r25 = q.rev / (1 + q.ry/100);
+      if (isFinite(r25)) { rev26 += q.rev; rev25 += r25; }
+    }
+    if (q.ni != null && q.ny != null) {
+      const n25 = q.ni / (1 + q.ny/100);
+      if (isFinite(n25)) { ni26 += q.ni; ni25 += n25; }
+    }
+    n++;
+  }
+  if (!n) return null;
+  return {
+    n,
+    revYoy: rev25 ? (rev26/rev25 - 1)*100 : null,
+    niYoy:  ni25  ? (ni26/ni25  - 1)*100 : null,
+  };
+}
+// ── Theme tab ──
+let THEMES_DATA = null, themesLoaded = false;
+async function loadThemesData() {
+  try {
+    const r = await fetch("cn_themes.enc");
+    THEMES_DATA = await _decryptEnc(await r.text(), _pw);
+    themesLoaded = true;
+    renderThemeView();
+  } catch (e) {
+    document.getElementById("theme-body").innerHTML = `<div class="empty">載入失敗: ${e.message}</div>`;
+  }
+}
+function renderThemeView() {
+  if (!THEMES_DATA) return;
+  const { themes, categories } = THEMES_DATA;
+  // group themes by category
+  const byCat = {};
+  for (const t of themes) (byCat[t.cat] ||= []).push(t);
+  // categories sorted by ry desc
+  const catOrder = categories.slice().sort((a,b) => (b.ry??-999)-(a.ry??-999));
+  let html = '';
+  for (const c of catOrder) {
+    const ts = (byCat[c.cat]||[]).slice().sort((a,b)=>(b.ry??-999)-(a.ry??-999));
+    html += `<div class="theme-cat"><div class="theme-cat-h">
+      <span class="theme-cat-name">${escHtml(c.cat)}</span>
+      <span class="theme-cat-meta">${c.n} 公司 · ${c.nQ1} 已公告 · 營收YoY ${fmtPct(c.ry)} · 淨利YoY ${fmtPct(c.ny)}</span>
+    </div><div class="theme-grid">`;
+    for (const t of ts) {
+      html += `<div class="theme-card" onclick="toggleTheme(this,'${escHtml(t.tz)}')">
+        <div class="theme-card-h">
+          <span class="theme-name">${escHtml(t.tz)}</span>
+          <span class="theme-en">${escHtml(t.te)}</span>
+          <span class="theme-n">${t.n}/${t.nQ1}</span>
+        </div>
+        <div class="theme-q1">營收 ${fmtPct(t.ry)} · 淨利 ${fmtPct(t.ny)}</div>
+      </div>`;
+    }
+    html += `</div></div>`;
+  }
+  document.getElementById("theme-body").innerHTML = html;
+}
+function toggleTheme(el, tz) {
+  if (el.classList.contains('open')) { el.classList.remove('open'); el.querySelector('.theme-cos')?.remove(); return; }
+  const t = THEMES_DATA.themes.find(x => x.tz === tz);
+  if (!t) return;
+  // close other open in same grid
+  el.parentNode.querySelectorAll('.theme-card.open').forEach(o => { o.classList.remove('open'); o.querySelector('.theme-cos')?.remove(); });
+  el.classList.add('open');
+  // build company list sorted by q1.ry desc
+  const cos = t.syms.map(s => DB.find(c => c.s === s)).filter(Boolean);
+  const sorted = sortByRevYoy(cos).slice(0, 80);
+  let inner = `<div class="theme-cos"><div style="font-size:12px;color:#888;margin-bottom:6px">成員 keyword: ${t.kws.map(k=>escHtml(k)).join(' · ')}</div><div class="kw-co-list">`;
+  for (const co of sorted) {
+    const sym = co.s, namen = co.n.length>30?co.n.slice(0,30)+"…":co.n;
+    inner += `<div class="kw-co-item ${co.q1?"":"q1-noq"}" onclick="event.stopPropagation();jumpToCompany('${escHtml(sym)}')">
+      <div class="kw-co-header">
+        <span class="kw-co-sym">${escHtml(sym)}</span>
+        <span class="kw-co-namez">${escHtml(co.nz||namen)}</span>
+        ${co.nz?`<span class="kw-co-name">${escHtml(namen)}</span>`:""}
+      </div>${renderCoQ1(co)}</div>`;
+  }
+  if (t.syms.length > 80) inner += `<div style="font-size:12px;color:#666;padding:4px 8px">…還有 ${t.syms.length-80} 間</div>`;
+  inner += `</div></div>`;
+  el.insertAdjacentHTML('beforeend', inner);
+}
+
+function sortByRevYoy(arr) {
+  // companies w/ q1 by ry desc, then those without q1
+  return arr.slice().sort((a,b) => {
+    const ay = a.q1?.ry, by = b.q1?.ry;
+    if (ay==null && by==null) return 0;
+    if (ay==null) return 1;
+    if (by==null) return -1;
+    return by - ay;
+  });
 }
 
 function hl(text, query) {
