@@ -120,11 +120,23 @@ def export_latest(client, end_date: str) -> dict:
     else:
         df['turnover_group'] = 3
 
-    # ── 6. Market cap from quant.stock_info (cached daily) ─────────────────
+    # ── 6. Market cap = shares_outstanding × latest_close ─────────────────
+    # stock_info.market_cap is a yfinance snapshot that goes stale between
+    # update_stock_info.py runs (e.g. INTC stored $227B 2 months ago vs
+    # actual $627B today). shares_outstanding changes only on splits/
+    # buybacks/issuance (slow), so multiplying by today's close gives an
+    # always-fresh market cap.
     mc_q = f"""
-    SELECT symbol, market_cap
-    FROM quant.stock_info
-    WHERE symbol IN ('{sym_list}') AND market_cap > 0
+    SELECT s.symbol, s.shares_outstanding * o.close AS market_cap
+    FROM quant.stock_info s
+    JOIN (
+        SELECT symbol, argMax(close, trade_date) AS close
+        FROM quant.daily_ohlcv
+        WHERE market = 'US' AND trade_date <= '{end_date}'
+        GROUP BY symbol
+    ) o ON o.symbol = s.symbol
+    WHERE s.market = 'US' AND s.shares_outstanding > 0
+      AND s.symbol IN ('{sym_list}')
     """
     mc_df = pd.DataFrame(client.query(mc_q).result_rows, columns=['symbol', 'market_cap'])
     df = df.merge(mc_df, on='symbol', how='left')
