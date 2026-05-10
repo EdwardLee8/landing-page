@@ -6,8 +6,9 @@ __pycache__/
 # Backtest panel cache (regenerated from ClickHouse)
 rs_panel*.parquet
 
-# Ad-hoc patch scripts
+# Ad-hoc patch / test scripts
 _patch_*.py
+_test_*.py
 
 # wrangler files
 .wrangler
