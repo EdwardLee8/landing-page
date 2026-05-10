@@ -88,25 +88,30 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
     #    side's missing rows shadow the other (ClickHouse FULL OUTER JOIN fills
     #    missing string columns with '' not NULL, breaking coalesce).
     ci_q = f"""
-    SELECT symbol, name_en, name_zh, sector
+    SELECT symbol, name_en, name_zh, sector, industry
     FROM quant.company_info FINAL
     WHERE symbol IN ('{sym_list}')
     """
     ci_a = pd.DataFrame(client.query(ci_q).result_rows,
-                        columns=['symbol', 'name_en', 'name_zh', 'sector'])
+                        columns=['symbol', 'name_en', 'name_zh', 'sector', 'industry'])
 
     si_q = f"""
-    SELECT symbol, name AS name_si, sector AS sector_si
+    SELECT symbol, name AS name_si, sector AS sector_si, industry AS industry_si
     FROM quant.stock_info FINAL
     WHERE market = '{market}' AND symbol IN ('{sym_list}')
     """
     ci_b = pd.DataFrame(client.query(si_q).result_rows,
-                        columns=['symbol', 'name_si', 'sector_si'])
+                        columns=['symbol', 'name_si', 'sector_si', 'industry_si'])
 
     ci_df = ci_b.merge(ci_a, on='symbol', how='outer')
     # Use name_en if non-empty, otherwise stock_info.name
-    ci_df['name_en'] = ci_df['name_en'].replace('', pd.NA).fillna(ci_df['name_si'])
-    ci_df['sector']  = ci_df['sector'].replace('', pd.NA).fillna(ci_df['sector_si'])
+    ci_df['name_en']  = ci_df['name_en'].replace('', pd.NA).fillna(ci_df['name_si'])
+    # Sector: company_info > stock_info > industry (CN cache has 47% sector
+    # but 100% industry coverage — Chinese 行業 classifications work as fallback)
+    ci_df['sector']   = ci_df['sector'].replace('', pd.NA) \
+                                       .fillna(ci_df['sector_si'].replace('', pd.NA)) \
+                                       .fillna(ci_df['industry'].replace('', pd.NA)) \
+                                       .fillna(ci_df['industry_si'])
     ci_df = ci_df[['symbol', 'name_en', 'name_zh', 'sector']]
 
     # 3. Latest OHLCV (close + amount). GROUP BY symbol to dedup
@@ -134,12 +139,18 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
     #    is a yfinance snapshot that goes stale daily).
     #    Dedup: stock_info uses ReplacingMergeTree so use FINAL; daily_ohlcv
     #    de-duped via argMax inside the subquery.
+    # Prefer fresh shares×close; fallback to stored market_cap when shares=0
+    # (e.g. CN tickers imported from akshare cache only have market_cap).
     mc_q = f"""
-    SELECT s.symbol, s.shares_outstanding * o.close AS market_cap
-    FROM (SELECT symbol, shares_outstanding FROM quant.stock_info FINAL
-          WHERE market='{market}' AND shares_outstanding > 0
-            AND symbol IN ('{sym_list}')) AS s
-    JOIN (
+    SELECT s.symbol,
+           if(s.shares_outstanding > 0,
+              s.shares_outstanding * o.close,
+              s.market_cap) AS market_cap
+    FROM (SELECT symbol, shares_outstanding, market_cap
+          FROM quant.stock_info FINAL
+          WHERE market='{market}' AND symbol IN ('{sym_list}')
+            AND (shares_outstanding > 0 OR market_cap > 0)) AS s
+    LEFT JOIN (
         SELECT symbol, argMax(close, trade_date) AS close
         FROM quant.daily_ohlcv
         WHERE market = '{market}' AND trade_date <= '{end_date}'
