@@ -25,23 +25,33 @@ a:hover{text-decoration:underline}
 .back-btn:hover{background:#d4a64720;text-decoration:none}
 .page-title{font-size:20px;font-weight:700;color:#fff}
 .page-subtitle{font-size:12px;color:#888;margin-top:2px}
-main{max-width:1280px;margin:0 auto;padding:24px}
-.market-section{margin-bottom:48px}
-.market-header{display:flex;align-items:baseline;gap:14px;padding:8px 0 16px;border-bottom:2px solid #d4a64766;margin-bottom:14px}
-.market-name{font-size:22px;font-weight:700;color:#d4a647}
-.market-meta{font-size:12px;color:#888}
-.market-meta b{color:#e8e0d0}
+
+.controls{max-width:1280px;margin:0 auto;padding:20px 24px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+.tab-group{display:flex;gap:6px;background:#0d0d14;border:1px solid #1e1e2e;border-radius:6px;padding:4px}
+.tab-btn{background:transparent;border:none;color:#888;font-size:14px;font-weight:600;padding:8px 18px;border-radius:4px;cursor:pointer;font-family:inherit;transition:all .15s}
+.tab-btn:hover{color:#d4a647;background:#1a1a2e}
+.tab-btn.active{background:#d4a647;color:#080808}
+.date-group{display:flex;align-items:center;gap:8px;background:#0d0d14;border:1px solid #1e1e2e;border-radius:6px;padding:4px 12px}
+.date-group label{font-size:12px;color:#888;font-weight:600}
+.date-group select{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:6px 10px;border-radius:4px;font-size:13px;font-family:inherit;outline:none;cursor:pointer;min-width:160px}
+.date-group select:focus{border-color:#d4a647}
+.summary{font-size:12px;color:#888;margin-left:auto}
+.summary b{color:#e8e0d0}
+
+main{max-width:1280px;margin:0 auto;padding:0 24px 60px}
+.market-meta{font-size:12px;color:#888;padding:6px 0 14px;border-bottom:1px solid #1e1e2e;margin-bottom:14px}
+.market-meta b{color:#d4a647}
+
 table{width:100%;border-collapse:collapse}
 thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
-th{padding:9px 10px;text-align:left;font-size:12px;font-weight:700;color:#d4a647;white-space:nowrap;cursor:pointer;user-select:none}
-th:hover{color:#e8bc5a}
+th{padding:9px 10px;text-align:left;font-size:12px;font-weight:700;color:#d4a647;white-space:nowrap}
 tbody tr{border-bottom:1px solid #1a1a2e;transition:background .15s}
 tbody tr:hover{background:#1a1a2e}
 td{padding:7px 10px;vertical-align:middle;white-space:nowrap;font-size:13px}
 td.rank{text-align:center;color:#888;width:36px}
 td.sym{color:#d4a647;font-weight:600}
 td.name{color:#ccc;max-width:240px;overflow:hidden;text-overflow:ellipsis}
-td.sector{color:#888;font-size:11px;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+td.sector{color:#888;font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis}
 td.num{text-align:center}
 td.amount{text-align:right;color:#aaa;font-size:12px}
 .delta{display:inline-block;min-width:36px;padding:2px 7px;border-radius:8px;font-size:13px;font-weight:700;text-align:center;background:#1a3a2a;color:#4caf50;border:1px solid #4caf5066}
@@ -53,11 +63,14 @@ td.amount{text-align:right;color:#aaa;font-size:12px}
 .cmp-40{background:#3a1a1a;color:#ef5350;border:1px solid #ef535066}
 .cmp-20{background:#2a0a0a;color:#b71c1c;border:1px solid #b71c1c66}
 .arrow-prev{color:#666;font-size:11px;margin-right:4px}
-.empty{text-align:center;padding:40px;color:#555;font-size:13px}
+.empty{text-align:center;padding:60px 20px;color:#555;font-size:13px}
+
 @media (max-width:768px){
+  .controls{padding:12px 16px}
   td.name{max-width:140px}
   td.sector{display:none}
   th:nth-child(4){display:none}
+  .summary{display:none}
 }
 </style>
 </head>
@@ -78,21 +91,40 @@ td.amount{text-align:right;color:#aaa;font-size:12px}
   <a href="/" class="back-btn">&#8592; 返回主頁</a>
   <div>
     <div class="page-title">每日 RS 排名上升榜</div>
-    <div class="page-subtitle" id="data-date">載入中&#8230;</div>
+    <div class="page-subtitle">三個市場 Composite 評分日對日上升 Top 100 · 保留近一個月</div>
   </div>
+</div>
+
+<div class="controls">
+  <div class="tab-group" role="tablist">
+    <button class="tab-btn" data-market="hk" onclick="selectMarket('hk')">港股</button>
+    <button class="tab-btn" data-market="cn" onclick="selectMarket('cn')">A 股</button>
+    <button class="tab-btn" data-market="us" onclick="selectMarket('us')">美股</button>
+  </div>
+  <div class="date-group">
+    <label for="date-sel">日期</label>
+    <select id="date-sel" onchange="onDateChange()"></select>
+  </div>
+  <div class="summary" id="summary"></div>
 </div>
 
 <main id="content"></main>
 
 <script>
 const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591"; // member password (login.html)
-// ENC_PASS read from sessionStorage (set by login.html or this page after auth)
 function _getEncPass(){ return sessionStorage.getItem("unified_auth_pw") || ""; }
+
 const MARKETS = [
   { key: 'hk', name: '港股 (HK)', file: 'hk_rs_movers.enc', currency: 'HKD' },
   { key: 'cn', name: 'A 股 (CN)',  file: 'cn_rs_movers.enc', currency: 'CNY' },
   { key: 'us', name: '美股 (US)', file: 'us_rs_movers.enc', currency: 'USD' },
 ];
+
+const state = {
+  data: {},      // market_key -> {market, currency, dates[], snapshots{}}
+  current: 'hk', // active market
+  date: null,    // active date
+};
 
 async function _sha256(s){
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
@@ -100,11 +132,12 @@ async function _sha256(s){
 }
 
 async function checkPassword(){
-  const h = await _sha256(document.getElementById('pw-input').value);
+  const pw = document.getElementById('pw-input').value;
+  const h  = await _sha256(pw);
   if (h === _PW_HASH){
     document.getElementById('pw-overlay').style.display='none';
-    sessionStorage.setItem('movers_auth','1');
-    sessionStorage.setItem('unified_auth_pw', document.getElementById('pw-input').value);
+    sessionStorage.setItem('unified_auth','1');
+    sessionStorage.setItem('unified_auth_pw', pw);
     await loadAll();
   } else {
     document.getElementById('pw-error').textContent='密碼錯誤，請再試';
@@ -114,7 +147,7 @@ async function checkPassword(){
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (sessionStorage.getItem('movers_auth')==='1' || sessionStorage.getItem('unified_auth')==='1'){
+  if (sessionStorage.getItem('unified_auth')==='1' && sessionStorage.getItem('unified_auth_pw')){
     document.getElementById('pw-overlay').style.display='none';
     loadAll();
   } else {
@@ -140,14 +173,12 @@ async function decryptAsset(b64){
 
 function fmtMcap(v, currency){
   if (v == null) return '—';
-  // Convert to local 億 for HK/CN, $ B for US
   if (currency === 'USD'){
     if (v >= 1e12) return '$' + (v/1e12).toFixed(2) + 'T';
     if (v >= 1e9)  return '$' + (v/1e9).toFixed(1)  + 'B';
     if (v >= 1e6)  return '$' + (v/1e6).toFixed(0)  + 'M';
     return '$' + v.toFixed(0);
   } else {
-    // 100M = 1億
     if (v >= 1e10) return (v/1e8).toFixed(0) + ' 億';
     if (v >= 1e8)  return (v/1e8).toFixed(1) + ' 億';
     if (v >= 1e4)  return (v/1e4).toFixed(0) + ' 萬';
@@ -172,30 +203,79 @@ function cmpClass(v){
   return 'cmp cmp-20';
 }
 
-function buildMarketSection(market, data){
-  const rows = data.movers || [];
-  const date = data.date || '';
-  let html = `<section class="market-section" id="m-${market.key}">
-    <div class="market-header">
-      <div class="market-name">${market.name}</div>
-      <div class="market-meta">數據截至 <b>${date}</b> · Top <b>${rows.length}</b> · 平均 delta <b>${rows.length ? (rows.reduce((s,r)=>s+r.delta,0)/rows.length).toFixed(1) : 0}</b></div>
-    </div>`;
-  if (!rows.length){
-    html += '<div class="empty">無數據</div></section>';
-    return html;
+async function loadAll(){
+  document.getElementById('content').innerHTML = '<div class="empty">載入中…</div>';
+  const fetches = MARKETS.map(async m => {
+    try {
+      const resp = await fetch(m.file);
+      const b64  = await resp.text();
+      state.data[m.key] = await decryptAsset(b64.trim());
+    } catch (e) {
+      console.error('Failed to load', m.file, e);
+      state.data[m.key] = { market: m.key.toUpperCase(), currency: m.currency, dates: [], snapshots: {} };
+    }
+  });
+  await Promise.all(fetches);
+  selectMarket(state.current);
+}
+
+function selectMarket(key){
+  state.current = key;
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.market === key);
+  });
+  // Refresh date dropdown for this market
+  const data = state.data[key];
+  const sel  = document.getElementById('date-sel');
+  sel.innerHTML = '';
+  if (!data || !data.dates || data.dates.length === 0){
+    sel.innerHTML = '<option>無數據</option>';
+    state.date = null;
+    render();
+    return;
   }
-  html += `<table>
-    <thead><tr>
-      <th>#</th><th>代碼</th><th>公司名稱</th><th>行業</th><th>市值</th>
-      <th style="text-align:center">Composite</th>
-      <th style="text-align:center">Delta</th>
-      <th style="text-align:center">5日</th>
-      <th style="text-align:center">20日</th>
-      <th style="text-align:center">50日</th>
-      <th style="text-align:right">成交額</th>
-    </tr></thead>
-    <tbody>`;
-  for (const r of rows){
+  for (const d of data.dates){
+    const opt = document.createElement('option');
+    opt.value = d;
+    opt.textContent = d;
+    sel.appendChild(opt);
+  }
+  // Default to latest
+  state.date = data.dates[0];
+  sel.value = state.date;
+  render();
+}
+
+function onDateChange(){
+  state.date = document.getElementById('date-sel').value;
+  render();
+}
+
+function render(){
+  const market = MARKETS.find(m => m.key === state.current);
+  const data = state.data[state.current];
+  const movers = (data && state.date) ? (data.snapshots[state.date] || []) : [];
+  const summary = document.getElementById('summary');
+  if (!movers.length){
+    document.getElementById('content').innerHTML = '<div class="empty">無數據</div>';
+    summary.innerHTML = '';
+    return;
+  }
+  const avgDelta = movers.reduce((s,r)=>s+r.delta,0) / movers.length;
+  const maxDelta = movers[0]?.delta ?? 0;
+  summary.innerHTML = `共 <b>${movers.length}</b> 隻 · 平均 delta <b>+${avgDelta.toFixed(1)}</b> · 最大 delta <b>+${maxDelta}</b>`;
+
+  let html = `<div class="market-meta">${market.name} · 數據截至 <b>${state.date}</b> · 可用日期 ${data.dates.length} 個</div>`;
+  html += `<table><thead><tr>
+    <th>#</th><th>代碼</th><th>公司名稱</th><th>行業</th><th>市值</th>
+    <th style="text-align:center">Composite</th>
+    <th style="text-align:center">Delta</th>
+    <th style="text-align:center">5日</th>
+    <th style="text-align:center">20日</th>
+    <th style="text-align:center">50日</th>
+    <th style="text-align:right">成交額</th>
+  </tr></thead><tbody>`;
+  for (const r of movers){
     const name = r.name_zh || r.name_en || r.symbol;
     const today = r.composite_today, yest = r.composite_yesterday, delta = r.delta;
     const dCls = delta < 0 ? 'delta neg' : 'delta';
@@ -214,32 +294,7 @@ function buildMarketSection(market, data){
       <td class="amount">${fmtAmount(r.amount)}</td>
     </tr>`;
   }
-  html += '</tbody></table></section>';
-  return html;
-}
-
-async function loadAll(){
-  document.getElementById('content').innerHTML = '<div class="empty">載入中…</div>';
-  const all = {};
-  for (const m of MARKETS){
-    try{
-      const resp = await fetch(m.file);
-      const b64 = await resp.text();
-      all[m.key] = await decryptAsset(b64.trim());
-    } catch(e){
-      console.error('Failed to load', m.file, e);
-      all[m.key] = { date:'-', movers:[] };
-    }
-  }
-  // Pick latest date for header
-  const dates = MARKETS.map(m => all[m.key].date).filter(d => d && d !== '-');
-  const headerDate = dates.length ? dates.sort().slice(-1)[0] : '';
-  document.getElementById('data-date').textContent = headerDate ? `數據截至 ${headerDate} · 三市場 RS Composite 評分排名上升榜` : '無數據';
-
-  let html = '';
-  for (const m of MARKETS){
-    html += buildMarketSection(m, all[m.key]);
-  }
+  html += '</tbody></table>';
   document.getElementById('content').innerHTML = html;
 }
 </script>

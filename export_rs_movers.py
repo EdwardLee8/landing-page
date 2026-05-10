@@ -46,58 +46,78 @@ def get_client():
     )
 
 
+RETENTION_DAYS = 30   # calendar days; ~22 trading days
+
+
 def export_movers(client, cfg: dict) -> dict:
+    """Export the last RETENTION_DAYS calendar days of top-100 movers.
+
+    Output structure:
+      {
+        'market': 'HK', 'currency': 'HKD',
+        'dates': ['2026-04-30', '2026-04-29', ...],  # desc, latest first
+        'snapshots': {
+          '2026-04-30': [ {rank, symbol, delta, ..., name_zh, sector, market_cap}, ... ],
+          ...
+        }
+      }
+    """
     market = cfg['market']
     movers = cfg['movers']
     rs     = cfg['rs']
 
-    # 1. Latest movers
+    # Latest date in DB
     end_date = client.query(
         f"SELECT MAX(trade_date) FROM quant.{movers}"
-    ).result_rows[0][0].isoformat()
+    ).result_rows[0][0]
+    if end_date is None:
+        return {'market': market, 'currency': cfg['currency'], 'dates': [], 'snapshots': {}}
 
+    end_str = end_date.isoformat()
+    cutoff  = (pd.Timestamp(end_date) - pd.Timedelta(days=RETENTION_DAYS - 1)).date().isoformat()
+
+    # 1. All movers in retention window (each (date, rank) row)
     movers_q = f"""
-    SELECT rank, symbol, delta, composite_today, composite_yesterday
+    SELECT trade_date, rank, symbol, delta, composite_today, composite_yesterday
     FROM quant.{movers} FINAL
-    WHERE trade_date = '{end_date}'
-    ORDER BY rank
+    WHERE trade_date BETWEEN '{cutoff}' AND '{end_str}'
+    ORDER BY trade_date DESC, rank
     """
     movers_df = pd.DataFrame(client.query(movers_q).result_rows,
-                             columns=['rank', 'symbol', 'delta',
+                             columns=['trade_date', 'rank', 'symbol', 'delta',
                                       'composite_today', 'composite_yesterday'])
     if movers_df.empty:
-        return {'date': end_date, 'market': market, 'count': 0, 'movers': []}
+        return {'market': market, 'currency': cfg['currency'], 'dates': [], 'snapshots': {}}
 
-    sym_list = "','".join(movers_df['symbol'].tolist())
+    movers_df['trade_date'] = pd.to_datetime(movers_df['trade_date']).dt.strftime('%Y-%m-%d')
 
-    # 2. Today's RS rating snapshot for these tickers (5d/20d/50d/100d/200d)
+    # All distinct symbols (across 30d) — for company info enrichment
+    all_syms = sorted(movers_df['symbol'].unique().tolist())
+    sym_list = "','".join(all_syms)
+
+    # 2. RS ratings per (date, symbol) within window
     rs_q = f"""
-    SELECT symbol, rs_rating_5d, rs_rating_20d, rs_rating_50d,
-           rs_rating_100d, rs_rating_200d, rs_ret_5d, rs_ret_20d
+    SELECT trade_date, symbol,
+           rs_rating_5d, rs_rating_20d, rs_rating_50d
     FROM quant.{rs} FINAL
-    WHERE trade_date='{end_date}' AND symbol IN ('{sym_list}')
+    WHERE trade_date BETWEEN '{cutoff}' AND '{end_str}'
+      AND symbol IN ('{sym_list}')
     """
     rs_df = pd.DataFrame(client.query(rs_q).result_rows,
-                         columns=['symbol', 'rs_rating_5d', 'rs_rating_20d',
-                                  'rs_rating_50d', 'rs_rating_100d', 'rs_rating_200d',
-                                  'rs_ret_5d', 'rs_ret_20d'])
+                         columns=['trade_date', 'symbol',
+                                  'rs_rating_5d', 'rs_rating_20d', 'rs_rating_50d'])
+    rs_df['trade_date'] = pd.to_datetime(rs_df['trade_date']).dt.strftime('%Y-%m-%d')
 
-    # 3. Company info (same fallback chain as export_rs_latest.py)
-    ci_q = f"""
-    SELECT symbol, name_en, name_zh, sector, industry
-    FROM quant.company_info FINAL WHERE symbol IN ('{sym_list}')
-    """
-    ci_a = pd.DataFrame(client.query(ci_q).result_rows,
-                        columns=['symbol', 'name_en', 'name_zh', 'sector', 'industry'])
-
-    si_q = f"""
-    SELECT symbol, name AS name_si, sector AS sector_si, industry AS industry_si
-    FROM quant.stock_info FINAL
-    WHERE market = '{market}' AND symbol IN ('{sym_list}')
-    """
-    ci_b = pd.DataFrame(client.query(si_q).result_rows,
-                        columns=['symbol', 'name_si', 'sector_si', 'industry_si'])
-
+    # 3. Company info (one row per symbol; doesn't change day-to-day)
+    ci_a = pd.DataFrame(client.query(f"""
+        SELECT symbol, name_en, name_zh, sector, industry
+        FROM quant.company_info FINAL WHERE symbol IN ('{sym_list}')
+    """).result_rows, columns=['symbol', 'name_en', 'name_zh', 'sector', 'industry'])
+    ci_b = pd.DataFrame(client.query(f"""
+        SELECT symbol, name AS name_si, sector AS sector_si, industry AS industry_si
+        FROM quant.stock_info FINAL
+        WHERE market='{market}' AND symbol IN ('{sym_list}')
+    """).result_rows, columns=['symbol', 'name_si', 'sector_si', 'industry_si'])
     ci_df = ci_b.merge(ci_a, on='symbol', how='outer')
     ci_df['name_en'] = ci_df['name_en'].replace('', pd.NA).fillna(ci_df['name_si'])
     ci_df['sector']  = ci_df['sector'].replace('', pd.NA) \
@@ -106,68 +126,74 @@ def export_movers(client, cfg: dict) -> dict:
                                      .fillna(ci_df['industry_si'])
     ci_df = ci_df[['symbol', 'name_en', 'name_zh', 'sector']]
 
-    # 4. Latest OHLCV (close + amount, deduped)
+    # 4. Daily OHLCV in window (close + amount per date)
     ohlcv_q = f"""
-    SELECT symbol, close, volume, close * volume AS amount FROM (
-        SELECT symbol, any(close) AS close, max(volume) AS volume
+    SELECT trade_date, symbol, close, volume, close * volume AS amount FROM (
+        SELECT trade_date, symbol,
+               any(close)  AS close,
+               max(volume) AS volume
         FROM quant.daily_ohlcv
-        WHERE market='{market}' AND trade_date='{end_date}'
+        WHERE market='{market}' AND trade_date BETWEEN '{cutoff}' AND '{end_str}'
           AND symbol IN ('{sym_list}')
-        GROUP BY symbol
+        GROUP BY trade_date, symbol
     )
     """
     ohlcv_df = pd.DataFrame(client.query(ohlcv_q).result_rows,
-                            columns=['symbol', 'close', 'volume', 'amount'])
+                            columns=['trade_date', 'symbol', 'close', 'volume', 'amount'])
+    ohlcv_df['trade_date'] = pd.to_datetime(ohlcv_df['trade_date']).dt.strftime('%Y-%m-%d')
 
-    # 5. Market cap (shares × close, fallback to stored mc)
+    # 5. Latest market cap per symbol (shares × today's close, fallback to stored mc)
+    #    We only use ONE market_cap per ticker (latest); historical market_cap less critical.
     mc_q = f"""
     SELECT s.symbol,
            if(s.shares_outstanding > 0, s.shares_outstanding * o.close, s.market_cap) AS market_cap
     FROM (SELECT symbol, shares_outstanding, market_cap FROM quant.stock_info FINAL
           WHERE market='{market}' AND symbol IN ('{sym_list}')
             AND (shares_outstanding > 0 OR market_cap > 0)) AS s
-    LEFT JOIN (SELECT symbol, argMax(close, trade_date) AS close
-               FROM quant.daily_ohlcv
-               WHERE market='{market}' AND trade_date<='{end_date}'
+    LEFT JOIN (SELECT symbol, argMax(close, trade_date) AS close FROM quant.daily_ohlcv
+               WHERE market='{market}' AND trade_date<='{end_str}'
                  AND symbol IN ('{sym_list}')
                GROUP BY symbol) AS o ON o.symbol=s.symbol
     """
     mc_df = pd.DataFrame(client.query(mc_q).result_rows, columns=['symbol', 'market_cap'])
 
-    # 6. Merge all
+    # 6. Merge — movers (date, symbol) ⨝ rs (date, symbol) ⨝ ohlcv (date, symbol)
+    #    + symbol-level company info + market_cap
     df = (movers_df
-          .merge(rs_df,    on='symbol', how='left')
-          .merge(ci_df,    on='symbol', how='left')
-          .merge(ohlcv_df, on='symbol', how='left')
-          .merge(mc_df,    on='symbol', how='left'))
+          .merge(rs_df,   on=['trade_date', 'symbol'], how='left')
+          .merge(ohlcv_df[['trade_date','symbol','close','amount']], on=['trade_date','symbol'], how='left')
+          .merge(ci_df,   on='symbol', how='left')
+          .merge(mc_df,   on='symbol', how='left'))
 
-    # 7. Build records
-    rs_ret_keys = [c for c in df.columns if c.startswith('rs_ret_')]
-    movers_list = []
-    for _, row in df.iterrows():
-        r = {}
-        for k, v in row.items():
-            if isinstance(v, float) and v != v:
-                r[k] = None
-            else:
-                r[k] = v
-        movers_list.append(r)
+    # 7. Build snapshots dict {date: [movers list]}
+    snapshots = {}
+    for date, grp in df.groupby('trade_date', sort=False):
+        rows = []
+        for _, row in grp.sort_values('rank').iterrows():
+            r = {}
+            for k, v in row.items():
+                if k == 'trade_date':
+                    continue
+                if isinstance(v, float) and v != v:
+                    r[k] = None
+                else:
+                    r[k] = v
+            # Round / cast cleanups
+            if r.get('amount') is not None:
+                r['amount'] = int(round(r['amount']))
+            if r.get('market_cap') is not None:
+                r['market_cap'] = int(r['market_cap'])
+            rows.append(r)
+        snapshots[date] = rows
 
-    for r in movers_list:
-        for k in rs_ret_keys:
-            if r.get(k) is not None:
-                r[k] = round(r[k], 6)
-        if r.get('amount') is not None:
-            r['amount'] = int(round(r['amount']))
-        if r.get('market_cap') is not None:
-            r['market_cap'] = int(r['market_cap'])
+    dates = sorted(snapshots.keys(), reverse=True)
 
     return {
-        'date': end_date,
         'market': market,
         'currency': cfg['currency'],
-        'count': len(movers_list),
-        'movers': movers_list,
+        'latest_date': dates[0] if dates else None,
+        'dates': dates,
+        'snapshots': snapshots,
     }
 
 
@@ -202,7 +228,9 @@ def main():
         cfg = MARKETS[m]
         print(f"\n=== Exporting {m} RS Movers ===")
         data = export_movers(client, cfg)
-        print(f"  date={data['date']}, count={data['count']}")
+        n_dates = len(data.get('dates', []))
+        n_total = sum(len(v) for v in data.get('snapshots', {}).values())
+        print(f"  latest={data.get('latest_date')}  dates={n_dates}  total_rows={n_total}")
         json_path = os.path.join(base, f"{cfg['output_prefix']}.json")
         with open(json_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, separators=(',', ':'))
