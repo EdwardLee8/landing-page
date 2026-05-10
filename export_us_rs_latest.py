@@ -120,13 +120,14 @@ def export_latest(client, end_date: str) -> dict:
     else:
         df['turnover_group'] = 3
 
-    # ── 6. Market cap from yfinance (OPTIONAL — skip for now, very slow) ──
-    # Uncomment below to enable:
-    # print("  Fetching market cap from yfinance...")
-    # mktcap = _fetch_market_cap_batch(df['symbol'].tolist())
-    # mc_df = pd.DataFrame(list(mktcap.items()), columns=['symbol', 'market_cap'])
-    # df = df.merge(mc_df, on='symbol', how='left')
-    df['market_cap'] = None  # placeholder — yfinance too slow for 1885 stocks
+    # ── 6. Market cap from quant.stock_info (cached daily) ─────────────────
+    mc_q = f"""
+    SELECT symbol, market_cap
+    FROM quant.stock_info
+    WHERE symbol IN ('{sym_list}') AND market_cap > 0
+    """
+    mc_df = pd.DataFrame(client.query(mc_q).result_rows, columns=['symbol', 'market_cap'])
+    df = df.merge(mc_df, on='symbol', how='left')
 
     # ── 7. Build records ─────────────────────────────────────────────────
     ratings = []
