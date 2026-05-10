@@ -71,6 +71,13 @@ def export_latest(client, end_date: str) -> dict:
     ]
     rs_df = pd.DataFrame(client.query(rs_q).result_rows, columns=rs_cols)
 
+    # Drop preferred shares (e.g. JPM-PA, BAC-PN). They share the company name
+    # with the common stock and clutter the table — see screenshot 2026-05-10.
+    # Pattern: ticker has '-P' followed by 1-3 letters (no digits).
+    import re as _re
+    _pref_re = _re.compile(r'-P[A-Z]{1,3}$')
+    rs_df = rs_df[~rs_df['symbol'].str.contains(_pref_re, na=False)].copy()
+
     # ── 2. Company info (name, sector) ─────────────────────────────────────
     sym_list = "','".join(rs_df['symbol'].tolist())
     ci_q = f"""
@@ -140,6 +147,24 @@ def export_latest(client, end_date: str) -> dict:
     """
     mc_df = pd.DataFrame(client.query(mc_q).result_rows, columns=['symbol', 'market_cap'])
     df = df.merge(mc_df, on='symbol', how='left')
+
+    # ── Dedupe by company name: keep most-liquid ticker per name ─────────
+    # Many tickers share the same company name (preferred shares with
+    # numeric/letter suffixes like FMCCG/FMCKK for Freddie Mac, BRK-A/BRK-B
+    # for Berkshire). User feedback 2026-05-10: "many duplicates of same
+    # company". Within each name_en group, keep the row with highest
+    # turnover (and break ties by market_cap). Tickers with no name_en
+    # are kept unchanged.
+    if 'name_en' in df.columns:
+        with_name = df['name_en'].notna() & (df['name_en'].astype(str).str.strip() != '')
+        named = df[with_name].copy()
+        # Stable sort: largest amount first, then largest market_cap
+        named['_rank_amt'] = named['amount'].fillna(0)
+        named['_rank_mc']  = named['market_cap'].fillna(0)
+        named = (named.sort_values(['_rank_amt', '_rank_mc'], ascending=[False, False])
+                      .drop_duplicates(subset=['name_en'], keep='first')
+                      .drop(columns=['_rank_amt', '_rank_mc']))
+        df = pd.concat([named, df[~with_name]], ignore_index=True)
 
     # ── 7. Build records ─────────────────────────────────────────────────
     ratings = []
