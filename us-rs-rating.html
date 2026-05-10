@@ -146,14 +146,32 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
     </select>
   </div>
   <div class="filter-group">
-    <span class="filter-label">成交額分組</span>
+    <span class="filter-label">市值 (USD)</span>
+    <select id="f-mcap">
+      <option value="">全部市值</option>
+      <option value="0,10e9">0 - 100 億</option>
+      <option value="10e9,50e9">100 - 500 億</option>
+      <option value="50e9,200e9">500 - 2000 億</option>
+      <option value="200e9,Infinity">2000 億以上</option>
+      <option disabled>──────────</option>
+      <option value="50e9,Infinity">500 億以上</option>
+      <option value="100e9,Infinity">1000 億以上</option>
+      <option value="500e9,Infinity">5000 億以上</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">成交額 (USD)</span>
     <select id="f-amount">
       <option value="">全部成交額</option>
-      <option value="5">組別5 (最高成交額)</option>
-      <option value="4">組別4</option>
-      <option value="3">組別3 (中等)</option>
-      <option value="2">組別2</option>
-      <option value="1">組別1 (最低成交額)</option>
+      <option value="0,10e6">0 - 1000 萬</option>
+      <option value="10e6,50e6">1000 萬 - 5000 萬</option>
+      <option value="50e6,200e6">5000 萬 - 2 億</option>
+      <option value="200e6,1e9">2 億 - 10 億</option>
+      <option value="1e9,Infinity">10 億以上</option>
+      <option disabled>──────────</option>
+      <option value="50e6,Infinity">5000 萬以上</option>
+      <option value="100e6,Infinity">1 億以上</option>
+      <option value="500e6,Infinity">5 億以上</option>
     </select>
   </div>
   <div class="filter-group">
@@ -450,7 +468,17 @@ function applyFilters() {
   const r5d     = document.getElementById('f-5d').value;
   const r20d    = document.getElementById('f-20d').value;
   const amt     = document.getElementById('f-amount').value;
+  const mcap    = document.getElementById('f-mcap').value;
   const rs5     = document.getElementById('f-rs5d').value;
+
+  // Parse range strings like "10e9,50e9" or "50e9,Infinity"
+  const parseRange = v => {
+    if (!v) return null;
+    const [a, b] = v.split(',');
+    return [parseFloat(a), b === 'Infinity' ? Infinity : parseFloat(b)];
+  };
+  const mcapR = parseRange(mcap);
+  const amtR  = parseRange(amt);
 
   window._filtered = window._raw.filter(r => {
     // Search: symbol or name
@@ -473,7 +501,14 @@ function applyFilters() {
     if (r20d === 'top' && r20 < 81) return false;
     if (r20d === 'mid' && (r20 < 41 || r20 > 80)) return false;
     if (r20d === 'bot' && r20 > 40) return false;
-    if (amt && r.turnover_group !== parseInt(amt)) return false;
+    if (mcapR) {
+      if (r.market_cap == null) return false;
+      if (r.market_cap < mcapR[0] || r.market_cap >= mcapR[1]) return false;
+    }
+    if (amtR) {
+      if (r.amount == null) return false;
+      if (r.amount < amtR[0] || r.amount >= amtR[1]) return false;
+    }
     const rs5v = r.rs_ret_5d;
     if (rs5 === 'pos' && (rs5v === null || rs5v === undefined || rs5v < 0)) return false;
     if (rs5 === 'neg' && (rs5v === null || rs5v === undefined || rs5v >= 0)) return false;
@@ -490,6 +525,7 @@ function resetFilters() {
   document.getElementById('f-5d').value     = '';
   document.getElementById('f-20d').value    = '';
   document.getElementById('f-amount').value  = '';
+  document.getElementById('f-mcap').value    = '';
   document.getElementById('f-rs5d').value  = '';
   window._filtered = [...window._raw];
   window._page = 1;
