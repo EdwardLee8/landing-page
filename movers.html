@@ -24,7 +24,8 @@ a:hover{text-decoration:underline}
 .back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px}
 .back-btn:hover{background:#d4a64720;text-decoration:none}
 .page-title{font-size:20px;font-weight:700;color:#fff}
-.page-subtitle{font-size:12px;color:#888;margin-top:2px}
+.page-subtitle{font-size:14px;color:#aaa;margin-top:4px}
+.page-subtitle .pill{display:inline-block;background:#d4a64720;border:1px solid #d4a64766;color:#d4a647;padding:3px 12px;border-radius:14px;font-weight:700;font-size:14px;margin-right:8px}
 
 .controls{max-width:1280px;margin:0 auto;padding:20px 24px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:14px}
 .tab-group{display:flex;gap:6px;background:#0d0d14;border:1px solid #1e1e2e;border-radius:6px;padding:4px}
@@ -91,7 +92,7 @@ td.amount{text-align:right;color:#aaa;font-size:12px}
   <a href="/" class="back-btn">&#8592; 返回主頁</a>
   <div>
     <div class="page-title">每日 RS 排名上升榜</div>
-    <div class="page-subtitle">三個市場 Composite 評分日對日上升 Top 100 · 保留近一個月</div>
+    <div class="page-subtitle" id="header-meta">三個市場 Composite 評分日對日上升 Top 100 · 保留近一個月</div>
   </div>
 </div>
 
@@ -104,6 +105,10 @@ td.amount{text-align:right;color:#aaa;font-size:12px}
   <div class="date-group">
     <label for="date-sel">日期</label>
     <select id="date-sel" onchange="onDateChange()"></select>
+  </div>
+  <div class="date-group">
+    <label for="search">搜尋</label>
+    <input type="text" id="search" placeholder="代碼 / 公司名" oninput="onSearchInput()" style="background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:6px 10px;border-radius:4px;font-size:13px;font-family:inherit;outline:none;min-width:160px">
   </div>
   <div class="summary" id="summary"></div>
 </div>
@@ -124,6 +129,7 @@ const state = {
   data: {},      // market_key -> {market, currency, dates[], snapshots{}}
   current: 'hk', // active market
   date: null,    // active date
+  query: '',     // search text (lowercased)
 };
 
 async function _sha256(s){
@@ -251,19 +257,46 @@ function onDateChange(){
   render();
 }
 
+function onSearchInput(){
+  state.query = (document.getElementById('search').value || '').trim().toLowerCase();
+  render();
+}
+
 function render(){
   const market = MARKETS.find(m => m.key === state.current);
+  // Update header pill with current market's latest date
+  try {
+    const latest = state.data[state.current]?.dates?.[0] || null;
+    const pill = latest ? `<span class="pill">📅 ${latest}</span>` : "";
+    document.getElementById("header-meta").innerHTML = `${pill} ${market.name} · 三個市場 Composite 評分日對日上升 Top 100 · 保留近一個月`;
+  } catch(e) {}
+
   const data = state.data[state.current];
-  const movers = (data && state.date) ? (data.snapshots[state.date] || []) : [];
+  const allMovers = (data && state.date) ? (data.snapshots[state.date] || []) : [];
   const summary = document.getElementById('summary');
-  if (!movers.length){
+  if (!allMovers.length){
     document.getElementById('content').innerHTML = '<div class="empty">無數據</div>';
     summary.innerHTML = '';
     return;
   }
+  // Apply symbol/name search filter
+  const q = state.query;
+  const movers = q ? allMovers.filter(r =>
+    (r.symbol || '').toLowerCase().includes(q) ||
+    (r.name_zh || '').toLowerCase().includes(q) ||
+    (r.name_en || '').toLowerCase().includes(q)
+  ) : allMovers;
+
+  if (!movers.length){
+    document.getElementById('content').innerHTML = `<div class="empty">無符合「${q}」嘅結果（共 ${allMovers.length} 隻 movers）</div>`;
+    summary.innerHTML = `共 <b>0</b> / ${allMovers.length} 隻`;
+    return;
+  }
+
   const avgDelta = movers.reduce((s,r)=>s+r.delta,0) / movers.length;
-  const maxDelta = movers[0]?.delta ?? 0;
-  summary.innerHTML = `共 <b>${movers.length}</b> 隻 · 平均 delta <b>+${avgDelta.toFixed(1)}</b> · 最大 delta <b>+${maxDelta}</b>`;
+  const maxDelta = Math.max(...movers.map(r => r.delta));
+  const filterTag = q ? ` · 篩選 "${q}"` : '';
+  summary.innerHTML = `共 <b>${movers.length}</b>${q?'/'+allMovers.length:''} 隻 · 平均 delta <b>+${avgDelta.toFixed(1)}</b> · 最大 delta <b>+${maxDelta}</b>${filterTag}`;
 
   let html = `<div class="market-meta">${market.name} · 數據截至 <b>${state.date}</b> · 可用日期 ${data.dates.length} 個</div>`;
   html += `<table><thead><tr>

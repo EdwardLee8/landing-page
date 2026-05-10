@@ -25,7 +25,8 @@ a:hover{text-decoration:underline}
 .back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px;transition:background .2s}
 .back-btn:hover{background:#d4a64720;text-decoration:none}
 .page-title{font-size:20px;font-weight:700;color:#fff}
-.page-subtitle{font-size:12px;color:#888;margin-top:2px}
+.page-subtitle{font-size:14px;color:#aaa;margin-top:4px}
+.page-subtitle .pill{display:inline-block;background:#d4a64720;border:1px solid #d4a64766;color:#d4a647;padding:3px 12px;border-radius:14px;font-weight:700;font-size:14px;margin-right:8px}
 .info-bar{background:#0a0a12;border-bottom:1px solid #1e1e2e;padding:10px 24px;font-size:13px;color:#888;display:flex;gap:20px;flex-wrap:wrap}
 .info-bar span b{color:#d4a647}
 .filter-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:16px 24px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
@@ -293,8 +294,7 @@ async function loadData() {
     window._raw    = data.ratings || [];
     window._date   = data.date    || '';
 
-    document.getElementById('data-date').textContent =
-      `數據截至 ${window._date} · 共 ${window._raw.length} 隻港股`;
+    document.getElementById('data-date').innerHTML = `<span class="pill">📅 ${window._date}</span> · 共 ${window._raw.length} 隻港股`;
 
     // Stats
     const comps = window._raw.map(r => r.rs_rating_composite).filter(c => c != null).sort((a,b)=>a-b);
