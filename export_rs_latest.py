@@ -57,7 +57,8 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
     market = cfg['market']
     table  = cfg['table']
 
-    # 1. RS ratings — pull all 8 timeframes + composite
+    # 1. RS ratings — pull all 8 timeframes + composite. Use FINAL to dedup
+    #    in case ReplacingMergeTree hasn't merged today's run yet.
     rs_q = f"""
     SELECT symbol,
            rs_ret_5d, rs_ret_10d, rs_ret_20d, rs_ret_30d,
@@ -65,7 +66,7 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
            rs_rating_5d, rs_rating_10d, rs_rating_20d, rs_rating_30d,
            rs_rating_50d, rs_rating_100d, rs_rating_200d, rs_rating_365d,
            rs_rating_composite
-    FROM quant.{table} WHERE trade_date = '{end_date}'
+    FROM quant.{table} FINAL WHERE trade_date = '{end_date}'
     """
     rs_cols = ['symbol',
                'rs_ret_5d','rs_ret_10d','rs_ret_20d','rs_ret_30d',
@@ -83,21 +84,40 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
 
     sym_list = "','".join(rs_df['symbol'].tolist())
 
-    # 2. Company info
+    # 2. Company info — coalesce company_info + stock_info so newly listed
+    #    tickers missing from one table still get name+sector from the other.
     ci_q = f"""
-    SELECT symbol, name_en, name_zh, sector
-    FROM quant.company_info
-    WHERE symbol IN ('{sym_list}')
+    SELECT
+        coalesce(c.symbol, s.symbol) AS symbol,
+        c.name_en, c.name_zh,
+        coalesce(c.sector, s.sector) AS sector,
+        s.name AS name_si
+    FROM (SELECT symbol, name_en, name_zh, sector FROM quant.company_info FINAL
+          WHERE symbol IN ('{sym_list}')) AS c
+    FULL OUTER JOIN
+         (SELECT symbol, name, sector FROM quant.stock_info FINAL
+          WHERE market='{market}' AND symbol IN ('{sym_list}')) AS s
+        ON c.symbol = s.symbol
     """
-    ci_df = pd.DataFrame(client.query(ci_q).result_rows,
-                         columns=['symbol', 'name_en', 'name_zh', 'sector'])
+    ci_raw = pd.DataFrame(client.query(ci_q).result_rows,
+                          columns=['symbol', 'name_en', 'name_zh', 'sector', 'name_si'])
+    # Use name_en if present, otherwise stock_info.name
+    ci_raw['name_en'] = ci_raw['name_en'].replace('', pd.NA).fillna(ci_raw['name_si'])
+    ci_df = ci_raw[['symbol', 'name_en', 'name_zh', 'sector']]
 
-    # 3. Latest OHLCV (close + amount)
+    # 3. Latest OHLCV (close + amount). GROUP BY symbol to dedup
+    #    ReplacingMergeTree unmerged rows (caused user-visible duplicate
+    #    rows in HK/CN tables 2026-05-10).
     ohlcv_q = f"""
-    SELECT symbol, close, volume, close * volume AS amount
-    FROM quant.daily_ohlcv
-    WHERE market = '{market}' AND trade_date = '{end_date}'
-      AND symbol IN ('{sym_list}')
+    SELECT symbol, close, volume, close * volume AS amount FROM (
+        SELECT symbol,
+               any(close)  AS close,
+               max(volume) AS volume
+        FROM quant.daily_ohlcv
+        WHERE market = '{market}' AND trade_date = '{end_date}'
+          AND symbol IN ('{sym_list}')
+        GROUP BY symbol
+    )
     """
     ohlcv_df = pd.DataFrame(client.query(ohlcv_q).result_rows,
                             columns=['symbol', 'close', 'volume', 'amount'])
@@ -107,23 +127,30 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
                      on='symbol', how='left')
 
     # 4. Market cap = shares × today's close (always fresh; stock_info.market_cap
-    #    is a yfinance snapshot that goes stale daily)
+    #    is a yfinance snapshot that goes stale daily).
+    #    Dedup: stock_info uses ReplacingMergeTree so use FINAL; daily_ohlcv
+    #    de-duped via argMax inside the subquery.
     mc_q = f"""
     SELECT s.symbol, s.shares_outstanding * o.close AS market_cap
-    FROM quant.stock_info s
+    FROM (SELECT symbol, shares_outstanding FROM quant.stock_info FINAL
+          WHERE market='{market}' AND shares_outstanding > 0
+            AND symbol IN ('{sym_list}')) AS s
     JOIN (
         SELECT symbol, argMax(close, trade_date) AS close
         FROM quant.daily_ohlcv
         WHERE market = '{market}' AND trade_date <= '{end_date}'
+          AND symbol IN ('{sym_list}')
         GROUP BY symbol
-    ) o ON o.symbol = s.symbol
-    WHERE s.market = '{market}' AND s.shares_outstanding > 0
-      AND s.symbol IN ('{sym_list}')
+    ) AS o ON o.symbol = s.symbol
     """
     mc_df = pd.DataFrame(client.query(mc_q).result_rows, columns=['symbol', 'market_cap'])
     df = df.merge(mc_df, on='symbol', how='left')
 
-    # 5. Dedupe by company name — keep most-liquid ticker per name_en
+    # 5a. Dedupe by ticker — final safety net in case any earlier step still
+    #     returned >1 row per symbol (e.g. unmerged ReplacingMergeTree).
+    df = df.drop_duplicates(subset=['symbol'], keep='first').reset_index(drop=True)
+
+    # 5b. Dedupe by company name — keep most-liquid ticker per name_en
     if 'name_en' in df.columns:
         with_name = df['name_en'].notna() & (df['name_en'].astype(str).str.strip() != '')
         named = df[with_name].copy()
