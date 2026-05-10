@@ -66,6 +66,12 @@ td.num.na{color:#555}
 .tag-large{background:#2a1a3a;color:#ce93d8;border:1px solid #ce93d844}
 .tag-mid{background:#1a2a3a;color:#90caf9;border:1px solid #90caf944}
 .tag-small{background:#1a1e2a;color:#78909c;border:1px solid #78909c44}
+.rs-pill{display:inline-block;min-width:32px;padding:2px 8px;border-radius:10px;font-size:14px;font-weight:700}
+.rs-strong{background:#1a3a2a;color:#4caf50;border:1px solid #4caf5066}
+.rs-good{background:#1a2a3a;color:#64b5f6;border:1px solid #64b5f666}
+.rs-mid{background:#2a2a1a;color:#ffb74d;border:1px solid #ffb74d66}
+.rs-bad{background:#3a1a1a;color:#ef5350;border:1px solid #ef535066}
+.rs-weak{background:#2a0a0a;color:#b71c1c;border:1px solid #b71c1c66}
 .tag-yes{background:#1a3a1a;color:#66bb6a;border:1px solid #66bb6a44}
 .tag-no{background:#2a1a1a;color:#ef9a9a;border:1px solid #ef9a9a44}
 .pagination{display:flex;justify-content:center;align-items:center;gap:6px;padding:20px 24px;flex-wrap:wrap}
@@ -213,8 +219,11 @@ td.num.na{color:#555}
       <th onclick="sortBy('gp_growth_h2')" data-col="gp_growth_h2" style="text-align:center">下半年毛利增 <span class="sort-icon"></span></th>
       <th onclick="sortBy('rel_1m')" data-col="rel_1m" style="text-align:center">1個月vs恒指 <span class="sort-icon"></span></th>
       <th onclick="sortBy('rel_3m')" data-col="rel_3m" style="text-align:center">3個月vs恒指 <span class="sort-icon"></span></th>
-      <th onclick="sortBy('type_1m')" data-col="type_1m">1個月類型 <span class="sort-icon"></span></th>
-      <th onclick="sortBy('type_3m')" data-col="type_3m">3個月類型 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rs_composite')" data-col="rs_composite" style="text-align:center">RS Composite <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rs_5d')" data-col="rs_5d" style="text-align:center">RS 5日 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rs_50d')" data-col="rs_50d" style="text-align:center">RS 50日 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('type_1m')" data-col="type_1m">短期類型 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('type_3m')" data-col="type_3m">長期類型 <span class="sort-icon"></span></th>
     </tr>
   </thead>
   <tbody id="table-body"></tbody>
@@ -315,6 +324,16 @@ function capTag(v) {
   return '<span class="tag tag-' + cls + '">' + (v || '—') + '</span>';
 }
 
+function rsCell(v) {
+  if (v == null) return '<td style="text-align:center;color:#666">—</td>';
+  let cls = 'rs-mid';
+  if (v >= 81) cls = 'rs-strong';
+  else if (v >= 61) cls = 'rs-good';
+  else if (v <= 20) cls = 'rs-weak';
+  else if (v <= 40) cls = 'rs-bad';
+  return '<td style="text-align:center"><span class="rs-pill ' + cls + '">' + v + '</span></td>';
+}
+
 function perfTag(v) {
   if (v === 'YES') return '<span class="tag tag-yes">✓ 好</span>';
   if (v === 'NO') return '<span class="tag tag-no">✗ 差</span>';
@@ -395,6 +414,9 @@ function render() {
         numCell(s.gp_growth_h2) +
         numCell(s.rel_1m) +
         numCell(s.rel_3m) +
+        rsCell(s.rs_composite) +
+        rsCell(s.rs_5d) +
+        rsCell(s.rs_50d) +
         '<td>' + typeTag(s.type_1m) + '</td>' +
         '<td>' + typeTag(s.type_3m) + '</td>' +
         '</tr>';
