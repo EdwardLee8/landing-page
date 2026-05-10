@@ -24,12 +24,14 @@ import pandas as pd
 
 # Per-market configuration
 MARKETS = {
+    # Unified member password — same as login.html. All .enc readable only
+    # after user logs in via /login (which stores raw pw in sessionStorage).
     'US': dict(table='us_rs_rating',  market='US', currency='USD',
-               password='US_stock_Key_worD', output_prefix='us_rs_latest'),
+               password='Inv-2604-H8rW', output_prefix='us_rs_latest'),
     'HK': dict(table='hk_rs_rating',  market='HK', currency='HKD',
-               password='HK_stock_Key_worD', output_prefix='hk_rs_latest'),
+               password='Inv-2604-H8rW', output_prefix='hk_rs_latest'),
     'CN': dict(table='cn_rs_rating',  market='CN', currency='CNY',
-               password='CN_stock_Key_worD', output_prefix='cn_rs_latest'),
+               password='Inv-2604-H8rW', output_prefix='cn_rs_latest'),
 }
 
 # Preferred-share regex (US: -PA/-PD/-PK; HK preferred shares are rare;

@@ -22,16 +22,15 @@ import pandas as pd
 
 
 MARKETS = {
-    # All 3 markets use the SAME password so movers.html can unlock them with
-    # a single decryption key (it shows all 3 markets together as one report).
+    # Unified member password — same as login.html / RS rating files.
     'US': dict(market='US', movers='us_rs_movers', rs='us_rs_rating',
-               currency='USD', password='Movers_Key_worD',
+               currency='USD', password='Inv-2604-H8rW',
                output_prefix='us_rs_movers'),
     'HK': dict(market='HK', movers='hk_rs_movers', rs='hk_rs_rating',
-               currency='HKD', password='Movers_Key_worD',
+               currency='HKD', password='Inv-2604-H8rW',
                output_prefix='hk_rs_movers'),
     'CN': dict(market='CN', movers='cn_rs_movers', rs='cn_rs_rating',
-               currency='CNY', password='Movers_Key_worD',
+               currency='CNY', password='Inv-2604-H8rW',
                output_prefix='cn_rs_movers'),
 }
 

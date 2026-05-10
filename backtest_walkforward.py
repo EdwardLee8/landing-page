@@ -64,8 +64,21 @@ SELECT_BOT_N      = 50
 N_RANDOM_STARTS   = 5
 
 OUT_DIR     = os.path.dirname(os.path.abspath(__file__))
-PANEL_FILE  = os.path.join(OUT_DIR, 'rs_panel.parquet')
-RESULTS_DIR = os.path.join(OUT_DIR, 'backtest_walkforward')
+PANEL_FILE  = os.path.join(OUT_DIR, 'rs_panel.parquet')        # default US
+RESULTS_DIR = os.path.join(OUT_DIR, 'backtest_walkforward')    # default US
+
+# --- Per-market config ---
+MARKETS = {
+    'US': dict(market='US', benchmark='SPY',      start='2007-01-01',
+               panel_file='rs_panel_us.parquet',
+               results_dir='backtest_walkforward_us'),
+    'HK': dict(market='HK', benchmark='2800.HK',  start='2011-01-01',
+               panel_file='rs_panel_hk.parquet',
+               results_dir='backtest_walkforward_hk'),
+    'CN': dict(market='CN', benchmark='000985.SZ', start='2007-01-01',
+               panel_file='rs_panel_cn.parquet',
+               results_dir='backtest_walkforward_cn'),
+}
 
 
 def get_client():
@@ -83,19 +96,29 @@ def get_client():
 # STAGE 1: Build RS panel (full universe, full history)
 # ============================================================
 
-def build_panel(start_date='2007-01-01', end_date=None) -> pd.DataFrame:
-    """Compute 9-timeframe RS ratings + 5 forward returns + 60d turnover, cache parquet."""
-    if os.path.exists(PANEL_FILE):
-        print(f'Panel cache exists: {PANEL_FILE}')
-        return pd.read_parquet(PANEL_FILE)
+def build_panel(start_date=None, end_date=None,
+                market='US', benchmark='SPY',
+                panel_file=None) -> pd.DataFrame:
+    """Compute 9-timeframe RS ratings + 5 forward returns + 60d turnover, cache parquet.
+
+    Per-market params are pulled from MARKETS dict if not overridden.
+    """
+    if panel_file is None:
+        panel_file = PANEL_FILE
+    if os.path.exists(panel_file):
+        print(f'Panel cache exists: {panel_file}')
+        return pd.read_parquet(panel_file)
+
+    if start_date is None:
+        start_date = MARKETS.get(market, {}).get('start', '2007-01-01')
 
     client = get_client()
     if not end_date:
         end_date = client.query(
-            "SELECT MAX(trade_date) FROM quant.daily_ohlcv WHERE market='US'"
+            f"SELECT MAX(trade_date) FROM quant.daily_ohlcv WHERE market='{market}'"
         ).result_rows[0][0].isoformat()
 
-    print(f'Building RS panel: {start_date} -> {end_date}')
+    print(f'Building RS panel for {market} (benchmark={benchmark}): {start_date} -> {end_date}')
 
     spy_lag_sql = ',\n              '.join(
         [f'lag(close, {lag}) OVER (ORDER BY trade_date) AS sc_{name}' for name, lag in TIMEFRAMES])
@@ -119,7 +142,7 @@ def build_panel(start_date='2007-01-01', end_date=None) -> pd.DataFrame:
     WITH
       spy_raw AS (
           SELECT trade_date, close FROM quant.daily_ohlcv
-          WHERE market='US' AND symbol='SPY' AND trade_date <= '{end_date}'
+          WHERE market='{market}' AND symbol='{benchmark}' AND trade_date <= '{end_date}'
       ),
       spy_lag AS (
           SELECT trade_date, close, {spy_lag_sql} FROM spy_raw
@@ -130,7 +153,7 @@ def build_panel(start_date='2007-01-01', end_date=None) -> pd.DataFrame:
       stk_raw AS (
           SELECT symbol, trade_date, close, volume * close AS turnover
           FROM quant.daily_ohlcv
-          WHERE market='US' AND symbol NOT IN ('SPY','') AND close > 0
+          WHERE market='{market}' AND symbol NOT IN ('{benchmark}','') AND close > 0
             AND trade_date <= '{end_date}'
       ),
       stk_lag AS (
@@ -199,8 +222,8 @@ def build_panel(start_date='2007-01-01', end_date=None) -> pd.DataFrame:
     df['in_universe'] = df['in_universe'].fillna(False)
     df = df.drop(columns=['ym'])
 
-    df.to_parquet(PANEL_FILE, index=False)
-    print(f'  Cached panel: {PANEL_FILE}')
+    df.to_parquet(panel_file, index=False)
+    print(f'  Cached panel: {panel_file}')
     print(f'  in_universe rows: {df["in_universe"].sum():,} / {len(df):,}')
     return df
 
@@ -589,7 +612,12 @@ def write_reports(folds, primary_horizon, df_panel):
 # ============================================================
 
 def main():
+    global RESULTS_DIR
     ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--market', default='US', choices=list(MARKETS.keys()),
+                    help='Which market to backtest (US/HK/CN). Default US')
+    ap.add_argument('--benchmark', default=None,
+                    help='Override default benchmark (e.g. ^HSI for HK).')
     ap.add_argument('--rebuild', action='store_true', help='Force rebuild RS panel from ClickHouse')
     ap.add_argument('--horizon', default='fwd_60d',
                     choices=[f'fwd_{h}d' for h in FWD_HORIZONS],
@@ -602,10 +630,16 @@ def main():
                     help='Skip per-horizon in-sample reference (saves a few minutes)')
     args = ap.parse_args()
 
-    if args.rebuild and os.path.exists(PANEL_FILE):
-        os.remove(PANEL_FILE)
+    cfg = MARKETS[args.market]
+    benchmark = args.benchmark or cfg['benchmark']
+    panel_file  = os.path.join(OUT_DIR, cfg['panel_file'])
+    RESULTS_DIR = os.path.join(OUT_DIR, cfg['results_dir'])
 
-    df = build_panel()
+    if args.rebuild and os.path.exists(panel_file):
+        os.remove(panel_file)
+
+    df = build_panel(market=args.market, benchmark=benchmark,
+                     panel_file=panel_file)
 
     print(f'\nWalk-forward (primary horizon = {args.horizon}, '
           f'train={args.train_years}y, OOS={args.oos_years}y, n_starts={args.n_starts})...')

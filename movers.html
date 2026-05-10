@@ -85,9 +85,9 @@ td.amount{text-align:right;color:#aaa;font-size:12px}
 <main id="content"></main>
 
 <script>
-const _PW_HASH = "12577f4baecba2f69664c9050cf56d03e98c13095d5f580f88a222cd5659f7d9"; // Movers_Key_worD
-const ENC_PASS = "Movers_Key_worD";
-
+const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591"; // member password (login.html)
+// ENC_PASS read from sessionStorage (set by login.html or this page after auth)
+function _getEncPass(){ return sessionStorage.getItem("unified_auth_pw") || ""; }
 const MARKETS = [
   { key: 'hk', name: '港股 (HK)', file: 'hk_rs_movers.enc', currency: 'HKD' },
   { key: 'cn', name: 'A 股 (CN)',  file: 'cn_rs_movers.enc', currency: 'CNY' },
@@ -104,6 +104,7 @@ async function checkPassword(){
   if (h === _PW_HASH){
     document.getElementById('pw-overlay').style.display='none';
     sessionStorage.setItem('movers_auth','1');
+    sessionStorage.setItem('unified_auth_pw', document.getElementById('pw-input').value);
     await loadAll();
   } else {
     document.getElementById('pw-error').textContent='密碼錯誤，請再試';
@@ -132,7 +133,7 @@ async function deriveKey(password, salt){
 async function decryptAsset(b64){
   const raw = Uint8Array.from(atob(b64), c=>c.charCodeAt(0));
   const salt=raw.slice(0,16), nonce=raw.slice(16,28), ct=raw.slice(28);
-  const key = await deriveKey(ENC_PASS, salt);
+  const key = await deriveKey(_getEncPass(), salt);
   const pt  = await crypto.subtle.decrypt({ name:"AES-GCM", iv:nonce }, key, ct);
   return JSON.parse(new TextDecoder().decode(pt));
 }

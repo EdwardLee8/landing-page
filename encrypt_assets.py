@@ -24,15 +24,17 @@ def encrypt_file(path, password):
     print(f"  {os.path.basename(path)} ({orig_kb:.0f}KB) → {os.path.basename(out)} ({enc_kb:.0f}KB)")
 
 FILES = [
-    ("hk_keywords_export.json",  "HK_stock_Key_worD"),
-    ("hk_corr_clusters.json",    "HK_stock_Key_worD"),
-    ("us_keywords_export.json",  "US_stock_Key_worD"),
-    ("us_corr_clusters_v2.json", "US_stock_Key_worD"),
-    ("cn_keywords_export.json",  "CN_stock_Key_worD"),
-    ("cn_corr_clusters.json",    "CN_stock_Key_worD"),
-    ("us_rs_latest.json",        "US_stock_Key_worD"),
-    ("hk_rs_latest.json",        "HK_stock_Key_worD"),
-    ("cn_rs_latest.json",        "CN_stock_Key_worD"),
+    # Unified member password — see login.html. After member logs in, the
+    # raw password is stored in sessionStorage and read by every sub-page.
+    ("hk_keywords_export.json",  "Inv-2604-H8rW"),
+    ("hk_corr_clusters.json",    "Inv-2604-H8rW"),
+    ("us_keywords_export.json",  "Inv-2604-H8rW"),
+    ("us_corr_clusters_v2.json", "Inv-2604-H8rW"),
+    ("cn_keywords_export.json",  "Inv-2604-H8rW"),
+    ("cn_corr_clusters.json",    "Inv-2604-H8rW"),
+    ("us_rs_latest.json",        "Inv-2604-H8rW"),
+    ("hk_rs_latest.json",        "Inv-2604-H8rW"),
+    ("cn_rs_latest.json",        "Inv-2604-H8rW"),
 ]
 
 base = os.path.dirname(os.path.abspath(__file__))

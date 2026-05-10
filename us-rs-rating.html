@@ -228,7 +228,7 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
 <div class="pagination" id="pagination"></div>
 
 <script>
-const _PW_HASH = "ab7c623277f907b207318c07e8641ff5b745d7a189b12823e0cb545130008a6a"; // US_stock_Key_worD
+const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591"; // member password (login.html)
 async function _sha256(s) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
@@ -238,6 +238,7 @@ async function checkPassword() {
   if (h === _PW_HASH) {
     document.getElementById('pw-overlay').style.display = 'none';
     sessionStorage.setItem('unified_auth', '1');
+    sessionStorage.setItem('unified_auth_pw', document.getElementById('pw-input').value);
     await loadData();
   } else {
     document.getElementById('pw-error').textContent = '密碼錯誤，請再試';
@@ -258,8 +259,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── Decryption (PBKDF2 + AES-256-GCM) ─────────────────────────────────────
-const ENC_PASS = "US_stock_Key_worD";
-
+// ENC_PASS read from sessionStorage (set by login.html or this page after auth)
+function _getEncPass(){ return sessionStorage.getItem("unified_auth_pw") || ""; }
 async function deriveKey(password, salt) {
   const keyMaterial = await crypto.subtle.importKey(
     "raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]
@@ -278,7 +279,7 @@ async function decryptAsset(b64Data) {
   const salt = raw.slice(0, 16);
   const nonce = raw.slice(16, 28);
   const ct     = raw.slice(28);
-  const key    = await deriveKey(ENC_PASS, salt);
+  const key    = await deriveKey(_getEncPass(), salt);
   const pt     = await crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce }, key, ct);
   return JSON.parse(new TextDecoder().decode(pt));
 }
