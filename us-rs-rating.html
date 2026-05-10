@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股相對強度評分</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:20px;min-height:100vh}
+a{color:#d4a647;text-decoration:none}
+a:hover{text-decoration:underline}
+#pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
+.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
+.pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
+.pw-box p{font-size:13px;color:#888;margin-bottom:8px}
+.pw-hint{font-size:13px;color:#d4a647;margin-bottom:16px}
+.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:10px 14px;border-radius:4px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;transition:border-color .2s}
+.pw-box input:focus{border-color:#d4a647}
+.pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
+.pw-box button:hover{background:#e8bc5a}
+.pw-error{color:#ef5350;font-size:12px;margin-top:8px;min-height:18px}
+.page-header{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px;transition:background .2s}
+.back-btn:hover{background:#d4a64720;text-decoration:none}
+.page-title{font-size:20px;font-weight:700;color:#fff}
+.page-subtitle{font-size:12px;color:#888;margin-top:2px}
+.info-bar{background:#0a0a12;border-bottom:1px solid #1e1e2e;padding:10px 24px;font-size:13px;color:#888;display:flex;gap:20px;flex-wrap:wrap}
+.info-bar span b{color:#d4a647}
+.filter-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:16px 24px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+.filter-group{display:flex;flex-direction:column;gap:4px}
+.filter-label{font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+input[type=text],input[type=number]{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 10px;border-radius:4px;font-size:13px;font-family:inherit;min-width:100px;cursor:pointer;outline:none;transition:border-color .2s}
+input[type=text]:focus,input[type=number]:focus{border-color:#d4a647}
+input[type=text]{min-width:180px}
+select{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 10px;border-radius:4px;font-size:13px;font-family:inherit;min-width:140px;cursor:pointer;outline:none;transition:border-color .2s}
+select:focus{border-color:#d4a647}
+.btn{padding:7px 16px;border-radius:4px;font-size:13px;font-family:inherit;cursor:pointer;border:none;transition:all .2s;font-weight:600}
+.btn-primary{background:#d4a647;color:#080808}
+.btn-primary:hover{background:#e8bc5a}
+.btn-ghost{background:transparent;border:1px solid #444;color:#aaa}
+.btn-ghost:hover{border-color:#d4a647;color:#d4a647}
+.table-wrap{overflow-x:auto;padding:0 0 40px}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
+th{padding:10px 12px;text-align:left;font-size:14px;font-weight:700;color:#d4a647;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:#e8bc5a}
+th.sort-asc .sort-icon::after{content:" ▲"}
+th.sort-desc .sort-icon::after{content:" ▼"}
+th:not(.sort-asc):not(.sort-desc) .sort-icon::after{content:" ⇅";opacity:.4}
+tbody tr{border-bottom:1px solid #1a1a2e;transition:background .15s}
+tbody tr:hover{background:#1a1a2e}
+td{padding:9px 12px;vertical-align:middle;white-space:nowrap}
+td.sym{color:#d4a647;font-weight:600;font-size:15px}
+td.name{color:#ccc;font-size:13px;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+td.sector{color:#888;font-size:12px}
+td.num{text-align:center !important;font-size:15px}
+td.good{color:#4caf50}
+td.poor{color:#ef5350}
+td.neutral{color:#aaa}
+td.amount{text-align:right !important;font-size:13px;color:#aaa}
+.rating-badge{display:inline-block;min-width:32px;padding:3px 8px;border-radius:10px;font-size:14px;font-weight:700;text-align:center}
+.bg-best{background:#1a3a2a;color:#4caf50;border:1px solid #4caf5066}
+.bg-good{background:#1a2a3a;color:#64b5f6;border:1px solid #64b5f666}
+.bg-ok{background:#2a2a1a;color:#ffb74d;border:1px solid #ffb74d66}
+.bg-bad{background:#3a1a1a;color:#ef5350;border:1px solid #ef535066}
+.bg-worst{background:#2a0a0a;color:#b71c1c;border:1px solid #b71c1c66}
+.pagination{display:flex;justify-content:center;align-items:center;gap:6px;padding:20px 24px;flex-wrap:wrap}
+.page-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#aaa;padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s}
+.page-btn:hover,.page-btn.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
+.page-btn:disabled{opacity:.3;cursor:not-allowed}
+.page-info{color:#666;font-size:13px;padding:0 8px}
+.empty{text-align:center;padding:60px 20px;color:#555}
+.legend{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:10px 24px;font-size:12px;color:#888;display:flex;gap:16px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+</style>
+</head>
+<body>
+
+<div id="pw-overlay">
+  <div class="pw-box">
+    <h2>美股相對強度評分</h2>
+    <p>請輸入密碼以繼續</p>
+    <p class="pw-hint">密碼可到 Patreon 聊天區獲取</p>
+    <input type="password" id="pw-input" placeholder="密碼" autocomplete="off">
+    <button onclick="checkPassword()">進入</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<div class="page-header">
+  <a href="/" class="back-btn">&#8592; 返回主頁</a>
+  <div>
+    <div class="page-title">美股相對強度評分</div>
+    <div class="page-subtitle" id="data-date">載入中&#8230;</div>
+  </div>
+</div>
+
+<div class="info-bar" id="info-bar">
+  <span>符號: <b id="count-all">—</b></span>
+  <span>評分99 (最強) : <b id="count-top">—</b></span>
+  <span>評分1 (最弱) : <b id="count-bot">—</b></span>
+  <span>Composite中位數: <b id="median-comp">—</b></span>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-group">
+    <span class="filter-label">搜尋</span>
+    <input type="text" id="f-search" placeholder="代碼或公司名">
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">行業</span>
+    <select id="f-sector">
+      <option value="">全部行業</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Composite 評分</span>
+    <select id="f-comp">
+      <option value="">全部</option>
+      <option value="top">81-99 強勢</option>
+      <option value="good">61-80 偏強</option>
+      <option value="ok">41-60 中性</option>
+      <option value="bad">21-40 偏弱</option>
+      <option value="bottom">1-20 弱勢</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">5日評分</span>
+    <select id="f-5d">
+      <option value="">全部</option>
+      <option value="top">81-99</option>
+      <option value="mid">41-80</option>
+      <option value="bot">1-40</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">20日評分</span>
+    <select id="f-20d">
+      <option value="">全部</option>
+      <option value="top">81-99</option>
+      <option value="mid">41-80</option>
+      <option value="bot">1-40</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">成交額分組</span>
+    <select id="f-amount">
+      <option value="">全部成交額</option>
+      <option value="5">組別5 (最高成交額)</option>
+      <option value="4">組別4</option>
+      <option value="3">組別3 (中等)</option>
+      <option value="2">組別2</option>
+      <option value="1">組別1 (最低成交額)</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">5日RS</span>
+    <select id="f-rs5d">
+      <option value="">全部</option>
+      <option value="pos">正 (+)</option>
+      <option value="neg">負 (−)</option>
+    </select>
+  </div>
+  <div>
+    <button class="btn btn-ghost" onclick="resetFilters()">重置</button>
+    <button class="btn btn-primary" onclick="applyFilters()">篩選</button>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#4caf50"></div>81-99 強勢</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#64b5f6"></div>61-80 偏強</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ffb74d"></div>41-60 中性</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ef5350"></div>21-40 偏弱</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#b71c1c"></div>1-20 弱勢</div>
+</div>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th onclick="sortBy('rank')" data-col="rank"># <span class="sort-icon"></span></th>
+      <th onclick="sortBy('symbol')" data-col="symbol">代碼 <span class="sort-icon"></span></th>
+      <th>公司名稱</th>
+      <th onclick="sortBy('sector')" data-col="sector">行業 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('market_cap')" data-col="market_cap">市值 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rs_rating_composite')" data-col="rs_rating_composite">Composite <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rs_rating_5d')" data-col="rs_rating_5d">5日 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rs_ret_5d')" data-col="rs_ret_5d">5日RS% <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rs_rating_10d')" data-col="rs_rating_10d">10日 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rs_ret_10d')" data-col="rs_ret_10d">10日RS% <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rs_rating_20d')" data-col="rs_rating_20d">20日 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rs_ret_20d')" data-col="rs_ret_20d">20日RS% <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rs_rating_50d')" data-col="rs_rating_50d">50日 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rs_ret_50d')" data-col="rs_ret_50d">50日RS% <span class="sort-icon"></span></th>
+      <th onclick="sortBy('amount')" data-col="amount">成交額 <span class="sort-icon"></span></th>
+    </tr>
+  </thead>
+  <tbody id="table-body"></tbody>
+</table>
+<div class="empty" id="empty-state" style="display:none">
+  <div style="font-size:40px;margin-bottom:12px">&#128269;</div>
+  <div>找不到符合條件的股票</div>
+</div>
+</div>
+
+<div class="pagination" id="pagination"></div>
+
+<script>
+const _PW_HASH = "ab7c623277f907b207318c07e8641ff5b745d7a189b12823e0cb545130008a6a"; // US_stock_Key_worD
+async function _sha256(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function checkPassword() {
+  const h = await _sha256(document.getElementById('pw-input').value);
+  if (h === _PW_HASH) {
+    document.getElementById('pw-overlay').style.display = 'none';
+    sessionStorage.setItem('unified_auth', '1');
+    await loadData();
+  } else {
+    document.getElementById('pw-error').textContent = '密碼錯誤，請再試';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  if (sessionStorage.getItem('unified_auth') === '1') {
+    document.getElementById('pw-overlay').style.display = 'none';
+    loadData();
+  } else {
+    document.getElementById('pw-input').focus();
+    document.getElementById('pw-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
+  }
+});
+
+// ── Decryption (PBKDF2 + AES-256-GCM) ─────────────────────────────────────
+const ENC_PASS = "US_stock_Key_worD";
+
+async function deriveKey(password, salt) {
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]
+  );
+  return crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt, iterations: 100_000, hash: "SHA-256" },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["decrypt"]
+  );
+}
+
+async function decryptAsset(b64Data) {
+  const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+  const salt = raw.slice(0, 16);
+  const nonce = raw.slice(16, 28);
+  const ct     = raw.slice(28);
+  const key    = await deriveKey(ENC_PASS, salt);
+  const pt     = await crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce }, key, ct);
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+
+async function loadData() {
+  try {
+    const resp = await fetch('us_rs_latest.enc');
+    const b64  = await resp.text();
+    const data  = await decryptAsset(b64.trim());
+
+    window._raw    = data.ratings || [];
+    window._date   = data.date    || '';
+
+    document.getElementById('data-date').textContent =
+      `數據截至 ${window._date} · 共 ${window._raw.length} 隻美股`;
+
+    // Stats
+    const comps = window._raw.map(r => r.rs_rating_composite).filter(c => c != null).sort((a,b)=>a-b);
+    const median = comps[Math.floor(comps.length/2)];
+    document.getElementById('count-all').textContent = window._raw.length;
+    document.getElementById('count-top').textContent = window._raw.filter(r => r.rs_rating_composite >= 81).length;
+    document.getElementById('count-bot').textContent = window._raw.filter(r => r.rs_rating_composite <= 20).length;
+    document.getElementById('median-comp').textContent = median;
+
+    // Build sector dropdown
+    const sectors = [...new Set(window._raw.map(r => r.sector).filter(Boolean))].sort();
+    const sel = document.getElementById('f-sector');
+    sectors.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s;
+      opt.textContent = s;
+      sel.appendChild(opt);
+    });
+
+    window._filtered = [...window._raw];
+    window._sortCol  = 'rs_rating_composite';
+    window._sortDir = -1;
+    window._page    = 1;
+    render();
+  } catch(e) {
+    document.getElementById('data-date').textContent = '載入失敗: ' + e.message;
+    console.error(e);
+  }
+}
+
+// ── Rating badge ───────────────────────────────────────────────────────────
+function ratingBadge(v) {
+  if (v == null) return '<span class="neutral">—</span>';
+  let cls;
+  if (v >= 81)      { cls = 'bg-best'; }
+  else if (v >= 61) { cls = 'bg-good'; }
+  else if (v >= 41) { cls = 'bg-ok'; }
+  else if (v >= 21) { cls = 'bg-bad'; }
+  else              { cls = 'bg-worst'; }
+  return `<span class="rating-badge ${cls}">${v}</span>`;
+}
+
+function pctColor(v) {
+  if (v === null || v === undefined) return 'neutral';
+  return v >= 0 ? 'good' : 'poor';
+}
+
+function fmtPct(v) {
+  if (v === null || v === undefined) return '—';
+  return (v >= 0 ? '+' : '') + (v * 100).toFixed(1) + '%';
+}
+
+function fmtAmount(v) {
+  if (v === null || v === undefined) return '—';
+  if (v >= 1e9) return (v / 1e9).toFixed(1) + 'B';
+  if (v >= 1e6) return (v / 1e6).toFixed(1) + 'M';
+  if (v >= 1e3) return (v / 1e3).toFixed(1) + 'K';
+  return v.toFixed(0);
+}
+
+function fmtMktCap(v) {
+  if (v === null || v === undefined) return '—';
+  if (v >= 1e12) return (v / 1e12).toFixed(2) + 'T';
+  if (v >= 1e9) return (v / 1e9).toFixed(1) + 'B';
+  if (v >= 1e6) return (v / 1e6).toFixed(1) + 'M';
+  if (v >= 1e3) return (v / 1e3).toFixed(1) + 'K';
+  return v.toFixed(0);
+}
+
+function fmtName(r) {
+  // Prefer Chinese name, fallback to English
+  const name = r.name_zh || r.name_en || '';
+  if (!name) return '<span class="neutral">—</span>';
+  return `<span class="name" title="${r.name_en || ''}">${name}</span>`;
+}
+
+// ── Table rendering ────────────────────────────────────────────────────────
+const PAGE_SIZE = 50;
+
+function render() {
+  const tb = document.getElementById('table-body');
+  const empty = document.getElementById('empty-state');
+  const data = window._filtered;
+
+  // Sort
+  const col = window._sortCol;
+  const dir = window._sortDir;
+  data.sort((a, b) => {
+    const av = a[col], bv = b[col];
+    if (av === null || av === undefined) return 1;
+    if (bv === null || bv === undefined) return -1;
+    return typeof av === 'string' ? av.localeCompare(bv) * dir : (av - bv) * dir;
+  });
+
+  if (data.length === 0) {
+    tb.innerHTML = '';
+    empty.style.display = 'block';
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const start = (window._page - 1) * PAGE_SIZE;
+  const page  = data.slice(start, start + PAGE_SIZE);
+
+  tb.innerHTML = page.map((r, i) => {
+    const rank = start + i + 1;
+    const rs5  = r.rs_ret_5d  ?? null;
+    const rs10 = r.rs_ret_10d ?? null;
+    const rs20 = r.rs_ret_20d ?? null;
+    const rs50 = r.rs_ret_50d ?? null;
+    return `<tr>
+      <td class="num neutral">${rank}</td>
+      <td class="sym">${r.symbol}</td>
+      <td>${fmtName(r)}</td>
+      <td class="sector">${r.sector || '—'}</td>
+      <td class="amount" style="text-align:right">${fmtMktCap(r.market_cap)}</td>
+      <td style="text-align:center">${ratingBadge(r.rs_rating_composite)}</td>
+      <td style="text-align:center">${ratingBadge(r.rs_rating_5d)}</td>
+      <td class="num ${pctColor(rs5)}">${fmtPct(rs5)}</td>
+      <td style="text-align:center">${ratingBadge(r.rs_rating_10d)}</td>
+      <td class="num ${pctColor(rs10)}">${fmtPct(rs10)}</td>
+      <td style="text-align:center">${ratingBadge(r.rs_rating_20d)}</td>
+      <td class="num ${pctColor(rs20)}">${fmtPct(rs20)}</td>
+      <td style="text-align:center">${ratingBadge(r.rs_rating_50d)}</td>
+      <td class="num ${pctColor(rs50)}">${fmtPct(rs50)}</td>
+      <td class="amount">${fmtAmount(r.amount)}</td>
+    </tr>`;
+  }).join('');
+
+  // Pagination
+  const totalPages = Math.ceil(data.length / PAGE_SIZE);
+  const pg = document.getElementById('pagination');
+  let html = `<button class="page-btn" onclick="goPage(${window._page-1})" ${window._page===1?'disabled':''}>&#8592;</button>`;
+  for (let p = Math.max(1, window._page-2); p <= Math.min(totalPages, window._page+4); p++) {
+    html += `<button class="page-btn ${p===window._page?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  }
+  html += `<button class="page-btn" onclick="goPage(${window._page+1})" ${window._page===totalPages?'disabled':''}>&#8594;</button>`;
+  html += `<span class="page-info">${start+1}-${Math.min(start+PAGE_SIZE,data.length)} / ${data.length}</span>`;
+  pg.innerHTML = html;
+
+  // Sort indicators
+  document.querySelectorAll('th[data-col]').forEach(th => {
+    th.classList.remove('sort-asc','sort-desc');
+    if (th.dataset.col === window._sortCol) {
+      th.classList.add(window._sortDir === 1 ? 'sort-asc' : 'sort-desc');
+    }
+  });
+}
+
+function goPage(p) {
+  const total = Math.ceil(window._filtered.length / PAGE_SIZE);
+  window._page = Math.max(1, Math.min(p, total));
+  render();
+}
+
+function sortBy(col) {
+  if (window._sortCol === col) {
+    window._sortDir *= -1;
+  } else {
+    window._sortCol = col;
+    window._sortDir = col === 'rs_rating_composite' || col === 'rs_rating_5d' ? -1 : 1;
+  }
+  window._page = 1;
+  render();
+}
+
+function applyFilters() {
+  const q       = document.getElementById('f-search').value.trim().toLowerCase();
+  const sector  = document.getElementById('f-sector').value;
+  const comp    = document.getElementById('f-comp').value;
+  const r5d     = document.getElementById('f-5d').value;
+  const r20d    = document.getElementById('f-20d').value;
+  const amt     = document.getElementById('f-amount').value;
+  const rs5     = document.getElementById('f-rs5d').value;
+
+  window._filtered = window._raw.filter(r => {
+    // Search: symbol or name
+    if (q) {
+      const name = ((r.name_en || '') + ' ' + (r.name_zh || '')).toLowerCase();
+      if (!r.symbol.toLowerCase().includes(q) && !name.includes(q)) return false;
+    }
+    if (sector && r.sector !== sector) return false;
+    const c = r.rs_rating_composite;
+    if (comp === 'top'    && c < 81)  return false;
+    if (comp === 'good'   && (c < 61 || c > 80))  return false;
+    if (comp === 'ok'     && (c < 41 || c > 60))  return false;
+    if (comp === 'bad'    && (c < 21 || c > 40))  return false;
+    if (comp === 'bottom' && c > 20)  return false;
+    const r5 = r.rs_rating_5d;
+    if (r5d === 'top' && r5 < 81) return false;
+    if (r5d === 'mid' && (r5 < 41 || r5 > 80)) return false;
+    if (r5d === 'bot' && r5 > 40) return false;
+    const r20 = r.rs_rating_20d;
+    if (r20d === 'top' && r20 < 81) return false;
+    if (r20d === 'mid' && (r20 < 41 || r20 > 80)) return false;
+    if (r20d === 'bot' && r20 > 40) return false;
+    if (amt && r.turnover_group !== parseInt(amt)) return false;
+    const rs5v = r.rs_ret_5d;
+    if (rs5 === 'pos' && (rs5v === null || rs5v === undefined || rs5v < 0)) return false;
+    if (rs5 === 'neg' && (rs5v === null || rs5v === undefined || rs5v >= 0)) return false;
+    return true;
+  });
+  window._page = 1;
+  render();
+}
+
+function resetFilters() {
+  document.getElementById('f-search').value = '';
+  document.getElementById('f-sector').value = '';
+  document.getElementById('f-comp').value   = '';
+  document.getElementById('f-5d').value     = '';
+  document.getElementById('f-20d').value    = '';
+  document.getElementById('f-amount').value  = '';
+  document.getElementById('f-rs5d').value  = '';
+  window._filtered = [...window._raw];
+  window._page = 1;
+  render();
+}
+</script>
+</body>
+</html>

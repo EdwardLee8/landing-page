@@ -1,0 +1,17 @@
+{
+  "recommended_weights": {
+    "5d": 0.0,
+    "10d": 0.0,
+    "15d": 0.0,
+    "20d": 0.0,
+    "30d": 0.0,
+    "50d": 0.0,
+    "100d": 0.3,
+    "200d": 0.7,
+    "365d": 0.0
+  },
+  "recommended_label": "opt_7",
+  "rationale": "Highest worst-fold long Sharpe across 60d/120d/250d (robustness floor)",
+  "avg_long_sharpe_60_120_250": 0.7905261033938991,
+  "worst_long_sharpe_60_120_250": -0.4347364405790965
+}

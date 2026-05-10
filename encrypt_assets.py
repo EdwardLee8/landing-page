@@ -30,6 +30,7 @@ FILES = [
     ("us_corr_clusters_v2.json", "US_stock_Key_worD"),
     ("cn_keywords_export.json",  "CN_stock_Key_worD"),
     ("cn_corr_clusters.json",    "CN_stock_Key_worD"),
+    ("us_rs_latest.json",        "US_stock_Key_worD"),
 ]
 
 base = os.path.dirname(os.path.abspath(__file__))

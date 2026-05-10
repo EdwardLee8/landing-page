@@ -1,6 +1,10 @@
 .DS_Store
 Thumbs.db
 *.log
+__pycache__/
+
+# Backtest panel cache (regenerated from ClickHouse)
+rs_panel.parquet
 
 # wrangler files
 .wrangler
