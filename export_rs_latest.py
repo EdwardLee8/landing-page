@@ -84,26 +84,30 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
 
     sym_list = "','".join(rs_df['symbol'].tolist())
 
-    # 2. Company info — coalesce company_info + stock_info so newly listed
-    #    tickers missing from one table still get name+sector from the other.
+    # 2. Company info — pull from BOTH tables, then merge in pandas so neither
+    #    side's missing rows shadow the other (ClickHouse FULL OUTER JOIN fills
+    #    missing string columns with '' not NULL, breaking coalesce).
     ci_q = f"""
-    SELECT
-        coalesce(c.symbol, s.symbol) AS symbol,
-        c.name_en, c.name_zh,
-        coalesce(c.sector, s.sector) AS sector,
-        s.name AS name_si
-    FROM (SELECT symbol, name_en, name_zh, sector FROM quant.company_info FINAL
-          WHERE symbol IN ('{sym_list}')) AS c
-    FULL OUTER JOIN
-         (SELECT symbol, name, sector FROM quant.stock_info FINAL
-          WHERE market='{market}' AND symbol IN ('{sym_list}')) AS s
-        ON c.symbol = s.symbol
+    SELECT symbol, name_en, name_zh, sector
+    FROM quant.company_info FINAL
+    WHERE symbol IN ('{sym_list}')
     """
-    ci_raw = pd.DataFrame(client.query(ci_q).result_rows,
-                          columns=['symbol', 'name_en', 'name_zh', 'sector', 'name_si'])
-    # Use name_en if present, otherwise stock_info.name
-    ci_raw['name_en'] = ci_raw['name_en'].replace('', pd.NA).fillna(ci_raw['name_si'])
-    ci_df = ci_raw[['symbol', 'name_en', 'name_zh', 'sector']]
+    ci_a = pd.DataFrame(client.query(ci_q).result_rows,
+                        columns=['symbol', 'name_en', 'name_zh', 'sector'])
+
+    si_q = f"""
+    SELECT symbol, name AS name_si, sector AS sector_si
+    FROM quant.stock_info FINAL
+    WHERE market = '{market}' AND symbol IN ('{sym_list}')
+    """
+    ci_b = pd.DataFrame(client.query(si_q).result_rows,
+                        columns=['symbol', 'name_si', 'sector_si'])
+
+    ci_df = ci_b.merge(ci_a, on='symbol', how='outer')
+    # Use name_en if non-empty, otherwise stock_info.name
+    ci_df['name_en'] = ci_df['name_en'].replace('', pd.NA).fillna(ci_df['name_si'])
+    ci_df['sector']  = ci_df['sector'].replace('', pd.NA).fillna(ci_df['sector_si'])
+    ci_df = ci_df[['symbol', 'name_en', 'name_zh', 'sector']]
 
     # 3. Latest OHLCV (close + amount). GROUP BY symbol to dedup
     #    ReplacingMergeTree unmerged rows (caused user-visible duplicate
