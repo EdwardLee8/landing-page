@@ -4,7 +4,10 @@ Thumbs.db
 __pycache__/
 
 # Backtest panel cache (regenerated from ClickHouse)
-rs_panel.parquet
+rs_panel*.parquet
+
+# Ad-hoc patch scripts
+_patch_*.py
 
 # wrangler files
 .wrangler
