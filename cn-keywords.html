@@ -189,6 +189,49 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 </head>
 <body>
 
+
+<style id="_help_css">
+.help-btn{position:fixed;top:16px;right:16px;z-index:50;background:#0d0d14;border:1px solid #d4a64766;color:#d4a647;font-family:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:18px;cursor:pointer;transition:all .15s}
+.help-btn:hover{background:#d4a64720;border-color:#d4a647}
+.help-panel{display:none;background:#0d0d14;border-bottom:2px solid #d4a64766;padding:18px 24px 22px;max-width:1280px;margin:0 auto;font-size:14px;color:#ccc;line-height:1.7}
+.help-panel.open{display:block}
+.help-panel h3{font-size:16px;font-weight:700;color:#d4a647;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.help-panel h3 .help-close{background:transparent;border:1px solid #444;color:#888;font-family:inherit;font-size:12px;padding:4px 12px;border-radius:14px;cursor:pointer}
+.help-panel h3 .help-close:hover{border-color:#d4a647;color:#d4a647}
+.help-panel h4{font-size:14px;font-weight:700;color:#e8e0d0;margin:14px 0 6px}
+.help-panel ul{margin:6px 0 6px 20px}
+.help-panel li{margin:3px 0}
+.help-panel p{margin:6px 0}
+.help-panel b{color:#e8e0d0}
+</style>
+
+<button class="help-btn" onclick="_toggleHelp()">ⓘ 點解讀</button>
+<div class="help-panel" id="_help_panel">
+  <h3>點解讀「關鍵字資料庫」<button class="help-close" onclick="_toggleHelp()">收埋 ✕</button></h3>
+  <p>每間公司嘅業務關鍵字（AI 從年報、業績稿抽取）。</p>
+<p><b>「相關性分組」</b>= 業務類似嘅公司歸同一組。</p>
+<p><b>點用：</b></p>
+<ul>
+  <li>搵「同主題、細市值替代股」<br>例：龍頭太貴 → 揾相似業務嘅二三線</li>
+  <li>揾「同個 theme 嘅一籃子」做組合</li>
+  <li>用關鍵字 filter 倒過嚟睇邊啲公司有呢類業務</li>
+</ul>
+</div>
+<script>
+(function(){
+  const KEY = "_help_seen_kw-cn";
+  const panel = document.getElementById("_help_panel");
+  if (!localStorage.getItem(KEY)) {
+    panel.classList.add("open");
+  }
+  window._toggleHelp = function() {
+    const isOpen = panel.classList.toggle("open");
+    if (!isOpen) localStorage.setItem(KEY, "1");
+  };
+})();
+</script>
+
+
 <!-- ── Password overlay ── -->
 <div id="pw-overlay">
   <div class="pw-box">
