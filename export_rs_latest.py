@@ -1,0 +1,215 @@
+#!/usr/bin/env python3.12
+"""
+Export latest RS Rating from ClickHouse → {market}_rs_latest.json (+ .enc).
+
+Per-market generic export. Replaces export_us_rs_latest.py.
+
+Usage:
+    python export_rs_latest.py --market US           # US, latest date
+    python export_rs_latest.py --market HK
+    python export_rs_latest.py --market CN
+    python export_rs_latest.py --market US 2026-05-08  # specific date
+"""
+import sys, os, json, argparse, warnings, base64, re
+warnings.filterwarnings('ignore')
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'quant-db'))
+from config.settings import (
+    CLICKHOUSE_HOST, CLICKHOUSE_PORT, CLICKHOUSE_DB, CLICKHOUSE_USER, CLICKHOUSE_PASSWORD,
+)
+
+import clickhouse_connect
+import pandas as pd
+
+
+# Per-market configuration
+MARKETS = {
+    'US': dict(table='us_rs_rating',  market='US', currency='USD',
+               password='US_stock_Key_worD', output_prefix='us_rs_latest'),
+    'HK': dict(table='hk_rs_rating',  market='HK', currency='HKD',
+               password='HK_stock_Key_worD', output_prefix='hk_rs_latest'),
+    'CN': dict(table='cn_rs_rating',  market='CN', currency='CNY',
+               password='CN_stock_Key_worD', output_prefix='cn_rs_latest'),
+}
+
+# Preferred-share regex (US: -PA/-PD/-PK; HK preferred shares are rare;
+# CN doesn't use this pattern). Safe to apply globally.
+_PREF_RE = re.compile(r'-P[A-Z]{1,3}$')
+
+
+def get_client():
+    return clickhouse_connect.get_client(
+        host=CLICKHOUSE_HOST or 'localhost',
+        port=int(CLICKHOUSE_PORT or 8123),
+        database=CLICKHOUSE_DB or 'quant',
+        username=CLICKHOUSE_USER or 'quant',
+        password=CLICKHOUSE_PASSWORD or 'quant123',
+        send_receive_timeout=600,
+    )
+
+
+def get_latest_date(client, table: str) -> str:
+    r = client.query(f"SELECT MAX(trade_date) FROM quant.{table}")
+    return r.result_rows[0][0].isoformat()
+
+
+def export_latest(client, end_date: str, cfg: dict) -> dict:
+    market = cfg['market']
+    table  = cfg['table']
+
+    # 1. RS ratings — pull all 8 timeframes + composite
+    rs_q = f"""
+    SELECT symbol,
+           rs_ret_5d, rs_ret_10d, rs_ret_20d, rs_ret_30d,
+           rs_ret_50d, rs_ret_100d, rs_ret_200d, rs_ret_365d,
+           rs_rating_5d, rs_rating_10d, rs_rating_20d, rs_rating_30d,
+           rs_rating_50d, rs_rating_100d, rs_rating_200d, rs_rating_365d,
+           rs_rating_composite
+    FROM quant.{table} WHERE trade_date = '{end_date}'
+    """
+    rs_cols = ['symbol',
+               'rs_ret_5d','rs_ret_10d','rs_ret_20d','rs_ret_30d',
+               'rs_ret_50d','rs_ret_100d','rs_ret_200d','rs_ret_365d',
+               'rs_rating_5d','rs_rating_10d','rs_rating_20d','rs_rating_30d',
+               'rs_rating_50d','rs_rating_100d','rs_rating_200d','rs_rating_365d',
+               'rs_rating_composite']
+    rs_df = pd.DataFrame(client.query(rs_q).result_rows, columns=rs_cols)
+
+    # Drop preferred shares
+    rs_df = rs_df[~rs_df['symbol'].str.contains(_PREF_RE, na=False)].copy()
+
+    if rs_df.empty:
+        return {'date': end_date, 'count': 0, 'ratings': []}
+
+    sym_list = "','".join(rs_df['symbol'].tolist())
+
+    # 2. Company info
+    ci_q = f"""
+    SELECT symbol, name_en, name_zh, sector
+    FROM quant.company_info
+    WHERE symbol IN ('{sym_list}')
+    """
+    ci_df = pd.DataFrame(client.query(ci_q).result_rows,
+                         columns=['symbol', 'name_en', 'name_zh', 'sector'])
+
+    # 3. Latest OHLCV (close + amount)
+    ohlcv_q = f"""
+    SELECT symbol, close, volume, close * volume AS amount
+    FROM quant.daily_ohlcv
+    WHERE market = '{market}' AND trade_date = '{end_date}'
+      AND symbol IN ('{sym_list}')
+    """
+    ohlcv_df = pd.DataFrame(client.query(ohlcv_q).result_rows,
+                            columns=['symbol', 'close', 'volume', 'amount'])
+
+    df = rs_df.merge(ci_df, on='symbol', how='left') \
+              .merge(ohlcv_df[['symbol', 'close', 'volume', 'amount']],
+                     on='symbol', how='left')
+
+    # 4. Market cap = shares × today's close (always fresh; stock_info.market_cap
+    #    is a yfinance snapshot that goes stale daily)
+    mc_q = f"""
+    SELECT s.symbol, s.shares_outstanding * o.close AS market_cap
+    FROM quant.stock_info s
+    JOIN (
+        SELECT symbol, argMax(close, trade_date) AS close
+        FROM quant.daily_ohlcv
+        WHERE market = '{market}' AND trade_date <= '{end_date}'
+        GROUP BY symbol
+    ) o ON o.symbol = s.symbol
+    WHERE s.market = '{market}' AND s.shares_outstanding > 0
+      AND s.symbol IN ('{sym_list}')
+    """
+    mc_df = pd.DataFrame(client.query(mc_q).result_rows, columns=['symbol', 'market_cap'])
+    df = df.merge(mc_df, on='symbol', how='left')
+
+    # 5. Dedupe by company name — keep most-liquid ticker per name_en
+    if 'name_en' in df.columns:
+        with_name = df['name_en'].notna() & (df['name_en'].astype(str).str.strip() != '')
+        named = df[with_name].copy()
+        named['_rank_amt'] = named['amount'].fillna(0)
+        named['_rank_mc']  = named['market_cap'].fillna(0)
+        named = (named.sort_values(['_rank_amt', '_rank_mc'], ascending=[False, False])
+                      .drop_duplicates(subset=['name_en'], keep='first')
+                      .drop(columns=['_rank_amt', '_rank_mc']))
+        df = pd.concat([named, df[~with_name]], ignore_index=True)
+
+    # 6. Build records
+    rs_ret_keys = [c for c in df.columns if c.startswith('rs_ret_')]
+    ratings = []
+    for _, row in df.iterrows():
+        r = {}
+        for k, v in row.items():
+            if isinstance(v, float) and v != v:  # NaN
+                r[k] = None
+            else:
+                r[k] = v
+        ratings.append(r)
+
+    for r in ratings:
+        for k in rs_ret_keys:
+            if r.get(k) is not None:
+                r[k] = round(r[k], 6)
+        if r.get('amount') is not None:
+            r['amount'] = int(round(r['amount']))
+        if r.get('market_cap') is not None:
+            r['market_cap'] = int(r['market_cap'])
+
+    return {
+        'date': end_date,
+        'market': market,
+        'currency': cfg['currency'],
+        'count': len(ratings),
+        'ratings': ratings,
+    }
+
+
+def encrypt_json(json_path: str, password: str):
+    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+    from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+    with open(json_path, 'rb') as f:
+        plaintext = f.read()
+    salt  = os.urandom(16)
+    nonce = os.urandom(12)
+    kdf   = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32,
+                       salt=salt, iterations=100_000)
+    key   = kdf.derive(password.encode())
+    ct    = AESGCM(key).encrypt(nonce, plaintext, None)
+    enc   = base64.b64encode(salt + nonce + ct).decode()
+    out   = json_path.replace('.json', '.enc')
+    with open(out, 'w') as f:
+        f.write(enc)
+    orig_kb = len(plaintext) / 1024
+    enc_kb  = len(enc) / 1024
+    print(f"  Encrypted: {os.path.basename(out)} ({orig_kb:.0f}KB → {enc_kb:.0f}KB)")
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('end_date', nargs='?', default=None,
+                    help='YYYY-MM-DD (default: latest in table)')
+    ap.add_argument('--market', required=True, choices=list(MARKETS.keys()))
+    args = ap.parse_args()
+
+    cfg    = MARKETS[args.market]
+    client = get_client()
+    end_date = args.end_date or get_latest_date(client, cfg['table'])
+
+    print(f"Exporting {args.market} RS Rating for {end_date}...")
+    data = export_latest(client, end_date, cfg)
+    print(f"  {data['count']} stocks ({data['currency']})")
+
+    base      = os.path.dirname(os.path.abspath(__file__))
+    json_path = os.path.join(base, f"{cfg['output_prefix']}.json")
+    with open(json_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, separators=(',', ':'))
+    print(f"  Written: {json_path}")
+
+    encrypt_json(json_path, cfg['password'])
+    print("Done.")
+
+
+if __name__ == '__main__':
+    main()

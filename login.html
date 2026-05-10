@@ -33,6 +33,14 @@ a:hover{text-decoration:underline}
 .dash-header p{font-size:13px;color:#666}
 .dash-header .month-badge{display:inline-block;background:#d4a64720;border:1px solid #d4a64740;color:#d4a647;font-size:12px;font-weight:600;padding:4px 12px;border-radius:12px;margin-top:10px}
 .db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.db-section{margin-top:36px}
+.db-section:first-of-type{margin-top:8px}
+.db-section-title{font-size:13px;font-weight:700;color:#888;letter-spacing:.15em;text-transform:uppercase;padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #1e1e2e;display:flex;align-items:center;gap:10px}
+.db-section-title .badge{font-size:11px;font-weight:700;padding:2px 10px;border-radius:10px;letter-spacing:0;text-transform:none}
+.db-section-title .badge.hk{background:#1e2a1e;color:#66bb6a;border:1px solid #4caf5033}
+.db-section-title .badge.cn{background:#2a1e1e;color:#ef5350;border:1px solid #ef535033}
+.db-section-title .badge.us{background:#1e1e2a;color:#5c9bdd;border:1px solid #5c9bdd33}
+.db-section-title .badge.etf{background:#2a2a1e;color:#ffca28;border:1px solid #ffca2833}
 .db-card{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:22px 20px;cursor:pointer;transition:all .2s;display:block;text-decoration:none}
 .db-card:hover{border-color:#d4a647;background:#0d0d1c;transform:translateY(-1px);text-decoration:none}
 .db-icon{font-size:26px;margin-bottom:12px}
@@ -70,61 +78,98 @@ a:hover{text-decoration:underline}
     <div class="month-badge" id="month-badge"></div>
   </div>
 
-  <div class="db-grid">
-    <a href="hk-keywords-pro.html" class="db-card">
-      <div class="db-icon">🇭🇰</div>
-      <div class="db-title">港股關鍵字資料庫</div>
-      <div class="db-desc">港股上市公司業務關鍵字、相關性分組，可按主題篩選</div>
-      <span class="db-tag tag-hk">港股</span>
-    </a>
-    <a href="hk-stocks-pro.html" class="db-card">
-      <div class="db-icon">📊</div>
-      <div class="db-title">港股 2025 下半年資料庫</div>
-      <div class="db-desc">港股財務數據、相對強弱、市值分類篩選</div>
-      <span class="db-tag tag-hk">港股</span>
-    </a>
-    <a href="us-keywords.html" class="db-card">
-      <div class="db-icon">🇺🇸</div>
-      <div class="db-title">美股關鍵字資料庫</div>
-      <div class="db-desc">美股上市公司業務關鍵字、相關性分組，可按主題篩選</div>
-      <span class="db-tag tag-us">美股</span>
-    </a>
-    <a href="us-stocks-db.html" class="db-card">
-      <div class="db-icon">📈</div>
-      <div class="db-title">美股資料庫</div>
-      <div class="db-desc">美股財務數據、相對強弱、市值分類篩選</div>
-      <span class="db-tag tag-us">美股</span>
-    </a>
-    <a href="us-rs-rating.html" class="db-card">
-      <div class="db-icon">⚡</div>
-      <div class="db-title">美股相對強度評分</div>
-      <div class="db-desc">7000+ 隻美股 5/10/20/50 日 RS Rating，composite 評分篩選</div>
-      <span class="db-tag tag-us">美股</span>
-    </a>
-    <a href="cn-keywords.html" class="db-card">
-      <div class="db-icon">🇨🇳</div>
-      <div class="db-title">A 股關鍵字資料庫</div>
-      <div class="db-desc">A 股上市公司業務關鍵字、相關性分組，可按主題篩選</div>
-      <span class="db-tag tag-cn">A 股</span>
-    </a>
-    <a href="us-transcript-db.html" class="db-card">
-      <div class="db-icon">🧠</div>
-      <div class="db-title">美股業績電話會議資料庫</div>
-      <div class="db-desc">583 隻美股業績電話情報，bull/bear thesis，關鍵字回報信號，同業比較</div>
-      <span class="db-tag tag-us">美股</span>
-    </a>
-    <a href="cn-irm-db.html" class="db-card">
-      <div class="db-icon">🏭</div>
-      <div class="db-title">A 股(深圳)最新業務資料庫</div>
-      <div class="db-desc">深交所上市公司投資者關係活動記錄，1,000+ 家公司調研紀要</div>
-      <span class="db-tag tag-cn">A 股</span>
-    </a>
-    <a href="etf-report/" class="db-card">
-      <div class="db-icon">🗂️</div>
-      <div class="db-title">ETF 報告</div>
-      <div class="db-desc">港股、美股 ETF 分類、回報及資產規模概覽</div>
-      <span class="db-tag tag-etf">ETF</span>
-    </a>
+  <!-- ─── 港股 ─── -->
+  <div class="db-section">
+    <div class="db-section-title">港股 <span class="badge hk">HK</span></div>
+    <div class="db-grid">
+      <a href="hk-keywords-pro.html" class="db-card">
+        <div class="db-icon">🇭🇰</div>
+        <div class="db-title">港股關鍵字資料庫</div>
+        <div class="db-desc">港股上市公司業務關鍵字、相關性分組，可按主題篩選</div>
+        <span class="db-tag tag-hk">港股</span>
+      </a>
+      <a href="hk-stocks-pro.html" class="db-card">
+        <div class="db-icon">📊</div>
+        <div class="db-title">港股 2025 下半年資料庫</div>
+        <div class="db-desc">港股財務數據、相對強弱、市值分類篩選</div>
+        <span class="db-tag tag-hk">港股</span>
+      </a>
+      <a href="hk-rs-rating.html" class="db-card">
+        <div class="db-icon">⚡</div>
+        <div class="db-title">港股相對強度評分</div>
+        <div class="db-desc">1300+ 隻港股 8 個 timeframe RS Rating + composite 評分（vs 2800.HK）</div>
+        <span class="db-tag tag-hk">港股</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ─── A 股 ─── -->
+  <div class="db-section">
+    <div class="db-section-title">A 股 <span class="badge cn">CN</span></div>
+    <div class="db-grid">
+      <a href="cn-keywords.html" class="db-card">
+        <div class="db-icon">🇨🇳</div>
+        <div class="db-title">A 股關鍵字資料庫</div>
+        <div class="db-desc">A 股上市公司業務關鍵字、相關性分組，可按主題篩選</div>
+        <span class="db-tag tag-cn">A 股</span>
+      </a>
+      <a href="cn-irm-db.html" class="db-card">
+        <div class="db-icon">🏭</div>
+        <div class="db-title">A 股(深圳)最新業務資料庫</div>
+        <div class="db-desc">深交所上市公司投資者關係活動記錄，1,000+ 家公司調研紀要</div>
+        <span class="db-tag tag-cn">A 股</span>
+      </a>
+      <a href="cn-rs-rating.html" class="db-card">
+        <div class="db-icon">⚡</div>
+        <div class="db-title">A 股相對強度評分</div>
+        <div class="db-desc">5000+ 隻 A 股 8 個 timeframe RS Rating + composite 評分（vs 中證全指）</div>
+        <span class="db-tag tag-cn">A 股</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ─── 美股 ─── -->
+  <div class="db-section">
+    <div class="db-section-title">美股 <span class="badge us">US</span></div>
+    <div class="db-grid">
+      <a href="us-keywords.html" class="db-card">
+        <div class="db-icon">🇺🇸</div>
+        <div class="db-title">美股關鍵字資料庫</div>
+        <div class="db-desc">美股上市公司業務關鍵字、相關性分組，可按主題篩選</div>
+        <span class="db-tag tag-us">美股</span>
+      </a>
+      <a href="us-stocks-db.html" class="db-card">
+        <div class="db-icon">📈</div>
+        <div class="db-title">美股資料庫</div>
+        <div class="db-desc">美股財務數據、相對強弱、市值分類篩選</div>
+        <span class="db-tag tag-us">美股</span>
+      </a>
+      <a href="us-rs-rating.html" class="db-card">
+        <div class="db-icon">⚡</div>
+        <div class="db-title">美股相對強度評分</div>
+        <div class="db-desc">3000+ 隻美股 8 個 timeframe RS Rating + composite 評分（vs SPY）</div>
+        <span class="db-tag tag-us">美股</span>
+      </a>
+      <a href="us-transcript-db.html" class="db-card">
+        <div class="db-icon">🧠</div>
+        <div class="db-title">美股業績電話會議資料庫</div>
+        <div class="db-desc">583 隻美股業績電話情報，bull/bear thesis，關鍵字回報信號，同業比較</div>
+        <span class="db-tag tag-us">美股</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ─── ETF ─── -->
+  <div class="db-section">
+    <div class="db-section-title">ETF <span class="badge etf">ETF</span></div>
+    <div class="db-grid">
+      <a href="etf-report/" class="db-card">
+        <div class="db-icon">🗂️</div>
+        <div class="db-title">ETF 報告</div>
+        <div class="db-desc">港股、美股 ETF 分類、回報及資產規模概覽</div>
+        <span class="db-tag tag-etf">ETF</span>
+      </a>
+    </div>
   </div>
 
   <div class="logout">
