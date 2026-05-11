@@ -112,6 +112,10 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
 .help-panel li{margin:3px 0}
 .help-panel p{margin:6px 0}
 .help-panel b{color:#e8e0d0}
+.help-table{width:100%;border-collapse:collapse;margin:8px 0 12px;font-size:13px}
+.help-table th{color:#d4a647;font-weight:700;padding:5px 10px;border-bottom:1px solid #2a2a3e;text-align:left;white-space:nowrap}
+.help-table td{padding:5px 10px;border-bottom:1px solid #1a1a2e;vertical-align:middle}
+.help-table tr:last-child td{border-bottom:none}
 </style>
 
 <button class="help-btn" onclick="_toggleHelp()">ⓘ 點解讀</button>
@@ -130,6 +134,19 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
   <li>同時睇 5 日 vs 50 日，識別「短反彈 vs 真強勢」</li>
   <li>例：5d=99 但 50d=20 → 短期反彈、中期仍弱</li>
 </ul>
+<h4>Weinstein Stage 週期四階段</h4>
+<p>用 <b>30 週均線（MA30W）</b>判斷股票處於哪個市場週期：</p>
+<table class="help-table">
+  <tr><th>Stage</th><th>名稱</th><th>特徵</th><th>操作</th></tr>
+  <tr><td><span class="w-tag w-s1">Stage 1</span></td><td>底部整固</td><td>跌勢後橫行，MA30W 走平，成交萎縮</td><td>觀望</td></tr>
+  <tr><td><span class="w-tag w-s1b">Stage 1B</span></td><td>突破準備</td><td>MA30W 開始上翹，價格嘗試站上均線</td><td>留意</td></tr>
+  <tr><td><span class="w-tag w-s2">Stage 2</span></td><td>上升趨勢 ✅</td><td>站穩 MA30W 上方，均線向上，量能配合 — <b>最佳持有期</b></td><td><b>持有／買入</b></td></tr>
+  <tr><td><span class="w-tag w-s3">Stage 3</span></td><td>頂部整固</td><td>升勢放緩，在均線附近震盪，MA30W 走平</td><td>減持</td></tr>
+  <tr><td><span class="w-tag w-s3b">Stage 3B</span></td><td>跌破警告</td><td>跌穿 MA30W，均線即將轉向下</td><td>止損</td></tr>
+  <tr><td><span class="w-tag w-s4">Stage 4</span></td><td>下跌趨勢 ❌</td><td>MA30W 向下，股價持續低於均線</td><td>迴避</td></tr>
+</table>
+<p><b>訊號：</b> 🚀 早期突破（Stage 2 初期）&nbsp;·&nbsp; 📈 回調買入（Stage 2 均線附近）&nbsp;·&nbsp; ⚠️ 警告（Stage 3/3B）&nbsp;·&nbsp; 🚫 迴避（Stage 4）</p>
+<p><b>小貼士：</b>篩選 Stage 2 配合 Composite ≥ 81，效果最佳。</p>
 </div>
 <script>
 (function(){
