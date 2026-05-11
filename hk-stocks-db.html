@@ -9,15 +9,6 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:20px;min-height:100vh}
-#pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
-.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
-.pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
-.pw-box p{font-size:13px;color:#888;margin-bottom:24px}
-.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:10px 14px;border-radius:4px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;transition:border-color .2s}
-.pw-box input:focus{border-color:#d4a647}
-.pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
-.pw-box button:hover{background:#e8bc5a}
-.pw-error{color:#ef5350;font-size:12px;margin-top:8px;min-height:18px}
 a{color:#d4a647;text-decoration:none}
 a:hover{text-decoration:underline}
 .page-header{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
@@ -92,16 +83,6 @@ td.num.na{color:#555}
 </head>
 <body>
 
-<div id="pw-overlay">
-  <div class="pw-box">
-    <h2>港股2025下半年資料庫</h2>
-    <p>請輸入密碼以繼續</p>
-    <p style="font-size:13px;color:#d4a647;margin-bottom:8px;">密碼可到 Patreon 聊天區獲取</p>
-    <input type="password" id="pw-input" placeholder="密碼" autocomplete="off">
-    <button onclick="checkPassword()">進入</button>
-    <div class="pw-error" id="pw-error"></div>
-  </div>
-</div>
 
 <div class="page-header">
   <a href="/" class="back-btn">&#8592; 返回主頁</a>
@@ -168,35 +149,8 @@ td.num.na{color:#555}
 <div class="pagination" id="pagination"></div>
 
 <script>
-const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
-async function _sha256(s) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-}
-async function checkPassword() {
-  const h = await _sha256(document.getElementById('pw-input').value);
-  if (h === _PW_HASH) {
-    document.getElementById('pw-overlay').style.display = 'none';
-    sessionStorage.setItem('hkdb_auth', '1');
-    sessionStorage.setItem('hkdb_auth_pw', document.getElementById('pw-input').value);
-    loadAndInit(document.getElementById('pw-input').value);
-  } else {
-    const err = document.getElementById('pw-error');
-    err.textContent = '密碼錯誤，請再試';
-    document.getElementById('pw-input').value = '';
-    document.getElementById('pw-input').focus();
-  }
-}
 document.addEventListener('DOMContentLoaded', function() {
-  if (sessionStorage.getItem('hkdb_auth') === '1') {
-    document.getElementById('pw-overlay').style.display = 'none';
-    const _pw = sessionStorage.getItem('hkdb_auth_pw') || ''; if (_pw) loadAndInit(_pw);
-  } else {
-    document.getElementById('pw-input').focus();
-    document.getElementById('pw-input').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') checkPassword();
-    });
-  }
+  loadAndInit('Inv-2604-H8rW');
 });
 
 
