@@ -42,6 +42,16 @@ select:focus{border-color:#d4a647}
 .btn-primary:hover{background:#e8bc5a}
 .btn-ghost{background:transparent;border:1px solid #444;color:#aaa}
 .btn-ghost:hover{border-color:#d4a647;color:#d4a647}
+.mcap-multi{position:relative}
+.mcap-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 10px;border-radius:4px;font-size:13px;font-family:inherit;min-width:140px;cursor:pointer;text-align:left;transition:border-color .2s;white-space:nowrap;display:block;width:100%}
+.mcap-btn:hover{border-color:#d4a647}
+.mcap-menu{position:absolute;top:calc(100% + 4px);left:0;background:#1a1a2e;border:1px solid #2a2a3e;border-radius:6px;z-index:200;min-width:160px;padding:8px;box-shadow:0 4px 16px #0008}
+.mcap-actions{display:flex;gap:6px;margin-bottom:8px;border-bottom:1px solid #2a2a3e;padding-bottom:6px}
+.mcap-actions button{font-size:11px;padding:2px 8px;border-radius:3px;cursor:pointer;border:1px solid #444;background:transparent;color:#aaa;transition:all .2s;font-family:inherit}
+.mcap-actions button:hover{border-color:#d4a647;color:#d4a647}
+.mcap-menu label{display:flex;align-items:center;gap:6px;padding:4px 2px;cursor:pointer;font-size:13px;white-space:nowrap;color:#e8e0d0}
+.mcap-menu label:hover{color:#d4a647}
+.mcap-menu input[type=checkbox]{accent-color:#d4a647;cursor:pointer;width:14px;height:14px}
 .table-wrap{overflow-x:auto;padding:0 0 40px}
 table{width:100%;border-collapse:collapse;min-width:1100px}
 thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
@@ -196,17 +206,21 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
   </div>
   <div class="filter-group">
     <span class="filter-label">市值 (HKD)</span>
-    <select id="f-mcap">
-      <option value="">全部市值</option>
-      <option value="0,10e9">0 - 100 億</option>
-      <option value="10e9,50e9">100 - 500 億</option>
-      <option value="50e9,200e9">500 - 2000 億</option>
-      <option value="200e9,Infinity">2000 億以上</option>
-      <option disabled>──────────</option>
-      <option value="50e9,Infinity">500 億以上</option>
-      <option value="100e9,Infinity">1000 億以上</option>
-      <option value="500e9,Infinity">5000 億以上</option>
-    </select>
+    <div class="mcap-multi">
+      <button class="mcap-btn" id="mcap-btn" onclick="toggleMcapMenu(event)">全部市值 ▾</button>
+      <div class="mcap-menu" id="mcap-menu" style="display:none">
+        <div class="mcap-actions">
+          <button onclick="selectAllMcap()">全選</button>
+          <button onclick="deselectAllMcap()">取消全選</button>
+        </div>
+        <label><input type="checkbox" name="mcap" value="0,1e10" onchange="updateMcapBtn()"> 0 - 100億</label>
+        <label><input type="checkbox" name="mcap" value="1e10,3e10" onchange="updateMcapBtn()"> 100 - 300億</label>
+        <label><input type="checkbox" name="mcap" value="3e10,8e10" onchange="updateMcapBtn()"> 300 - 800億</label>
+        <label><input type="checkbox" name="mcap" value="8e10,2e11" onchange="updateMcapBtn()"> 800 - 2000億</label>
+        <label><input type="checkbox" name="mcap" value="2e11,5e11" onchange="updateMcapBtn()"> 2000 - 5000億</label>
+        <label><input type="checkbox" name="mcap" value="5e11,Infinity" onchange="updateMcapBtn()"> 5000億以上</label>
+      </div>
+    </div>
   </div>
   <div class="filter-group">
     <span class="filter-label">成交額 (HKD)</span>
@@ -517,16 +531,17 @@ function applyFilters() {
   const r5d     = document.getElementById('f-5d').value;
   const r20d    = document.getElementById('f-20d').value;
   const amt     = document.getElementById('f-amount').value;
-  const mcap    = document.getElementById('f-mcap').value;
   const rs5     = document.getElementById('f-rs5d').value;
 
-  // Parse range strings like "10e9,50e9" or "50e9,Infinity"
   const parseRange = v => {
     if (!v) return null;
     const [a, b] = v.split(',');
     return [parseFloat(a), b === 'Infinity' ? Infinity : parseFloat(b)];
   };
-  const mcapR = parseRange(mcap);
+  const mcapChecked = [...document.querySelectorAll('input[name="mcap"]:checked')].map(cb => {
+    const [a, b] = cb.value.split(',');
+    return [parseFloat(a), b === 'Infinity' ? Infinity : parseFloat(b)];
+  });
   const amtR  = parseRange(amt);
 
   window._filtered = window._raw.filter(r => {
@@ -550,9 +565,9 @@ function applyFilters() {
     if (r20d === 'top' && r20 < 81) return false;
     if (r20d === 'mid' && (r20 < 41 || r20 > 80)) return false;
     if (r20d === 'bot' && r20 > 40) return false;
-    if (mcapR) {
+    if (mcapChecked.length > 0) {
       if (r.market_cap == null) return false;
-      if (r.market_cap < mcapR[0] || r.market_cap >= mcapR[1]) return false;
+      if (!mcapChecked.some(([lo, hi]) => r.market_cap >= lo && r.market_cap < hi)) return false;
     }
     if (amtR) {
       if (r.amount == null) return false;
@@ -574,12 +589,36 @@ function resetFilters() {
   document.getElementById('f-5d').value     = '';
   document.getElementById('f-20d').value    = '';
   document.getElementById('f-amount').value  = '';
-  document.getElementById('f-mcap').value    = '';
+  deselectAllMcap();
   document.getElementById('f-rs5d').value  = '';
   window._filtered = [...window._raw];
   window._page = 1;
   render();
 }
+
+function toggleMcapMenu(e) {
+  e.stopPropagation();
+  const m = document.getElementById('mcap-menu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+function selectAllMcap() {
+  document.querySelectorAll('input[name="mcap"]').forEach(cb => cb.checked = true);
+  updateMcapBtn();
+}
+function deselectAllMcap() {
+  document.querySelectorAll('input[name="mcap"]').forEach(cb => cb.checked = false);
+  updateMcapBtn();
+}
+function updateMcapBtn() {
+  const checked = document.querySelectorAll('input[name="mcap"]:checked');
+  const total   = document.querySelectorAll('input[name="mcap"]').length;
+  const btn = document.getElementById('mcap-btn');
+  btn.textContent = (checked.length === 0 || checked.length === total) ? '全部市值 ▾' : `已選 ${checked.length} 項 ▾`;
+}
+document.addEventListener('click', () => {
+  const m = document.getElementById('mcap-menu');
+  if (m) m.style.display = 'none';
+});
 </script>
 </body>
 </html>
