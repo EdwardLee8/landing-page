@@ -36,7 +36,8 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 
 HERE = Path(__file__).resolve().parent
-PW = "Inv-2604-H8rW"
+PW = "Inv-2604-H8rW"          # member password (RS rating, Weinstein, etc.)
+PW_HKDB = "hkdb-free-2604"    # separate password for free hk-stocks-db page
 GROWTH_THRESHOLD = 10.0    # %
 
 
@@ -152,7 +153,7 @@ def process_hk(client):
     enc_path = HERE / 'hk_stocks_data.enc'
     print(f'\n=== HK: {enc_path.name} ===')
     b64 = enc_path.read_text().strip()
-    pt = aes_decrypt(b64, PW)
+    pt = aes_decrypt(b64, PW_HKDB)
     records = json.loads(pt)
     print(f'  loaded {len(records):,} records')
     lookup, latest = fetch_rs_lookup(client, 'HK')
@@ -161,7 +162,7 @@ def process_hk(client):
     print(f'  matched RS for {matched}/{len(records)} ({100*matched/len(records):.0f}%)')
 
     pt2 = json.dumps(records, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
-    enc_path.write_text(aes_encrypt(pt2, PW))
+    enc_path.write_text(aes_encrypt(pt2, PW_HKDB))
     print(f'  re-encrypted {enc_path.name} ({len(pt2)/1024:.0f}KB plaintext)')
 
     # Type distribution
