@@ -52,6 +52,14 @@ select:focus{border-color:#d4a647}
 .mcap-menu label{display:flex;align-items:center;gap:6px;padding:4px 2px;cursor:pointer;font-size:13px;white-space:nowrap;color:#e8e0d0}
 .mcap-menu label:hover{color:#d4a647}
 .mcap-menu input[type=checkbox]{accent-color:#d4a647;cursor:pointer;width:14px;height:14px}
+.w-tag{display:inline-block;padding:2px 7px;border-radius:3px;font-size:11px;font-weight:700;white-space:nowrap;cursor:default}
+.w-s2{background:#d4a64722;color:#d4a647;border:1px solid #d4a647}
+.w-s1b{background:#64b5f622;color:#64b5f6;border:1px solid #64b5f6}
+.w-s1{background:#33333344;color:#888;border:1px solid #555}
+.w-s3{background:#ffb74d22;color:#ffb74d;border:1px solid #ffb74d}
+.w-s3b{background:#ef535033;color:#ff7043;border:1px solid #ff7043}
+.w-s4{background:#b71c1c33;color:#ef5350;border:1px solid #b71c1c}
+.w-trans{color:#444;font-size:11px}
 .table-wrap{overflow-x:auto;padding:0 0 40px}
 table{width:100%;border-collapse:collapse;min-width:1100px}
 thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
@@ -245,6 +253,24 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
       <option value="neg">負 (−)</option>
     </select>
   </div>
+  <div class="filter-group">
+    <span class="filter-label">Weinstein Stage</span>
+    <div class="mcap-multi">
+      <button class="mcap-btn" id="stage-btn" onclick="toggleStageMenu(event)">全部 Stage ▾</button>
+      <div class="mcap-menu" id="stage-menu" style="display:none">
+        <div class="mcap-actions">
+          <button onclick="selectAllStage()">全選</button>
+          <button onclick="deselectAllStage()">取消全選</button>
+        </div>
+        <label><input type="checkbox" name="wstage" value="2"  onchange="updateStageBtn()"> <span class="w-tag w-s2">Stage 2</span></label>
+        <label><input type="checkbox" name="wstage" value="11" onchange="updateStageBtn()"> <span class="w-tag w-s1b">Stage 1B</span></label>
+        <label><input type="checkbox" name="wstage" value="1"  onchange="updateStageBtn()"> <span class="w-tag w-s1">Stage 1</span></label>
+        <label><input type="checkbox" name="wstage" value="3"  onchange="updateStageBtn()"> <span class="w-tag w-s3">Stage 3</span></label>
+        <label><input type="checkbox" name="wstage" value="33" onchange="updateStageBtn()"> <span class="w-tag w-s3b">Stage 3B</span></label>
+        <label><input type="checkbox" name="wstage" value="4"  onchange="updateStageBtn()"> <span class="w-tag w-s4">Stage 4</span></label>
+      </div>
+    </div>
+  </div>
   <div>
     <button class="btn btn-ghost" onclick="resetFilters()">重置</button>
     <button class="btn btn-primary" onclick="applyFilters()">篩選</button>
@@ -278,6 +304,7 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
       <th onclick="sortBy('rs_rating_50d')" data-col="rs_rating_50d">50日 <span class="sort-icon"></span></th>
       <th onclick="sortBy('rs_ret_50d')" data-col="rs_ret_50d">50日RS% <span class="sort-icon"></span></th>
       <th onclick="sortBy('amount')" data-col="amount">成交額 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('w_stage')" data-col="w_stage">Weinstein Stage <span class="sort-icon"></span></th>
     </tr>
   </thead>
   <tbody id="table-body"></tbody>
@@ -376,6 +403,27 @@ async function loadData() {
       sel.appendChild(opt);
     });
 
+    // ── Load Weinstein Stage data (non-blocking) ──────────────────────────
+    try {
+      const wResp = await fetch('us_weinstein_latest.enc');
+      const wB64  = await wResp.text();
+      const wData = await decryptAsset(wB64.trim());
+      const wMap  = {};
+      (wData.stages || []).forEach(s => { wMap[s.symbol] = s; });
+      window._raw.forEach(r => {
+        const w = wMap[r.symbol];
+        if (w) {
+          r.w_stage       = w.stage || 0;
+          r.w_stage_label = w.stage_label || '';
+          r.w_signal      = w.signal || '';
+          r.w_duration    = w.stage_duration_weeks || 0;
+          r.w_slope       = w.ma30w_slope_10w;
+          r.w_pvm         = w.price_vs_ma30w;
+          r.w_reasons     = w.reason_codes || '';
+        }
+      });
+    } catch(we) { console.warn('Weinstein data not yet available:', we.message); }
+
     window._filtered = [...window._raw];
     window._sortCol  = 'rs_rating_composite';
     window._sortDir = -1;
@@ -433,6 +481,19 @@ function fmtName(r) {
   return `<span class="name" title="${r.name_en || ''}">${name}</span>`;
 }
 
+// ── Weinstein Stage tag ────────────────────────────────────────────────────
+const _W_CLS = {'Stage 2':'w-s2','Stage 1B':'w-s1b','Stage 1':'w-s1',
+                'Stage 3':'w-s3','Stage 3B':'w-s3b','Stage 4':'w-s4'};
+const _W_SIG = {'early_breakout':'🚀','pullback_buy':'📈','warning':'⚠️','avoid':'🚫'};
+function stageTag(label, signal, slope, reasons) {
+  if (!label || label === 'Transition' || label === 'Insufficient') return '<span class="w-trans">—</span>';
+  const cls  = _W_CLS[label] || 'w-trans';
+  const ico  = signal ? (' ' + (_W_SIG[signal] || '')) : '';
+  const tip  = [label, slope != null ? `斜率${slope>0?'+':''}${(slope||0).toFixed(1)}%` : '', reasons || '']
+               .filter(Boolean).join(' | ');
+  return `<span class="w-tag ${cls}" title="${tip}">${label}${ico}</span>`;
+}
+
 // ── Table rendering ────────────────────────────────────────────────────────
 const PAGE_SIZE = 50;
 
@@ -484,6 +545,7 @@ function render() {
       <td style="text-align:center">${ratingBadge(r.rs_rating_50d)}</td>
       <td class="num ${pctColor(rs50)}">${fmtPct(rs50)}</td>
       <td class="amount">${fmtAmount(r.amount)}</td>
+      <td style="text-align:center">${stageTag(r.w_stage_label, r.w_signal, r.w_slope, r.w_reasons)}</td>
     </tr>`;
   }).join('');
 
@@ -542,6 +604,7 @@ function applyFilters() {
     const [a, b] = cb.value.split(',');
     return [parseFloat(a), b === 'Infinity' ? Infinity : parseFloat(b)];
   });
+  const stageChecked = [...document.querySelectorAll('input[name="wstage"]:checked')].map(cb => parseInt(cb.value));
   const amtR  = parseRange(amt);
 
   window._filtered = window._raw.filter(r => {
@@ -573,6 +636,7 @@ function applyFilters() {
       if (r.amount == null) return false;
       if (r.amount < amtR[0] || r.amount >= amtR[1]) return false;
     }
+    if (stageChecked.length > 0 && !stageChecked.includes(r.w_stage || 0)) return false;
     const rs5v = r.rs_ret_5d;
     if (rs5 === 'pos' && (rs5v === null || rs5v === undefined || rs5v < 0)) return false;
     if (rs5 === 'neg' && (rs5v === null || rs5v === undefined || rs5v >= 0)) return false;
@@ -590,6 +654,7 @@ function resetFilters() {
   document.getElementById('f-20d').value    = '';
   document.getElementById('f-amount').value  = '';
   deselectAllMcap();
+  deselectAllStage();
   document.getElementById('f-rs5d').value  = '';
   window._filtered = [...window._raw];
   window._page = 1;
@@ -618,7 +683,29 @@ function updateMcapBtn() {
 document.addEventListener('click', () => {
   const m = document.getElementById('mcap-menu');
   if (m) m.style.display = 'none';
+  const s = document.getElementById('stage-menu');
+  if (s) s.style.display = 'none';
 });
+
+function toggleStageMenu(e) {
+  e.stopPropagation();
+  const m = document.getElementById('stage-menu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+function selectAllStage() {
+  document.querySelectorAll('input[name="wstage"]').forEach(cb => cb.checked = true);
+  updateStageBtn();
+}
+function deselectAllStage() {
+  document.querySelectorAll('input[name="wstage"]').forEach(cb => cb.checked = false);
+  updateStageBtn();
+}
+function updateStageBtn() {
+  const checked = document.querySelectorAll('input[name="wstage"]:checked');
+  const total   = document.querySelectorAll('input[name="wstage"]').length;
+  const btn = document.getElementById('stage-btn');
+  btn.textContent = (checked.length === 0 || checked.length === total) ? '全部 Stage ▾' : `已選 ${checked.length} Stage ▾`;
+}
 </script>
 </body>
 </html>
