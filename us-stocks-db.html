@@ -311,7 +311,8 @@ function initApp() {
 }
 
 function parseNum(v) {
-  if (!v || v === '#VALUE!' || v === '' || v === '—') return null;
+  if (v === null || v === undefined || v === '' || v === '#VALUE!' || v === '—') return null;
+  if (typeof v === 'number') return isNaN(v) ? null : v;
   return parseFloat(v.replace(/[%,]/g, ''));
 }
 
