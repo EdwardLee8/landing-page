@@ -439,7 +439,7 @@ async function loadData() {
           r.w_reasons     = w.reason_codes || '';
         }
       });
-    } catch(we) { console.warn('Weinstein data not yet available:', we.message); }
+    } catch(we) { console.error('[Weinstein US] load failed:', we.message, we); }
 
     window._filtered = [...window._raw];
     window._sortCol  = 'rs_rating_composite';
