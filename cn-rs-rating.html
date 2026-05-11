@@ -422,7 +422,7 @@ async function loadData() {
 
     // ── Load Weinstein Stage data (non-blocking) ──────────────────────────
     try {
-      const wResp = await fetch('cn_weinstein_latest.enc');
+      const wResp = await fetch('cn_weinstein_latest.enc', { cache: 'no-store' });
       const wB64  = await wResp.text();
       const wData = await decryptAsset(wB64.trim());
       const wMap  = {};
