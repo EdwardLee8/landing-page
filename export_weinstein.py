@@ -100,7 +100,7 @@ def export_market(client, cfg: dict):
             GROUP BY symbol
         ) m ON w.symbol = m.symbol AND w.week_date = m.max_wk
         WHERE w.data_quality != 'insufficient'
-          AND w.stage_label NOT IN ('Insufficient', '')
+          AND w.stage_label NOT IN ('Insufficient', 'Transition', '')
         ORDER BY w.stage2_score DESC, w.rs_composite DESC
     """
     rows = client.query(w_q).result_rows
