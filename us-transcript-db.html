@@ -314,7 +314,7 @@ tbody tr.row-neutral{border-left:3px solid #444}
         <th onclick="sortBy('signal_score')"><span class="si">訊號</span></th>
         <th onclick="sortBy('guidance')"><span class="si">業績指引</span></th>
         <th onclick="sortBy('sentiment_latest')"><span class="si">情緒</span></th>
-        <th onclick="sortBy('rs_pct')"><span class="si">RS%</span></th>
+        <th onclick="sortBy('rs_pct')"><span class="si">相對大市%</span></th>
         <th onclick="sortBy('latest_quarter')"><span class="si">最新季度</span></th>
         <th><span>🆕 新主題</span></th>
       </tr>
@@ -330,7 +330,7 @@ tbody tr.row-neutral{border-left:3px solid #444}
   <div><b style="color:#ccc">訊號分數</b>（滿分 100）= 業績指引(35) + 情緒(30) + 強勢程度(25) + 新主題(10)</div>
   <div style="margin-top:6px"><b style="color:#ccc">業績指引</b>：AI 閱讀業績電話會內容，判斷管理層對下季展望係上調、維持定下調。連續兩季上調會額外加分</div>
   <div style="margin-top:6px"><b style="color:#ccc">情緒</b>：AI 判斷管理層講話整體係樂觀定悲觀（-1 最負面，+1 最正面），並考慮與上季相比有否改善</div>
-  <div style="margin-top:6px"><b style="color:#ccc">強勢程度（RS%）</b>：過去三個月股價走勢相對大市（標普 500）嘅強弱，100 = 最強，0 = 最弱</div>
+  <div style="margin-top:6px"><b style="color:#ccc">強勢程度（相對大市%）</b>：過去三個月股價走勢相對大市（標普 500）嘅強弱，100 = 最強，0 = 最弱</div>
   <div style="margin-top:6px"><b style="color:#ccc">新主題</b>：AI 找出今季業績電話會中，相比過去兩季新出現嘅討論重點</div>
   <div style="margin-top:6px"><b style="color:#ccc">業績會日期</b>：業績電話會議召開嘅真實日期（非新聞報導發布日期）</div>
   <div style="margin-top:6px"><b style="color:#ccc">行業</b>：根據公司業務分類；部分較少人認識嘅公司，以同類型公司嘅行業作推斷</div>
@@ -825,9 +825,9 @@ function renderModalTabs(detail) {
       </tr>`;
     }).join("");
     document.getElementById("tab-peers").innerHTML = `
-      <p style="font-size:12px;color:#666;margin-bottom:12px">按共同業務關鍵字數排名，RS% 由高至低顯示</p>
+      <p style="font-size:12px;color:#666;margin-bottom:12px">按共同業務關鍵字數排名，相對大市% 由高至低顯示</p>
       <table class="peer-table">
-        <thead><tr><th>Ticker</th><th>RS%</th><th>共同主題</th><th>最新指引</th></tr></thead>
+        <thead><tr><th>Ticker</th><th>相對大市%</th><th>共同主題</th><th>最新指引</th></tr></thead>
         <tbody>${peerRows}</tbody>
       </table>`;
   }
