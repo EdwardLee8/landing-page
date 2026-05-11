@@ -63,7 +63,7 @@ def encrypt_json(json_path: str, password: str):
 def export_market(client, cfg: dict):
     market = cfg['market']
 
-    # ── Latest week date ───────────────────────────────────────────────────────
+    # ── Latest week date (global, for display only) ───────────────────────────
     r = client.query(
         f"SELECT MAX(week_date) FROM quant.weinstein_stage WHERE market = '{market}'"
     )
@@ -73,19 +73,35 @@ def export_market(client, cfg: dict):
         return
     latest_str = str(latest)
 
-    # ── Main weinstein data ────────────────────────────────────────────────────
+    # ── Main weinstein data — per-symbol latest week ───────────────────────────
+    # Use JOIN on (symbol, MAX week_date) so halted/low-liquidity stocks still
+    # appear using their last available week rather than being dropped.
     w_q = f"""
-        SELECT symbol, week_date, stage, stage_label, confidence,
-               stage1_score, stage2_score, stage3_score, stage4_score,
-               stage_duration_weeks, signal, reason_codes,
-               ma30w, ma30w_slope_10w, price_vs_ma30w,
-               ret_26w, ret_52w, rs_composite, volume_ratio,
-               down_up_vol_ratio, weeks_above_8w, data_quality
-        FROM quant.weinstein_stage FINAL
-        WHERE market = '{market}' AND week_date = '{latest_str}'
-          AND data_quality != 'insufficient'
-          AND stage_label NOT IN ('Insufficient', '')
-        ORDER BY stage2_score DESC, rs_composite DESC
+        SELECT w.symbol, w.week_date, w.stage, w.stage_label, w.confidence,
+               w.stage1_score, w.stage2_score, w.stage3_score, w.stage4_score,
+               w.stage_duration_weeks, w.signal, w.reason_codes,
+               w.ma30w, w.ma30w_slope_10w, w.price_vs_ma30w,
+               w.ret_26w, w.ret_52w, w.rs_composite, w.volume_ratio,
+               w.down_up_vol_ratio, w.weeks_above_8w, w.data_quality
+        FROM (
+            SELECT symbol, week_date, stage, stage_label, confidence,
+                   stage1_score, stage2_score, stage3_score, stage4_score,
+                   stage_duration_weeks, signal, reason_codes,
+                   ma30w, ma30w_slope_10w, price_vs_ma30w,
+                   ret_26w, ret_52w, rs_composite, volume_ratio,
+                   down_up_vol_ratio, weeks_above_8w, data_quality
+            FROM quant.weinstein_stage FINAL
+            WHERE market = '{market}'
+        ) w
+        INNER JOIN (
+            SELECT symbol, MAX(week_date) AS max_wk
+            FROM quant.weinstein_stage
+            WHERE market = '{market}'
+            GROUP BY symbol
+        ) m ON w.symbol = m.symbol AND w.week_date = m.max_wk
+        WHERE w.data_quality != 'insufficient'
+          AND w.stage_label NOT IN ('Insufficient', '')
+        ORDER BY w.stage2_score DESC, w.rs_composite DESC
     """
     rows = client.query(w_q).result_rows
     if not rows:
