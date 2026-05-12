@@ -55,6 +55,72 @@ def get_latest_date(client, table: str) -> str:
     return r.result_rows[0][0].isoformat()
 
 
+def _load_local_metadata(market: str) -> dict:
+    """Fallback metadata when quant.stock_info is absent.
+
+    HK/CN keyword exports keep raw market_cap. US stocks DB stores market cap
+    in 億 USD, so convert to raw dollars.
+    """
+    base = os.path.dirname(os.path.abspath(__file__))
+    meta = {}
+
+    if market in ('HK', 'CN'):
+        path = os.path.join(base, f"{market.lower()}_keywords_export.json")
+        if os.path.exists(path):
+            with open(path, encoding='utf-8') as f:
+                for r in json.load(f):
+                    sym = r.get('s')
+                    if not sym:
+                        continue
+                    meta[sym] = {
+                        'name_en': r.get('n'),
+                        'name_zh': r.get('nz'),
+                        'sector': r.get('sec') or r.get('ind'),
+                        'market_cap': r.get('mcap'),
+                    }
+    elif market == 'US':
+        path = os.path.join(base, 'us_stocks_data.json')
+        if os.path.exists(path):
+            with open(path, encoding='utf-8') as f:
+                for r in json.load(f):
+                    code = (r.get('code') or '').split('.')[0]
+                    if not code:
+                        continue
+                    mcap = None
+                    try:
+                        # us_stocks_data mktcap is 億 USD (e.g. 308.2 = $30.82B)
+                        mcap = float(str(r.get('mktcap', '')).replace(',', '')) * 100_000_000
+                    except Exception:
+                        pass
+                    meta[code] = {
+                        'name_en': r.get('en_name'),
+                        'name_zh': r.get('name'),
+                        'sector': r.get('industry'),
+                        'market_cap': mcap,
+                    }
+    return meta
+
+
+def _fill_from_local_metadata(df: pd.DataFrame, market: str) -> pd.DataFrame:
+    meta = _load_local_metadata(market)
+    if not meta:
+        return df
+    for col in ['name_en', 'name_zh', 'sector', 'market_cap']:
+        if col not in df.columns:
+            df[col] = pd.NA
+    for i, row in df.iterrows():
+        m = meta.get(row['symbol'])
+        if not m:
+            continue
+        for col in ['name_en', 'name_zh', 'sector']:
+            cur = row.get(col)
+            if pd.isna(cur) or str(cur).strip() == '':
+                df.at[i, col] = m.get(col)
+        if pd.isna(row.get('market_cap')) and m.get('market_cap') is not None:
+            df.at[i, 'market_cap'] = m.get('market_cap')
+    return df
+
+
 def export_latest(client, end_date: str, cfg: dict) -> dict:
     market = cfg['market']
     table  = cfg['table']
@@ -169,6 +235,10 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
     else:
         mc_df = pd.DataFrame(columns=['symbol', 'market_cap'])
     df = df.merge(mc_df, on='symbol', how='left')
+
+    # 4b. Fallback local metadata. Required when quant.stock_info is absent;
+    #     preserves company name / industry / market cap on landing-page.
+    df = _fill_from_local_metadata(df, market)
 
     # 5a. Dedupe by ticker — final safety net in case any earlier step still
     #     returned >1 row per symbol (e.g. unmerged ReplacingMergeTree).
