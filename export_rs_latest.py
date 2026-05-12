@@ -97,13 +97,17 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
     ci_a = pd.DataFrame(client.query(ci_q).result_rows,
                         columns=['symbol', 'name_en', 'name_zh', 'sector', 'industry'])
 
-    si_q = f"""
-    SELECT symbol, name AS name_si, sector AS sector_si, industry AS industry_si
-    FROM quant.stock_info FINAL
-    WHERE market = '{market}' AND symbol IN ('{sym_list}')
-    """
-    ci_b = pd.DataFrame(client.query(si_q).result_rows,
-                        columns=['symbol', 'name_si', 'sector_si', 'industry_si'])
+    stock_info_exists = client.query("EXISTS TABLE quant.stock_info").result_rows[0][0] == 1
+    if stock_info_exists:
+        si_q = f"""
+        SELECT symbol, name AS name_si, sector AS sector_si, industry AS industry_si
+        FROM quant.stock_info FINAL
+        WHERE market = '{market}' AND symbol IN ('{sym_list}')
+        """
+        ci_b = pd.DataFrame(client.query(si_q).result_rows,
+                            columns=['symbol', 'name_si', 'sector_si', 'industry_si'])
+    else:
+        ci_b = pd.DataFrame(columns=['symbol', 'name_si', 'sector_si', 'industry_si'])
 
     ci_df = ci_b.merge(ci_a, on='symbol', how='outer')
     # Use name_en if non-empty, otherwise stock_info.name
@@ -143,24 +147,27 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
     #    de-duped via argMax inside the subquery.
     # Prefer fresh shares×close; fallback to stored market_cap when shares=0
     # (e.g. CN tickers imported from akshare cache only have market_cap).
-    mc_q = f"""
-    SELECT s.symbol,
-           if(s.shares_outstanding > 0,
-              s.shares_outstanding * o.close,
-              s.market_cap) AS market_cap
-    FROM (SELECT symbol, shares_outstanding, market_cap
-          FROM quant.stock_info FINAL
-          WHERE market='{market}' AND symbol IN ('{sym_list}')
-            AND (shares_outstanding > 0 OR market_cap > 0)) AS s
-    LEFT JOIN (
-        SELECT symbol, argMax(close, trade_date) AS close
-        FROM quant.daily_ohlcv
-        WHERE market = '{market}' AND trade_date <= '{end_date}'
-          AND symbol IN ('{sym_list}')
-        GROUP BY symbol
-    ) AS o ON o.symbol = s.symbol
-    """
-    mc_df = pd.DataFrame(client.query(mc_q).result_rows, columns=['symbol', 'market_cap'])
+    if stock_info_exists:
+        mc_q = f"""
+        SELECT s.symbol,
+               if(s.shares_outstanding > 0,
+                  s.shares_outstanding * o.close,
+                  s.market_cap) AS market_cap
+        FROM (SELECT symbol, shares_outstanding, market_cap
+              FROM quant.stock_info FINAL
+              WHERE market='{market}' AND symbol IN ('{sym_list}')
+                AND (shares_outstanding > 0 OR market_cap > 0)) AS s
+        LEFT JOIN (
+            SELECT symbol, argMax(close, trade_date) AS close
+            FROM quant.daily_ohlcv
+            WHERE market = '{market}' AND trade_date <= '{end_date}'
+              AND symbol IN ('{sym_list}')
+            GROUP BY symbol
+        ) AS o ON o.symbol = s.symbol
+        """
+        mc_df = pd.DataFrame(client.query(mc_q).result_rows, columns=['symbol', 'market_cap'])
+    else:
+        mc_df = pd.DataFrame(columns=['symbol', 'market_cap'])
     df = df.merge(mc_df, on='symbol', how='left')
 
     # 5a. Dedupe by ticker — final safety net in case any earlier step still
