@@ -1,6 +1,5 @@
 #!/usr/bin/env python3.12
-"""
-Export latest RS Rating from ClickHouse → {market}_rs_latest.json (+ .enc).
+"""Export latest RS Rating from ClickHouse → {market}_rs_latest.json (+ .enc).
 
 Per-market generic export. Replaces export_us_rs_latest.py.
 
@@ -37,6 +36,13 @@ MARKETS = {
 # Preferred-share regex (US: -PA/-PD/-PK; HK preferred shares are rare;
 # CN doesn't use this pattern). Safe to apply globally.
 _PREF_RE = re.compile(r'-P[A-Z]{1,3}$')
+
+
+def _pad_hk(symbol: str) -> str:
+    """Pad HK 4-digit symbol (e.g. 0001.HK) to 5-digit (00001.HK)."""
+    if symbol[0].isdigit() and len(symbol.split('.')[0]) < 5:
+        return '0' + symbol
+    return symbol
 
 
 def get_client():
@@ -109,7 +115,11 @@ def _fill_from_local_metadata(df: pd.DataFrame, market: str) -> pd.DataFrame:
         if col not in df.columns:
             df[col] = pd.NA
     for i, row in df.iterrows():
-        m = meta.get(row['symbol'])
+        sym = row['symbol']
+        m = meta.get(sym)
+        # HK fallback: try zero-padded key (metadata uses 5-digit)
+        if not m and market == 'HK' and sym[0].isdigit() and len(sym.split('.')[0]) < 5:
+            m = meta.get('0' + sym)
         if not m:
             continue
         for col in ['name_en', 'name_zh', 'sector']:
@@ -152,13 +162,19 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
 
     sym_list = "','".join(rs_df['symbol'].tolist())
 
-    # 2. Company info — pull from BOTH tables, then merge in pandas so neither
-    #    side's missing rows shadow the other (ClickHouse FULL OUTER JOIN fills
-    #    missing string columns with '' not NULL, breaking coalesce).
+    # HK symbol format: hk_rs_rating uses 4-digit (0001.HK) while
+    # company_info uses 5-digit (00001.HK). Pad for SQL IN filter.
+    if market == 'HK':
+        sym_list_padded = "','".join(
+            _pad_hk(row['symbol']) for _, row in rs_df.iterrows())
+    else:
+        sym_list_padded = sym_list
+
+    # 2. Company info — pull from BOTH tables
     ci_q = f"""
     SELECT symbol, name_en, name_zh, sector, industry
     FROM quant.company_info FINAL
-    WHERE symbol IN ('{sym_list}')
+    WHERE symbol IN ('{sym_list_padded}')
     """
     ci_a = pd.DataFrame(client.query(ci_q).result_rows,
                         columns=['symbol', 'name_en', 'name_zh', 'sector', 'industry'])
@@ -168,7 +184,7 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
         si_q = f"""
         SELECT symbol, name AS name_si, sector AS sector_si, industry AS industry_si
         FROM quant.stock_info FINAL
-        WHERE market = '{market}' AND symbol IN ('{sym_list}')
+        WHERE market = '{market}' AND symbol IN ('{sym_list_padded}')
         """
         ci_b = pd.DataFrame(client.query(si_q).result_rows,
                             columns=['symbol', 'name_si', 'sector_si', 'industry_si'])
@@ -176,19 +192,14 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
         ci_b = pd.DataFrame(columns=['symbol', 'name_si', 'sector_si', 'industry_si'])
 
     ci_df = ci_b.merge(ci_a, on='symbol', how='outer')
-    # Use name_en if non-empty, otherwise stock_info.name
-    ci_df['name_en']  = ci_df['name_en'].replace('', pd.NA).fillna(ci_df['name_si'])
-    # Sector: company_info > stock_info > industry (CN cache has 47% sector
-    # but 100% industry coverage — Chinese 行業 classifications work as fallback)
-    ci_df['sector']   = ci_df['sector'].replace('', pd.NA) \
-                                       .fillna(ci_df['sector_si'].replace('', pd.NA)) \
-                                       .fillna(ci_df['industry'].replace('', pd.NA)) \
-                                       .fillna(ci_df['industry_si'])
+    ci_df['name_en'] = ci_df['name_en'].replace('', pd.NA).fillna(ci_df['name_si'])
+    ci_df['sector']  = ci_df['sector'].replace('', pd.NA) \
+                                      .fillna(ci_df['sector_si'].replace('', pd.NA)) \
+                                      .fillna(ci_df['industry'].replace('', pd.NA)) \
+                                      .fillna(ci_df['industry_si'])
     ci_df = ci_df[['symbol', 'name_en', 'name_zh', 'sector']]
 
-    # 3. Latest OHLCV (close + amount). GROUP BY symbol to dedup
-    #    ReplacingMergeTree unmerged rows (caused user-visible duplicate
-    #    rows in HK/CN tables 2026-05-10).
+    # 3. Latest OHLCV
     ohlcv_q = f"""
     SELECT symbol, close, volume, close * volume AS amount FROM (
         SELECT symbol,
@@ -203,16 +214,7 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
     ohlcv_df = pd.DataFrame(client.query(ohlcv_q).result_rows,
                             columns=['symbol', 'close', 'volume', 'amount'])
 
-    df = rs_df.merge(ci_df, on='symbol', how='left') \
-              .merge(ohlcv_df[['symbol', 'close', 'volume', 'amount']],
-                     on='symbol', how='left')
-
-    # 4. Market cap = shares × today's close (always fresh; stock_info.market_cap
-    #    is a yfinance snapshot that goes stale daily).
-    #    Dedup: stock_info uses ReplacingMergeTree so use FINAL; daily_ohlcv
-    #    de-duped via argMax inside the subquery.
-    # Prefer fresh shares×close; fallback to stored market_cap when shares=0
-    # (e.g. CN tickers imported from akshare cache only have market_cap).
+    # 4. Market cap
     if stock_info_exists:
         mc_q = f"""
         SELECT s.symbol,
@@ -221,7 +223,7 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
                   s.market_cap) AS market_cap
         FROM (SELECT symbol, shares_outstanding, market_cap
               FROM quant.stock_info FINAL
-              WHERE market='{market}' AND symbol IN ('{sym_list}')
+              WHERE market='{market}' AND symbol IN ('{sym_list_padded}')
                 AND (shares_outstanding > 0 OR market_cap > 0)) AS s
         LEFT JOIN (
             SELECT symbol, argMax(close, trade_date) AS close
@@ -234,17 +236,33 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
         mc_df = pd.DataFrame(client.query(mc_q).result_rows, columns=['symbol', 'market_cap'])
     else:
         mc_df = pd.DataFrame(columns=['symbol', 'market_cap'])
-    df = df.merge(mc_df, on='symbol', how='left')
 
-    # 4b. Fallback local metadata. Required when quant.stock_info is absent;
-    #     preserves company name / industry / market cap on landing-page.
+    # 5. Merge all data. HK has 4-digit vs 5-digit mismatch; use padded join key.
+    if market == 'HK':
+        # ci_df.mc_df are 5-digit; rs_df.ohlcv_df are 4-digit
+        rs_df['_pad']   = rs_df['symbol'].apply(_pad_hk)
+        ci_df['_pad']   = ci_df['symbol']
+        ohlcv_df['_pad'] = ohlcv_df['symbol'].apply(_pad_hk)
+        mc_df['_pad']   = mc_df['symbol'].apply(_pad_hk)
+
+        df = rs_df.merge(ci_df,   on='_pad', how='left') \
+                  .merge(ohlcv_df, on='_pad', how='left', suffixes=('', '_ohlcv')) \
+                  .merge(mc_df,   on='_pad', how='left', suffixes=('', '_mc'))
+        # Keep the 4-digit symbol from rs_df
+        df['symbol'] = df['symbol_x' if 'symbol_x' in df.columns else 'symbol']
+        df = df.drop(columns=[c for c in df.columns if c in ('_pad', 'symbol_x', 'symbol_y', 'symbol_ohlcv', 'symbol_mc')])
+    else:
+        df = rs_df.merge(ci_df,   on='symbol', how='left') \
+                  .merge(ohlcv_df, on='symbol', how='left', suffixes=('', '_ohlcv')) \
+                  .merge(mc_df,   on='symbol', how='left', suffixes=('', '_mc'))
+
+    # 5b. Fallback local metadata for company name/industry/market cap
     df = _fill_from_local_metadata(df, market)
 
-    # 5a. Dedupe by ticker — final safety net in case any earlier step still
-    #     returned >1 row per symbol (e.g. unmerged ReplacingMergeTree).
+    # 5c. Final dedup by ticker
     df = df.drop_duplicates(subset=['symbol'], keep='first').reset_index(drop=True)
 
-    # 5b. Dedupe by company name — keep most-liquid ticker per name_en
+    # 5d. Dedup by company name — keep most-liquid ticker per name_en
     if 'name_en' in df.columns:
         with_name = df['name_en'].notna() & (df['name_en'].astype(str).str.strip() != '')
         named = df[with_name].copy()
