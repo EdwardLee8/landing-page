@@ -133,15 +133,34 @@ def export_market(client, cfg: dict):
         FROM quant.stock_info FINAL
         WHERE market = '{market}' AND symbol IN ('{sym_list}')
     """
-    ci_b = pd.DataFrame(client.query(si_q).result_rows,
-                        columns=['symbol', 'name_si'])
+    try:
+        ci_b = pd.DataFrame(client.query(si_q).result_rows,
+                            columns=['symbol', 'name_si'])
+    except Exception as e:
+        # Some deployments do not have quant.stock_info; company_info/local
+        # metadata is sufficient and export should not fail because of this.
+        print(f'  [{market}] WARN: stock_info unavailable, using company_info only: {e.__class__.__name__}')
+        ci_b = pd.DataFrame(columns=['symbol', 'name_si'])
 
     names = ci_b.merge(ci_a, on='symbol', how='outer')
+    if 'name_si' not in names.columns:
+        names['name_si'] = pd.NA
     names['name_en'] = names['name_en'].replace('', pd.NA).fillna(names['name_si'])
     names['name_zh'] = names['name_zh'].replace('', pd.NA)
     names = names[['symbol', 'name_en', 'name_zh']]
 
     df = df.merge(names, on='symbol', how='left')
+
+    # Keep the US Weinstein export aligned with the production US RS board:
+    # >US$2B market cap, amount >= US$5M, and valid Stage. The RS export
+    # already enforces these gates, so use it as the canonical board universe.
+    if market == 'US':
+        rs_path = os.path.join(OUTPUT_DIR, 'us_rs_latest.json')
+        if os.path.exists(rs_path):
+            with open(rs_path, encoding='utf-8') as f:
+                rs_payload = json.load(f)
+            board_symbols = {r.get('symbol') for r in rs_payload.get('ratings', []) if r.get('symbol')}
+            df = df[df['symbol'].isin(board_symbols)].copy()
 
     # ── Build records (NaN → None for JSON serialisation) ─────────────────────
     float_cols = ['confidence', 'ma30w', 'ma30w_slope_10w', 'price_vs_ma30w',

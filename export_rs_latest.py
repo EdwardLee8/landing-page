@@ -294,7 +294,7 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
 
         df['market_cap'] = pd.to_numeric(df['market_cap'], errors='coerce')
         df['amount'] = pd.to_numeric(df['amount'], errors='coerce')
-        df = df[(df['market_cap'] >= 2_000_000_000) & (df['amount'] > 0)].copy()
+        df = df[(df['market_cap'] >= 2_000_000_000) & (df['amount'] >= 5_000_000)].copy()
 
     # 5d. Final dedup by ticker
     df = df.drop_duplicates(subset=['symbol'], keep='first').reset_index(drop=True)
