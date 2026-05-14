@@ -85,12 +85,26 @@ def _load_local_metadata(market: str) -> dict:
                         'market_cap': r.get('mcap'),
                     }
     elif market == 'US':
+        tv_meta_path = os.path.join(base, '..', '..', 'quant-db', 'config', 'stock_lists',
+                                    'us_universe_metadata.json')
+        if os.path.exists(tv_meta_path):
+            with open(tv_meta_path, encoding='utf-8') as f:
+                for r in json.load(f):
+                    code = r.get('yf_symbol')
+                    if not code:
+                        continue
+                    meta[code] = {
+                        'name_en': r.get('description') or r.get('name'),
+                        'name_zh': None,
+                        'sector': r.get('sector') or r.get('industry'),
+                        'market_cap': r.get('market_cap_basic'),
+                    }
         path = os.path.join(base, 'us_stocks_data.json')
         if os.path.exists(path):
             with open(path, encoding='utf-8') as f:
                 for r in json.load(f):
                     code = (r.get('code') or '').split('.')[0]
-                    if not code:
+                    if not code or code in meta:
                         continue
                     mcap = None
                     try:
@@ -259,10 +273,33 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
     # 5b. Fallback local metadata for company name/industry/market cap
     df = _fill_from_local_metadata(df, market)
 
-    # 5c. Final dedup by ticker
+    # 5c. Production US RS board: companies only. Require complete data used by
+    # the UI — market cap, same-day turnover amount, and latest valid Weinstein
+    # Stage. This prevents metadata-poor small caps/ETFs/OTC leakage.
+    if market == 'US' and not df.empty:
+        latest_stage_q = """
+            SELECT MAX(week_date) FROM quant.weinstein_stage WHERE market = 'US'
+        """
+        latest_stage = client.query(latest_stage_q).result_rows[0][0]
+        if latest_stage:
+            stage_q = f"""
+                SELECT symbol
+                FROM quant.weinstein_stage FINAL
+                WHERE market = 'US' AND week_date = '{latest_stage}'
+                  AND data_quality != 'insufficient'
+                  AND stage_label NOT IN ('Insufficient', 'Transition', '')
+            """
+            stage_symbols = {r[0] for r in client.query(stage_q).result_rows}
+            df = df[df['symbol'].isin(stage_symbols)].copy()
+
+        df['market_cap'] = pd.to_numeric(df['market_cap'], errors='coerce')
+        df['amount'] = pd.to_numeric(df['amount'], errors='coerce')
+        df = df[(df['market_cap'] >= 2_000_000_000) & (df['amount'] > 0)].copy()
+
+    # 5d. Final dedup by ticker
     df = df.drop_duplicates(subset=['symbol'], keep='first').reset_index(drop=True)
 
-    # 5d. Dedup by company name — keep most-liquid ticker per name_en
+    # 5e. Dedup by company name — keep most-liquid ticker per name_en
     if 'name_en' in df.columns:
         with_name = df['name_en'].notna() & (df['name_en'].astype(str).str.strip() != '')
         named = df[with_name].copy()
