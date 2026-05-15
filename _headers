@@ -27,6 +27,15 @@
 /etf-report/*
   X-Robots-Tag: noindex, noai
 
+/us_rs_latest.json
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, noai
+
+/us_rs_latest.enc
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, noai, noimageai
+  Content-Type: text/plain; charset=utf-8
+
 /*.json
   X-Robots-Tag: noindex, noai
 

@@ -393,7 +393,7 @@ async function decryptAsset(b64Data) {
 
 async function loadData() {
   try {
-    const resp = await fetch('us_rs_latest.enc');
+    const resp = await fetch('us_rs_latest.enc', { cache: 'no-store' });
     const b64  = await resp.text();
     const data  = await decryptAsset(b64.trim());
 
