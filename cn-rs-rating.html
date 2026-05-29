@@ -248,19 +248,22 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
     </div>
   </div>
   <div class="filter-group">
-    <span class="filter-label">成交額 (CNY)</span>
-    <select id="f-amount">
-      <option value="">全部成交額</option>
-      <option value="0,10e6">0 - 1000 萬</option>
-      <option value="10e6,50e6">1000 萬 - 5000 萬</option>
-      <option value="50e6,200e6">5000 萬 - 2 億</option>
-      <option value="200e6,1e9">2 億 - 10 億</option>
-      <option value="1e9,Infinity">10 億以上</option>
-      <option disabled>──────────</option>
-      <option value="50e6,Infinity">5000 萬以上</option>
-      <option value="100e6,Infinity">1 億以上</option>
-      <option value="500e6,Infinity">5 億以上</option>
-    </select>
+    <span class="filter-label">20日平均成交額 (CNY)</span>
+    <div class="mcap-multi">
+      <button class="mcap-btn" id="amount-btn" onclick="toggleAmountMenu(event)">全部成交額 ▾</button>
+      <div class="mcap-menu" id="amount-menu" style="display:none">
+        <div class="mcap-actions">
+          <button onclick="selectAllAmount()">全選</button>
+          <button onclick="deselectAllAmount()">取消全選</button>
+        </div>
+        <label><input type="checkbox" name="amount" value="0,10e6" onchange="updateAmountBtn()"> 0 - 1000萬</label>
+        <label><input type="checkbox" name="amount" value="10e6,50e6" onchange="updateAmountBtn()"> 1000萬 - 5000萬</label>
+        <label><input type="checkbox" name="amount" value="50e6,200e6" onchange="updateAmountBtn()"> 5000萬 - 2億</label>
+        <label><input type="checkbox" name="amount" value="200e6,1e9" onchange="updateAmountBtn()"> 2億 - 10億</label>
+        <label><input type="checkbox" name="amount" value="1e9,5e9" onchange="updateAmountBtn()"> 10億 - 50億</label>
+        <label><input type="checkbox" name="amount" value="5e9,Infinity" onchange="updateAmountBtn()"> 50億以上</label>
+      </div>
+    </div>
   </div>
   <div class="filter-group">
     <span class="filter-label">5日RS</span>
@@ -320,7 +323,7 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
       <th onclick="sortBy('rs_ret_20d')" data-col="rs_ret_20d">20日相對大市% <span class="sort-icon"></span></th>
       <th onclick="sortBy('rs_rating_50d')" data-col="rs_rating_50d">50日 <span class="sort-icon"></span></th>
       <th onclick="sortBy('rs_ret_50d')" data-col="rs_ret_50d">50日相對大市% <span class="sort-icon"></span></th>
-      <th onclick="sortBy('amount')" data-col="amount">成交額 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('amount')" data-col="amount">20日平均成交額 <span class="sort-icon"></span></th>
       <th onclick="sortBy('w_stage')" data-col="w_stage">Weinstein Stage <span class="sort-icon"></span></th>
     </tr>
   </thead>
@@ -609,20 +612,17 @@ function applyFilters() {
   const comp    = document.getElementById('f-comp').value;
   const r5d     = document.getElementById('f-5d').value;
   const r20d    = document.getElementById('f-20d').value;
-  const amt     = document.getElementById('f-amount').value;
   const rs5     = document.getElementById('f-rs5d').value;
 
-  const parseRange = v => {
-    if (!v) return null;
-    const [a, b] = v.split(',');
-    return [parseFloat(a), b === 'Infinity' ? Infinity : parseFloat(b)];
-  };
   const mcapChecked = [...document.querySelectorAll('input[name="mcap"]:checked')].map(cb => {
     const [a, b] = cb.value.split(',');
     return [parseFloat(a), b === 'Infinity' ? Infinity : parseFloat(b)];
   });
   const stageChecked = [...document.querySelectorAll('input[name="wstage"]:checked')].map(cb => parseInt(cb.value));
-  const amtR  = parseRange(amt);
+  const amountChecked = [...document.querySelectorAll('input[name="amount"]:checked')].map(cb => {
+    const [a, b] = cb.value.split(',');
+    return [parseFloat(a), b === 'Infinity' ? Infinity : parseFloat(b)];
+  });
 
   window._filtered = window._raw.filter(r => {
     // Search: symbol or name
@@ -649,9 +649,9 @@ function applyFilters() {
       if (r.market_cap == null) return false;
       if (!mcapChecked.some(([lo, hi]) => r.market_cap >= lo && r.market_cap < hi)) return false;
     }
-    if (amtR) {
+    if (amountChecked.length > 0) {
       if (r.amount == null) return false;
-      if (r.amount < amtR[0] || r.amount >= amtR[1]) return false;
+      if (!amountChecked.some(([lo, hi]) => r.amount >= lo && r.amount < hi)) return false;
     }
     if (stageChecked.length > 0 && !stageChecked.includes(r.w_stage || 0)) return false;
     const rs5v = r.rs_ret_5d;
@@ -669,7 +669,7 @@ function resetFilters() {
   document.getElementById('f-comp').value   = '';
   document.getElementById('f-5d').value     = '';
   document.getElementById('f-20d').value    = '';
-  document.getElementById('f-amount').value  = '';
+  deselectAllAmount();
   deselectAllMcap();
   deselectAllStage();
   document.getElementById('f-rs5d').value  = '';
@@ -700,9 +700,32 @@ function updateMcapBtn() {
 document.addEventListener('click', () => {
   const m = document.getElementById('mcap-menu');
   if (m) m.style.display = 'none';
+  const a = document.getElementById('amount-menu');
+  if (a) a.style.display = 'none';
   const s = document.getElementById('stage-menu');
   if (s) s.style.display = 'none';
 });
+
+
+function toggleAmountMenu(e) {
+  e.stopPropagation();
+  const m = document.getElementById('amount-menu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+function selectAllAmount() {
+  document.querySelectorAll('input[name="amount"]').forEach(cb => cb.checked = true);
+  updateAmountBtn();
+}
+function deselectAllAmount() {
+  document.querySelectorAll('input[name="amount"]').forEach(cb => cb.checked = false);
+  updateAmountBtn();
+}
+function updateAmountBtn() {
+  const checked = document.querySelectorAll('input[name="amount"]:checked');
+  const total   = document.querySelectorAll('input[name="amount"]').length;
+  const btn = document.getElementById('amount-btn');
+  if (btn) btn.textContent = (checked.length === 0 || checked.length === total) ? '全部成交額 ▾' : `已選 ${checked.length} 項 ▾`;
+}
 
 function toggleStageMenu(e) {
   e.stopPropagation();

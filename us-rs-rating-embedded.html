@@ -146,15 +146,22 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
     </select>
   </div>
   <div class="filter-group">
-    <span class="filter-label">成交額分組</span>
-    <select id="f-amount">
-      <option value="">全部成交額</option>
-      <option value="5">組別5 (最高成交額)</option>
-      <option value="4">組別4</option>
-      <option value="3">組別3 (中等)</option>
-      <option value="2">組別2</option>
-      <option value="1">組別1 (最低成交額)</option>
-    </select>
+    <span class="filter-label">20日平均成交額 (USD)</span>
+    <div class="mcap-multi">
+      <button class="mcap-btn" id="amount-btn" onclick="toggleAmountMenu(event)">全部成交額 ▾</button>
+      <div class="mcap-menu" id="amount-menu" style="display:none">
+        <div class="mcap-actions">
+          <button onclick="selectAllAmount()">全選</button>
+          <button onclick="deselectAllAmount()">取消全選</button>
+        </div>
+        <label><input type="checkbox" name="amount" value="0,5e6" onchange="updateAmountBtn()"> 0 - 500萬</label>
+        <label><input type="checkbox" name="amount" value="5e6,20e6" onchange="updateAmountBtn()"> 500萬 - 2000萬</label>
+        <label><input type="checkbox" name="amount" value="20e6,100e6" onchange="updateAmountBtn()"> 2000萬 - 1億</label>
+        <label><input type="checkbox" name="amount" value="100e6,500e6" onchange="updateAmountBtn()"> 1億 - 5億</label>
+        <label><input type="checkbox" name="amount" value="500e6,2e9" onchange="updateAmountBtn()"> 5億 - 20億</label>
+        <label><input type="checkbox" name="amount" value="2e9,Infinity" onchange="updateAmountBtn()"> 20億以上</label>
+      </div>
+    </div>
   </div>
   <div class="filter-group">
     <span class="filter-label">5日RS</span>
@@ -196,7 +203,7 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
       <th onclick="sortBy('rs_ret_20d')" data-col="rs_ret_20d">20日相對大市% <span class="sort-icon"></span></th>
       <th onclick="sortBy('rs_rating_50d')" data-col="rs_rating_50d">50日 <span class="sort-icon"></span></th>
       <th onclick="sortBy('rs_ret_50d')" data-col="rs_ret_50d">50日相對大市% <span class="sort-icon"></span></th>
-      <th onclick="sortBy('amount')" data-col="amount">成交額 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('amount')" data-col="amount">20日平均成交額 <span class="sort-icon"></span></th>
     </tr>
   </thead>
   <tbody id="table-body"></tbody>
@@ -449,7 +456,6 @@ function applyFilters() {
   const comp    = document.getElementById('f-comp').value;
   const r5d     = document.getElementById('f-5d').value;
   const r20d    = document.getElementById('f-20d').value;
-  const amt     = document.getElementById('f-amount').value;
   const rs5     = document.getElementById('f-rs5d').value;
 
   window._filtered = window._raw.filter(r => {
@@ -489,7 +495,7 @@ function resetFilters() {
   document.getElementById('f-comp').value   = '';
   document.getElementById('f-5d').value     = '';
   document.getElementById('f-20d').value    = '';
-  document.getElementById('f-amount').value  = '';
+  deselectAllAmount();
   document.getElementById('f-rs5d').value  = '';
   window._filtered = [...window._raw];
   window._page = 1;

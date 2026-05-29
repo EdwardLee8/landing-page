@@ -213,17 +213,34 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
                                       .fillna(ci_df['industry_si'])
     ci_df = ci_df[['symbol', 'name_en', 'name_zh', 'sector']]
 
-    # 3. Latest OHLCV
+    # 3. Latest OHLCV + 20-trading-day average turnover amount.
+    # Use amount = avg(close * volume) over the latest 20 available trading
+    # rows up to end_date, not a single potentially noisy day.
     ohlcv_q = f"""
-    SELECT symbol, close, volume, close * volume AS amount FROM (
+    SELECT l.symbol, l.latest_close AS close, l.latest_volume AS volume, a.amount
+    FROM (
         SELECT symbol,
-               any(close)  AS close,
-               max(volume) AS volume
+               argMax(close, trade_date) AS latest_close,
+               argMax(volume, trade_date) AS latest_volume
         FROM quant.daily_ohlcv
-        WHERE market = '{market}' AND trade_date = '{end_date}'
+        WHERE market = '{market}' AND trade_date <= '{end_date}'
           AND symbol IN ('{sym_list}')
+          AND close > 0 AND volume >= 0
         GROUP BY symbol
-    )
+    ) AS l
+    LEFT JOIN (
+        SELECT symbol, avg(close * volume) AS amount
+        FROM (
+            SELECT symbol, trade_date, close, volume
+            FROM quant.daily_ohlcv
+            WHERE market = '{market}' AND trade_date <= '{end_date}'
+              AND symbol IN ('{sym_list}')
+              AND close > 0 AND volume >= 0
+            ORDER BY symbol, trade_date DESC
+            LIMIT 20 BY symbol
+        )
+        GROUP BY symbol
+    ) AS a ON a.symbol = l.symbol
     """
     ohlcv_df = pd.DataFrame(client.query(ohlcv_q).result_rows,
                             columns=['symbol', 'close', 'volume', 'amount'])
