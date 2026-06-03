@@ -331,14 +331,27 @@ let currentMinSize = 1;
 let currentMethod  = "pearson";
 
 function getMethodData() {
-  return CORR_DATA.by_method ? CORR_DATA.by_method[currentMethod] : CORR_DATA;
+  if (!CORR_DATA.by_method) return CORR_DATA;
+  return CORR_DATA.by_method[currentMethod] || CORR_DATA.by_method.pearson || Object.values(CORR_DATA.by_method)[0];
+}
+
+function refreshMethodButtons() {
+  if (!CORR_DATA || !CORR_DATA.by_method) return;
+  if (!CORR_DATA.by_method[currentMethod]) {
+    currentMethod = CORR_DATA.by_method.pearson ? "pearson" : Object.keys(CORR_DATA.by_method)[0];
+  }
+  document.querySelectorAll(".thresh-btn[data-method]").forEach(b => {
+    const ok = !!CORR_DATA.by_method[b.dataset.method];
+    b.style.display = ok ? "" : "none";
+    b.classList.toggle("active", ok && b.dataset.method === currentMethod);
+  });
 }
 
 function setMethod(m) {
+  if (CORR_DATA?.by_method && !CORR_DATA.by_method[m]) return;
   currentMethod = m;
   currentSector = "";
-  document.querySelectorAll(".thresh-btn[data-method]").forEach(b =>
-    b.classList.toggle("active", b.dataset.method === m));
+  refreshMethodButtons();
   if (!corrLoaded) return;
   updateThreshInfo();
   buildSectorBar();
@@ -416,6 +429,7 @@ async function loadCorrData() {
     const r = await fetch("us_corr_clusters_v2.enc");
     CORR_DATA = await _decryptEnc(await r.text(), _pw);
     corrLoaded = true;
+    refreshMethodButtons();
     updateThreshInfo();
     buildSectorBar();
     renderCorrView();
