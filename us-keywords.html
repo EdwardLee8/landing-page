@@ -494,43 +494,17 @@ function clearCorrSearch() {
   if (corrLoaded) renderCorrView();
 }
 
-// ── Build unique sub-sector labels — multi-level disambiguation ──
+// ── Build business-theme labels for correlation clusters ──
 function buildSubLabels(clusters) {
-  const tc = s => s.replace(/\b\w/g, c => c.toUpperCase());
-
-  // For each cluster, try using kws[0..n] until the (sec, kws[0..n]) combo is unique
-  // Falls back to appending cluster id if keywords are exhausted
+  const tc = s => String(s || "").replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
   const labels = {};
 
-  // Try depth 1 first, then expand for groups that remain duplicate
-  for (let depth = 1; depth <= 5; depth++) {
-    // Build keys at current depth
-    const keyOf = cl => {
-      const kws = cl.top_kws || [];
-      return (cl.top_sec || "") + "|" + kws.slice(0, depth).join("|");
-    };
-    const count = {};
-    for (const cl of clusters) {
-      const k = keyOf(cl);
-      count[k] = (count[k] || 0) + 1;
-    }
-    for (const cl of clusters) {
-      if (labels[cl.id] !== undefined) continue; // already resolved
-      const kws = cl.top_kws || [];
-      if (count[keyOf(cl)] === 1 || depth === 5) {
-        // Unique at this depth → assign label using kws[0..depth-1]
-        const parts = kws.slice(0, depth).filter(Boolean);
-        labels[cl.id] = parts.map(tc).join(" · ");
-      }
-      // else: still duplicate, will try deeper next iteration
-    }
-  }
-  // Final fallback: any still unresolved gets id suffix
   for (const cl of clusters) {
-    if (labels[cl.id] === undefined || labels[cl.id] === "") {
-      const kws = cl.top_kws || [];
-      labels[cl.id] = (kws[0] ? tc(kws[0]) : (cl.top_sec || "")) + ` #${cl.id}`;
-    }
+    const kws = (cl.top_kws || []).filter(Boolean);
+    // Label must describe common business exposure, never an internal numeric id.
+    if (kws.length >= 3) labels[cl.id] = kws.slice(0, 3).map(tc).join(" · ");
+    else if (kws.length) labels[cl.id] = kws.map(tc).join(" · ");
+    else labels[cl.id] = cl.top_sec || "Business Theme";
   }
   return labels;
 }
