@@ -117,8 +117,8 @@ a:hover{text-decoration:underline}
 .cl-title-wrap{flex:1;min-width:0}
 .cl-title{font-size:15px;font-weight:700;color:#fff;line-height:1.4}
 .cl-subsec{font-size:12px;color:#d4a64799;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
-.cl-desc-en{font-size:14px;color:#c8c0b0;margin-top:6px;line-height:1.6}
-.cl-desc-zh{font-size:14px;color:#a09888;margin-top:4px;line-height:1.6}
+.cl-desc-en{font-size:13px;color:#8f8778;margin-top:4px;line-height:1.5}
+.cl-desc-zh{font-size:15px;color:#d8c7a0;margin-top:6px;line-height:1.65;font-weight:500}
 .cl-chevron{color:#555;font-size:14px;transition:transform .2s;margin-left:auto;flex-shrink:0;margin-top:3px}
 .cl-card.open .cl-chevron{transform:rotate(180deg)}
 .cl-body{display:none;border-top:1px solid #1a1a2e;padding:16px 18px}
@@ -497,9 +497,18 @@ function clearCorrSearch() {
 // ── Build business-theme labels for correlation clusters ──
 function buildSubLabels(clusters) {
   const tc = s => String(s || "").replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  const zhThemeFromDesc = cl => {
+    const d = cl.desc || {};
+    const zh = typeof d === "object" ? (d.zh || "") : "";
+    const m = zh.match(/共同業務主題[:：]\s*([^。]+)/);
+    return m ? m[1].trim() : "";
+  };
   const labels = {};
 
   for (const cl of clusters) {
+    const zhTheme = zhThemeFromDesc(cl);
+    if (zhTheme) { labels[cl.id] = zhTheme; continue; }
+
     const kws = (cl.top_kws || []).filter(Boolean);
     // Label must describe common business exposure, never an internal numeric id.
     if (kws.length >= 3) labels[cl.id] = kws.slice(0, 3).map(tc).join(" · ");
@@ -637,9 +646,9 @@ function renderClusterCard(cl, highlightSyms, autoOpen, subLabel) {
     <div class="cl-head" onclick="toggleCluster('${cardId}')">
       <span class="cl-badge">${cl.n} 間</span>
       <div class="cl-title-wrap">
-        <div class="cl-title">${escHtml(secLabel)}${subSec ? ` <span style="color:#d4a64799;font-weight:400;font-size:13px">— ${escHtml(subSec)}</span>` : ""}</div>
-        ${descEn ? `<div class="cl-desc-en">${escHtml(descEn)}</div>` : ""}
+        <div class="cl-title">${escHtml(secLabel)}${subSec ? ` <span style="color:#d4a647;font-weight:600;font-size:14px">— ${escHtml(subSec)}</span>` : ""}</div>
         ${descZh ? `<div class="cl-desc-zh">${escHtml(descZh)}</div>` : ""}
+        ${descEn ? `<div class="cl-desc-en">${escHtml(descEn)}</div>` : ""}
       </div>
       <span class="cl-chevron">▼</span>
     </div>
