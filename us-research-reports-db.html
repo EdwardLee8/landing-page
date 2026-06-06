@@ -113,7 +113,7 @@ td.mcap{color:#ccc;white-space:nowrap}
 .loading-msg{padding:40px;text-align:center;color:#888;font-size:14px}
 
 /* Methodology */
-.methodology{max-width:1320px;margin:32px auto 24px;padding:20px 24px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:10px;color:#aaa;font-size:13px;line-height:1.7}
+.methodology{max-width:1320px;margin:32px auto 24px;padding:20px 24px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:10px;color:#aaa;font-size:13px;line-height:1.7;display:none}
 .methodology b{color:#ccc}
 .methodology .ttl{color:#d4a647;font-weight:700;font-size:14px;margin-bottom:10px}
 </style>
@@ -276,13 +276,20 @@ async function loadAndInit(pw) {
   try {
     const r = await fetch("us_research_index.enc?" + Date.now());
     if (!r.ok) throw new Error("HTTP " + r.status);
-    const indexText = await _decryptEnc(await r.text(), pw);
-    ALL = JSON.parse(indexText).tickers;
+    const encRaw = await r.text();
+    console.log("[us-rdb] index fetch size:", encRaw.length, "head:", encRaw.slice(0,40));
+    const indexText = await _decryptEnc(encRaw, pw);
+    console.log("[us-rdb] decrypted head:", indexText.slice(0,80));
+    const idxObj = JSON.parse(indexText);
+    ALL = idxObj.tickers || [];
+    console.log("[us-rdb] loaded tickers:", ALL.length);
+    document.getElementById("page-subtitle").textContent = "已載入 " + ALL.length + " 隻美股研究報告";
     buildSectorOptions();
     applyFilters();
     updateStats();
   } catch(e) {
-    document.getElementById("page-subtitle").textContent = "載入失敗：" + e.message;
+    console.error("[us-rdb] load failed:", e);
+    document.getElementById("page-subtitle").textContent = "載入失敗：" + e.message + "（請開 F12 console 睇 detail）";
   }
 }
 
