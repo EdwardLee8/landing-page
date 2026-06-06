@@ -530,7 +530,7 @@ function renderMarkdown(md) {
         rows.push(parseTableRow(lines[i]));
         i++;
       }
-      out.push(renderTable(header, rows));
+      out.push(_renderMdTable(header, rows));
       continue;
     }
 
@@ -596,7 +596,7 @@ function parseTableRow(line) {
   return line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map(c => c.trim());
 }
 
-function renderTable(header, rows) {
+function _renderMdTable(header, rows) {
   const ths = header.map(h => `<th>${applyInline(h)}</th>`).join("");
   const trs = rows.map(r => "<tr>" + r.map(c => `<td>${applyInline(c)}</td>`).join("") + "</tr>").join("");
   return `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
