@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股業務最新記錄資料庫</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
+a{color:#d4a647;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Password overlay */
+#pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
+.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
+.pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
+.pw-box p{font-size:13px;color:#888;margin-bottom:24px}
+.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:10px 14px;border-radius:4px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;transition:border-color .2s}
+.pw-box input:focus{border-color:#d4a647}
+.pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
+.pw-box button:hover{background:#e8bc5a}
+.pw-error{color:#ef5350;font-size:12px;margin-top:8px;min-height:18px}
+
+/* Layout */
+.page-header{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px;transition:background .2s;white-space:nowrap}
+.back-btn:hover{background:#d4a64720;text-decoration:none}
+.page-title{font-size:20px;font-weight:700;color:#fff}
+.page-subtitle{font-size:12px;color:#888;margin-top:2px}
+
+/* Filter bar */
+.filter-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:14px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.filter-group{display:flex;flex-direction:column;gap:4px}
+.filter-label{font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+input[type=text]{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 10px;border-radius:4px;font-size:13px;font-family:inherit;min-width:200px;outline:none;transition:border-color .2s}
+input[type=text]:focus{border-color:#d4a647}
+.filter-actions{display:flex;gap:8px;align-items:flex-end;margin-left:auto}
+.btn{padding:7px 14px;border-radius:4px;font-size:13px;font-family:inherit;cursor:pointer;border:none;transition:all .2s;font-weight:600}
+.btn-ghost{background:transparent;border:1px solid #444;color:#aaa}
+.btn-ghost:hover{border-color:#d4a647;color:#d4a647}
+
+/* Multi-select dropdown */
+.ms-wrap{position:relative}
+.ms-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 10px;border-radius:4px;font-size:13px;font-family:inherit;cursor:pointer;min-width:140px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:6px;white-space:nowrap}
+.ms-btn:hover{border-color:#d4a647}
+.ms-btn::after{content:"▾";color:#888;font-size:11px}
+.ms-drop{display:none;position:absolute;top:100%;left:0;z-index:200;background:#0d0d14;border:1px solid #2a2a3e;border-radius:4px;min-width:180px;max-height:260px;overflow-y:auto;margin-top:2px;box-shadow:0 4px 16px rgba(0,0,0,.6)}
+.ms-wrap.open .ms-drop{display:block}
+.ms-opt{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s}
+.ms-opt:hover{background:#1a1a2e}
+.ms-opt input[type=checkbox]{accent-color:#d4a647;cursor:pointer}
+
+/* Stats bar */
+.stats-bar{padding:10px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:12px;color:#888;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.stats-bar b{color:#d4a647}
+
+/* Table */
+.table-wrap{overflow-x:auto;padding:0 0 40px}
+table{width:100%;border-collapse:collapse;min-width:900px}
+thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
+th{padding:10px 12px;text-align:left;font-size:12px;font-weight:700;color:#d4a647;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:#e8bc5a}
+th.sort-asc .si::after{content:" ▲"}
+th.sort-desc .si::after{content:" ▼"}
+th:not(.sort-asc):not(.sort-desc) .si::after{content:" ⇅";opacity:.4}
+tbody tr{border-bottom:1px solid #1e1e2e;transition:background .15s;cursor:pointer}
+tbody tr:hover{background:#1a1a2e!important}
+td{padding:9px 12px;vertical-align:middle;font-size:13px}
+td.sym{color:#d4a647;font-weight:700;font-size:14px;white-space:nowrap}
+td.co-name{color:#fff;font-weight:600;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+td.sector{color:#888;font-size:12px;white-space:nowrap}
+td.quarter{color:#aaa;font-size:12px;white-space:nowrap}
+td.price{color:#4caf50;font-weight:600;white-space:nowrap}
+td.mcap{color:#ccc;white-space:nowrap}
+.empty{padding:60px 24px;text-align:center;color:#666;font-size:14px}
+
+/* Pagination */
+.pagination{padding:16px 24px;display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap}
+.page-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#aaa;padding:6px 12px;border-radius:4px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s}
+.page-btn:hover:not(:disabled){border-color:#d4a647;color:#d4a647}
+.page-btn.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
+.page-btn:disabled{opacity:.3;cursor:not-allowed}
+.page-info{color:#666;font-size:12px;padding:0 4px}
+
+/* Modal */
+#modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9000;display:none;align-items:flex-start;justify-content:center;padding:5vh 24px;overflow-y:auto}
+#modal-overlay.open{display:flex}
+.modal{background:#0d0d14;border:1px solid #1e1e2e;border-radius:10px;width:100%;max-width:920px;position:relative;max-height:85vh;display:flex;flex-direction:column}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:#666;font-size:20px;cursor:pointer;line-height:1;padding:4px 8px;transition:color .2s;z-index:2}
+.modal-close:hover{color:#fff}
+.modal-head{padding:18px 24px;border-bottom:1px solid #1e1e2e;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.modal-head .m-sym{color:#d4a647;font-size:20px;font-weight:700}
+.modal-head .m-name{color:#fff;font-size:15px;font-weight:600}
+.modal-head .m-meta{color:#666;font-size:12px;margin-left:auto}
+.modal-body{padding:24px;overflow-y:auto;line-height:1.7;font-size:14px;color:#d0d0d0}
+.modal-body h1{font-size:22px;color:#d4a647;margin:18px 0 10px;border-bottom:1px solid #1e1e2e;padding-bottom:6px}
+.modal-body h2{font-size:18px;color:#d4a647;margin:16px 0 8px}
+.modal-body h3{font-size:15px;color:#e8bc5a;margin:12px 0 6px}
+.modal-body p{margin:8px 0}
+.modal-body strong{color:#fff}
+.modal-body em{color:#e8bc5a;font-style:normal}
+.modal-body table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}
+.modal-body th{background:#1a1a2e;color:#d4a647;padding:8px 10px;text-align:left;border:1px solid #2a2a3e}
+.modal-body td{padding:6px 10px;border:1px solid #2a2a3e;color:#d0d0d0}
+.modal-body ul, .modal-body ol{margin:8px 0 8px 24px}
+.modal-body li{margin:4px 0}
+.modal-body code{background:#1a1a2e;padding:2px 6px;border-radius:3px;color:#d4a647;font-size:13px}
+.modal-body blockquote{border-left:3px solid #d4a647;padding-left:12px;color:#aaa;margin:10px 0;font-style:italic}
+.modal-body hr{border:none;border-top:1px solid #1e1e2e;margin:18px 0}
+.loading-msg{padding:40px;text-align:center;color:#888;font-size:14px}
+
+/* Methodology */
+.methodology{max-width:1320px;margin:32px auto 24px;padding:20px 24px;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:10px;color:#aaa;font-size:13px;line-height:1.7}
+.methodology b{color:#ccc}
+.methodology .ttl{color:#d4a647;font-weight:700;font-size:14px;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<div id="pw-overlay">
+  <div class="pw-box">
+    <h2>美股業務最新記錄資料庫</h2>
+    <p>請輸入密碼以繼續</p>
+    <input type="password" id="pw-input" placeholder="密碼" autocomplete="off" maxlength="64">
+    <button onclick="checkPassword()">進入</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<div class="page-header">
+  <a href="/login.html" class="back-btn">&#8592; 返回入口</a>
+  <div>
+    <div class="page-title">美股業務最新記錄資料庫</div>
+    <div class="page-subtitle" id="page-subtitle">載入中…</div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-group">
+    <div class="filter-label">搜尋</div>
+    <input type="text" id="f-search" placeholder="Ticker 或公司名稱" oninput="applyFilters()">
+  </div>
+  <div class="filter-group">
+    <div class="filter-label">行業</div>
+    <div class="ms-wrap" id="ms-sector">
+      <button class="ms-btn" onclick="msToggle(this.parentElement)">全部行業</button>
+      <div class="ms-drop" id="ms-sector-drop"></div>
+    </div>
+  </div>
+  <div class="filter-actions">
+    <button class="btn btn-ghost" onclick="resetFilters()">重置</button>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <span>顯示 <b id="s-count">—</b> / <b id="s-total">—</b> 隻</span>
+  <span>覆蓋行業: <b id="s-sectors">—</b></span>
+  <span>最新更新: <b id="s-date">—</b></span>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th onclick="sortBy('symbol')"><span class="si">Ticker</span></th>
+        <th onclick="sortBy('name')"><span class="si">公司</span></th>
+        <th onclick="sortBy('sector')"><span class="si">行業</span></th>
+        <th onclick="sortBy('latest_quarter')"><span class="si">最新季度</span></th>
+        <th onclick="sortBy('stock_price_usd')"><span class="si">股價</span></th>
+        <th onclick="sortBy('hi52')"><span class="si">52週高</span></th>
+        <th onclick="sortBy('market_cap_b')"><span class="si">市值 (B)</span></th>
+        <th><span>操作</span></th>
+      </tr>
+    </thead>
+    <tbody id="tbl-body"></tbody>
+  </table>
+  <div id="empty-msg" class="empty" style="display:none">沒有符合條件的股票</div>
+</div>
+<div class="pagination" id="pagination"></div>
+
+<div class="methodology">
+  <div class="ttl">📋 資料來源與方法</div>
+  <div><b>結構</b>：每隻美股一份 Tier 1 自動研究報告，含公司背景、最新季度業績、未來 6 個月利好因素、主要風險、綜合結論</div>
+  <div style="margin-top:6px"><b>數據源</b>：quant-db ClickHouse（公司資料、股價、市值、季度收入）、earnings-transcript raw transcripts（過去業績電話會議）、LLM 合成</div>
+  <div style="margin-top:6px"><b>更新頻率</b>：每隻股票每次有新業績電話會議或重大股價事件時重新生成</div>
+  <div style="margin-top:6px"><b>報告時效</b>：以生成日期為準。價格、市值以 ClickHouse 收市數據為準（最新一個交易日）</div>
+  <div style="margin-top:6px"><b>未來展望</b>：本批次 3 隻為 pilot，待確認效果後將批次生成 2000+ 隻美股</div>
+</div>
+
+<!-- Detail Modal -->
+<div id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-head">
+      <span class="m-sym" id="m-sym"></span>
+      <span class="m-name" id="m-name"></span>
+      <span class="m-meta" id="m-meta"></span>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <div class="loading-msg">載入中…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// SHA-256 of the unified member password
+const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
+
+// ── State ────────────────────────────────────────────────────────────────────
+let ALL = [], filtered = [];
+let sortCol = "market_cap_b", sortDir = -1;
+let currentPage = 1;
+const PAGE_SIZE = 50;
+let _pw = "";
+let detailCache = {};
+let _sectors = [];
+
+// ── Crypto ───────────────────────────────────────────────────────────────────
+async function _sha256(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+
+async function _decryptEnc(b64, pw) {
+  const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const salt = raw.slice(0,16), nonce = raw.slice(16,28), ct = raw.slice(28);
+  const km = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw),
+    "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    {name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"},
+    km, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({name:"AES-GCM", iv:nonce}, key, ct);
+  return new TextDecoder().decode(plain);
+}
+
+// ── Auth ─────────────────────────────────────────────────────────────────────
+async function checkPassword() {
+  const pw = document.getElementById("pw-input").value;
+  if (!pw) return;
+  const h = await _sha256(pw);
+  if (h === _PW_HASH) {
+    document.getElementById("pw-overlay").style.display = "none";
+    sessionStorage.setItem("unified_auth", "1");
+    sessionStorage.setItem("unified_auth_pw", pw);
+    loadAndInit(pw);
+  } else {
+    document.getElementById("pw-error").textContent = "密碼錯誤，請再試";
+    document.getElementById("pw-input").value = "";
+    document.getElementById("pw-input").focus();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("pw-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") checkPassword();
+    document.getElementById("pw-error").textContent = "";
+  });
+  const pw = sessionStorage.getItem("unified_auth_pw") || "";
+  if (sessionStorage.getItem("unified_auth") === "1" && pw) {
+    document.getElementById("pw-overlay").style.display = "none";
+    loadAndInit(pw);
+  } else if (sessionStorage.getItem("unified_auth") === "1" && !pw) {
+    sessionStorage.removeItem("unified_auth");
+    document.getElementById("pw-input").focus();
+  } else {
+    document.getElementById("pw-input").focus();
+  }
+});
+
+// ── Load ─────────────────────────────────────────────────────────────────────
+async function loadAndInit(pw) {
+  _pw = pw;
+  try {
+    const r = await fetch("us_research_index.enc?" + Date.now());
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const indexText = await _decryptEnc(await r.text(), pw);
+    ALL = JSON.parse(indexText).tickers;
+    buildSectorOptions();
+    applyFilters();
+    updateStats();
+  } catch(e) {
+    document.getElementById("page-subtitle").textContent = "載入失敗：" + e.message;
+  }
+}
+
+// ── Sectors ──────────────────────────────────────────────────────────────────
+function buildSectorOptions() {
+  _sectors = [...new Set(ALL.map(d => d.sector).filter(Boolean))].sort();
+  const drop = document.getElementById("ms-sector-drop");
+  drop.innerHTML = _sectors.map(s =>
+    `<label class="ms-opt"><input type="checkbox" value="${escHtml(s)}" checked onchange="applyFilters()"> ${escHtml(s)}</label>`
+  ).join("");
+}
+
+function msToggle(wrap) {
+  wrap.classList.toggle("open");
+  document.addEventListener("click", function closer(e) {
+    if (!wrap.contains(e.target)) { wrap.classList.remove("open"); document.removeEventListener("click", closer); }
+  }, {once: false, capture: false});
+}
+
+function msGetSelected(dropId) {
+  return [...document.querySelectorAll(`#${dropId} input[type=checkbox]`)]
+    .filter(c => c.checked).map(c => c.value);
+}
+
+// ── Filters ──────────────────────────────────────────────────────────────────
+function resetFilters() {
+  document.getElementById("f-search").value = "";
+  document.querySelectorAll("#ms-sector-drop input[type=checkbox]").forEach(c => c.checked = true);
+  document.querySelector("#ms-sector .ms-btn").textContent = "全部行業";
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById("f-search").value.toLowerCase().trim();
+  const selSectors = msGetSelected("ms-sector-drop");
+
+  const sectorBtn = document.querySelector("#ms-sector .ms-btn");
+  sectorBtn.textContent = selSectors.length === _sectors.length ? "全部行業" :
+    selSectors.length === 0 ? "全部行業" : selSectors.length + " 個行業";
+
+  filtered = ALL.filter(d => {
+    if (q && !(d.symbol||"").toLowerCase().includes(q) && !(d.name_en||"").toLowerCase().includes(q)) return false;
+    if (selSectors.length < _sectors.length && !selSectors.includes(d.sector)) return false;
+    return true;
+  });
+
+  updateSort();
+  currentPage = 1;
+  renderTable();
+  renderPagination();
+  updateStats();
+}
+
+// ── Sort ─────────────────────────────────────────────────────────────────────
+function sortBy(col) {
+  if (col === sortCol) { sortDir = -sortDir; }
+  else { sortCol = col; sortDir = -1; }
+  document.querySelectorAll("th").forEach(th => th.classList.remove("sort-asc","sort-desc"));
+  const cols = ["symbol","name","sector","latest_quarter","stock_price_usd","hi52","market_cap_b"];
+  const idx = cols.indexOf(col);
+  if (idx >= 0) {
+    const th = document.querySelectorAll("th")[idx];
+    th.classList.add(sortDir > 0 ? "sort-asc" : "sort-desc");
+  }
+}
+
+function updateSort() {
+  const key = sortCol;
+  const dir = sortDir;
+  filtered.sort((a, b) => {
+    let va = a[key], vb = b[key];
+    if (key === "name") { va = a.name_en||""; vb = b.name_en||""; }
+    if (typeof va === "string" && typeof vb === "string") {
+      return va.localeCompare(vb) * dir;
+    }
+    return ((va||0) - (vb||0)) * dir;
+  });
+}
+
+// ── Render Table ─────────────────────────────────────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById("tbl-body");
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page = filtered.slice(start, start + PAGE_SIZE);
+
+  if (page.length === 0) {
+    tbody.innerHTML = "";
+    document.getElementById("empty-msg").style.display = "block";
+    return;
+  }
+  document.getElementById("empty-msg").style.display = "none";
+
+  tbody.innerHTML = page.map(d => `
+    <tr onclick="openStock('${escHtml(d.symbol)}')">
+      <td class="sym">${escHtml(d.symbol)}</td>
+      <td class="co-name" title="${escHtml(d.name_en||"")}">${escHtml(d.name_en||d.symbol)}</td>
+      <td class="sector">${escHtml(d.sector||"—")}</td>
+      <td class="quarter">${escHtml(d.latest_quarter||"—")}</td>
+      <td class="price">$${(d.stock_price_usd||0).toFixed(2)}</td>
+      <td class="sector">$${(d.hi52||0).toFixed(2)}</td>
+      <td class="mcap">$${(d.market_cap_b||0).toFixed(1)}B</td>
+      <td><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="event.stopPropagation();openStock('${escHtml(d.symbol)}')">📄 開</button></td>
+    </tr>
+  `).join("");
+}
+
+function renderPagination() {
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
+  const pg = document.getElementById("pagination");
+  if (total <= 1) { pg.innerHTML = ""; return; }
+
+  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?"disabled":""}>‹</button>`;
+  const pages = [];
+  if (total <= 7) {
+    for (let i=1;i<=total;i++) pages.push(i);
+  } else {
+    pages.push(1);
+    if (currentPage > 3) pages.push("…");
+    for (let i=Math.max(2,currentPage-1);i<=Math.min(total-1,currentPage+1);i++) pages.push(i);
+    if (currentPage < total-2) pages.push("…");
+    pages.push(total);
+  }
+  pages.forEach(p => {
+    if (p === "…") html += `<span class="page-info">…</span>`;
+    else html += `<button class="page-btn ${p===currentPage?"active":""}" onclick="goPage(${p})">${p}</button>`;
+  });
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?"disabled":""}>›</button>`;
+  html += `<span class="page-info">${filtered.length} 隻</span>`;
+  pg.innerHTML = html;
+}
+
+function goPage(p) {
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
+  if (p < 1 || p > total) return;
+  currentPage = p;
+  renderTable();
+  renderPagination();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+// ── Stats Bar ────────────────────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById("s-count").textContent = filtered.length;
+  document.getElementById("s-total").textContent = ALL.length;
+  document.getElementById("s-sectors").textContent = new Set(ALL.map(d=>d.sector).filter(Boolean)).size;
+  const dates = ALL.map(d=>d.report_date).filter(Boolean).sort();
+  document.getElementById("s-date").textContent = dates.length ? dates[dates.length-1] : "—";
+  document.getElementById("page-subtitle").textContent = `共 ${ALL.length} 隻美股 · 數據日期 ${dates[dates.length-1]||"—"}`;
+}
+
+// ── Modal: open + render markdown ───────────────────────────────────────────
+async function openStock(symbol) {
+  const d = ALL.find(x => x.symbol === symbol);
+  if (!d) return;
+  document.getElementById("m-sym").textContent = symbol;
+  document.getElementById("m-name").textContent = d.name_en || "";
+  document.getElementById("m-meta").textContent =
+    `${d.sector||""}${d.industry ? " · " + d.industry : ""} · ${d.latest_quarter||""} · 股價 $${(d.stock_price_usd||0).toFixed(2)} · 市值 $${(d.market_cap_b||0).toFixed(1)}B · 報告 ${d.report_date||""}`;
+  document.getElementById("modal-body").innerHTML = '<div class="loading-msg">載入中…</div>';
+  document.getElementById("modal-overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+
+  if (!detailCache[symbol]) {
+    try {
+      const r = await fetch(`us_research_data/${symbol}.enc?` + Date.now());
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      detailCache[symbol] = await _decryptEnc(await r.text(), _pw);
+    } catch(e) {
+      document.getElementById("modal-body").innerHTML =
+        `<div class="loading-msg" style="color:#ef5350">載入失敗：${escHtml(e.message)}</div>`;
+      return;
+    }
+  }
+  // Strip LLM `` block, then render markdown
+  const raw = detailCache[symbol].replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+  document.getElementById("modal-body").innerHTML = renderMarkdown(raw);
+}
+
+function closeModal() {
+  document.getElementById("modal-overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+// ── Minimal Markdown Renderer (subset: h1-h3, p, bold, italic, lists, tables, code, hr, blockquote) ──
+function renderMarkdown(md) {
+  // 1. Extract fenced code blocks first (avoid them being processed as inline)
+  const codeBlocks = [];
+  md = md.replace(/```([\s\S]*?)```/g, (m, code) => {
+    codeBlocks.push(code);
+    return `\u0000CODE${codeBlocks.length - 1}\u0000`;
+  });
+
+  // 2. Escape HTML in the remaining text
+  let html = escHtml(md);
+
+  // 3. Restore code blocks
+  html = html.replace(/\u0000CODE(\d+)\u0000/g, (m, i) => {
+    return `<pre><code>${escHtml(codeBlocks[+i])}</code></pre>`;
+  });
+
+  // 4. Block-level transforms
+  const lines = html.split(/\n/);
+  const out = [];
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // Tables: detect a header row followed by a separator row "| --- |"
+    if (/^\|.+\|$/.test(line.trim()) && i + 1 < lines.length && /^\|[\s\-:|]+\|$/.test(lines[i+1].trim())) {
+      const header = parseTableRow(line);
+      const rows = [];
+      i += 2;
+      while (i < lines.length && /^\|.+\|$/.test(lines[i].trim())) {
+        rows.push(parseTableRow(lines[i]));
+        i++;
+      }
+      out.push(renderTable(header, rows));
+      continue;
+    }
+
+    // Headings
+    if (/^###\s+/.test(line)) { out.push(`<h3>${line.replace(/^###\s+/, "")}</h3>`); i++; continue; }
+    if (/^##\s+/.test(line))  { out.push(`<h2>${line.replace(/^##\s+/, "")}</h2>`); i++; continue; }
+    if (/^#\s+/.test(line))   { out.push(`<h1>${line.replace(/^#\s+/, "")}</h1>`); i++; continue; }
+
+    // HR
+    if (/^---+$/.test(line.trim())) { out.push("<hr>"); i++; continue; }
+
+    // Blockquote (consume contiguous lines starting with ">")
+    if (/^> /.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^> /.test(lines[i])) {
+        buf.push(lines[i].replace(/^> /, ""));
+        i++;
+      }
+      out.push(`<blockquote>${buf.join("<br>")}</blockquote>`);
+      continue;
+    }
+
+    // Unordered list
+    if (/^[\-\*]\s+/.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^[\-\*]\s+/.test(lines[i])) {
+        buf.push(lines[i].replace(/^[\-\*]\s+/, ""));
+        i++;
+      }
+      out.push("<ul>" + buf.map(li => `<li>${applyInline(li)}</li>`).join("") + "</ul>");
+      continue;
+    }
+
+    // Ordered list
+    if (/^\d+\.\s+/.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^\d+\.\s+/.test(lines[i])) {
+        buf.push(lines[i].replace(/^\d+\.\s+/, ""));
+        i++;
+      }
+      out.push("<ol>" + buf.map(li => `<li>${applyInline(li)}</li>`).join("") + "</ol>");
+      continue;
+    }
+
+    // Blank line
+    if (line.trim() === "") { i++; continue; }
+
+    // Paragraph (consume until blank or block element)
+    const buf = [];
+    while (i < lines.length && lines[i].trim() !== "" &&
+           !/^#{1,3}\s+/.test(lines[i]) && !/^---+$/.test(lines[i].trim()) &&
+           !/^[\-\*]\s+/.test(lines[i]) && !/^\d+\.\s+/.test(lines[i]) &&
+           !/^> /.test(lines[i]) && !/^\|.+\|$/.test(lines[i].trim())) {
+      buf.push(lines[i]);
+      i++;
+    }
+    out.push(`<p>${applyInline(buf.join(" "))}</p>`);
+  }
+  return out.join("\n");
+}
+
+function parseTableRow(line) {
+  return line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map(c => c.trim());
+}
+
+function renderTable(header, rows) {
+  const ths = header.map(h => `<th>${applyInline(h)}</th>`).join("");
+  const trs = rows.map(r => "<tr>" + r.map(c => `<td>${applyInline(c)}</td>`).join("") + "</tr>").join("");
+  return `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+}
+
+function applyInline(s) {
+  return s
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/(?<!\*)\*([^\*\n]+?)\*(?!\*)/g, "<em>$1</em>")
+    .replace(/`([^`]+?)`/g, "<code>$1</code>")
+    .replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+}
+
+function escHtml(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+</script>
+</body>
+</html>
