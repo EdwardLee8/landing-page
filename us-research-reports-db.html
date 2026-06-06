@@ -273,23 +273,45 @@ document.addEventListener("DOMContentLoaded", function() {
 // ── Load ─────────────────────────────────────────────────────────────────────
 async function loadAndInit(pw) {
   _pw = pw;
+  // Always reset state so partial failures don't leak through
+  ALL = [];
+  filtered = [];
+  _sectors = [];
+  const sub = document.getElementById("page-subtitle");
   try {
-    const r = await fetch("us_research_index.enc?" + Date.now());
+    sub.textContent = "載入 index…";
+    const r = await fetch("us_research_index.enc?" + Date.now(), {cache: "no-store"});
     if (!r.ok) throw new Error("HTTP " + r.status);
     const encRaw = await r.text();
-    console.log("[us-rdb] index fetch size:", encRaw.length, "head:", encRaw.slice(0,40));
-    const indexText = await _decryptEnc(encRaw, pw);
-    console.log("[us-rdb] decrypted head:", indexText.slice(0,80));
-    const idxObj = JSON.parse(indexText);
-    ALL = idxObj.tickers || [];
-    console.log("[us-rdb] loaded tickers:", ALL.length);
-    document.getElementById("page-subtitle").textContent = "已載入 " + ALL.length + " 隻美股研究報告";
+    sub.textContent = "解密 index (size " + encRaw.length + ")…";
+    let indexText;
+    try {
+      indexText = await _decryptEnc(encRaw, pw);
+    } catch(decErr) {
+      sub.textContent = "解密失敗：" + decErr.message + "（password 唔啱 / .enc file 損毀）";
+      throw decErr;
+    }
+    let idxObj;
+    try {
+      idxObj = JSON.parse(indexText);
+    } catch(parseErr) {
+      sub.textContent = "JSON parse 失敗：head=" + indexText.slice(0,60);
+      throw parseErr;
+    }
+    if (!Array.isArray(idxObj.tickers)) {
+      sub.textContent = "index 結構錯誤：tickers=" + typeof idxObj.tickers + " keys=" + Object.keys(idxObj||{}).join(",");
+      throw new Error("tickers 不是 array: " + typeof idxObj.tickers);
+    }
+    ALL = idxObj.tickers;
+    sub.textContent = "已載入 " + ALL.length + " 隻美股研究報告";
     buildSectorOptions();
     applyFilters();
     updateStats();
   } catch(e) {
     console.error("[us-rdb] load failed:", e);
-    document.getElementById("page-subtitle").textContent = "載入失敗：" + e.message + "（請開 F12 console 睇 detail）";
+    if (!sub.textContent.startsWith("解密") && !sub.textContent.startsWith("JSON") && !sub.textContent.startsWith("index")) {
+      sub.textContent = "載入失敗：" + e.message;
+    }
   }
 }
 
