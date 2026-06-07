@@ -25,8 +25,9 @@ PASSWORD = sys.argv[1]
 # Paths
 HERE = Path(__file__).parent.resolve()
 PILOT_DIR = Path("/mnt/p/Shared/code/reports/pilot_20260607")
-BUNDLE_DIR = Path("/home/edward/.hermes/hermes-agent/reports/pilot")
-SOURCE_DIR = PILOT_DIR  # markdown lives here
+BATCH_DIR = Path("/home/edward/.hermes/hermes-agent/reports/pilot")
+BUNDLE_DIR = BATCH_DIR
+SOURCE_DIR = BATCH_DIR  # markdown lives here
 DST_INDEX = HERE / "us_research_index.enc"
 DST_DATA = HERE / "us_research_data"
 DST_DATA.mkdir(exist_ok=True)
