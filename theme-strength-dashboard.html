@@ -46,20 +46,28 @@ function renderMeta(){
   const x=data.markets[active], m=document.getElementById('meta');
   m.innerHTML = `<span>RS date: <b>${x.rs_date}</b></span><span>RS count: <b>${x.rs_count}</b></span><span>Theme date: <b>${x.theme_date}</b></span><span>Themes: <b>${x.theme_count}</b></span><span>Generated: <b>${data.generated_at}</b></span>`;
 }
-function stockRows(cards){
-  const rows = stocks => stocks.map(s=>`<tr><td><span class="symbol">${s.symbol}</span><br><span class="stock-name">${s.name||''}</span></td><td class="num">${s.rs}</td><td class="num ${cls(s.ret5)}">${pct(s.ret5)}</td><td class="num ${cls(s.ret20)}">${pct(s.ret20)}</td><td class="num">${money(s.amount)}</td></tr>`).join('');
-  return cards.map(c=>{
-    const bottomTable = c.bottom.length ? `<div style="height:14px"></div><table><thead><tr><th>Stock</th><th class="num">RS</th><th class="num">5D</th><th class="num">20D</th><th class="num">Amount</th></tr></thead><tbody>${rows(c.bottom)}</tbody></table>` : '';
-    return `<div class="card"><div class="section-title"><h2>${c.theme}</h2><span class="pill">${c.n_with_data}/${c.n} with data</span></div><div class="meta" style="margin:0 0 12px"><span>1D <b class="${cls(c.return_1d)}">${pct(c.return_1d)}</b></span><span>5D <b class="${cls(c.return_5d)}">${pct(c.return_5d)}</b></span><span>Avg RS <b>${c.avg_rs.toFixed(1)}</b></span><span>Mcap <b>${money(c.total_market_cap)}</b></span></div><table><thead><tr><th>Stock</th><th class="num">RS</th><th class="num">5D</th><th class="num">20D</th><th class="num">Amount</th></tr></thead><tbody>${rows(c.top)}</tbody></table>${bottomTable}</div>`;
-  }).join('');
+function stockRows(stocks, ascending){
+  const sorted = ascending
+    ? [...stocks].sort((a,b) => a.rs - b.rs)
+    : [...stocks].sort((a,b) => b.rs - a.rs);
+  return sorted.slice(0,8).map(s=>`<tr><td><span class="symbol">${s.symbol}</span><br><span class="stock-name">${s.name||''}</span></td><td class="num">${s.rs}</td><td class="num ${cls(s.ret5)}">${pct(s.ret5)}</td><td class="num ${cls(s.ret20)}">${pct(s.ret20)}</td><td class="num">${money(s.amount)}</td></tr>`).join('');
 }
 function renderContent(){
-  const x=data.markets[active], cards=x.cards;
-  const strong=cards.slice(0,8), weak=cards.slice(-8).reverse();
+  const x=data.markets[active];
+  // Sort themes by total_market_cap descending
+  const sorted = [...x.cards].sort((a,b) => b.total_market_cap - a.total_market_cap);
+  const strongCards = sorted.slice(0,8);
+  const weakCards = sorted.slice(-8).reverse();
+  const strongHTML = strongCards.map(c=>
+    `<div class="card"><div class="section-title"><h2>${c.theme}</h2><span class="pill">${c.n_with_data}/${c.n}</span></div><div class="meta" style="margin:0 0 12px"><span>1D <b class="${cls(c.return_1d)}">${pct(c.return_1d)}</b></span><span>5D <b class="${cls(c.return_5d)}">${pct(c.return_5d)}</b></span><span>Avg RS <b>${c.avg_rs.toFixed(1)}</b></span><span>Mcap <b>${money(c.total_market_cap)}</b></span></div><table><thead><tr><th>Stock</th><th class="num">RS</th><th class="num">5D</th><th class="num">20D</th><th class="num">Amount</th></tr></thead><tbody>${stockRows(c.top,false)}</tbody></table></div>`
+  ).join('');
+  const weakHTML = weakCards.map(c=>
+    `<div class="card"><div class="section-title"><h2>${c.theme}</h2><span class="pill">${c.n_with_data}/${c.n}</span></div><div class="meta" style="margin:0 0 12px"><span>1D <b class="${cls(c.return_1d)}">${pct(c.return_1d)}</b></span><span>5D <b class="${cls(c.return_5d)}">${pct(c.return_5d)}</b></span><span>Avg RS <b>${c.avg_rs.toFixed(1)}</b></span><span>Mcap <b>${money(c.total_market_cap)}</b></span></div><table><thead><tr><th>Stock</th><th class="num">RS</th><th class="num">5D</th><th class="num">20D</th><th class="num">Amount</th></tr></thead><tbody>${stockRows(c.top,true)}</tbody></table></div>`
+  ).join('');
   document.getElementById('content').innerHTML = `
     <div class="grid">
-      <section><div class="card"><div class="section-title"><h2>最強主題 Top 8</h2><span class="pill">by 5D return</span></div></div><div style="height:12px"></div>${stockRows(strong)}</section>
-      <section><div class="card"><div class="section-title"><h2>最弱主題 Top 8</h2><span class="pill">by 5D return</span></div></div><div style="height:12px"></div>${stockRows(weak)}</section>
+      <section><div class="card"><div class="section-title"><h2>最強主題 Top 8</h2><span class="pill">by Mcap · RS 高→低</span></div></div><div style="height:12px"></div>${strongHTML}</section>
+      <section><div class="card"><div class="section-title"><h2>最弱主題 Top 8</h2><span class="pill">by Mcap · RS 低→高</span></div></div><div style="height:12px"></div>${weakHTML}</section>
     </div>`;
 }
 renderTabs(); renderMeta(); renderContent();
