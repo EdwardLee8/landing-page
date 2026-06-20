@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-21 04:53:32",
+  "generated_at": "2026-06-21 05:04:30",
   "rs_date": "2026-06-18",
   "rs_count": 1968,
   "theme_count": 45,
@@ -35,15 +35,6 @@
           "mcap": 3247548548
         },
         {
-          "symbol": "MRAAY",
-          "name": "Murata Manufacturing Inc.",
-          "rs": 98,
-          "ret5": 0.338206,
-          "ret20": 0.74047,
-          "amount": 10632630,
-          "mcap": 71144467031
-        },
-        {
           "symbol": "ICHR",
           "name": "Ichor Holdings",
           "rs": 98,
@@ -62,13 +53,13 @@
           "mcap": 3811754551
         },
         {
-          "symbol": "FORM",
-          "name": "FormFactor, Inc.",
-          "rs": 97,
-          "ret5": 0.067549,
-          "ret20": 0.162947,
-          "amount": 191893944,
-          "mcap": 10080331500
+          "symbol": "MRAAY",
+          "name": "Murata Manufacturing Inc.",
+          "rs": 98,
+          "ret5": 0.338206,
+          "ret20": 0.74047,
+          "amount": 10632630,
+          "mcap": 71144467031
         },
         {
           "symbol": "COHU",
@@ -89,6 +80,15 @@
           "mcap": 4288060381
         },
         {
+          "symbol": "FORM",
+          "name": "FormFactor, Inc.",
+          "rs": 97,
+          "ret5": 0.067549,
+          "ret20": 0.162947,
+          "amount": 191893944,
+          "mcap": 10080331500
+        },
+        {
           "symbol": "AMAT",
           "name": "Applied Materials, Inc.",
           "rs": 97,
@@ -98,22 +98,13 @@
           "mcap": 346497990782
         },
         {
-          "symbol": "LRCX",
-          "name": "Lam Research Corporation",
+          "symbol": "AMKR",
+          "name": "Amkor Technology, Inc.",
           "rs": 96,
-          "ret5": 0.053876,
-          "ret20": 0.417662,
-          "amount": 3691485760,
-          "mcap": 369468712565
-        },
-        {
-          "symbol": "KLIC",
-          "name": "Kulicke and Soffa Industries, I",
-          "rs": 96,
-          "ret5": 0.070529,
-          "ret20": 0.200147,
-          "amount": 96787741,
-          "mcap": 5456749025
+          "ret5": 0.086049,
+          "ret20": 0.367273,
+          "amount": 477932959,
+          "mcap": 18493768333
         },
         {
           "symbol": "TER",
@@ -125,6 +116,24 @@
           "mcap": 56884290878
         },
         {
+          "symbol": "KLIC",
+          "name": "Kulicke and Soffa Industries, I",
+          "rs": 96,
+          "ret5": 0.070529,
+          "ret20": 0.200147,
+          "amount": 96787741,
+          "mcap": 5456749025
+        },
+        {
+          "symbol": "LRCX",
+          "name": "Lam Research Corporation",
+          "rs": 96,
+          "ret5": 0.053876,
+          "ret20": 0.417662,
+          "amount": 3691485760,
+          "mcap": 369468712565
+        },
+        {
           "symbol": "VECO",
           "name": "Veeco Instruments Inc.",
           "rs": 96,
@@ -132,15 +141,6 @@
           "ret20": 0.374047,
           "amount": 110196987,
           "mcap": 3677877728
-        },
-        {
-          "symbol": "AMKR",
-          "name": "Amkor Technology, Inc.",
-          "rs": 96,
-          "ret5": 0.086049,
-          "ret20": 0.367273,
-          "amount": 477932959,
-          "mcap": 18493768333
         },
         {
           "symbol": "ONTO",
@@ -161,15 +161,6 @@
           "mcap": 4983501090
         },
         {
-          "symbol": "ENTG",
-          "name": "Entegris, Inc.",
-          "rs": 93,
-          "ret5": 0.180955,
-          "ret20": 0.355193,
-          "amount": 462996943,
-          "mcap": 22118598976
-        },
-        {
           "symbol": "Q",
           "name": "Qnity Electronics, Inc.",
           "rs": 93,
@@ -177,6 +168,15 @@
           "ret20": 0.100767,
           "amount": 280363858,
           "mcap": 33917138545
+        },
+        {
+          "symbol": "ENTG",
+          "name": "Entegris, Inc.",
+          "rs": 93,
+          "ret5": 0.180955,
+          "ret20": 0.355193,
+          "amount": 462996943,
+          "mcap": 22118598976
         },
         {
           "symbol": "NVMI",
@@ -246,247 +246,6 @@
       ]
     },
     {
-      "theme": "記憶體/存儲晶片",
-      "theme_en": "Memory / Storage Chips",
-      "category": "科技",
-      "n": 109,
-      "n_with_data": 69,
-      "total_market_cap": 15268903013525,
-      "avg_rs": 88.1,
-      "median_rs": 94,
-      "return_5d": 0.052532,
-      "return_1d": 0.010506,
-      "top": [
-        {
-          "symbol": "AXTI",
-          "name": "AXT Inc",
-          "rs": 99,
-          "ret5": -0.136487,
-          "ret20": -0.306602,
-          "amount": 935275896,
-          "mcap": 6777004122
-        },
-        {
-          "symbol": "AEHR",
-          "name": "Aehr Test Systems",
-          "rs": 99,
-          "ret5": 0.056239,
-          "ret20": 0.257457,
-          "amount": 201586548,
-          "mcap": 3247548548
-        },
-        {
-          "symbol": "MU",
-          "name": "Micron Technology, Inc.",
-          "rs": 99,
-          "ret5": 0.148507,
-          "ret20": 0.617494,
-          "amount": 50155332369,
-          "mcap": 906280886990
-        },
-        {
-          "symbol": "ICHR",
-          "name": "Ichor Holdings",
-          "rs": 98,
-          "ret5": 0.129333,
-          "ret20": 0.504232,
-          "amount": 89646983,
-          "mcap": 2582469297
-        },
-        {
-          "symbol": "VSH",
-          "name": "Vishay Intertechnology, Inc.",
-          "rs": 98,
-          "ret5": 0.086233,
-          "ret20": 0.533596,
-          "amount": 500411495,
-          "mcap": 5240061602
-        },
-        {
-          "symbol": "UCTT",
-          "name": "Ultra Clean Holdings, Inc.",
-          "rs": 98,
-          "ret5": 0.106955,
-          "ret20": 0.499676,
-          "amount": 115225105,
-          "mcap": 3811754551
-        },
-        {
-          "symbol": "MRVL",
-          "name": "Marvell Technology, Inc.",
-          "rs": 98,
-          "ret5": 0.103677,
-          "ret20": 0.623304,
-          "amount": 18850414906,
-          "mcap": 155609843266
-        },
-        {
-          "symbol": "INTC",
-          "name": "Intel Corporation",
-          "rs": 98,
-          "ret5": 0.068893,
-          "ret20": 0.203883,
-          "amount": 15292751067,
-          "mcap": 604577544601
-        },
-        {
-          "symbol": "WOLF",
-          "name": "Wolfspeed, Inc.",
-          "rs": 98,
-          "ret5": 0.324056,
-          "ret20": -0.179369,
-          "amount": 491771640,
-          "mcap": 3026026385
-        },
-        {
-          "symbol": "MXL",
-          "name": "MaxLinear, Inc",
-          "rs": 98,
-          "ret5": 0.044184,
-          "ret20": -0.114874,
-          "amount": 385248995,
-          "mcap": 7855867324
-        },
-        {
-          "symbol": "TSEM",
-          "name": "Tower Semiconductor Ltd.",
-          "rs": 98,
-          "ret5": 0.08387,
-          "ret20": 0.022292,
-          "amount": 500726897,
-          "mcap": 30260339395
-        },
-        {
-          "symbol": "AMD",
-          "name": "Advanced Micro Devices, Inc.",
-          "rs": 97,
-          "ret5": 0.043706,
-          "ret20": 0.292426,
-          "amount": 15503064006,
-          "mcap": 726432561035
-        },
-        {
-          "symbol": "ARM",
-          "name": "Arm Holdings plc",
-          "rs": 97,
-          "ret5": 0.147286,
-          "ret20": 1.095658,
-          "amount": 4987388998,
-          "mcap": 235367447144
-        },
-        {
-          "symbol": "ACMR",
-          "name": "ACM Research, Inc.",
-          "rs": 97,
-          "ret5": 0.162725,
-          "ret20": 0.529299,
-          "amount": 161001695,
-          "mcap": 4288060381
-        },
-        {
-          "symbol": "SIMO",
-          "name": "Silicon Motion Technology Corporation",
-          "rs": 97,
-          "ret5": 0.140052,
-          "ret20": 0.215262,
-          "amount": 296471124,
-          "mcap": 9057163579
-        },
-        {
-          "symbol": "AMAT",
-          "name": "Applied Materials, Inc.",
-          "rs": 97,
-          "ret5": 0.08117,
-          "ret20": 0.486741,
-          "amount": 4478775102,
-          "mcap": 346497990782
-        },
-        {
-          "symbol": "NVTS",
-          "name": "Navitas Semiconductor Corporati",
-          "rs": 97,
-          "ret5": 0.020207,
-          "ret20": -0.020179,
-          "amount": 936334859,
-          "mcap": 4947707727
-        },
-        {
-          "symbol": "ASX",
-          "name": "ASE Technology Holding Co., Ltd.",
-          "rs": 97,
-          "ret5": 0.057281,
-          "ret20": 0.237235,
-          "amount": 399057844,
-          "mcap": 76092455160
-        },
-        {
-          "symbol": "FORM",
-          "name": "FormFactor, Inc.",
-          "rs": 97,
-          "ret5": 0.067549,
-          "ret20": 0.162947,
-          "amount": 191893944,
-          "mcap": 10080331500
-        },
-        {
-          "symbol": "COHU",
-          "name": "Cohu, Inc.",
-          "rs": 97,
-          "ret5": 0.124856,
-          "ret20": 0.51485,
-          "amount": 94730948,
-          "mcap": 2319140021
-        }
-      ],
-      "bottom": [
-        {
-          "symbol": "KLAC",
-          "name": "KLA Corporation",
-          "rs": 1,
-          "ret5": 0.012995,
-          "ret20": -0.864514,
-          "amount": 2726919900,
-          "mcap": 241623020663
-        },
-        {
-          "symbol": "PI",
-          "name": "Impinj, Inc.",
-          "rs": 14,
-          "ret5": -0.037306,
-          "ret20": -0.087825,
-          "amount": 58806702,
-          "mcap": 4500040107
-        },
-        {
-          "symbol": "SWKS",
-          "name": "Skyworks Solutions, Inc.",
-          "rs": 48,
-          "ret5": -0.027276,
-          "ret20": -0.020234,
-          "amount": 379008302,
-          "mcap": 10248663068
-        },
-        {
-          "symbol": "AMBA",
-          "name": "Ambarella, Inc.",
-          "rs": 49,
-          "ret5": 0.025583,
-          "ret20": -0.168851,
-          "amount": 139933509,
-          "mcap": 3595066931
-        },
-        {
-          "symbol": "QRVO",
-          "name": "Qorvo, Inc.",
-          "rs": 58,
-          "ret5": -0.008452,
-          "ret20": 0.001545,
-          "amount": 127708294,
-          "mcap": 8054131301
-        }
-      ]
-    },
-    {
       "theme": "晶圓代工/封測",
       "theme_en": "Foundry / OSAT",
       "category": "科技",
@@ -499,15 +258,6 @@
       "return_1d": 0.010506,
       "top": [
         {
-          "symbol": "AXTI",
-          "name": "AXT Inc",
-          "rs": 99,
-          "ret5": -0.136487,
-          "ret20": -0.306602,
-          "amount": 935275896,
-          "mcap": 6777004122
-        },
-        {
           "symbol": "AEHR",
           "name": "Aehr Test Systems",
           "rs": 99,
@@ -526,67 +276,13 @@
           "mcap": 906280886990
         },
         {
-          "symbol": "ICHR",
-          "name": "Ichor Holdings",
-          "rs": 98,
-          "ret5": 0.129333,
-          "ret20": 0.504232,
-          "amount": 89646983,
-          "mcap": 2582469297
-        },
-        {
-          "symbol": "VSH",
-          "name": "Vishay Intertechnology, Inc.",
-          "rs": 98,
-          "ret5": 0.086233,
-          "ret20": 0.533596,
-          "amount": 500411495,
-          "mcap": 5240061602
-        },
-        {
-          "symbol": "UCTT",
-          "name": "Ultra Clean Holdings, Inc.",
-          "rs": 98,
-          "ret5": 0.106955,
-          "ret20": 0.499676,
-          "amount": 115225105,
-          "mcap": 3811754551
-        },
-        {
-          "symbol": "MRVL",
-          "name": "Marvell Technology, Inc.",
-          "rs": 98,
-          "ret5": 0.103677,
-          "ret20": 0.623304,
-          "amount": 18850414906,
-          "mcap": 155609843266
-        },
-        {
-          "symbol": "INTC",
-          "name": "Intel Corporation",
-          "rs": 98,
-          "ret5": 0.068893,
-          "ret20": 0.203883,
-          "amount": 15292751067,
-          "mcap": 604577544601
-        },
-        {
-          "symbol": "WOLF",
-          "name": "Wolfspeed, Inc.",
-          "rs": 98,
-          "ret5": 0.324056,
-          "ret20": -0.179369,
-          "amount": 491771640,
-          "mcap": 3026026385
-        },
-        {
-          "symbol": "MXL",
-          "name": "MaxLinear, Inc",
-          "rs": 98,
-          "ret5": 0.044184,
-          "ret20": -0.114874,
-          "amount": 385248995,
-          "mcap": 7855867324
+          "symbol": "AXTI",
+          "name": "AXT Inc",
+          "rs": 99,
+          "ret5": -0.136487,
+          "ret20": -0.306602,
+          "amount": 935275896,
+          "mcap": 6777004122
         },
         {
           "symbol": "TSEM",
@@ -598,13 +294,67 @@
           "mcap": 30260339395
         },
         {
-          "symbol": "AMD",
-          "name": "Advanced Micro Devices, Inc.",
-          "rs": 97,
-          "ret5": 0.043706,
-          "ret20": 0.292426,
-          "amount": 15503064006,
-          "mcap": 726432561035
+          "symbol": "INTC",
+          "name": "Intel Corporation",
+          "rs": 98,
+          "ret5": 0.068893,
+          "ret20": 0.203883,
+          "amount": 15292751067,
+          "mcap": 604577544601
+        },
+        {
+          "symbol": "UCTT",
+          "name": "Ultra Clean Holdings, Inc.",
+          "rs": 98,
+          "ret5": 0.106955,
+          "ret20": 0.499676,
+          "amount": 115225105,
+          "mcap": 3811754551
+        },
+        {
+          "symbol": "ICHR",
+          "name": "Ichor Holdings",
+          "rs": 98,
+          "ret5": 0.129333,
+          "ret20": 0.504232,
+          "amount": 89646983,
+          "mcap": 2582469297
+        },
+        {
+          "symbol": "MXL",
+          "name": "MaxLinear, Inc",
+          "rs": 98,
+          "ret5": 0.044184,
+          "ret20": -0.114874,
+          "amount": 385248995,
+          "mcap": 7855867324
+        },
+        {
+          "symbol": "VSH",
+          "name": "Vishay Intertechnology, Inc.",
+          "rs": 98,
+          "ret5": 0.086233,
+          "ret20": 0.533596,
+          "amount": 500411495,
+          "mcap": 5240061602
+        },
+        {
+          "symbol": "WOLF",
+          "name": "Wolfspeed, Inc.",
+          "rs": 98,
+          "ret5": 0.324056,
+          "ret20": -0.179369,
+          "amount": 491771640,
+          "mcap": 3026026385
+        },
+        {
+          "symbol": "MRVL",
+          "name": "Marvell Technology, Inc.",
+          "rs": 98,
+          "ret5": 0.103677,
+          "ret20": 0.623304,
+          "amount": 18850414906,
+          "mcap": 155609843266
         },
         {
           "symbol": "ARM",
@@ -614,6 +364,15 @@
           "ret20": 1.095658,
           "amount": 4987388998,
           "mcap": 235367447144
+        },
+        {
+          "symbol": "COHU",
+          "name": "Cohu, Inc.",
+          "rs": 97,
+          "ret5": 0.124856,
+          "ret20": 0.51485,
+          "amount": 94730948,
+          "mcap": 2319140021
         },
         {
           "symbol": "ACMR",
@@ -634,6 +393,15 @@
           "mcap": 9057163579
         },
         {
+          "symbol": "AMD",
+          "name": "Advanced Micro Devices, Inc.",
+          "rs": 97,
+          "ret5": 0.043706,
+          "ret20": 0.292426,
+          "amount": 15503064006,
+          "mcap": 726432561035
+        },
+        {
           "symbol": "AMAT",
           "name": "Applied Materials, Inc.",
           "rs": 97,
@@ -643,22 +411,13 @@
           "mcap": 346497990782
         },
         {
-          "symbol": "NVTS",
-          "name": "Navitas Semiconductor Corporati",
+          "symbol": "UMC",
+          "name": "United Microelectronics Corporation (NEW)",
           "rs": 97,
-          "ret5": 0.020207,
-          "ret20": -0.020179,
-          "amount": 936334859,
-          "mcap": 4947707727
-        },
-        {
-          "symbol": "ASX",
-          "name": "ASE Technology Holding Co., Ltd.",
-          "rs": 97,
-          "ret5": 0.057281,
-          "ret20": 0.237235,
-          "amount": 399057844,
-          "mcap": 76092455160
+          "ret5": 0.106541,
+          "ret20": 0.306849,
+          "amount": 379755383,
+          "mcap": 39167868308
         },
         {
           "symbol": "FORM",
@@ -670,13 +429,13 @@
           "mcap": 10080331500
         },
         {
-          "symbol": "COHU",
-          "name": "Cohu, Inc.",
+          "symbol": "ASX",
+          "name": "ASE Technology Holding Co., Ltd.",
           "rs": 97,
-          "ret5": 0.124856,
-          "ret20": 0.51485,
-          "amount": 94730948,
-          "mcap": 2319140021
+          "ret5": 0.057281,
+          "ret20": 0.237235,
+          "amount": 399057844,
+          "mcap": 76092455160
         }
       ],
       "bottom": [
@@ -749,22 +508,13 @@
           "mcap": 906280886990
         },
         {
-          "symbol": "VSH",
-          "name": "Vishay Intertechnology, Inc.",
+          "symbol": "TSEM",
+          "name": "Tower Semiconductor Ltd.",
           "rs": 98,
-          "ret5": 0.086233,
-          "ret20": 0.533596,
-          "amount": 500411495,
-          "mcap": 5240061602
-        },
-        {
-          "symbol": "MRVL",
-          "name": "Marvell Technology, Inc.",
-          "rs": 98,
-          "ret5": 0.103677,
-          "ret20": 0.623304,
-          "amount": 18850414906,
-          "mcap": 155609843266
+          "ret5": 0.08387,
+          "ret20": 0.022292,
+          "amount": 500726897,
+          "mcap": 30260339395
         },
         {
           "symbol": "INTC",
@@ -776,15 +526,6 @@
           "mcap": 604577544601
         },
         {
-          "symbol": "WOLF",
-          "name": "Wolfspeed, Inc.",
-          "rs": 98,
-          "ret5": 0.324056,
-          "ret20": -0.179369,
-          "amount": 491771640,
-          "mcap": 3026026385
-        },
-        {
           "symbol": "MXL",
           "name": "MaxLinear, Inc",
           "rs": 98,
@@ -794,22 +535,31 @@
           "mcap": 7855867324
         },
         {
-          "symbol": "TSEM",
-          "name": "Tower Semiconductor Ltd.",
+          "symbol": "VSH",
+          "name": "Vishay Intertechnology, Inc.",
           "rs": 98,
-          "ret5": 0.08387,
-          "ret20": 0.022292,
-          "amount": 500726897,
-          "mcap": 30260339395
+          "ret5": 0.086233,
+          "ret20": 0.533596,
+          "amount": 500411495,
+          "mcap": 5240061602
         },
         {
-          "symbol": "AMD",
-          "name": "Advanced Micro Devices, Inc.",
-          "rs": 97,
-          "ret5": 0.043706,
-          "ret20": 0.292426,
-          "amount": 15503064006,
-          "mcap": 726432561035
+          "symbol": "WOLF",
+          "name": "Wolfspeed, Inc.",
+          "rs": 98,
+          "ret5": 0.324056,
+          "ret20": -0.179369,
+          "amount": 491771640,
+          "mcap": 3026026385
+        },
+        {
+          "symbol": "MRVL",
+          "name": "Marvell Technology, Inc.",
+          "rs": 98,
+          "ret5": 0.103677,
+          "ret20": 0.623304,
+          "amount": 18850414906,
+          "mcap": 155609843266
         },
         {
           "symbol": "ARM",
@@ -830,13 +580,22 @@
           "mcap": 9057163579
         },
         {
-          "symbol": "NVTS",
-          "name": "Navitas Semiconductor Corporati",
+          "symbol": "AMD",
+          "name": "Advanced Micro Devices, Inc.",
           "rs": 97,
-          "ret5": 0.020207,
-          "ret20": -0.020179,
-          "amount": 936334859,
-          "mcap": 4947707727
+          "ret5": 0.043706,
+          "ret20": 0.292426,
+          "amount": 15503064006,
+          "mcap": 726432561035
+        },
+        {
+          "symbol": "UMC",
+          "name": "United Microelectronics Corporation (NEW)",
+          "rs": 97,
+          "ret5": 0.106541,
+          "ret20": 0.306849,
+          "amount": 379755383,
+          "mcap": 39167868308
         },
         {
           "symbol": "ASX",
@@ -848,13 +607,31 @@
           "mcap": 76092455160
         },
         {
-          "symbol": "UMC",
-          "name": "United Microelectronics Corporation (NEW)",
+          "symbol": "NVTS",
+          "name": "Navitas Semiconductor Corporati",
           "rs": 97,
-          "ret5": 0.106541,
-          "ret20": 0.306849,
-          "amount": 379755383,
-          "mcap": 39167868308
+          "ret5": 0.020207,
+          "ret20": -0.020179,
+          "amount": 936334859,
+          "mcap": 4947707727
+        },
+        {
+          "symbol": "SMTC",
+          "name": "Semtech Corporation",
+          "rs": 96,
+          "ret5": -0.057594,
+          "ret20": 0.074435,
+          "amount": 713166752,
+          "mcap": 13011821014
+        },
+        {
+          "symbol": "SITM",
+          "name": "SiTime Corporation",
+          "rs": 96,
+          "ret5": -0.007892,
+          "ret20": 0.018822,
+          "amount": 364951440,
+          "mcap": 22049534080
         },
         {
           "symbol": "STM",
@@ -875,24 +652,6 @@
           "mcap": 29110652541
         },
         {
-          "symbol": "SITM",
-          "name": "SiTime Corporation",
-          "rs": 96,
-          "ret5": -0.007892,
-          "ret20": 0.018822,
-          "amount": 364951440,
-          "mcap": 22049534080
-        },
-        {
-          "symbol": "SMTC",
-          "name": "Semtech Corporation",
-          "rs": 96,
-          "ret5": -0.057594,
-          "ret20": 0.074435,
-          "amount": 713166752,
-          "mcap": 13011821014
-        },
-        {
           "symbol": "GFS",
           "name": "GlobalFoundries Inc.",
           "rs": 95,
@@ -911,13 +670,13 @@
           "mcap": 34927439977
         },
         {
-          "symbol": "LSCC",
-          "name": "Lattice Semiconductor Corporati",
+          "symbol": "POET",
+          "name": "POET Technologies Inc.",
           "rs": 94,
-          "ret5": 0.056858,
-          "ret20": 0.097709,
-          "amount": 275809686,
-          "mcap": 17215037601
+          "ret5": -0.037055,
+          "ret20": -0.185575,
+          "amount": 453261114,
+          "mcap": 2196917227
         }
       ],
       "bottom": [
@@ -1008,31 +767,13 @@
           "mcap": 6777004122
         },
         {
-          "symbol": "ICHR",
-          "name": "Ichor Holdings",
+          "symbol": "TTMI",
+          "name": "TTM Technologies, Inc.",
           "rs": 98,
-          "ret5": 0.129333,
-          "ret20": 0.504232,
-          "amount": 89646983,
-          "mcap": 2582469297
-        },
-        {
-          "symbol": "VSH",
-          "name": "Vishay Intertechnology, Inc.",
-          "rs": 98,
-          "ret5": 0.086233,
-          "ret20": 0.533596,
-          "amount": 500411495,
-          "mcap": 5240061602
-        },
-        {
-          "symbol": "INTC",
-          "name": "Intel Corporation",
-          "rs": 98,
-          "ret5": 0.068893,
-          "ret20": 0.203883,
-          "amount": 15292751067,
-          "mcap": 604577544601
+          "ret5": 0.108655,
+          "ret20": 0.234576,
+          "amount": 479783513,
+          "mcap": 17531967807
         },
         {
           "symbol": "VICR",
@@ -1044,22 +785,22 @@
           "mcap": 14096960193
         },
         {
-          "symbol": "WOLF",
-          "name": "Wolfspeed, Inc.",
+          "symbol": "INTC",
+          "name": "Intel Corporation",
           "rs": 98,
-          "ret5": 0.324056,
-          "ret20": -0.179369,
-          "amount": 491771640,
-          "mcap": 3026026385
+          "ret5": 0.068893,
+          "ret20": 0.203883,
+          "amount": 15292751067,
+          "mcap": 604577544601
         },
         {
-          "symbol": "MXL",
-          "name": "MaxLinear, Inc",
+          "symbol": "VSH",
+          "name": "Vishay Intertechnology, Inc.",
           "rs": 98,
-          "ret5": 0.044184,
-          "ret20": -0.114874,
-          "amount": 385248995,
-          "mcap": 7855867324
+          "ret5": 0.086233,
+          "ret20": 0.533596,
+          "amount": 500411495,
+          "mcap": 5240061602
         },
         {
           "symbol": "TSEM",
@@ -1080,15 +821,6 @@
           "mcap": 3811754551
         },
         {
-          "symbol": "MRVL",
-          "name": "Marvell Technology, Inc.",
-          "rs": 98,
-          "ret5": 0.103677,
-          "ret20": 0.623304,
-          "amount": 18850414906,
-          "mcap": 155609843266
-        },
-        {
           "symbol": "MRAAY",
           "name": "Murata Manufacturing Inc.",
           "rs": 98,
@@ -1098,13 +830,40 @@
           "mcap": 71144467031
         },
         {
-          "symbol": "TTMI",
-          "name": "TTM Technologies, Inc.",
+          "symbol": "ICHR",
+          "name": "Ichor Holdings",
           "rs": 98,
-          "ret5": 0.108655,
-          "ret20": 0.234576,
-          "amount": 479783513,
-          "mcap": 17531967807
+          "ret5": 0.129333,
+          "ret20": 0.504232,
+          "amount": 89646983,
+          "mcap": 2582469297
+        },
+        {
+          "symbol": "MXL",
+          "name": "MaxLinear, Inc",
+          "rs": 98,
+          "ret5": 0.044184,
+          "ret20": -0.114874,
+          "amount": 385248995,
+          "mcap": 7855867324
+        },
+        {
+          "symbol": "WOLF",
+          "name": "Wolfspeed, Inc.",
+          "rs": 98,
+          "ret5": 0.324056,
+          "ret20": -0.179369,
+          "amount": 491771640,
+          "mcap": 3026026385
+        },
+        {
+          "symbol": "MRVL",
+          "name": "Marvell Technology, Inc.",
+          "rs": 98,
+          "ret5": 0.103677,
+          "ret20": 0.623304,
+          "amount": 18850414906,
+          "mcap": 155609843266
         },
         {
           "symbol": "ARM",
@@ -1116,13 +875,22 @@
           "mcap": 235367447144
         },
         {
-          "symbol": "SIMO",
-          "name": "Silicon Motion Technology Corporation",
+          "symbol": "COHU",
+          "name": "Cohu, Inc.",
           "rs": 97,
-          "ret5": 0.140052,
-          "ret20": 0.215262,
-          "amount": 296471124,
-          "mcap": 9057163579
+          "ret5": 0.124856,
+          "ret20": 0.51485,
+          "amount": 94730948,
+          "mcap": 2319140021
+        },
+        {
+          "symbol": "ACMR",
+          "name": "ACM Research, Inc.",
+          "rs": 97,
+          "ret5": 0.162725,
+          "ret20": 0.529299,
+          "amount": 161001695,
+          "mcap": 4288060381
         },
         {
           "symbol": "AMAT",
@@ -1134,31 +902,22 @@
           "mcap": 346497990782
         },
         {
-          "symbol": "UMC",
-          "name": "United Microelectronics Corporation (NEW)",
+          "symbol": "FORM",
+          "name": "FormFactor, Inc.",
           "rs": 97,
-          "ret5": 0.106541,
-          "ret20": 0.306849,
-          "amount": 379755383,
-          "mcap": 39167868308
+          "ret5": 0.067549,
+          "ret20": 0.162947,
+          "amount": 191893944,
+          "mcap": 10080331500
         },
         {
-          "symbol": "AMD",
-          "name": "Advanced Micro Devices, Inc.",
+          "symbol": "NVTS",
+          "name": "Navitas Semiconductor Corporati",
           "rs": 97,
-          "ret5": 0.043706,
-          "ret20": 0.292426,
-          "amount": 15503064006,
-          "mcap": 726432561035
-        },
-        {
-          "symbol": "ACMR",
-          "name": "ACM Research, Inc.",
-          "rs": 97,
-          "ret5": 0.162725,
-          "ret20": 0.529299,
-          "amount": 161001695,
-          "mcap": 4288060381
+          "ret5": 0.020207,
+          "ret20": -0.020179,
+          "amount": 936334859,
+          "mcap": 4947707727
         }
       ],
       "bottom": [
@@ -1210,247 +969,6 @@
       ]
     },
     {
-      "theme": "CPU/處理器",
-      "theme_en": "CPU / Processors",
-      "category": "科技",
-      "n": 94,
-      "n_with_data": 59,
-      "total_market_cap": 15220332868322,
-      "avg_rs": 82.6,
-      "median_rs": 93,
-      "return_5d": 0.04868,
-      "return_1d": 0.009736,
-      "top": [
-        {
-          "symbol": "STX",
-          "name": "Seagate Technology Holdings PLC",
-          "rs": 99,
-          "ret5": 0.142772,
-          "ret20": 0.439204,
-          "amount": 3236572285,
-          "mcap": 183273558397
-        },
-        {
-          "symbol": "SNDK",
-          "name": "Sandisk Corporation",
-          "rs": 99,
-          "ret5": 0.096626,
-          "ret20": 0.573974,
-          "amount": 18700986944,
-          "mcap": 214319951263
-        },
-        {
-          "symbol": "WDC",
-          "name": "Western Digital Corporation",
-          "rs": 99,
-          "ret5": 0.318902,
-          "ret20": 0.631775,
-          "amount": 4469134544,
-          "mcap": 170303991809
-        },
-        {
-          "symbol": "MU",
-          "name": "Micron Technology, Inc.",
-          "rs": 99,
-          "ret5": 0.148507,
-          "ret20": 0.617494,
-          "amount": 50155332369,
-          "mcap": 906280886990
-        },
-        {
-          "symbol": "VSH",
-          "name": "Vishay Intertechnology, Inc.",
-          "rs": 98,
-          "ret5": 0.086233,
-          "ret20": 0.533596,
-          "amount": 500411495,
-          "mcap": 5240061602
-        },
-        {
-          "symbol": "MRVL",
-          "name": "Marvell Technology, Inc.",
-          "rs": 98,
-          "ret5": 0.103677,
-          "ret20": 0.623304,
-          "amount": 18850414906,
-          "mcap": 155609843266
-        },
-        {
-          "symbol": "INTC",
-          "name": "Intel Corporation",
-          "rs": 98,
-          "ret5": 0.068893,
-          "ret20": 0.203883,
-          "amount": 15292751067,
-          "mcap": 604577544601
-        },
-        {
-          "symbol": "WOLF",
-          "name": "Wolfspeed, Inc.",
-          "rs": 98,
-          "ret5": 0.324056,
-          "ret20": -0.179369,
-          "amount": 491771640,
-          "mcap": 3026026385
-        },
-        {
-          "symbol": "MXL",
-          "name": "MaxLinear, Inc",
-          "rs": 98,
-          "ret5": 0.044184,
-          "ret20": -0.114874,
-          "amount": 385248995,
-          "mcap": 7855867324
-        },
-        {
-          "symbol": "TSEM",
-          "name": "Tower Semiconductor Ltd.",
-          "rs": 98,
-          "ret5": 0.08387,
-          "ret20": 0.022292,
-          "amount": 500726897,
-          "mcap": 30260339395
-        },
-        {
-          "symbol": "AMD",
-          "name": "Advanced Micro Devices, Inc.",
-          "rs": 97,
-          "ret5": 0.043706,
-          "ret20": 0.292426,
-          "amount": 15503064006,
-          "mcap": 726432561035
-        },
-        {
-          "symbol": "ARM",
-          "name": "Arm Holdings plc",
-          "rs": 97,
-          "ret5": 0.147286,
-          "ret20": 1.095658,
-          "amount": 4987388998,
-          "mcap": 235367447144
-        },
-        {
-          "symbol": "SIMO",
-          "name": "Silicon Motion Technology Corporation",
-          "rs": 97,
-          "ret5": 0.140052,
-          "ret20": 0.215262,
-          "amount": 296471124,
-          "mcap": 9057163579
-        },
-        {
-          "symbol": "NVTS",
-          "name": "Navitas Semiconductor Corporati",
-          "rs": 97,
-          "ret5": 0.020207,
-          "ret20": -0.020179,
-          "amount": 936334859,
-          "mcap": 4947707727
-        },
-        {
-          "symbol": "ASX",
-          "name": "ASE Technology Holding Co., Ltd.",
-          "rs": 97,
-          "ret5": 0.057281,
-          "ret20": 0.237235,
-          "amount": 399057844,
-          "mcap": 76092455160
-        },
-        {
-          "symbol": "UMC",
-          "name": "United Microelectronics Corporation (NEW)",
-          "rs": 97,
-          "ret5": 0.106541,
-          "ret20": 0.306849,
-          "amount": 379755383,
-          "mcap": 39167868308
-        },
-        {
-          "symbol": "STM",
-          "name": "STMicroelectronics N.V.",
-          "rs": 96,
-          "ret5": 0.007374,
-          "ret20": 0.188465,
-          "amount": 975449104,
-          "mcap": 54712585712
-        },
-        {
-          "symbol": "MTSI",
-          "name": "MACOM Technology Solutions Hold",
-          "rs": 96,
-          "ret5": 0.023652,
-          "ret20": 0.023395,
-          "amount": 602663730,
-          "mcap": 29110652541
-        },
-        {
-          "symbol": "SITM",
-          "name": "SiTime Corporation",
-          "rs": 96,
-          "ret5": -0.007892,
-          "ret20": 0.018822,
-          "amount": 364951440,
-          "mcap": 22049534080
-        },
-        {
-          "symbol": "DELL",
-          "name": "Dell Technologies Inc.",
-          "rs": 96,
-          "ret5": 0.028488,
-          "ret20": 0.735215,
-          "amount": 4030312569,
-          "mcap": 159106758578
-        }
-      ],
-      "bottom": [
-        {
-          "symbol": "PI",
-          "name": "Impinj, Inc.",
-          "rs": 14,
-          "ret5": -0.037306,
-          "ret20": -0.087825,
-          "amount": 58806702,
-          "mcap": 4500040107
-        },
-        {
-          "symbol": "SONY",
-          "name": "Sony Group Corporation",
-          "rs": 18,
-          "ret5": -0.016469,
-          "ret20": -0.10426,
-          "amount": 120649726,
-          "mcap": 141667704994
-        },
-        {
-          "symbol": "QUBT",
-          "name": "Quantum Computing Inc.",
-          "rs": 19,
-          "ret5": 0.076858,
-          "ret20": -0.06238,
-          "amount": 275921541,
-          "mcap": 2487650862
-        },
-        {
-          "symbol": "SMCI",
-          "name": "Super Micro Computer, Inc.",
-          "rs": 26,
-          "ret5": -0.000161,
-          "ret20": -0.089095,
-          "amount": 2476136913,
-          "mcap": 19245392578
-        },
-        {
-          "symbol": "HPQ",
-          "name": "HP Inc.",
-          "rs": 38,
-          "ret5": -0.075666,
-          "ret20": 0.067647,
-          "amount": 599854214,
-          "mcap": 19443336843
-        }
-      ]
-    },
-    {
       "theme": "類比/射頻/嵌入式晶片",
       "theme_en": "Analog / RF / Embedded Chips",
       "category": "科技",
@@ -1472,58 +990,13 @@
           "mcap": 906280886990
         },
         {
-          "symbol": "VSH",
-          "name": "Vishay Intertechnology, Inc.",
+          "symbol": "TSEM",
+          "name": "Tower Semiconductor Ltd.",
           "rs": 98,
-          "ret5": 0.086233,
-          "ret20": 0.533596,
-          "amount": 500411495,
-          "mcap": 5240061602
-        },
-        {
-          "symbol": "MRVL",
-          "name": "Marvell Technology, Inc.",
-          "rs": 98,
-          "ret5": 0.103677,
-          "ret20": 0.623304,
-          "amount": 18850414906,
-          "mcap": 155609843266
-        },
-        {
-          "symbol": "INTC",
-          "name": "Intel Corporation",
-          "rs": 98,
-          "ret5": 0.068893,
-          "ret20": 0.203883,
-          "amount": 15292751067,
-          "mcap": 604577544601
-        },
-        {
-          "symbol": "VICR",
-          "name": "Vicor Corporation",
-          "rs": 98,
-          "ret5": 0.084131,
-          "ret20": 0.229706,
-          "amount": 223077350,
-          "mcap": 14096960193
-        },
-        {
-          "symbol": "WOLF",
-          "name": "Wolfspeed, Inc.",
-          "rs": 98,
-          "ret5": 0.324056,
-          "ret20": -0.179369,
-          "amount": 491771640,
-          "mcap": 3026026385
-        },
-        {
-          "symbol": "MXL",
-          "name": "MaxLinear, Inc",
-          "rs": 98,
-          "ret5": 0.044184,
-          "ret20": -0.114874,
-          "amount": 385248995,
-          "mcap": 7855867324
+          "ret5": 0.08387,
+          "ret20": 0.022292,
+          "amount": 500726897,
+          "mcap": 30260339395
         },
         {
           "symbol": "TTMI",
@@ -1535,22 +1008,58 @@
           "mcap": 17531967807
         },
         {
-          "symbol": "TSEM",
-          "name": "Tower Semiconductor Ltd.",
+          "symbol": "VICR",
+          "name": "Vicor Corporation",
           "rs": 98,
-          "ret5": 0.08387,
-          "ret20": 0.022292,
-          "amount": 500726897,
-          "mcap": 30260339395
+          "ret5": 0.084131,
+          "ret20": 0.229706,
+          "amount": 223077350,
+          "mcap": 14096960193
         },
         {
-          "symbol": "AMD",
-          "name": "Advanced Micro Devices, Inc.",
-          "rs": 97,
-          "ret5": 0.043706,
-          "ret20": 0.292426,
-          "amount": 15503064006,
-          "mcap": 726432561035
+          "symbol": "INTC",
+          "name": "Intel Corporation",
+          "rs": 98,
+          "ret5": 0.068893,
+          "ret20": 0.203883,
+          "amount": 15292751067,
+          "mcap": 604577544601
+        },
+        {
+          "symbol": "MXL",
+          "name": "MaxLinear, Inc",
+          "rs": 98,
+          "ret5": 0.044184,
+          "ret20": -0.114874,
+          "amount": 385248995,
+          "mcap": 7855867324
+        },
+        {
+          "symbol": "VSH",
+          "name": "Vishay Intertechnology, Inc.",
+          "rs": 98,
+          "ret5": 0.086233,
+          "ret20": 0.533596,
+          "amount": 500411495,
+          "mcap": 5240061602
+        },
+        {
+          "symbol": "WOLF",
+          "name": "Wolfspeed, Inc.",
+          "rs": 98,
+          "ret5": 0.324056,
+          "ret20": -0.179369,
+          "amount": 491771640,
+          "mcap": 3026026385
+        },
+        {
+          "symbol": "MRVL",
+          "name": "Marvell Technology, Inc.",
+          "rs": 98,
+          "ret5": 0.103677,
+          "ret20": 0.623304,
+          "amount": 18850414906,
+          "mcap": 155609843266
         },
         {
           "symbol": "ARM",
@@ -1571,22 +1080,13 @@
           "mcap": 9057163579
         },
         {
-          "symbol": "NVTS",
-          "name": "Navitas Semiconductor Corporati",
+          "symbol": "AMD",
+          "name": "Advanced Micro Devices, Inc.",
           "rs": 97,
-          "ret5": 0.020207,
-          "ret20": -0.020179,
-          "amount": 936334859,
-          "mcap": 4947707727
-        },
-        {
-          "symbol": "ASX",
-          "name": "ASE Technology Holding Co., Ltd.",
-          "rs": 97,
-          "ret5": 0.057281,
-          "ret20": 0.237235,
-          "amount": 399057844,
-          "mcap": 76092455160
+          "ret5": 0.043706,
+          "ret20": 0.292426,
+          "amount": 15503064006,
+          "mcap": 726432561035
         },
         {
           "symbol": "UMC",
@@ -1598,6 +1098,33 @@
           "mcap": 39167868308
         },
         {
+          "symbol": "ASX",
+          "name": "ASE Technology Holding Co., Ltd.",
+          "rs": 97,
+          "ret5": 0.057281,
+          "ret20": 0.237235,
+          "amount": 399057844,
+          "mcap": 76092455160
+        },
+        {
+          "symbol": "NVTS",
+          "name": "Navitas Semiconductor Corporati",
+          "rs": 97,
+          "ret5": 0.020207,
+          "ret20": -0.020179,
+          "amount": 936334859,
+          "mcap": 4947707727
+        },
+        {
+          "symbol": "SMTC",
+          "name": "Semtech Corporation",
+          "rs": 96,
+          "ret5": -0.057594,
+          "ret20": 0.074435,
+          "amount": 713166752,
+          "mcap": 13011821014
+        },
+        {
           "symbol": "FLEX",
           "name": "Flex Ltd.",
           "rs": 96,
@@ -1605,6 +1132,15 @@
           "ret20": 0.120779,
           "amount": 1357492878,
           "mcap": 52871515160
+        },
+        {
+          "symbol": "SITM",
+          "name": "SiTime Corporation",
+          "rs": 96,
+          "ret5": -0.007892,
+          "ret20": 0.018822,
+          "amount": 364951440,
+          "mcap": 22049534080
         },
         {
           "symbol": "GLW",
@@ -1623,24 +1159,6 @@
           "ret20": 0.188465,
           "amount": 975449104,
           "mcap": 54712585712
-        },
-        {
-          "symbol": "MTSI",
-          "name": "MACOM Technology Solutions Hold",
-          "rs": 96,
-          "ret5": 0.023652,
-          "ret20": 0.023395,
-          "amount": 602663730,
-          "mcap": 29110652541
-        },
-        {
-          "symbol": "SITM",
-          "name": "SiTime Corporation",
-          "rs": 96,
-          "ret5": -0.007892,
-          "ret20": 0.018822,
-          "amount": 364951440,
-          "mcap": 22049534080
         }
       ],
       "bottom": [
@@ -1688,6 +1206,245 @@
           "ret20": -0.020234,
           "amount": 379008302,
           "mcap": 10248663068
+        }
+      ]
+    },
+    {
+      "theme": "CPU/處理器",
+      "theme_en": "CPU / Processors",
+      "category": "科技",
+      "n": 14,
+      "n_with_data": 10,
+      "total_market_cap": 1636092978209,
+      "avg_rs": 86.5,
+      "median_rs": 91.0,
+      "return_5d": 0.030691,
+      "return_1d": 0.006138,
+      "top": [
+        {
+          "symbol": "INTC",
+          "name": "Intel Corporation",
+          "rs": 98,
+          "ret5": 0.068893,
+          "ret20": 0.203883,
+          "amount": 15292751067,
+          "mcap": 604577544601
+        },
+        {
+          "symbol": "AMD",
+          "name": "Advanced Micro Devices, Inc.",
+          "rs": 97,
+          "ret5": 0.043706,
+          "ret20": 0.292426,
+          "amount": 15503064006,
+          "mcap": 726432561035
+        },
+        {
+          "symbol": "GFS",
+          "name": "GlobalFoundries Inc.",
+          "rs": 95,
+          "ret5": 0.047954,
+          "ret20": 0.049658,
+          "amount": 503734855,
+          "mcap": 41725727364
+        },
+        {
+          "symbol": "CRDO",
+          "name": "Credo Technology Group Holding ",
+          "rs": 94,
+          "ret5": 0.077081,
+          "ret20": 0.400193,
+          "amount": 2249129478,
+          "mcap": 34927439977
+        },
+        {
+          "symbol": "SYNA",
+          "name": "Synaptics Incorporated",
+          "rs": 92,
+          "ret5": 0.01097,
+          "ret20": 0.059274,
+          "amount": 111673041,
+          "mcap": 5063854753
+        },
+        {
+          "symbol": "MPWR",
+          "name": "Monolithic Power Systems, Inc.",
+          "rs": 90,
+          "ret5": -0.015362,
+          "ret20": -0.003843,
+          "amount": 1292104497,
+          "mcap": 81081696062
+        },
+        {
+          "symbol": "MCHP",
+          "name": "Microchip Technology Incorporat",
+          "rs": 81,
+          "ret5": 0.040837,
+          "ret20": 0.089637,
+          "amount": 1106515637,
+          "mcap": 52333207618
+        },
+        {
+          "symbol": "CRUS",
+          "name": "Cirrus Logic, Inc.",
+          "rs": 80,
+          "ret5": 0.000586,
+          "ret20": -0.013395,
+          "amount": 81989285,
+          "mcap": 8489925246
+        },
+        {
+          "symbol": "NXPI",
+          "name": "NXP Semiconductors N.V.",
+          "rs": 76,
+          "ret5": 0.020859,
+          "ret20": 0.040983,
+          "amount": 1236493745,
+          "mcap": 75339897278
+        },
+        {
+          "symbol": "RGTI",
+          "name": "Rigetti Computing, Inc.",
+          "rs": 62,
+          "ret5": 0.011385,
+          "ret20": -0.036266,
+          "amount": 1533890439,
+          "mcap": 6121124275
+        }
+      ],
+      "bottom": [
+        {
+          "symbol": "RGTI",
+          "name": "Rigetti Computing, Inc.",
+          "rs": 62,
+          "ret5": 0.011385,
+          "ret20": -0.036266,
+          "amount": 1533890439,
+          "mcap": 6121124275
+        },
+        {
+          "symbol": "NXPI",
+          "name": "NXP Semiconductors N.V.",
+          "rs": 76,
+          "ret5": 0.020859,
+          "ret20": 0.040983,
+          "amount": 1236493745,
+          "mcap": 75339897278
+        },
+        {
+          "symbol": "CRUS",
+          "name": "Cirrus Logic, Inc.",
+          "rs": 80,
+          "ret5": 0.000586,
+          "ret20": -0.013395,
+          "amount": 81989285,
+          "mcap": 8489925246
+        },
+        {
+          "symbol": "MCHP",
+          "name": "Microchip Technology Incorporat",
+          "rs": 81,
+          "ret5": 0.040837,
+          "ret20": 0.089637,
+          "amount": 1106515637,
+          "mcap": 52333207618
+        },
+        {
+          "symbol": "MPWR",
+          "name": "Monolithic Power Systems, Inc.",
+          "rs": 90,
+          "ret5": -0.015362,
+          "ret20": -0.003843,
+          "amount": 1292104497,
+          "mcap": 81081696062
+        }
+      ]
+    },
+    {
+      "theme": "記憶體/存儲晶片",
+      "theme_en": "Memory / Storage Chips",
+      "category": "科技",
+      "n": 11,
+      "n_with_data": 4,
+      "total_market_cap": 1006469343884,
+      "avg_rs": 90.8,
+      "median_rs": 90.0,
+      "return_5d": 0.028055,
+      "return_1d": 0.005611,
+      "top": [
+        {
+          "symbol": "MU",
+          "name": "Micron Technology, Inc.",
+          "rs": 99,
+          "ret5": 0.148507,
+          "ret20": 0.617494,
+          "amount": 50155332369,
+          "mcap": 906280886990
+        },
+        {
+          "symbol": "MPWR",
+          "name": "Monolithic Power Systems, Inc.",
+          "rs": 90,
+          "ret5": -0.015362,
+          "ret20": -0.003843,
+          "amount": 1292104497,
+          "mcap": 81081696062
+        },
+        {
+          "symbol": "RMBS",
+          "name": "Rambus, Inc.",
+          "rs": 90,
+          "ret5": -0.043504,
+          "ret20": -0.009996,
+          "amount": 392841428,
+          "mcap": 14582271135
+        },
+        {
+          "symbol": "IPGP",
+          "name": "IPG Photonics Corporation",
+          "rs": 84,
+          "ret5": 0.022579,
+          "ret20": -0.026239,
+          "amount": 59113213,
+          "mcap": 4524489697
+        }
+      ],
+      "bottom": [
+        {
+          "symbol": "IPGP",
+          "name": "IPG Photonics Corporation",
+          "rs": 84,
+          "ret5": 0.022579,
+          "ret20": -0.026239,
+          "amount": 59113213,
+          "mcap": 4524489697
+        },
+        {
+          "symbol": "MPWR",
+          "name": "Monolithic Power Systems, Inc.",
+          "rs": 90,
+          "ret5": -0.015362,
+          "ret20": -0.003843,
+          "amount": 1292104497,
+          "mcap": 81081696062
+        },
+        {
+          "symbol": "RMBS",
+          "name": "Rambus, Inc.",
+          "rs": 90,
+          "ret5": -0.043504,
+          "ret20": -0.009996,
+          "amount": 392841428,
+          "mcap": 14582271135
+        },
+        {
+          "symbol": "MU",
+          "name": "Micron Technology, Inc.",
+          "rs": 99,
+          "ret5": 0.148507,
+          "ret20": 0.617494,
+          "amount": 50155332369,
+          "mcap": 906280886990
         }
       ]
     },
@@ -1740,15 +1497,6 @@
           "mcap": 2481308026
         },
         {
-          "symbol": "ENS",
-          "name": "EnerSys",
-          "rs": 91,
-          "ret5": 0.009727,
-          "ret20": -0.051288,
-          "amount": 107586857,
-          "mcap": 8585633325
-        },
-        {
           "symbol": "NVT",
           "name": "nVent Electric plc",
           "rs": 91,
@@ -1756,6 +1504,15 @@
           "ret20": 0.076815,
           "amount": 302174362,
           "mcap": 27963085155
+        },
+        {
+          "symbol": "ENS",
+          "name": "EnerSys",
+          "rs": 91,
+          "ret5": 0.009727,
+          "ret20": -0.051288,
+          "amount": 107586857,
+          "mcap": 8585633325
         },
         {
           "symbol": "PLUG",
@@ -2051,15 +1808,6 @@
       "return_1d": 0.004826,
       "top": [
         {
-          "symbol": "ERAS",
-          "name": "Erasca, Inc.",
-          "rs": 98,
-          "ret5": -0.033774,
-          "ret20": 0.172528,
-          "amount": 66054129,
-          "mcap": 3252898170
-        },
-        {
           "symbol": "SYRE",
           "name": "Spyre Therapeutics, Inc.",
           "rs": 98,
@@ -2067,6 +1815,15 @@
           "ret20": 0.183231,
           "amount": 80807740,
           "mcap": 6626855389
+        },
+        {
+          "symbol": "ERAS",
+          "name": "Erasca, Inc.",
+          "rs": 98,
+          "ret5": -0.033774,
+          "ret20": 0.172528,
+          "amount": 66054129,
+          "mcap": 3252898170
         },
         {
           "symbol": "ORKA",
@@ -2087,6 +1844,15 @@
           "mcap": 2532769171
         },
         {
+          "symbol": "IBRX",
+          "name": "ImmunityBio, Inc.",
+          "rs": 97,
+          "ret5": 0.029892,
+          "ret20": -0.054508,
+          "amount": 96338541,
+          "mcap": 8535934731
+        },
+        {
           "symbol": "TNGX",
           "name": "Tango Therapeutics, Inc.",
           "rs": 97,
@@ -2096,13 +1862,13 @@
           "mcap": 3679620182
         },
         {
-          "symbol": "IBRX",
-          "name": "ImmunityBio, Inc.",
-          "rs": 97,
-          "ret5": 0.029892,
-          "ret20": -0.054508,
-          "amount": 96338541,
-          "mcap": 8535934731
+          "symbol": "TWST",
+          "name": "Twist Bioscience Corporation",
+          "rs": 96,
+          "ret5": 0.142807,
+          "ret20": 0.482817,
+          "amount": 144787201,
+          "mcap": 3386936660
         },
         {
           "symbol": "TVTX",
@@ -2123,15 +1889,6 @@
           "mcap": 4687082706
         },
         {
-          "symbol": "TWST",
-          "name": "Twist Bioscience Corporation",
-          "rs": 96,
-          "ret5": 0.142807,
-          "ret20": 0.482817,
-          "amount": 144787201,
-          "mcap": 3386936660
-        },
-        {
           "symbol": "RVMD",
           "name": "Revolution Medicines, Inc.",
           "rs": 94,
@@ -2150,13 +1907,13 @@
           "mcap": 2400559855
         },
         {
-          "symbol": "ELVN",
-          "name": "Enliven Therapeutics, Inc.",
+          "symbol": "EWTX",
+          "name": "Edgewise Therapeutics, Inc.",
           "rs": 93,
-          "ret5": -0.029056,
-          "ret20": 0.062043,
-          "amount": 68696193,
-          "mcap": 2653019504
+          "ret5": 0.05012,
+          "ret20": 0.12062,
+          "amount": 63298320,
+          "mcap": 3632339835
         },
         {
           "symbol": "MRNA",
@@ -2168,13 +1925,31 @@
           "mcap": 20005962245
         },
         {
-          "symbol": "EWTX",
-          "name": "Edgewise Therapeutics, Inc.",
+          "symbol": "ELVN",
+          "name": "Enliven Therapeutics, Inc.",
           "rs": 93,
-          "ret5": 0.05012,
-          "ret20": 0.12062,
-          "amount": 63298320,
-          "mcap": 3632339835
+          "ret5": -0.029056,
+          "ret20": 0.062043,
+          "amount": 68696193,
+          "mcap": 2653019504
+        },
+        {
+          "symbol": "ROIV",
+          "name": "Roivant Sciences Ltd.",
+          "rs": 92,
+          "ret5": 0.039544,
+          "ret20": 0.012398,
+          "amount": 161162207,
+          "mcap": 20912785967
+        },
+        {
+          "symbol": "NKTR",
+          "name": "Nektar Therapeutics",
+          "rs": 92,
+          "ret5": 0.020218,
+          "ret20": -0.116232,
+          "amount": 55253813,
+          "mcap": 2566048861
         },
         {
           "symbol": "ARWR",
@@ -2193,24 +1968,6 @@
           "ret20": -0.039361,
           "amount": 23550125,
           "mcap": 2478732110
-        },
-        {
-          "symbol": "NKTR",
-          "name": "Nektar Therapeutics",
-          "rs": 92,
-          "ret5": 0.020218,
-          "ret20": -0.116232,
-          "amount": 55253813,
-          "mcap": 2566048861
-        },
-        {
-          "symbol": "ROIV",
-          "name": "Roivant Sciences Ltd.",
-          "rs": 92,
-          "ret5": 0.039544,
-          "ret20": 0.012398,
-          "amount": 161162207,
-          "mcap": 20912785967
         },
         {
           "symbol": "TRVI",
@@ -2301,15 +2058,6 @@
           "mcap": 2080079898
         },
         {
-          "symbol": "SEI",
-          "name": "Solaris Energy Infrastructure, ",
-          "rs": 94,
-          "ret5": 0.113121,
-          "ret20": 0.123281,
-          "amount": 149239907,
-          "mcap": 5676706460
-        },
-        {
           "symbol": "PUMP",
           "name": "ProPetro Holding Corp.",
           "rs": 94,
@@ -2319,13 +2067,13 @@
           "mcap": 2029310824
         },
         {
-          "symbol": "EFXT",
-          "name": "Enerflex Ltd",
-          "rs": 93,
-          "ret5": -0.0129,
-          "ret20": -0.117218,
-          "amount": 8569569,
-          "mcap": 3336150773
+          "symbol": "SEI",
+          "name": "Solaris Energy Infrastructure, ",
+          "rs": 94,
+          "ret5": 0.113121,
+          "ret20": 0.123281,
+          "amount": 149239907,
+          "mcap": 5676706460
         },
         {
           "symbol": "NESR",
@@ -2337,6 +2085,15 @@
           "mcap": 2691613410
         },
         {
+          "symbol": "EFXT",
+          "name": "Enerflex Ltd",
+          "rs": 93,
+          "ret5": -0.0129,
+          "ret20": -0.117218,
+          "amount": 8569569,
+          "mcap": 3336150773
+        },
+        {
           "symbol": "FRO",
           "name": "Frontline Plc",
           "rs": 91,
@@ -2344,15 +2101,6 @@
           "ret20": 0.059364,
           "amount": 125882796,
           "mcap": 8279345133
-        },
-        {
-          "symbol": "WTTR",
-          "name": "Select Water Solutions, Inc.",
-          "rs": 91,
-          "ret5": -0.070715,
-          "ret20": -0.10419,
-          "amount": 24354405,
-          "mcap": 2532104631
         },
         {
           "symbol": "LBRT",
@@ -2364,13 +2112,13 @@
           "mcap": 5463648717
         },
         {
-          "symbol": "KGS",
-          "name": "Kodiak Gas Services, Inc.",
-          "rs": 90,
-          "ret5": -0.00528,
-          "ret20": -0.049756,
-          "amount": 90746915,
-          "mcap": 6723517366
+          "symbol": "WTTR",
+          "name": "Select Water Solutions, Inc.",
+          "rs": 91,
+          "ret5": -0.070715,
+          "ret20": -0.10419,
+          "amount": 24354405,
+          "mcap": 2532104631
         },
         {
           "symbol": "INSW",
@@ -2380,6 +2128,15 @@
           "ret20": -0.012697,
           "amount": 39235914,
           "mcap": 4223245486
+        },
+        {
+          "symbol": "KGS",
+          "name": "Kodiak Gas Services, Inc.",
+          "rs": 90,
+          "ret5": -0.00528,
+          "ret20": -0.049756,
+          "amount": 90746915,
+          "mcap": 6723517366
         },
         {
           "symbol": "VAL",
@@ -2409,13 +2166,13 @@
           "mcap": 28977654525
         },
         {
-          "symbol": "DHT",
-          "name": "DHT Holdings, Inc.",
+          "symbol": "CVE",
+          "name": "Cenovus Energy Inc",
           "rs": 86,
-          "ret5": 0.068401,
-          "ret20": 0.058214,
-          "amount": 48870861,
-          "mcap": 2868151544
+          "ret5": -0.116738,
+          "ret20": -0.17505,
+          "amount": 229337801,
+          "mcap": 55880480399
         },
         {
           "symbol": "STNG",
@@ -2427,22 +2184,13 @@
           "mcap": 4251277856
         },
         {
-          "symbol": "CVE",
-          "name": "Cenovus Energy Inc",
+          "symbol": "DHT",
+          "name": "DHT Holdings, Inc.",
           "rs": 86,
-          "ret5": -0.116738,
-          "ret20": -0.17505,
-          "amount": 229337801,
-          "mcap": 55880480399
-        },
-        {
-          "symbol": "EC",
-          "name": "Ecopetrol S.A.",
-          "rs": 85,
-          "ret5": -0.006727,
-          "ret20": 0.190836,
-          "amount": 47569913,
-          "mcap": 26223200352
+          "ret5": 0.068401,
+          "ret20": 0.058214,
+          "amount": 48870861,
+          "mcap": 2868151544
         },
         {
           "symbol": "YPF",
@@ -2454,6 +2202,15 @@
           "mcap": 18221767461
         },
         {
+          "symbol": "DK",
+          "name": "Delek US Holdings, Inc.",
+          "rs": 85,
+          "ret5": -0.128498,
+          "ret20": -0.020377,
+          "amount": 39697460,
+          "mcap": 2689297507
+        },
+        {
           "symbol": "CMBT",
           "name": "CMB.TECH NV",
           "rs": 85,
@@ -2463,13 +2220,13 @@
           "mcap": 4346743027
         },
         {
-          "symbol": "DK",
-          "name": "Delek US Holdings, Inc.",
+          "symbol": "EC",
+          "name": "Ecopetrol S.A.",
           "rs": 85,
-          "ret5": -0.128498,
-          "ret20": -0.020377,
-          "amount": 39697460,
-          "mcap": 2689297507
+          "ret5": -0.006727,
+          "ret20": 0.190836,
+          "amount": 47569913,
+          "mcap": 26223200352
         }
       ],
       "bottom": [
@@ -2551,15 +2308,6 @@
           "mcap": 106091785982
         },
         {
-          "symbol": "BBAR",
-          "name": "Banco BBVA Argentina S.A.",
-          "rs": 80,
-          "ret5": 0.055348,
-          "ret20": 0.341451,
-          "amount": 15824226,
-          "mcap": 3130072348
-        },
-        {
           "symbol": "MFG",
           "name": "Mizuho Financial Group, Inc. Sponosred",
           "rs": 80,
@@ -2569,13 +2317,22 @@
           "mcap": 108907328455
         },
         {
-          "symbol": "SMFG",
-          "name": "Sumitomo Mitsui Financial Group Inc Unsponsored",
+          "symbol": "BBAR",
+          "name": "Banco BBVA Argentina S.A.",
+          "rs": 80,
+          "ret5": 0.055348,
+          "ret20": 0.341451,
+          "amount": 15824226,
+          "mcap": 3130072348
+        },
+        {
+          "symbol": "CM",
+          "name": "Canadian Imperial Bank of Comme",
           "rs": 79,
-          "ret5": 0.027289,
-          "ret20": 0.095373,
-          "amount": 44045361,
-          "mcap": 141498331247
+          "ret5": -0.022328,
+          "ret20": -0.02876,
+          "amount": 106557272,
+          "mcap": 101992028681
         },
         {
           "symbol": "BNS",
@@ -2587,13 +2344,13 @@
           "mcap": 94227228430
         },
         {
-          "symbol": "CM",
-          "name": "Canadian Imperial Bank of Comme",
+          "symbol": "SMFG",
+          "name": "Sumitomo Mitsui Financial Group Inc Unsponsored",
           "rs": 79,
-          "ret5": -0.022328,
-          "ret20": -0.02876,
-          "amount": 106557272,
-          "mcap": 101992028681
+          "ret5": 0.027289,
+          "ret20": 0.095373,
+          "amount": 44045361,
+          "mcap": 141498331247
         },
         {
           "symbol": "C",
@@ -2632,15 +2389,6 @@
           "mcap": 311078886669
         },
         {
-          "symbol": "MUFG",
-          "name": "Mitsubishi UFJ Financial Group, Inc.",
-          "rs": 74,
-          "ret5": 0.038908,
-          "ret20": 0.070098,
-          "amount": 61494277,
-          "mcap": 207307319205
-        },
-        {
           "symbol": "SHG",
           "name": "Shinhan Financial Group Co Ltd",
           "rs": 74,
@@ -2648,6 +2396,15 @@
           "ret20": 0.034694,
           "amount": 15774279,
           "mcap": 29406766347
+        },
+        {
+          "symbol": "MUFG",
+          "name": "Mitsubishi UFJ Financial Group, Inc.",
+          "rs": 74,
+          "ret5": 0.038908,
+          "ret20": 0.070098,
+          "amount": 61494277,
+          "mcap": 207307319205
         },
         {
           "symbol": "NTB",
@@ -2801,6 +2558,15 @@
           "mcap": 3267071422
         },
         {
+          "symbol": "JBHT",
+          "name": "J.B. Hunt Transport Services, I",
+          "rs": 88,
+          "ret5": -0.069417,
+          "ret20": 0.04084,
+          "amount": 258260213,
+          "mcap": 22424350514
+        },
+        {
           "symbol": "ECO",
           "name": "Okeanis Eco Tankers Corp.",
           "rs": 88,
@@ -2810,13 +2576,13 @@
           "mcap": 2087706579
         },
         {
-          "symbol": "JBHT",
-          "name": "J.B. Hunt Transport Services, I",
-          "rs": 88,
-          "ret5": -0.069417,
-          "ret20": 0.04084,
-          "amount": 258260213,
-          "mcap": 22424350514
+          "symbol": "PBI",
+          "name": "Pitney Bowes Inc.",
+          "rs": 85,
+          "ret5": 0.003665,
+          "ret20": 0.12362,
+          "amount": 40299321,
+          "mcap": 2077671427
         },
         {
           "symbol": "VIK",
@@ -2837,13 +2603,13 @@
           "mcap": 9712266651
         },
         {
-          "symbol": "PBI",
-          "name": "Pitney Bowes Inc.",
-          "rs": 85,
-          "ret5": 0.003665,
-          "ret20": 0.12362,
-          "amount": 40299321,
-          "mcap": 2077671427
+          "symbol": "TFII",
+          "name": "TFI International Inc.",
+          "rs": 83,
+          "ret5": -0.100244,
+          "ret20": -0.008019,
+          "amount": 63562787,
+          "mcap": 11022790048
         },
         {
           "symbol": "LSTR",
@@ -2853,15 +2619,6 @@
           "ret20": 0.079826,
           "amount": 98523792,
           "mcap": 5937097866
-        },
-        {
-          "symbol": "TFII",
-          "name": "TFI International Inc.",
-          "rs": 83,
-          "ret5": -0.100244,
-          "ret20": -0.008019,
-          "amount": 63562787,
-          "mcap": 11022790048
         },
         {
           "symbol": "NMM",
@@ -2900,13 +2657,13 @@
           "mcap": 2073074962
         },
         {
-          "symbol": "ZIM",
-          "name": "ZIM Integrated Shipping Service",
+          "symbol": "SAIA",
+          "name": "Saia, Inc.",
           "rs": 78,
-          "ret5": -0.078782,
-          "ret20": -0.037234,
-          "amount": 26233401,
-          "mcap": 3101997034
+          "ret5": -0.105615,
+          "ret20": -0.055887,
+          "amount": 200754651,
+          "mcap": 11506495958
         },
         {
           "symbol": "SNDR",
@@ -2918,13 +2675,13 @@
           "mcap": 5108375928
         },
         {
-          "symbol": "SAIA",
-          "name": "Saia, Inc.",
+          "symbol": "ZIM",
+          "name": "ZIM Integrated Shipping Service",
           "rs": 78,
-          "ret5": -0.105615,
-          "ret20": -0.055887,
-          "amount": 200754651,
-          "mcap": 11506495958
+          "ret5": -0.078782,
+          "ret20": -0.037234,
+          "amount": 26233401,
+          "mcap": 3101997034
         },
         {
           "symbol": "SBLK",
@@ -2936,13 +2693,13 @@
           "mcap": 3038588305
         },
         {
-          "symbol": "LUV",
-          "name": "Southwest Airlines Company",
+          "symbol": "WAB",
+          "name": "Westinghouse Air Brake Technolo",
           "rs": 76,
-          "ret5": 0.048254,
-          "ret20": 0.170899,
-          "amount": 258064060,
-          "mcap": 19262571922
+          "ret5": 0.025814,
+          "ret20": 0.067757,
+          "amount": 166033243,
+          "mcap": 44927165255
         },
         {
           "symbol": "DAL",
@@ -3051,6 +2808,15 @@
           "mcap": 4705359796
         },
         {
+          "symbol": "HBM",
+          "name": "Hudbay Minerals Inc.",
+          "rs": 89,
+          "ret5": -0.014995,
+          "ret20": 0.109786,
+          "amount": 162765501,
+          "mcap": 11008483632
+        },
+        {
           "symbol": "STLD",
           "name": "Steel Dynamics, Inc.",
           "rs": 89,
@@ -3060,13 +2826,13 @@
           "mcap": 34189967050
         },
         {
-          "symbol": "HBM",
-          "name": "Hudbay Minerals Inc.",
-          "rs": 89,
-          "ret5": -0.014995,
-          "ret20": 0.109786,
-          "amount": 162765501,
-          "mcap": 11008483632
+          "symbol": "SVM",
+          "name": "Silvercorp Metals Inc.",
+          "rs": 87,
+          "ret5": -0.004957,
+          "ret20": -0.07982,
+          "amount": 44655477,
+          "mcap": 3461090271
         },
         {
           "symbol": "TECK",
@@ -3087,13 +2853,13 @@
           "mcap": 5540954150
         },
         {
-          "symbol": "SVM",
-          "name": "Silvercorp Metals Inc.",
-          "rs": 87,
-          "ret5": -0.004957,
-          "ret20": -0.07982,
-          "amount": 44655477,
-          "mcap": 3461090271
+          "symbol": "NUE",
+          "name": "Nucor Corporation",
+          "rs": 86,
+          "ret5": -0.091278,
+          "ret20": 0.071385,
+          "amount": 328989236,
+          "mcap": 52921152617
         },
         {
           "symbol": "SSRM",
@@ -3103,15 +2869,6 @@
           "ret20": 0.017728,
           "amount": 80242953,
           "mcap": 7210314808
-        },
-        {
-          "symbol": "NUE",
-          "name": "Nucor Corporation",
-          "rs": 86,
-          "ret5": -0.091278,
-          "ret20": 0.071385,
-          "amount": 328989236,
-          "mcap": 52921152617
         },
         {
           "symbol": "CENX",
@@ -3141,15 +2898,6 @@
           "mcap": 2848282234
         },
         {
-          "symbol": "SCCO",
-          "name": "Southern Copper Corporation",
-          "rs": 83,
-          "ret5": 0.009817,
-          "ret20": 0.071687,
-          "amount": 233915060,
-          "mcap": 160098754916
-        },
-        {
           "symbol": "TS",
           "name": "Tenaris S.A.",
           "rs": 83,
@@ -3157,6 +2905,15 @@
           "ret20": -0.079073,
           "amount": 82311463,
           "mcap": 34101098359
+        },
+        {
+          "symbol": "SCCO",
+          "name": "Southern Copper Corporation",
+          "rs": 83,
+          "ret5": 0.009817,
+          "ret20": 0.071687,
+          "amount": 233915060,
+          "mcap": 160098754916
         },
         {
           "symbol": "BHP",
@@ -3274,15 +3031,6 @@
           "mcap": 80162788765
         },
         {
-          "symbol": "CIEN",
-          "name": "Ciena Corporation",
-          "rs": 97,
-          "ret5": -0.04655,
-          "ret20": -0.215222,
-          "amount": 1496334538,
-          "mcap": 81714151665
-        },
-        {
           "symbol": "VIAV",
           "name": "Viavi Solutions Inc.",
           "rs": 97,
@@ -3290,6 +3038,15 @@
           "ret20": -0.042366,
           "amount": 413465729,
           "mcap": 12544479180
+        },
+        {
+          "symbol": "CIEN",
+          "name": "Ciena Corporation",
+          "rs": 97,
+          "ret5": -0.04655,
+          "ret20": -0.215222,
+          "amount": 1496334538,
+          "mcap": 81714151665
         },
         {
           "symbol": "NOK",
@@ -3301,6 +3058,15 @@
           "mcap": 77924528826
         },
         {
+          "symbol": "VSAT",
+          "name": "ViaSat, Inc.",
+          "rs": 93,
+          "ret5": -0.092804,
+          "ret20": -0.09911,
+          "amount": 226337570,
+          "mcap": 9586980859
+        },
+        {
           "symbol": "HPE",
           "name": "Hewlett Packard Enterprise Comp",
           "rs": 93,
@@ -3310,13 +3076,13 @@
           "mcap": 42552211414
         },
         {
-          "symbol": "VSAT",
-          "name": "ViaSat, Inc.",
-          "rs": 93,
-          "ret5": -0.092804,
-          "ret20": -0.09911,
-          "amount": 226337570,
-          "mcap": 9586980859
+          "symbol": "IRDM",
+          "name": "Iridium Communications Inc",
+          "rs": 91,
+          "ret5": -0.064842,
+          "ret20": -0.030139,
+          "amount": 128033455,
+          "mcap": 4555808551
         },
         {
           "symbol": "DGII",
@@ -3337,13 +3103,13 @@
           "mcap": 10586907597
         },
         {
-          "symbol": "IRDM",
-          "name": "Iridium Communications Inc",
-          "rs": 91,
-          "ret5": -0.064842,
-          "ret20": -0.030139,
-          "amount": 128033455,
-          "mcap": 4555808551
+          "symbol": "SFTBY",
+          "name": "Softbank Group Corp",
+          "rs": 90,
+          "ret5": 0.069595,
+          "ret20": 0.260677,
+          "amount": 19753724,
+          "mcap": 217414212540
         },
         {
           "symbol": "TIGO",
@@ -3355,15 +3121,6 @@
           "mcap": 13734998011
         },
         {
-          "symbol": "SFTBY",
-          "name": "Softbank Group Corp",
-          "rs": 90,
-          "ret5": 0.069595,
-          "ret20": 0.260677,
-          "amount": 19753724,
-          "mcap": 217414212540
-        },
-        {
           "symbol": "CSCO",
           "name": "Cisco Systems, Inc.",
           "rs": 88,
@@ -3373,15 +3130,6 @@
           "mcap": 402375617524
         },
         {
-          "symbol": "SKM",
-          "name": "SK Telecom Co., Ltd.",
-          "rs": 86,
-          "ret5": -0.06179,
-          "ret20": -0.078852,
-          "amount": 126020950,
-          "mcap": 14895518998
-        },
-        {
           "symbol": "EXTR",
           "name": "Extreme Networks, Inc.",
           "rs": 86,
@@ -3389,6 +3137,15 @@
           "ret20": 0.307558,
           "amount": 60886854,
           "mcap": 2977817202
+        },
+        {
+          "symbol": "SKM",
+          "name": "SK Telecom Co., Ltd.",
+          "rs": 86,
+          "ret5": -0.06179,
+          "ret20": -0.078852,
+          "amount": 126020950,
+          "mcap": 14895518998
         },
         {
           "symbol": "TEO",
@@ -3515,6 +3272,15 @@
           "mcap": 2674966913
         },
         {
+          "symbol": "NHC",
+          "name": "National HealthCare Corporation",
+          "rs": 89,
+          "ret5": 0.012542,
+          "ret20": 0.022802,
+          "amount": 23323453,
+          "mcap": 3041300277
+        },
+        {
           "symbol": "CNC",
           "name": "Centene Corporation",
           "rs": 89,
@@ -3531,15 +3297,6 @@
           "ret20": 0.277334,
           "amount": 175480258,
           "mcap": 6271825281
-        },
-        {
-          "symbol": "NHC",
-          "name": "National HealthCare Corporation",
-          "rs": 89,
-          "ret5": 0.012542,
-          "ret20": 0.022802,
-          "amount": 23323453,
-          "mcap": 3041300277
         },
         {
           "symbol": "BKD",
@@ -3605,13 +3362,13 @@
           "mcap": 4183169867
         },
         {
-          "symbol": "UNH",
-          "name": "UnitedHealth Group Incorporated",
+          "symbol": "HUM",
+          "name": "Humana Inc.",
           "rs": 71,
-          "ret5": -0.025233,
-          "ret20": 0.024697,
-          "amount": 2697415554,
-          "mcap": 364311190026
+          "ret5": -0.055696,
+          "ret20": 0.182186,
+          "amount": 392432316,
+          "mcap": 36600749175
         },
         {
           "symbol": "CON",
@@ -3623,13 +3380,13 @@
           "mcap": 3310371469
         },
         {
-          "symbol": "HUM",
-          "name": "Humana Inc.",
+          "symbol": "UNH",
+          "name": "UnitedHealth Group Incorporated",
           "rs": 71,
-          "ret5": -0.055696,
-          "ret20": 0.182186,
-          "amount": 392432316,
-          "mcap": 36600749175
+          "ret5": -0.025233,
+          "ret20": 0.024697,
+          "amount": 2697415554,
+          "mcap": 364311190026
         },
         {
           "symbol": "ALHC",
@@ -3783,15 +3540,6 @@
           "mcap": 415632781065
         },
         {
-          "symbol": "AEIS",
-          "name": "Advanced Energy Industries, Inc",
-          "rs": 93,
-          "ret5": 0.044688,
-          "ret20": 0.145302,
-          "amount": 296640411,
-          "mcap": 12899617931
-        },
-        {
           "symbol": "AMPX",
           "name": "Amprius Technologies, Inc.",
           "rs": 93,
@@ -3799,6 +3547,15 @@
           "ret20": 0.05145,
           "amount": 150435247,
           "mcap": 2481308026
+        },
+        {
+          "symbol": "AEIS",
+          "name": "Advanced Energy Industries, Inc",
+          "rs": 93,
+          "ret5": 0.044688,
+          "ret20": 0.145302,
+          "amount": 296640411,
+          "mcap": 12899617931
         },
         {
           "symbol": "NVT",
@@ -3828,15 +3585,6 @@
           "mcap": 285533797264
         },
         {
-          "symbol": "HLIO",
-          "name": "Helios Technologies, Inc.",
-          "rs": 87,
-          "ret5": 0.063147,
-          "ret20": 0.155162,
-          "amount": 26326708,
-          "mcap": 2483764540
-        },
-        {
           "symbol": "NPO",
           "name": "Enpro Inc.",
           "rs": 87,
@@ -3844,6 +3592,15 @@
           "ret20": 0.248137,
           "amount": 54397200,
           "mcap": 6713631008
+        },
+        {
+          "symbol": "HLIO",
+          "name": "Helios Technologies, Inc.",
+          "rs": 87,
+          "ret5": 0.063147,
+          "ret20": 0.155162,
+          "amount": 26326708,
+          "mcap": 2483764540
         },
         {
           "symbol": "PLUG",
@@ -3864,13 +3621,13 @@
           "mcap": 97912897923
         },
         {
-          "symbol": "RRX",
-          "name": "Regal Rexnord Corporation",
+          "symbol": "GNRC",
+          "name": "Generac Holdlings Inc.",
           "rs": 83,
-          "ret5": 0.061428,
-          "ret20": 0.149331,
-          "amount": 156580790,
-          "mcap": 13694692525
+          "ret5": 0.057269,
+          "ret20": 0.121146,
+          "amount": 225490734,
+          "mcap": 15732654474
         },
         {
           "symbol": "SXI",
@@ -3882,13 +3639,13 @@
           "mcap": 3063863590
         },
         {
-          "symbol": "GNRC",
-          "name": "Generac Holdlings Inc.",
+          "symbol": "RRX",
+          "name": "Regal Rexnord Corporation",
           "rs": 83,
-          "ret5": 0.057269,
-          "ret20": 0.121146,
-          "amount": 225490734,
-          "mcap": 15732654474
+          "ret5": 0.061428,
+          "ret20": 0.149331,
+          "amount": 156580790,
+          "mcap": 13694692525
         },
         {
           "symbol": "BLBD",
@@ -3900,15 +3657,6 @@
           "mcap": 2246907839
         },
         {
-          "symbol": "ATKR",
-          "name": "Atkore Inc.",
-          "rs": 75,
-          "ret5": 0.017241,
-          "ret20": 0.06009,
-          "amount": 33262155,
-          "mcap": 2547740065
-        },
-        {
           "symbol": "FLS",
           "name": "Flowserve Corporation",
           "rs": 75,
@@ -3916,6 +3664,15 @@
           "ret20": 0.183297,
           "amount": 120596014,
           "mcap": 8494054571
+        },
+        {
+          "symbol": "ATKR",
+          "name": "Atkore Inc.",
+          "rs": 75,
+          "ret5": 0.017241,
+          "ret20": 0.06009,
+          "amount": 33262155,
+          "mcap": 2547740065
         }
       ],
       "bottom": [
@@ -3979,15 +3736,6 @@
       "return_1d": -0.003809,
       "top": [
         {
-          "symbol": "TD",
-          "name": "Toronto Dominion Bank (The)",
-          "rs": 82,
-          "ret5": 0.009978,
-          "ret20": 0.100046,
-          "amount": 237103739,
-          "mcap": 179998905332
-        },
-        {
           "symbol": "MBIN",
           "name": "Merchants Bancorp",
           "rs": 82,
@@ -3997,22 +3745,13 @@
           "mcap": 2070768173
         },
         {
-          "symbol": "BMO",
-          "name": "Bank Of Montreal",
-          "rs": 80,
-          "ret5": 0.008246,
-          "ret20": 0.064017,
-          "amount": 102360846,
-          "mcap": 106091785982
-        },
-        {
-          "symbol": "BBAR",
-          "name": "Banco BBVA Argentina S.A.",
-          "rs": 80,
-          "ret5": 0.055348,
-          "ret20": 0.341451,
-          "amount": 15824226,
-          "mcap": 3130072348
+          "symbol": "TD",
+          "name": "Toronto Dominion Bank (The)",
+          "rs": 82,
+          "ret5": 0.009978,
+          "ret20": 0.100046,
+          "amount": 237103739,
+          "mcap": 179998905332
         },
         {
           "symbol": "IFS",
@@ -4024,6 +3763,15 @@
           "mcap": 5184756229
         },
         {
+          "symbol": "BMO",
+          "name": "Bank Of Montreal",
+          "rs": 80,
+          "ret5": 0.008246,
+          "ret20": 0.064017,
+          "amount": 102360846,
+          "mcap": 106091785982
+        },
+        {
           "symbol": "MFG",
           "name": "Mizuho Financial Group, Inc. Sponosred",
           "rs": 80,
@@ -4033,31 +3781,13 @@
           "mcap": 108907328455
         },
         {
-          "symbol": "SMFG",
-          "name": "Sumitomo Mitsui Financial Group Inc Unsponsored",
-          "rs": 79,
-          "ret5": 0.027289,
-          "ret20": 0.095373,
-          "amount": 44045361,
-          "mcap": 141498331247
-        },
-        {
-          "symbol": "BNS",
-          "name": "Bank Nova Scotia Halifax Pfd 3",
-          "rs": 79,
-          "ret5": 0.029467,
-          "ret20": 0.090269,
-          "amount": 173794852,
-          "mcap": 94227228430
-        },
-        {
-          "symbol": "BAP",
-          "name": "Credicorp Ltd.",
-          "rs": 79,
-          "ret5": 0.029019,
-          "ret20": 0.107262,
-          "amount": 207589643,
-          "mcap": 25266073454
+          "symbol": "BBAR",
+          "name": "Banco BBVA Argentina S.A.",
+          "rs": 80,
+          "ret5": 0.055348,
+          "ret20": 0.341451,
+          "amount": 15824226,
+          "mcap": 3130072348
         },
         {
           "symbol": "CM",
@@ -4069,6 +3799,33 @@
           "mcap": 101992028681
         },
         {
+          "symbol": "BAP",
+          "name": "Credicorp Ltd.",
+          "rs": 79,
+          "ret5": 0.029019,
+          "ret20": 0.107262,
+          "amount": 207589643,
+          "mcap": 25266073454
+        },
+        {
+          "symbol": "BNS",
+          "name": "Bank Nova Scotia Halifax Pfd 3",
+          "rs": 79,
+          "ret5": 0.029467,
+          "ret20": 0.090269,
+          "amount": 173794852,
+          "mcap": 94227228430
+        },
+        {
+          "symbol": "SMFG",
+          "name": "Sumitomo Mitsui Financial Group Inc Unsponsored",
+          "rs": 79,
+          "ret5": 0.027289,
+          "ret20": 0.095373,
+          "amount": 44045361,
+          "mcap": 141498331247
+        },
+        {
           "symbol": "C",
           "name": "Citigroup, Inc.",
           "rs": 78,
@@ -4076,15 +3833,6 @@
           "ret20": 0.163283,
           "amount": 1363617690,
           "mcap": 212820014498
-        },
-        {
-          "symbol": "VLY",
-          "name": "Valley National Bancorp",
-          "rs": 77,
-          "ret5": -0.043638,
-          "ret20": 0.045296,
-          "amount": 88346661,
-          "mcap": 7203709106
         },
         {
           "symbol": "RY",
@@ -4096,13 +3844,13 @@
           "mcap": 251278048465
         },
         {
-          "symbol": "BMA",
-          "name": "Banco Macro S.A.",
-          "rs": 76,
-          "ret5": 0.023361,
-          "ret20": 0.292685,
-          "amount": 30579665,
-          "mcap": 4840977117
+          "symbol": "VLY",
+          "name": "Valley National Bancorp",
+          "rs": 77,
+          "ret5": -0.043638,
+          "ret20": 0.045296,
+          "amount": 88346661,
+          "mcap": 7203709106
         },
         {
           "symbol": "CLBK",
@@ -4114,6 +3862,15 @@
           "mcap": 2008116093
         },
         {
+          "symbol": "BMA",
+          "name": "Banco Macro S.A.",
+          "rs": 76,
+          "ret5": 0.023361,
+          "ret20": 0.292685,
+          "amount": 30579665,
+          "mcap": 4840977117
+        },
+        {
           "symbol": "HSBC",
           "name": "HSBC Holdings, plc.",
           "rs": 75,
@@ -4123,22 +3880,13 @@
           "mcap": 311078886669
         },
         {
-          "symbol": "WSFS",
-          "name": "WSFS Financial Corporation",
+          "symbol": "SHG",
+          "name": "Shinhan Financial Group Co Ltd",
           "rs": 74,
-          "ret5": -0.021347,
-          "ret20": 0.028762,
-          "amount": 29582030,
-          "mcap": 3629031663
-        },
-        {
-          "symbol": "BPOP",
-          "name": "Popular, Inc.",
-          "rs": 74,
-          "ret5": -0.017352,
-          "ret20": 0.060023,
-          "amount": 70714041,
-          "mcap": 9232764935
+          "ret5": -0.016386,
+          "ret20": 0.034694,
+          "amount": 15774279,
+          "mcap": 29406766347
         },
         {
           "symbol": "MUFG",
@@ -4150,13 +3898,22 @@
           "mcap": 207307319205
         },
         {
-          "symbol": "SHG",
-          "name": "Shinhan Financial Group Co Ltd",
+          "symbol": "BPOP",
+          "name": "Popular, Inc.",
           "rs": 74,
-          "ret5": -0.016386,
-          "ret20": 0.034694,
-          "amount": 15774279,
-          "mcap": 29406766347
+          "ret5": -0.017352,
+          "ret20": 0.060023,
+          "amount": 70714041,
+          "mcap": 9232764935
+        },
+        {
+          "symbol": "WSFS",
+          "name": "WSFS Financial Corporation",
+          "rs": 74,
+          "ret5": -0.021347,
+          "ret20": 0.028762,
+          "amount": 29582030,
+          "mcap": 3629031663
         }
       ],
       "bottom": [
@@ -4265,15 +4022,6 @@
           "mcap": 2008116093
         },
         {
-          "symbol": "WSFS",
-          "name": "WSFS Financial Corporation",
-          "rs": 74,
-          "ret5": -0.021347,
-          "ret20": 0.028762,
-          "amount": 29582030,
-          "mcap": 3629031663
-        },
-        {
           "symbol": "BPOP",
           "name": "Popular, Inc.",
           "rs": 74,
@@ -4281,6 +4029,15 @@
           "ret20": 0.060023,
           "amount": 70714041,
           "mcap": 9232764935
+        },
+        {
+          "symbol": "WSFS",
+          "name": "WSFS Financial Corporation",
+          "rs": 74,
+          "ret5": -0.021347,
+          "ret20": 0.028762,
+          "amount": 29582030,
+          "mcap": 3629031663
         },
         {
           "symbol": "CFG",
@@ -4292,15 +4049,6 @@
           "mcap": 25554755007
         },
         {
-          "symbol": "KB",
-          "name": "KB Financial Group Inc",
-          "rs": 71,
-          "ret5": -0.016282,
-          "ret20": 0.012123,
-          "amount": 23802881,
-          "mcap": 36046099166
-        },
-        {
           "symbol": "WBS",
           "name": "Webster Financial Corporation",
           "rs": 71,
@@ -4308,6 +4056,15 @@
           "ret20": 0.036472,
           "amount": 232720098,
           "mcap": 11612439282
+        },
+        {
+          "symbol": "KB",
+          "name": "KB Financial Group Inc",
+          "rs": 71,
+          "ret5": -0.016282,
+          "ret20": 0.012123,
+          "amount": 23802881,
+          "mcap": 36046099166
         },
         {
           "symbol": "CIB",
@@ -4364,15 +4121,6 @@
           "mcap": 3950731333
         },
         {
-          "symbol": "ABCB",
-          "name": "Ameris Bancorp",
-          "rs": 66,
-          "ret5": -0.022017,
-          "ret20": 0.027854,
-          "amount": 33928202,
-          "mcap": 5576529938
-        },
-        {
           "symbol": "EWBC",
           "name": "East West Bancorp, Inc.",
           "rs": 66,
@@ -4380,6 +4128,15 @@
           "ret20": 0.025563,
           "amount": 116245262,
           "mcap": 16308035105
+        },
+        {
+          "symbol": "ABCB",
+          "name": "Ameris Bancorp",
+          "rs": 66,
+          "ret5": -0.022017,
+          "ret20": 0.027854,
+          "amount": 33928202,
+          "mcap": 5576529938
         },
         {
           "symbol": "ZION",
@@ -4391,13 +4148,13 @@
           "mcap": 8772555586
         },
         {
-          "symbol": "FLG",
-          "name": "Flagstar Bank, N.A.",
+          "symbol": "EBC",
+          "name": "Eastern Bankshares, Inc.",
           "rs": 65,
-          "ret5": -0.026138,
-          "ret20": 0.072586,
-          "amount": 55150245,
-          "mcap": 5710367126
+          "ret5": -0.013956,
+          "ret20": 0.032371,
+          "amount": 88764167,
+          "mcap": 4470307530
         }
       ],
       "bottom": [
@@ -4497,15 +4254,6 @@
           "mcap": 4548575427
         },
         {
-          "symbol": "AMRX",
-          "name": "Amneal Pharmaceuticals, Inc.",
-          "rs": 84,
-          "ret5": -0.00611,
-          "ret20": 0.29974,
-          "amount": 27007540,
-          "mcap": 3952692182
-        },
-        {
           "symbol": "ALKS",
           "name": "Alkermes plc",
           "rs": 84,
@@ -4515,13 +4263,13 @@
           "mcap": 6485355810
         },
         {
-          "symbol": "UTHR",
-          "name": "United Therapeutics Corporation",
-          "rs": 81,
-          "ret5": -0.02389,
-          "ret20": -0.057156,
-          "amount": 248915561,
-          "mcap": 24599580091
+          "symbol": "AMRX",
+          "name": "Amneal Pharmaceuticals, Inc.",
+          "rs": 84,
+          "ret5": -0.00611,
+          "ret20": 0.29974,
+          "amount": 27007540,
+          "mcap": 3952692182
         },
         {
           "symbol": "OGN",
@@ -4531,6 +4279,15 @@
           "ret20": -0.004667,
           "amount": 33907494,
           "mcap": 3503095519
+        },
+        {
+          "symbol": "UTHR",
+          "name": "United Therapeutics Corporation",
+          "rs": 81,
+          "ret5": -0.02389,
+          "ret20": -0.057156,
+          "amount": 248915561,
+          "mcap": 24599580091
         },
         {
           "symbol": "INDV",
@@ -4889,15 +4646,6 @@
           "mcap": 2496397359
         },
         {
-          "symbol": "LTH",
-          "name": "Life Time Group Holdings, Inc.",
-          "rs": 75,
-          "ret5": 0.069344,
-          "ret20": 0.115073,
-          "amount": 74506782,
-          "mcap": 7521746701
-        },
-        {
           "symbol": "GOLF",
           "name": "Acushnet Holdings Corp.",
           "rs": 75,
@@ -4907,13 +4655,22 @@
           "mcap": 4950745466
         },
         {
-          "symbol": "MCRI",
-          "name": "Monarch Casino & Resort, Inc.",
+          "symbol": "LTH",
+          "name": "Life Time Group Holdings, Inc.",
+          "rs": 75,
+          "ret5": 0.069344,
+          "ret20": 0.115073,
+          "amount": 74506782,
+          "mcap": 7521746701
+        },
+        {
+          "symbol": "CNK",
+          "name": "Cinemark Holdings Inc Cinemark ",
           "rs": 74,
-          "ret5": 0.005984,
-          "ret20": 0.118351,
-          "amount": 20800972,
-          "mcap": 2061428723
+          "ret5": -0.007911,
+          "ret20": 0.26376,
+          "amount": 66038473,
+          "mcap": 3070350261
         },
         {
           "symbol": "WBD",
@@ -4925,13 +4682,13 @@
           "mcap": 68319475586
         },
         {
-          "symbol": "CNK",
-          "name": "Cinemark Holdings Inc Cinemark ",
+          "symbol": "MCRI",
+          "name": "Monarch Casino & Resort, Inc.",
           "rs": 74,
-          "ret5": -0.007911,
-          "ret20": 0.26376,
-          "amount": 66038473,
-          "mcap": 3070350261
+          "ret5": 0.005984,
+          "ret20": 0.118351,
+          "amount": 20800972,
+          "mcap": 2061428723
         },
         {
           "symbol": "MGM",
@@ -4952,15 +4709,6 @@
           "mcap": 3248559777
         },
         {
-          "symbol": "OSW",
-          "name": "OneSpaWorld Holdings Limited",
-          "rs": 72,
-          "ret5": 0.060741,
-          "ret20": 0.135964,
-          "amount": 16159034,
-          "mcap": 2364280875
-        },
-        {
           "symbol": "SIRI",
           "name": "SiriusXM Holdings Inc.",
           "rs": 72,
@@ -4968,6 +4716,15 @@
           "ret20": -0.038527,
           "amount": 172324690,
           "mcap": 8873301668
+        },
+        {
+          "symbol": "OSW",
+          "name": "OneSpaWorld Holdings Limited",
+          "rs": 72,
+          "ret5": 0.060741,
+          "ret20": 0.135964,
+          "amount": 16159034,
+          "mcap": 2364280875
         },
         {
           "symbol": "YETI",
@@ -5398,15 +5155,6 @@
           "mcap": 17985793377
         },
         {
-          "symbol": "KTB",
-          "name": "Kontoor Brands, Inc.",
-          "rs": 59,
-          "ret5": -0.017359,
-          "ret20": 0.121281,
-          "amount": 50658973,
-          "mcap": 3604227669
-        },
-        {
           "symbol": "VFC",
           "name": "V.F. Corporation",
           "rs": 59,
@@ -5414,6 +5162,15 @@
           "ret20": 0.065663,
           "amount": 124439903,
           "mcap": 6702340620
+        },
+        {
+          "symbol": "KTB",
+          "name": "Kontoor Brands, Inc.",
+          "rs": 59,
+          "ret5": -0.017359,
+          "ret20": 0.121281,
+          "amount": 50658973,
+          "mcap": 3604227669
         },
         {
           "symbol": "TJX",
@@ -5452,15 +5209,6 @@
           "mcap": 3678207565
         },
         {
-          "symbol": "SIG",
-          "name": "Signet Jewelers Limited",
-          "rs": 48,
-          "ret5": -0.02911,
-          "ret20": 0.078494,
-          "amount": 76054380,
-          "mcap": 3126087430
-        },
-        {
           "symbol": "DECK",
           "name": "Deckers Outdoor Corporation",
           "rs": 48,
@@ -5468,6 +5216,15 @@
           "ret20": 0.05783,
           "amount": 200690233,
           "mcap": 13333360390
+        },
+        {
+          "symbol": "SIG",
+          "name": "Signet Jewelers Limited",
+          "rs": 48,
+          "ret5": -0.02911,
+          "ret20": 0.078494,
+          "amount": 76054380,
+          "mcap": 3126087430
         },
         {
           "symbol": "URBN",
@@ -5479,13 +5236,13 @@
           "mcap": 5684781332
         },
         {
-          "symbol": "BOOT",
-          "name": "Boot Barn Holdings, Inc.",
+          "symbol": "BIRK",
+          "name": "Birkenstock Holding plc",
           "rs": 38,
-          "ret5": 0.014432,
-          "ret20": 0.122298,
-          "amount": 104971327,
-          "mcap": 4418263585
+          "ret5": -0.060881,
+          "ret20": 0.156927,
+          "amount": 124522969,
+          "mcap": 6081773576
         }
       ],
       "bottom": [
@@ -5585,15 +5342,6 @@
           "mcap": 2280182134
         },
         {
-          "symbol": "PL",
-          "name": "Planet Labs PBC",
-          "rs": 88,
-          "ret5": -0.100467,
-          "ret20": -0.340865,
-          "amount": 592145032,
-          "mcap": 14102111183
-        },
-        {
           "symbol": "ATRO",
           "name": "Astronics Corporation",
           "rs": 88,
@@ -5601,6 +5349,15 @@
           "ret20": 0.002974,
           "amount": 54616425,
           "mcap": 2872832566
+        },
+        {
+          "symbol": "PL",
+          "name": "Planet Labs PBC",
+          "rs": 88,
+          "ret5": -0.100467,
+          "ret20": -0.340865,
+          "amount": 592145032,
+          "mcap": 14102111183
         },
         {
           "symbol": "AIR",
@@ -5657,15 +5414,6 @@
           "mcap": 109269356025
         },
         {
-          "symbol": "HXL",
-          "name": "Hexcel Corporation",
-          "rs": 80,
-          "ret5": -0.007546,
-          "ret20": 0.146428,
-          "amount": 68399971,
-          "mcap": 6982294498
-        },
-        {
           "symbol": "VVX",
           "name": "V2X, Inc.",
           "rs": 80,
@@ -5682,6 +5430,15 @@
           "ret20": 0.02668,
           "amount": 103839581,
           "mcap": 36462645443
+        },
+        {
+          "symbol": "HXL",
+          "name": "Hexcel Corporation",
+          "rs": 80,
+          "ret5": -0.007546,
+          "ret20": 0.146428,
+          "amount": 68399971,
+          "mcap": 6982294498
         },
         {
           "symbol": "GE",
@@ -5871,6 +5628,24 @@
           "mcap": 20971574959
         },
         {
+          "symbol": "NGVT",
+          "name": "Ingevity Corporation",
+          "rs": 72,
+          "ret5": 0.013139,
+          "ret20": 0.120335,
+          "amount": 10923918,
+          "mcap": 2477830730
+        },
+        {
+          "symbol": "MTX",
+          "name": "Minerals Technologies Inc.",
+          "rs": 72,
+          "ret5": 0.000313,
+          "ret20": 0.037956,
+          "amount": 8511157,
+          "mcap": 2568763390
+        },
+        {
           "symbol": "SQM",
           "name": "Sociedad Quimica y Minera S.A.",
           "rs": 72,
@@ -5889,15 +5664,6 @@
           "mcap": 23697788176
         },
         {
-          "symbol": "MTX",
-          "name": "Minerals Technologies Inc.",
-          "rs": 72,
-          "ret5": 0.000313,
-          "ret20": 0.037956,
-          "amount": 8511157,
-          "mcap": 2568763390
-        },
-        {
           "symbol": "DOW",
           "name": "Dow Inc.",
           "rs": 72,
@@ -5905,15 +5671,6 @@
           "ret20": -0.121815,
           "amount": 389385135,
           "mcap": 27993598225
-        },
-        {
-          "symbol": "NGVT",
-          "name": "Ingevity Corporation",
-          "rs": 72,
-          "ret5": 0.013139,
-          "ret20": 0.120335,
-          "amount": 10923918,
-          "mcap": 2477830730
         },
         {
           "symbol": "GEF-B",
@@ -5961,13 +5718,13 @@
           "mcap": 23802149728
         },
         {
-          "symbol": "PKG",
-          "name": "Packaging Corporation of Americ",
+          "symbol": "HUN",
+          "name": "Huntsman Corporation",
           "rs": 57,
-          "ret5": -0.003266,
-          "ret20": 0.065976,
-          "amount": 114355497,
-          "mcap": 19443107091
+          "ret5": -0.239891,
+          "ret20": -0.166052,
+          "amount": 73691272,
+          "mcap": 2523273693
         }
       ],
       "bottom": [
@@ -6067,15 +5824,6 @@
           "mcap": 15935009633
         },
         {
-          "symbol": "MDU",
-          "name": "MDU Resources Group, Inc.",
-          "rs": 64,
-          "ret5": 0.001799,
-          "ret20": -0.030149,
-          "amount": 31720533,
-          "mcap": 4727716510
-        },
-        {
           "symbol": "BIP",
           "name": "Brookfield Infrastructure Partn",
           "rs": 64,
@@ -6083,6 +5831,15 @@
           "ret20": -0.060255,
           "amount": 27395190,
           "mcap": 17700079944
+        },
+        {
+          "symbol": "MDU",
+          "name": "MDU Resources Group, Inc.",
+          "rs": 64,
+          "ret5": 0.001799,
+          "ret20": -0.030149,
+          "amount": 31720533,
+          "mcap": 4727716510
         },
         {
           "symbol": "PAM",
@@ -6130,24 +5887,6 @@
           "mcap": 2091814297
         },
         {
-          "symbol": "SWX",
-          "name": "Southwest Gas Holdings, Inc.",
-          "rs": 57,
-          "ret5": -0.012682,
-          "ret20": -0.010025,
-          "amount": 31422007,
-          "mcap": 6421099258
-        },
-        {
-          "symbol": "D",
-          "name": "Dominion Energy, Inc.",
-          "rs": 57,
-          "ret5": 0.000635,
-          "ret20": -0.003655,
-          "amount": 503414417,
-          "mcap": 55159442713
-        },
-        {
           "symbol": "EVRG",
           "name": "Evergy, Inc.",
           "rs": 57,
@@ -6155,6 +5894,24 @@
           "ret20": -0.01916,
           "amount": 156662523,
           "mcap": 19008104326
+        },
+        {
+          "symbol": "NEE",
+          "name": "NextEra Energy, Inc.",
+          "rs": 57,
+          "ret5": 0.002111,
+          "ret20": -0.022632,
+          "amount": 1011126373,
+          "mcap": 197794643095
+        },
+        {
+          "symbol": "SWX",
+          "name": "Southwest Gas Holdings, Inc.",
+          "rs": 57,
+          "ret5": -0.012682,
+          "ret20": -0.010025,
+          "amount": 31422007,
+          "mcap": 6421099258
         },
         {
           "symbol": "TAC",
@@ -6175,22 +5932,13 @@
           "mcap": 7884591816
         },
         {
-          "symbol": "NEE",
-          "name": "NextEra Energy, Inc.",
+          "symbol": "D",
+          "name": "Dominion Energy, Inc.",
           "rs": 57,
-          "ret5": 0.002111,
-          "ret20": -0.022632,
-          "amount": 1011126373,
-          "mcap": 197794643095
-        },
-        {
-          "symbol": "TGS",
-          "name": "Transportadora de Gas del Sur SA TGS",
-          "rs": 56,
-          "ret5": -0.050889,
-          "ret20": 0.049327,
-          "amount": 11179505,
-          "mcap": 4731923868
+          "ret5": 0.000635,
+          "ret20": -0.003655,
+          "amount": 503414417,
+          "mcap": 55159442713
         },
         {
           "symbol": "NI",
@@ -6200,6 +5948,15 @@
           "ret20": -0.014845,
           "amount": 122376002,
           "mcap": 22557615853
+        },
+        {
+          "symbol": "TGS",
+          "name": "Transportadora de Gas del Sur SA TGS",
+          "rs": 56,
+          "ret5": -0.050889,
+          "ret20": 0.049327,
+          "amount": 11179505,
+          "mcap": 4731923868
         },
         {
           "symbol": "AXIA",
@@ -6290,15 +6047,6 @@
           "mcap": 10050417348
         },
         {
-          "symbol": "MYRG",
-          "name": "MYR Group, Inc.",
-          "rs": 95,
-          "ret5": 0.027779,
-          "ret20": 0.045025,
-          "amount": 113324288,
-          "mcap": 7286777894
-        },
-        {
           "symbol": "FIX",
           "name": "Comfort Systems USA, Inc.",
           "rs": 95,
@@ -6306,6 +6054,15 @@
           "ret20": 0.066553,
           "amount": 794605563,
           "mcap": 71623914036
+        },
+        {
+          "symbol": "MYRG",
+          "name": "MYR Group, Inc.",
+          "rs": 95,
+          "ret5": 0.027779,
+          "ret20": 0.045025,
+          "amount": 113324288,
+          "mcap": 7286777894
         },
         {
           "symbol": "LGN",
@@ -6317,13 +6074,13 @@
           "mcap": 10803793300
         },
         {
-          "symbol": "ECG",
-          "name": "Everus Construction Group, Inc.",
+          "symbol": "IESC",
+          "name": "IES Holdings, Inc.",
           "rs": 92,
-          "ret5": 0.052938,
-          "ret20": 0.041034,
-          "amount": 70130570,
-          "mcap": 8205959360
+          "ret5": -0.056659,
+          "ret20": 0.094226,
+          "amount": 137890298,
+          "mcap": 13504012885
         },
         {
           "symbol": "MTZ",
@@ -6335,13 +6092,13 @@
           "mcap": 33487273966
         },
         {
-          "symbol": "IESC",
-          "name": "IES Holdings, Inc.",
+          "symbol": "ECG",
+          "name": "Everus Construction Group, Inc.",
           "rs": 92,
-          "ret5": -0.056659,
-          "ret20": 0.094226,
-          "amount": 137890298,
-          "mcap": 13504012885
+          "ret5": 0.052938,
+          "ret20": 0.041034,
+          "amount": 70130570,
+          "mcap": 8205959360
         },
         {
           "symbol": "PWR",
@@ -6443,13 +6200,13 @@
           "mcap": 11670632337
         },
         {
-          "symbol": "GFF",
-          "name": "Griffon Corporation",
+          "symbol": "CX",
+          "name": "Cemex, S.A.B. de C.V. Sponsored",
           "rs": 65,
-          "ret5": -0.034363,
-          "ret20": 0.071265,
-          "amount": 21221117,
-          "mcap": 3800968116
+          "ret5": -0.025988,
+          "ret20": 0.005707,
+          "amount": 47918470,
+          "mcap": 20058838977
         }
       ],
       "bottom": [
@@ -6513,15 +6270,6 @@
       "return_1d": 0.003334,
       "top": [
         {
-          "symbol": "CALY",
-          "name": "Callaway Golf Company",
-          "rs": 87,
-          "ret5": 0.041604,
-          "ret20": 0.141943,
-          "amount": 36878067,
-          "mcap": 2757481126
-        },
-        {
           "symbol": "MSGE",
           "name": "Madison Square Garden Entertain",
           "rs": 87,
@@ -6529,6 +6277,15 @@
           "ret20": 0.053114,
           "amount": 28629105,
           "mcap": 3130440988
+        },
+        {
+          "symbol": "CALY",
+          "name": "Callaway Golf Company",
+          "rs": 87,
+          "ret5": 0.041604,
+          "ret20": 0.141943,
+          "amount": 36878067,
+          "mcap": 2757481126
         },
         {
           "symbol": "VIK",
@@ -6549,13 +6306,13 @@
           "mcap": 92341121686
         },
         {
-          "symbol": "VAC",
-          "name": "Marriott Vacations Worldwide Co",
+          "symbol": "IHG",
+          "name": "Intercontinental Hotels Group",
           "rs": 77,
-          "ret5": 0.042427,
-          "ret20": 0.30733,
-          "amount": 44340540,
-          "mcap": 2496397359
+          "ret5": 0.016609,
+          "ret20": 0.104386,
+          "amount": 40423234,
+          "mcap": 22297275938
         },
         {
           "symbol": "H",
@@ -6567,22 +6324,13 @@
           "mcap": 15749469583
         },
         {
-          "symbol": "IHG",
-          "name": "Intercontinental Hotels Group",
+          "symbol": "VAC",
+          "name": "Marriott Vacations Worldwide Co",
           "rs": 77,
-          "ret5": 0.016609,
-          "ret20": 0.104386,
-          "amount": 40423234,
-          "mcap": 22297275938
-        },
-        {
-          "symbol": "LTH",
-          "name": "Life Time Group Holdings, Inc.",
-          "rs": 75,
-          "ret5": 0.069344,
-          "ret20": 0.115073,
-          "amount": 74506782,
-          "mcap": 7521746701
+          "ret5": 0.042427,
+          "ret20": 0.30733,
+          "amount": 44340540,
+          "mcap": 2496397359
         },
         {
           "symbol": "GOLF",
@@ -6592,6 +6340,15 @@
           "ret20": 0.213666,
           "amount": 24155108,
           "mcap": 4950745466
+        },
+        {
+          "symbol": "LTH",
+          "name": "Life Time Group Holdings, Inc.",
+          "rs": 75,
+          "ret5": 0.069344,
+          "ret20": 0.115073,
+          "amount": 74506782,
+          "mcap": 7521746701
         },
         {
           "symbol": "MCRI",
@@ -6704,15 +6461,6 @@
           "mcap": 120129400192
         },
         {
-          "symbol": "MMYT",
-          "name": "MakeMyTrip Limited",
-          "rs": 3,
-          "ret5": 0.076007,
-          "ret20": 0.081099,
-          "amount": 44625938,
-          "mcap": 4091622122
-        },
-        {
           "symbol": "PLNT",
           "name": "Planet Fitness, Inc.",
           "rs": 3,
@@ -6720,6 +6468,15 @@
           "ret20": 0.044112,
           "amount": 89717605,
           "mcap": 4016854484
+        },
+        {
+          "symbol": "MMYT",
+          "name": "MakeMyTrip Limited",
+          "rs": 3,
+          "ret5": 0.076007,
+          "ret20": 0.081099,
+          "amount": 44625938,
+          "mcap": 4091622122
         },
         {
           "symbol": "MLCO",
@@ -6826,15 +6583,6 @@
           "mcap": 106245937428
         },
         {
-          "symbol": "MAC",
-          "name": "Macerich Company (The)",
-          "rs": 74,
-          "ret5": -0.07824,
-          "ret20": 0.050913,
-          "amount": 73716250,
-          "mcap": 5742544676
-        },
-        {
           "symbol": "CURB",
           "name": "Curbline Properties Corp.",
           "rs": 74,
@@ -6842,6 +6590,15 @@
           "ret20": 0.035368,
           "amount": 19373863,
           "mcap": 2892833424
+        },
+        {
+          "symbol": "MAC",
+          "name": "Macerich Company (The)",
+          "rs": 74,
+          "ret5": -0.07824,
+          "ret20": 0.050913,
+          "amount": 73716250,
+          "mcap": 5742544676
         },
         {
           "symbol": "APLE",
@@ -7013,15 +6770,6 @@
           "mcap": 3864965760
         },
         {
-          "symbol": "CNO",
-          "name": "CNO Financial Group, Inc.",
-          "rs": 72,
-          "ret5": 0.002606,
-          "ret20": 0.067403,
-          "amount": 20489936,
-          "mcap": 4295898156
-        },
-        {
           "symbol": "HG",
           "name": "Hamilton Insurance Group, Ltd.",
           "rs": 72,
@@ -7029,6 +6777,15 @@
           "ret20": -0.020479,
           "amount": 11943510,
           "mcap": 3004479145
+        },
+        {
+          "symbol": "CNO",
+          "name": "CNO Financial Group, Inc.",
+          "rs": 72,
+          "ret5": 0.002606,
+          "ret20": 0.067403,
+          "amount": 20489936,
+          "mcap": 4295898156
         },
         {
           "symbol": "MCY",
@@ -7130,15 +6887,6 @@
           "mcap": 6622998675
         },
         {
-          "symbol": "TRV",
-          "name": "The Travelers Companies, Inc.",
-          "rs": 57,
-          "ret5": 0.004276,
-          "ret20": -0.003525,
-          "amount": 429956084,
-          "mcap": 62734432290
-        },
-        {
           "symbol": "CB",
           "name": "Chubb Limited",
           "rs": 57,
@@ -7146,6 +6894,15 @@
           "ret20": -0.026184,
           "amount": 443268130,
           "mcap": 122567676334
+        },
+        {
+          "symbol": "TRV",
+          "name": "The Travelers Companies, Inc.",
+          "rs": 57,
+          "ret5": 0.004276,
+          "ret20": -0.003525,
+          "amount": 429956084,
+          "mcap": 62734432290
         },
         {
           "symbol": "ACT",
@@ -7290,15 +7047,6 @@
           "mcap": 2113593285
         },
         {
-          "symbol": "UNIT",
-          "name": "Uniti Group Inc.",
-          "rs": 91,
-          "ret5": -0.093786,
-          "ret20": 0.04135,
-          "amount": 24531773,
-          "mcap": 2743816988
-        },
-        {
           "symbol": "APLD",
           "name": "Applied Digital Corporation",
           "rs": 91,
@@ -7306,6 +7054,15 @@
           "ret20": -0.035192,
           "amount": 956527825,
           "mcap": 12996798150
+        },
+        {
+          "symbol": "UNIT",
+          "name": "Uniti Group Inc.",
+          "rs": 91,
+          "ret5": -0.093786,
+          "ret20": 0.04135,
+          "amount": 24531773,
+          "mcap": 2743816988
         },
         {
           "symbol": "CORZ",
@@ -7326,6 +7083,15 @@
           "mcap": 86225389215
         },
         {
+          "symbol": "TWLO",
+          "name": "Twilio Inc.",
+          "rs": 87,
+          "ret5": -0.094487,
+          "ret20": 0.010245,
+          "amount": 549300253,
+          "mcap": 29233164181
+        },
+        {
           "symbol": "NTCT",
           "name": "NetScout Systems, Inc.",
           "rs": 87,
@@ -7335,13 +7101,13 @@
           "mcap": 2845481985
         },
         {
-          "symbol": "TWLO",
-          "name": "Twilio Inc.",
-          "rs": 87,
-          "ret5": -0.094487,
-          "ret20": 0.010245,
-          "amount": 549300253,
-          "mcap": 29233164181
+          "symbol": "PANW",
+          "name": "Palo Alto Networks, Inc.",
+          "rs": 85,
+          "ret5": 0.022455,
+          "ret20": 0.193022,
+          "amount": 2458823097,
+          "mcap": 185876634521
         },
         {
           "symbol": "CRWD",
@@ -7362,15 +7128,6 @@
           "mcap": 23427411690
         },
         {
-          "symbol": "PANW",
-          "name": "Palo Alto Networks, Inc.",
-          "rs": 85,
-          "ret5": 0.022455,
-          "ret20": 0.193022,
-          "amount": 2458823097,
-          "mcap": 185876634521
-        },
-        {
           "symbol": "OUT",
           "name": "OUTFRONT Media Inc.",
           "rs": 84,
@@ -7389,15 +7146,6 @@
           "mcap": 23399440832
         },
         {
-          "symbol": "HST",
-          "name": "Host Hotels & Resorts, Inc.",
-          "rs": 80,
-          "ret5": -0.001906,
-          "ret20": 0.110607,
-          "amount": 208629892,
-          "mcap": 14765996748
-        },
-        {
           "symbol": "INGM",
           "name": "Ingram Micro Holding Corporatio",
           "rs": 80,
@@ -7405,6 +7153,15 @@
           "ret20": 0.092764,
           "amount": 33937063,
           "mcap": 5983429856
+        },
+        {
+          "symbol": "HST",
+          "name": "Host Hotels & Resorts, Inc.",
+          "rs": 80,
+          "ret5": -0.001906,
+          "ret20": 0.110607,
+          "amount": 208629892,
+          "mcap": 14765996748
         },
         {
           "symbol": "NSA",
@@ -7418,15 +7175,6 @@
       ],
       "bottom": [
         {
-          "symbol": "WIX",
-          "name": "Wix.com Ltd.",
-          "rs": 1,
-          "ret5": -0.081221,
-          "ret20": -0.236224,
-          "amount": 94188223,
-          "mcap": 3045225184
-        },
-        {
           "symbol": "VRRM",
           "name": "Verra Mobility Corporation",
           "rs": 1,
@@ -7436,13 +7184,13 @@
           "mcap": 2040106516
         },
         {
-          "symbol": "KD",
-          "name": "Kyndryl Holdings, Inc.",
-          "rs": 2,
-          "ret5": -0.066556,
-          "ret20": -0.094062,
-          "amount": 44726806,
-          "mcap": 2491191484
+          "symbol": "WIX",
+          "name": "Wix.com Ltd.",
+          "rs": 1,
+          "ret5": -0.081221,
+          "ret20": -0.236224,
+          "amount": 94188223,
+          "mcap": 3045225184
         },
         {
           "symbol": "EPAM",
@@ -7454,13 +7202,22 @@
           "mcap": 4722375769
         },
         {
-          "symbol": "ZS",
-          "name": "Zscaler, Inc.",
+          "symbol": "KD",
+          "name": "Kyndryl Holdings, Inc.",
+          "rs": 2,
+          "ret5": -0.066556,
+          "ret20": -0.094062,
+          "amount": 44726806,
+          "mcap": 2491191484
+        },
+        {
+          "symbol": "ACN",
+          "name": "Accenture plc",
           "rs": 3,
-          "ret5": -0.042784,
-          "ret20": -0.275338,
-          "amount": 1071917201,
-          "mcap": 24509326816
+          "ret5": -0.255142,
+          "ret20": -0.285898,
+          "amount": 1014439756,
+          "mcap": 98009264691
         }
       ]
     },
@@ -7594,15 +7351,6 @@
           "mcap": 17986161855
         },
         {
-          "symbol": "AAP",
-          "name": "Advance Auto Parts Inc.",
-          "rs": 58,
-          "ret5": -0.01824,
-          "ret20": 0.019835,
-          "amount": 128391661,
-          "mcap": 2971816702
-        },
-        {
           "symbol": "F",
           "name": "Ford Motor Company",
           "rs": 58,
@@ -7610,6 +7358,15 @@
           "ret20": 0.023117,
           "amount": 1013907228,
           "mcap": 54072278074
+        },
+        {
+          "symbol": "AAP",
+          "name": "Advance Auto Parts Inc.",
+          "rs": 58,
+          "ret5": -0.01824,
+          "ret20": 0.019835,
+          "amount": 128391661,
+          "mcap": 2971816702
         },
         {
           "symbol": "TSLA",
@@ -7668,24 +7425,6 @@
           "mcap": 2493740935
         },
         {
-          "symbol": "LI",
-          "name": "Li Auto Inc.",
-          "rs": 8,
-          "ret5": -0.082951,
-          "ret20": -0.189981,
-          "amount": 72096376,
-          "mcap": 19200624121
-        },
-        {
-          "symbol": "THO",
-          "name": "Thor Industries, Inc.",
-          "rs": 8,
-          "ret5": -0.068798,
-          "ret20": -0.046991,
-          "amount": 58100468,
-          "mcap": 3937331501
-        },
-        {
           "symbol": "STLA",
           "name": "Stellantis N.V.",
           "rs": 8,
@@ -7695,6 +7434,15 @@
           "mcap": 28605593633
         },
         {
+          "symbol": "LI",
+          "name": "Li Auto Inc.",
+          "rs": 8,
+          "ret5": -0.082951,
+          "ret20": -0.189981,
+          "amount": 72096376,
+          "mcap": 19200624121
+        },
+        {
           "symbol": "XPEV",
           "name": "XPeng Inc.",
           "rs": 8,
@@ -7702,6 +7450,15 @@
           "ret20": -0.160243,
           "amount": 116361383,
           "mcap": 15221994371
+        },
+        {
+          "symbol": "THO",
+          "name": "Thor Industries, Inc.",
+          "rs": 8,
+          "ret5": -0.068798,
+          "ret20": -0.046991,
+          "amount": 58100468,
+          "mcap": 3937331501
         }
       ]
     },
@@ -7844,15 +7601,6 @@
           "mcap": 144381575228
         },
         {
-          "symbol": "MS",
-          "name": "Morgan Stanley",
-          "rs": 80,
-          "ret5": 0.035928,
-          "ret20": 0.171769,
-          "amount": 1159937689,
-          "mcap": 305725137402
-        },
-        {
           "symbol": "SNEX",
           "name": "StoneX Group Inc.",
           "rs": 80,
@@ -7860,6 +7608,15 @@
           "ret20": 0.231111,
           "amount": 100976840,
           "mcap": 9195550910
+        },
+        {
+          "symbol": "MS",
+          "name": "Morgan Stanley",
+          "rs": 80,
+          "ret5": 0.035928,
+          "ret20": 0.171769,
+          "amount": 1159937689,
+          "mcap": 305725137402
         },
         {
           "symbol": "GS",
@@ -8040,15 +7797,6 @@
           "mcap": 144381575228
         },
         {
-          "symbol": "MS",
-          "name": "Morgan Stanley",
-          "rs": 80,
-          "ret5": 0.035928,
-          "ret20": 0.171769,
-          "amount": 1159937689,
-          "mcap": 305725137402
-        },
-        {
           "symbol": "SNEX",
           "name": "StoneX Group Inc.",
           "rs": 80,
@@ -8056,6 +7804,15 @@
           "ret20": 0.231111,
           "amount": 100976840,
           "mcap": 9195550910
+        },
+        {
+          "symbol": "MS",
+          "name": "Morgan Stanley",
+          "rs": 80,
+          "ret5": 0.035928,
+          "ret20": 0.171769,
+          "amount": 1159937689,
+          "mcap": 305725137402
         },
         {
           "symbol": "GS",
@@ -8094,15 +7851,6 @@
           "mcap": 77609079254
         },
         {
-          "symbol": "EVR",
-          "name": "Evercore Inc.",
-          "rs": 59,
-          "ret5": 0.033398,
-          "ret20": 0.095817,
-          "amount": 105085897,
-          "mcap": 13321308713
-        },
-        {
           "symbol": "NMR",
           "name": "Nomura Holdings Inc",
           "rs": 59,
@@ -8110,6 +7858,15 @@
           "ret20": 0.085828,
           "amount": 12831718,
           "mcap": 23214566017
+        },
+        {
+          "symbol": "EVR",
+          "name": "Evercore Inc.",
+          "rs": 59,
+          "ret5": 0.033398,
+          "ret20": 0.095817,
+          "amount": 105085897,
+          "mcap": 13321308713
         },
         {
           "symbol": "MARA",
@@ -8218,15 +7975,6 @@
           "mcap": 4884947565
         },
         {
-          "symbol": "ROST",
-          "name": "Ross Stores, Inc.",
-          "rs": 80,
-          "ret5": -0.037252,
-          "ret20": 0.06646,
-          "amount": 771562951,
-          "mcap": 68218093194
-        },
-        {
           "symbol": "M",
           "name": "Macy's Inc",
           "rs": 80,
@@ -8234,6 +7982,15 @@
           "ret20": 0.165295,
           "amount": 162091722,
           "mcap": 4860719101
+        },
+        {
+          "symbol": "ROST",
+          "name": "Ross Stores, Inc.",
+          "rs": 80,
+          "ret5": -0.037252,
+          "ret20": 0.06646,
+          "amount": 771562951,
+          "mcap": 68218093194
         },
         {
           "symbol": "TBBB",
@@ -8308,15 +8065,6 @@
           "mcap": 50176440948
         },
         {
-          "symbol": "AEO",
-          "name": "American Eagle Outfitters, Inc.",
-          "rs": 56,
-          "ret5": -0.058883,
-          "ret20": 0.07072,
-          "amount": 104570515,
-          "mcap": 2570123148
-        },
-        {
           "symbol": "WSM",
           "name": "Williams-Sonoma, Inc.",
           "rs": 56,
@@ -8324,6 +8072,15 @@
           "ret20": 0.176832,
           "amount": 223288914,
           "mcap": 20477900346
+        },
+        {
+          "symbol": "AEO",
+          "name": "American Eagle Outfitters, Inc.",
+          "rs": 56,
+          "ret5": -0.058883,
+          "ret20": 0.07072,
+          "amount": 104570515,
+          "mcap": 2570123148
         },
         {
           "symbol": "WMT",
@@ -8335,15 +8092,6 @@
           "mcap": 1047946160038
         },
         {
-          "symbol": "DKS",
-          "name": "Dick's Sporting Goods Inc",
-          "rs": 49,
-          "ret5": 0.047438,
-          "ret20": 0.045235,
-          "amount": 287591683,
-          "mcap": 19110889653
-        },
-        {
           "symbol": "BBY",
           "name": "Best Buy Co., Inc.",
           "rs": 49,
@@ -8351,6 +8099,15 @@
           "ret20": 0.216664,
           "amount": 334644271,
           "mcap": 11609930501
+        },
+        {
+          "symbol": "DKS",
+          "name": "Dick's Sporting Goods Inc",
+          "rs": 49,
+          "ret5": 0.047438,
+          "ret20": 0.045235,
+          "amount": 287591683,
+          "mcap": 19110889653
         },
         {
           "symbol": "URBN",
@@ -8371,13 +8128,13 @@
           "mcap": 2905818007994
         },
         {
-          "symbol": "CART",
-          "name": "Maplebear Inc.",
+          "symbol": "DDS",
+          "name": "Dillard's, Inc.",
           "rs": 43,
-          "ret5": 0.073404,
-          "ret20": 0.105837,
-          "amount": 156643066,
-          "mcap": 9389441315
+          "ret5": -0.097136,
+          "ret20": 4.2e-05,
+          "amount": 61438356,
+          "mcap": 8322648912
         }
       ],
       "bottom": [
@@ -8409,15 +8166,6 @@
           "mcap": 14631825482
         },
         {
-          "symbol": "SE",
-          "name": "Sea Limited",
-          "rs": 6,
-          "ret5": 0.093827,
-          "ret20": 0.020667,
-          "amount": 306004602,
-          "mcap": 57279550441
-        },
-        {
           "symbol": "OLLI",
           "name": "Ollie's Bargain Outlet Holdings",
           "rs": 6,
@@ -8425,6 +8173,15 @@
           "ret20": -0.079567,
           "amount": 180543366,
           "mcap": 4524170345
+        },
+        {
+          "symbol": "SE",
+          "name": "Sea Limited",
+          "rs": 6,
+          "ret5": 0.093827,
+          "ret20": 0.020667,
+          "amount": 306004602,
+          "mcap": 57279550441
         }
       ]
     },
@@ -8468,15 +8225,6 @@
           "mcap": 4816417564
         },
         {
-          "symbol": "ROST",
-          "name": "Ross Stores, Inc.",
-          "rs": 80,
-          "ret5": -0.037252,
-          "ret20": 0.06646,
-          "amount": 771562951,
-          "mcap": 68218093194
-        },
-        {
           "symbol": "M",
           "name": "Macy's Inc",
           "rs": 80,
@@ -8484,6 +8232,15 @@
           "ret20": 0.165295,
           "amount": 162091722,
           "mcap": 4860719101
+        },
+        {
+          "symbol": "ROST",
+          "name": "Ross Stores, Inc.",
+          "rs": 80,
+          "ret5": -0.037252,
+          "ret20": 0.06646,
+          "amount": 771562951,
+          "mcap": 68218093194
         },
         {
           "symbol": "ALH",
@@ -8603,15 +8360,6 @@
           "mcap": 50176440948
         },
         {
-          "symbol": "AEO",
-          "name": "American Eagle Outfitters, Inc.",
-          "rs": 56,
-          "ret5": -0.058883,
-          "ret20": 0.07072,
-          "amount": 104570515,
-          "mcap": 2570123148
-        },
-        {
           "symbol": "WSM",
           "name": "Williams-Sonoma, Inc.",
           "rs": 56,
@@ -8619,6 +8367,15 @@
           "ret20": 0.176832,
           "amount": 223288914,
           "mcap": 20477900346
+        },
+        {
+          "symbol": "AEO",
+          "name": "American Eagle Outfitters, Inc.",
+          "rs": 56,
+          "ret5": -0.058883,
+          "ret20": 0.07072,
+          "amount": 104570515,
+          "mcap": 2570123148
         }
       ],
       "bottom": [
@@ -8632,15 +8389,6 @@
           "mcap": 15654822132
         },
         {
-          "symbol": "CHWY",
-          "name": "Chewy, Inc.",
-          "rs": 3,
-          "ret5": -0.063693,
-          "ret20": -0.091715,
-          "amount": 195392898,
-          "mcap": 9021056014
-        },
-        {
           "symbol": "WHR",
           "name": "Whirlpool Corporation",
           "rs": 3,
@@ -8648,6 +8396,15 @@
           "ret20": -0.106084,
           "amount": 105686799,
           "mcap": 2707661757
+        },
+        {
+          "symbol": "CHWY",
+          "name": "Chewy, Inc.",
+          "rs": 3,
+          "ret5": -0.063693,
+          "ret20": -0.091715,
+          "amount": 195392898,
+          "mcap": 9021056014
         },
         {
           "symbol": "LULU",
@@ -8659,13 +8416,13 @@
           "mcap": 14631825482
         },
         {
-          "symbol": "SE",
-          "name": "Sea Limited",
+          "symbol": "OLLI",
+          "name": "Ollie's Bargain Outlet Holdings",
           "rs": 6,
-          "ret5": 0.093827,
-          "ret20": 0.020667,
-          "amount": 306004602,
-          "mcap": 57279550441
+          "ret5": -0.082883,
+          "ret20": -0.079567,
+          "amount": 180543366,
+          "mcap": 4524170345
         }
       ]
     },
@@ -8754,15 +8511,6 @@
           "mcap": 11584231867
         },
         {
-          "symbol": "HAE",
-          "name": "Haemonetics Corporation",
-          "rs": 62,
-          "ret5": -0.058262,
-          "ret20": 0.192037,
-          "amount": 69608533,
-          "mcap": 2649331678
-        },
-        {
           "symbol": "PEN",
           "name": "Penumbra, Inc.",
           "rs": 62,
@@ -8770,6 +8518,15 @@
           "ret20": -0.038015,
           "amount": 108112512,
           "mcap": 12687924154
+        },
+        {
+          "symbol": "HAE",
+          "name": "Haemonetics Corporation",
+          "rs": 62,
+          "ret5": -0.058262,
+          "ret20": 0.192037,
+          "amount": 69608533,
+          "mcap": 2649331678
         },
         {
           "symbol": "NVCR",
@@ -8790,15 +8547,6 @@
           "mcap": 10206122864
         },
         {
-          "symbol": "ICUI",
-          "name": "ICU Medical, Inc.",
-          "rs": 49,
-          "ret5": -0.019597,
-          "ret20": 0.063584,
-          "amount": 39178062,
-          "mcap": 3050217208
-        },
-        {
           "symbol": "EW",
           "name": "Edwards Lifesciences Corporatio",
           "rs": 49,
@@ -8806,6 +8554,15 @@
           "ret20": 0.044587,
           "amount": 379019096,
           "mcap": 46864360655
+        },
+        {
+          "symbol": "ICUI",
+          "name": "ICU Medical, Inc.",
+          "rs": 49,
+          "ret5": -0.019597,
+          "ret20": 0.063584,
+          "amount": 39178062,
+          "mcap": 3050217208
         },
         {
           "symbol": "TFX",
@@ -8844,15 +8601,6 @@
           "mcap": 6037320101
         },
         {
-          "symbol": "PHG",
-          "name": "Koninklijke Philips N.V. NY Registry Shares",
-          "rs": 36,
-          "ret5": 0.005366,
-          "ret20": -0.019041,
-          "amount": 30086548,
-          "mcap": 24374809369
-        },
-        {
           "symbol": "BLCO",
           "name": "Bausch + Lomb Corporation",
           "rs": 36,
@@ -8860,6 +8608,15 @@
           "ret20": -0.08467,
           "amount": 6216566,
           "mcap": 5793715630
+        },
+        {
+          "symbol": "PHG",
+          "name": "Koninklijke Philips N.V. NY Registry Shares",
+          "rs": 36,
+          "ret5": 0.005366,
+          "ret20": -0.019041,
+          "amount": 30086548,
+          "mcap": 24374809369
         }
       ],
       "bottom": [
@@ -8900,13 +8657,13 @@
           "mcap": 3768003784
         },
         {
-          "symbol": "RMD",
-          "name": "ResMed Inc.",
+          "symbol": "ABT",
+          "name": "Abbott Laboratories",
           "rs": 10,
-          "ret5": -0.038301,
-          "ret20": -0.10279,
-          "amount": 256629270,
-          "mcap": 29355062248
+          "ret5": -0.004119,
+          "ret20": 0.001879,
+          "amount": 977602979,
+          "mcap": 146016134831
         }
       ]
     },
@@ -9013,15 +8770,6 @@
           "mcap": 345317248371
         },
         {
-          "symbol": "CCEP",
-          "name": "Coca-Cola Europacific Partners ",
-          "rs": 49,
-          "ret5": -0.030987,
-          "ret20": 0.024115,
-          "amount": 186306966,
-          "mcap": 40964782812
-        },
-        {
           "symbol": "PRMB",
           "name": "Primo Brands Corporation",
           "rs": 49,
@@ -9029,6 +8777,15 @@
           "ret20": 0.045692,
           "amount": 66506610,
           "mcap": 8502010490
+        },
+        {
+          "symbol": "CCEP",
+          "name": "Coca-Cola Europacific Partners ",
+          "rs": 49,
+          "ret5": -0.030987,
+          "ret20": 0.024115,
+          "amount": 186306966,
+          "mcap": 40964782812
         },
         {
           "symbol": "SFD",
@@ -9094,13 +8851,13 @@
           "mcap": 3259333633
         },
         {
-          "symbol": "BF-B",
-          "name": "Brown Forman Inc",
+          "symbol": "HSY",
+          "name": "The Hershey Company",
           "rs": 32,
-          "ret5": -0.020426,
-          "ret20": 0.017629,
-          "amount": 69429109,
-          "mcap": 12144546420
+          "ret5": -0.056436,
+          "ret20": -0.098695,
+          "amount": 347531071,
+          "mcap": 39690413767
         }
       ],
       "bottom": [
@@ -9191,15 +8948,6 @@
           "mcap": 41952346733
         },
         {
-          "symbol": "WT",
-          "name": "WisdomTree, Inc.",
-          "rs": 79,
-          "ret5": 0.012193,
-          "ret20": -0.050772,
-          "amount": 47200937,
-          "mcap": 2980825296
-        },
-        {
           "symbol": "AMG",
           "name": "Affiliated Managers Group, Inc.",
           "rs": 79,
@@ -9207,6 +8955,15 @@
           "ret20": 0.160698,
           "amount": 102739836,
           "mcap": 8015540297
+        },
+        {
+          "symbol": "WT",
+          "name": "WisdomTree, Inc.",
+          "rs": 79,
+          "ret5": 0.012193,
+          "ret20": -0.050772,
+          "amount": 47200937,
+          "mcap": 2980825296
         },
         {
           "symbol": "PFG",
@@ -9346,15 +9103,6 @@
       ],
       "bottom": [
         {
-          "symbol": "HLNE",
-          "name": "Hamilton Lane Incorporated",
-          "rs": 4,
-          "ret5": 0.01974,
-          "ret20": -0.077317,
-          "amount": 89083368,
-          "mcap": 4837933224
-        },
-        {
           "symbol": "OWL",
           "name": "Blue Owl Capital Inc.",
           "rs": 4,
@@ -9362,6 +9110,15 @@
           "ret20": -0.071099,
           "amount": 224395548,
           "mcap": 15231922390
+        },
+        {
+          "symbol": "HLNE",
+          "name": "Hamilton Lane Incorporated",
+          "rs": 4,
+          "ret5": 0.01974,
+          "ret20": -0.077317,
+          "amount": 89083368,
+          "mcap": 4837933224
         },
         {
           "symbol": "FSK",
@@ -9414,15 +9171,6 @@
           "mcap": 16612689650
         },
         {
-          "symbol": "PENG",
-          "name": "Penguin Solutions, Inc.",
-          "rs": 96,
-          "ret5": 0.040365,
-          "ret20": 0.37033,
-          "amount": 182316672,
-          "mcap": 2449582283
-        },
-        {
           "symbol": "CIFR",
           "name": "Cipher Digital Inc.",
           "rs": 96,
@@ -9432,13 +9180,13 @@
           "mcap": 8688204794
         },
         {
-          "symbol": "INOD",
-          "name": "Innodata Inc.",
-          "rs": 93,
-          "ret5": -0.060246,
-          "ret20": -0.036165,
-          "amount": 179799084,
-          "mcap": 2937349295
+          "symbol": "PENG",
+          "name": "Penguin Solutions, Inc.",
+          "rs": 96,
+          "ret5": 0.040365,
+          "ret20": 0.37033,
+          "amount": 182316672,
+          "mcap": 2449582283
         },
         {
           "symbol": "BB",
@@ -9450,13 +9198,13 @@
           "mcap": 3586082402
         },
         {
-          "symbol": "APLD",
-          "name": "Applied Digital Corporation",
-          "rs": 91,
-          "ret5": 0.084373,
-          "ret20": -0.035192,
-          "amount": 956527825,
-          "mcap": 12996798150
+          "symbol": "INOD",
+          "name": "Innodata Inc.",
+          "rs": 93,
+          "ret5": -0.060246,
+          "ret20": -0.036165,
+          "amount": 179799084,
+          "mcap": 2937349295
         },
         {
           "symbol": "CORZ",
@@ -9466,6 +9214,15 @@
           "ret20": 0.169446,
           "amount": 350094326,
           "mcap": 7629246825
+        },
+        {
+          "symbol": "APLD",
+          "name": "Applied Digital Corporation",
+          "rs": 91,
+          "ret5": 0.084373,
+          "ret20": -0.035192,
+          "amount": 956527825,
+          "mcap": 12996798150
         },
         {
           "symbol": "FTNT",
@@ -9495,6 +9252,15 @@
           "mcap": 29233164181
         },
         {
+          "symbol": "AKAM",
+          "name": "Akamai Technologies, Inc.",
+          "rs": 85,
+          "ret5": -0.071072,
+          "ret20": -0.151269,
+          "amount": 566979754,
+          "mcap": 23427411690
+        },
+        {
           "symbol": "PANW",
           "name": "Palo Alto Networks, Inc.",
           "rs": 85,
@@ -9511,15 +9277,6 @@
           "ret20": 0.051095,
           "amount": 2451051119,
           "mcap": 143219373939
-        },
-        {
-          "symbol": "AKAM",
-          "name": "Akamai Technologies, Inc.",
-          "rs": 85,
-          "ret5": -0.071072,
-          "ret20": -0.151269,
-          "amount": 566979754,
-          "mcap": 23427411690
         },
         {
           "symbol": "NTAP",
@@ -9587,15 +9344,6 @@
       ],
       "bottom": [
         {
-          "symbol": "VRRM",
-          "name": "Verra Mobility Corporation",
-          "rs": 1,
-          "ret5": -0.055978,
-          "ret20": -0.673326,
-          "amount": 58269720,
-          "mcap": 2040106516
-        },
-        {
           "symbol": "WIX",
           "name": "Wix.com Ltd.",
           "rs": 1,
@@ -9603,6 +9351,15 @@
           "ret20": -0.236224,
           "amount": 94188223,
           "mcap": 3045225184
+        },
+        {
+          "symbol": "VRRM",
+          "name": "Verra Mobility Corporation",
+          "rs": 1,
+          "ret5": -0.055978,
+          "ret20": -0.673326,
+          "amount": 58269720,
+          "mcap": 2040106516
         },
         {
           "symbol": "EPAM",
@@ -9623,13 +9380,13 @@
           "mcap": 2491191484
         },
         {
-          "symbol": "ACN",
-          "name": "Accenture plc",
+          "symbol": "NTSK",
+          "name": "Netskope, Inc.",
           "rs": 3,
-          "ret5": -0.255142,
-          "ret20": -0.285898,
-          "amount": 1014439756,
-          "mcap": 98009264691
+          "ret5": -0.005621,
+          "ret20": -0.223217,
+          "amount": 80823223,
+          "mcap": 4227319279
         }
       ]
     },
@@ -9700,15 +9457,6 @@
           "mcap": 2905818007994
         },
         {
-          "symbol": "CART",
-          "name": "Maplebear Inc.",
-          "rs": 43,
-          "ret5": 0.073404,
-          "ret20": 0.105837,
-          "amount": 156643066,
-          "mcap": 9389441315
-        },
-        {
           "symbol": "BIDU",
           "name": "Baidu, Inc.",
           "rs": 43,
@@ -9725,6 +9473,15 @@
           "ret20": -0.011301,
           "amount": 103969509,
           "mcap": 8413923494
+        },
+        {
+          "symbol": "CART",
+          "name": "Maplebear Inc.",
+          "rs": 43,
+          "ret5": 0.073404,
+          "ret20": 0.105837,
+          "amount": 156643066,
+          "mcap": 9389441315
         },
         {
           "symbol": "W",
@@ -9828,15 +9585,6 @@
       ],
       "bottom": [
         {
-          "symbol": "TME",
-          "name": "Tencent Music Entertainment Group",
-          "rs": 2,
-          "ret5": -0.059873,
-          "ret20": -0.051314,
-          "amount": 114517352,
-          "mcap": 12914704821
-        },
-        {
           "symbol": "Z",
           "name": "Zillow Group, Inc.",
           "rs": 2,
@@ -9844,6 +9592,15 @@
           "ret20": -0.131671,
           "amount": 187503854,
           "mcap": 8841422876
+        },
+        {
+          "symbol": "TME",
+          "name": "Tencent Music Entertainment Group",
+          "rs": 2,
+          "ret5": -0.059873,
+          "ret20": -0.051314,
+          "amount": 114517352,
+          "mcap": 12914704821
         },
         {
           "symbol": "CHWY",
@@ -9968,15 +9725,6 @@
           "mcap": 12996798150
         },
         {
-          "symbol": "NAVN",
-          "name": "Navan, Inc.",
-          "rs": 91,
-          "ret5": 0.09262,
-          "ret20": 0.17572,
-          "amount": 102368395,
-          "mcap": 4531251376
-        },
-        {
           "symbol": "CORZ",
           "name": "Core Scientific, Inc.",
           "rs": 91,
@@ -9984,6 +9732,15 @@
           "ret20": 0.169446,
           "amount": 350094326,
           "mcap": 7629246825
+        },
+        {
+          "symbol": "NAVN",
+          "name": "Navan, Inc.",
+          "rs": 91,
+          "ret5": 0.09262,
+          "ret20": 0.17572,
+          "amount": 102368395,
+          "mcap": 4531251376
         },
         {
           "symbol": "FTNT",
@@ -9995,15 +9752,6 @@
           "mcap": 86225389215
         },
         {
-          "symbol": "DDOG",
-          "name": "Datadog, Inc.",
-          "rs": 88,
-          "ret5": -0.03674,
-          "ret20": 0.017336,
-          "amount": 1398529526,
-          "mcap": 72629467529
-        },
-        {
           "symbol": "FROG",
           "name": "JFrog Ltd.",
           "rs": 88,
@@ -10011,6 +9759,15 @@
           "ret20": 0.152482,
           "amount": 190285121,
           "mcap": 7773464186
+        },
+        {
+          "symbol": "DDOG",
+          "name": "Datadog, Inc.",
+          "rs": 88,
+          "ret5": -0.03674,
+          "ret20": 0.017336,
+          "amount": 1398529526,
+          "mcap": 72629467529
         },
         {
           "symbol": "NTCT",
@@ -10069,15 +9826,6 @@
       ],
       "bottom": [
         {
-          "symbol": "WIX",
-          "name": "Wix.com Ltd.",
-          "rs": 1,
-          "ret5": -0.081221,
-          "ret20": -0.236224,
-          "amount": 94188223,
-          "mcap": 3045225184
-        },
-        {
           "symbol": "VRRM",
           "name": "Verra Mobility Corporation",
           "rs": 1,
@@ -10087,6 +9835,24 @@
           "mcap": 2040106516
         },
         {
+          "symbol": "WIX",
+          "name": "Wix.com Ltd.",
+          "rs": 1,
+          "ret5": -0.081221,
+          "ret20": -0.236224,
+          "amount": 94188223,
+          "mcap": 3045225184
+        },
+        {
+          "symbol": "VERX",
+          "name": "Vertex, Inc.",
+          "rs": 2,
+          "ret5": -0.10119,
+          "ret20": -0.161069,
+          "amount": 18866831,
+          "mcap": 2037855286
+        },
+        {
           "symbol": "EPAM",
           "name": "EPAM Systems, Inc.",
           "rs": 2,
@@ -10094,15 +9860,6 @@
           "ret20": -0.262705,
           "amount": 204803066,
           "mcap": 4722375769
-        },
-        {
-          "symbol": "MNDY",
-          "name": "monday.com Ltd.",
-          "rs": 2,
-          "ret5": -0.084592,
-          "ret20": -0.067437,
-          "amount": 149256858,
-          "mcap": 3463587358
         },
         {
           "symbol": "KD",
@@ -10209,15 +9966,6 @@
           "mcap": 12996798150
         },
         {
-          "symbol": "NAVN",
-          "name": "Navan, Inc.",
-          "rs": 91,
-          "ret5": 0.09262,
-          "ret20": 0.17572,
-          "amount": 102368395,
-          "mcap": 4531251376
-        },
-        {
           "symbol": "CORZ",
           "name": "Core Scientific, Inc.",
           "rs": 91,
@@ -10225,6 +9973,15 @@
           "ret20": 0.169446,
           "amount": 350094326,
           "mcap": 7629246825
+        },
+        {
+          "symbol": "NAVN",
+          "name": "Navan, Inc.",
+          "rs": 91,
+          "ret5": 0.09262,
+          "ret20": 0.17572,
+          "amount": 102368395,
+          "mcap": 4531251376
         },
         {
           "symbol": "FTNT",
@@ -10236,15 +9993,6 @@
           "mcap": 86225389215
         },
         {
-          "symbol": "DDOG",
-          "name": "Datadog, Inc.",
-          "rs": 88,
-          "ret5": -0.03674,
-          "ret20": 0.017336,
-          "amount": 1398529526,
-          "mcap": 72629467529
-        },
-        {
           "symbol": "FROG",
           "name": "JFrog Ltd.",
           "rs": 88,
@@ -10252,6 +10000,15 @@
           "ret20": 0.152482,
           "amount": 190285121,
           "mcap": 7773464186
+        },
+        {
+          "symbol": "DDOG",
+          "name": "Datadog, Inc.",
+          "rs": 88,
+          "ret5": -0.03674,
+          "ret20": 0.017336,
+          "amount": 1398529526,
+          "mcap": 72629467529
         },
         {
           "symbol": "NTCT",
@@ -10310,15 +10067,6 @@
       ],
       "bottom": [
         {
-          "symbol": "WIX",
-          "name": "Wix.com Ltd.",
-          "rs": 1,
-          "ret5": -0.081221,
-          "ret20": -0.236224,
-          "amount": 94188223,
-          "mcap": 3045225184
-        },
-        {
           "symbol": "VRRM",
           "name": "Verra Mobility Corporation",
           "rs": 1,
@@ -10328,13 +10076,22 @@
           "mcap": 2040106516
         },
         {
-          "symbol": "TME",
-          "name": "Tencent Music Entertainment Group",
+          "symbol": "WIX",
+          "name": "Wix.com Ltd.",
+          "rs": 1,
+          "ret5": -0.081221,
+          "ret20": -0.236224,
+          "amount": 94188223,
+          "mcap": 3045225184
+        },
+        {
+          "symbol": "VERX",
+          "name": "Vertex, Inc.",
           "rs": 2,
-          "ret5": -0.059873,
-          "ret20": -0.051314,
-          "amount": 114517352,
-          "mcap": 12914704821
+          "ret5": -0.10119,
+          "ret20": -0.161069,
+          "amount": 18866831,
+          "mcap": 2037855286
         },
         {
           "symbol": "EPAM",
@@ -10346,13 +10103,13 @@
           "mcap": 4722375769
         },
         {
-          "symbol": "MNDY",
-          "name": "monday.com Ltd.",
+          "symbol": "KD",
+          "name": "Kyndryl Holdings, Inc.",
           "rs": 2,
-          "ret5": -0.084592,
-          "ret20": -0.067437,
-          "amount": 149256858,
-          "mcap": 3463587358
+          "ret5": -0.066556,
+          "ret20": -0.094062,
+          "amount": 44726806,
+          "mcap": 2491191484
         }
       ]
     },
@@ -10450,15 +10207,6 @@
           "mcap": 12996798150
         },
         {
-          "symbol": "NAVN",
-          "name": "Navan, Inc.",
-          "rs": 91,
-          "ret5": 0.09262,
-          "ret20": 0.17572,
-          "amount": 102368395,
-          "mcap": 4531251376
-        },
-        {
           "symbol": "CORZ",
           "name": "Core Scientific, Inc.",
           "rs": 91,
@@ -10466,6 +10214,15 @@
           "ret20": 0.169446,
           "amount": 350094326,
           "mcap": 7629246825
+        },
+        {
+          "symbol": "NAVN",
+          "name": "Navan, Inc.",
+          "rs": 91,
+          "ret5": 0.09262,
+          "ret20": 0.17572,
+          "amount": 102368395,
+          "mcap": 4531251376
         },
         {
           "symbol": "FTNT",
@@ -10477,15 +10234,6 @@
           "mcap": 86225389215
         },
         {
-          "symbol": "DDOG",
-          "name": "Datadog, Inc.",
-          "rs": 88,
-          "ret5": -0.03674,
-          "ret20": 0.017336,
-          "amount": 1398529526,
-          "mcap": 72629467529
-        },
-        {
           "symbol": "FROG",
           "name": "JFrog Ltd.",
           "rs": 88,
@@ -10493,6 +10241,15 @@
           "ret20": 0.152482,
           "amount": 190285121,
           "mcap": 7773464186
+        },
+        {
+          "symbol": "DDOG",
+          "name": "Datadog, Inc.",
+          "rs": 88,
+          "ret5": -0.03674,
+          "ret20": 0.017336,
+          "amount": 1398529526,
+          "mcap": 72629467529
         },
         {
           "symbol": "NTCT",
@@ -10551,15 +10308,6 @@
       ],
       "bottom": [
         {
-          "symbol": "WIX",
-          "name": "Wix.com Ltd.",
-          "rs": 1,
-          "ret5": -0.081221,
-          "ret20": -0.236224,
-          "amount": 94188223,
-          "mcap": 3045225184
-        },
-        {
           "symbol": "VRRM",
           "name": "Verra Mobility Corporation",
           "rs": 1,
@@ -10569,6 +10317,24 @@
           "mcap": 2040106516
         },
         {
+          "symbol": "WIX",
+          "name": "Wix.com Ltd.",
+          "rs": 1,
+          "ret5": -0.081221,
+          "ret20": -0.236224,
+          "amount": 94188223,
+          "mcap": 3045225184
+        },
+        {
+          "symbol": "VERX",
+          "name": "Vertex, Inc.",
+          "rs": 2,
+          "ret5": -0.10119,
+          "ret20": -0.161069,
+          "amount": 18866831,
+          "mcap": 2037855286
+        },
+        {
           "symbol": "EPAM",
           "name": "EPAM Systems, Inc.",
           "rs": 2,
@@ -10576,15 +10342,6 @@
           "ret20": -0.262705,
           "amount": 204803066,
           "mcap": 4722375769
-        },
-        {
-          "symbol": "MNDY",
-          "name": "monday.com Ltd.",
-          "rs": 2,
-          "ret5": -0.084592,
-          "ret20": -0.067437,
-          "amount": 149256858,
-          "mcap": 3463587358
         },
         {
           "symbol": "KD",
