@@ -2,6 +2,7 @@
 Thumbs.db
 *.log
 __pycache__/
+*.bak
 
 # Backtest panel cache (regenerated from ClickHouse)
 rs_panel*.parquet

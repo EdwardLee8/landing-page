@@ -85,16 +85,46 @@ def main():
     for sym, ind in sym2industry.items():
         industry2syms[ind].add(sym)
 
+    # 4b. Load summary data for keyword filtering
+    summary_rows = cl.query(
+        "SELECT symbol, summary FROM company_info WHERE market = 'US' AND summary != ''"
+    ).result_rows
+    sym2summary = {sym: (summary or '').lower() for sym, summary in summary_rows}
+    print(f"Summary data: {len(sym2summary)} stocks")
+
     # 5. Compute theme strength
     results = []
     for theme in themes:
         theme_zh = theme['theme_zh']
         industries = theme.get('industries', [])
+        keyword_filter = theme.get('keyword_filter', [])
+        exclude_keywords = theme.get('exclude_keywords', [])
+        exclude_industries = theme.get('exclude_industries', [])
 
         # Collect all symbols in these industries
         theme_syms = set()
         for ind in industries:
             theme_syms |= industry2syms.get(ind, set())
+
+        # Remove symbols from excluded industries
+        for ind in exclude_industries:
+            theme_syms -= industry2syms.get(ind, set())
+
+        # Apply keyword filter if specified
+        if keyword_filter:
+            filtered_syms = set()
+            for sym in theme_syms:
+                summary = sym2summary.get(sym, '')
+                if any(kw.lower() in summary for kw in keyword_filter):
+                    filtered_syms.add(sym)
+            theme_syms = filtered_syms
+
+        # Apply exclusion keywords after positive filter
+        if exclude_keywords:
+            theme_syms = {
+                sym for sym in theme_syms
+                if not any(kw.lower() in sym2summary.get(sym, '') for kw in exclude_keywords)
+            }
 
         # Filter to stocks with RS data
         rated = []

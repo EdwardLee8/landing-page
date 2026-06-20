@@ -124,7 +124,12 @@
         "Semiconductor Equipment & Materials",
         "Electronic Components",
         "Electronic Production Equipment"
-      ]
+      ],
+      "exclude_industries": [
+        "Computer Hardware",
+        "Computer Processing Hardware"
+      ],
+      "note": "Broad semiconductor theme; sub-themes (memory, CPU, GPU, analog, foundry, equipment) use keyword filters"
     },
     {
       "theme_zh": "記憶體/存儲晶片",
@@ -134,7 +139,8 @@
         "Semiconductors",
         "Semiconductor Equipment & Materials"
       ],
-      "note": "Requires keyword filter for memory/storage business"
+      "keyword_filter": ["memory", "storage", "NAND", "DRAM", "flash", "SSD", "hard drive", "HDD", "solid state", "disk drive", "data storage"],
+      "match_field": "summary"
     },
     {
       "theme_zh": "CPU/處理器",
@@ -145,7 +151,8 @@
         "Computer Hardware",
         "Computer Processing Hardware"
       ],
-      "note": "Requires keyword filter for CPU/processor business"
+      "keyword_filter": ["CPU", "processor", "microprocessor", "x86", "ARM", "chipset", "central processing", "computing processor"],
+      "match_field": "summary"
     },
     {
       "theme_zh": "GPU/AI晶片",
@@ -195,7 +202,10 @@
         "Packaged Software",
         "Information Technology Services",
         "Data Processing Services"
-      ]
+      ],
+      "keyword_filter": ["software", "saas", "software as a service", "application", "platform", "subscription", "cloud software"],
+      "exclude_keywords": ["bitcoin", "crypto", "cryptocurrency", "mining", "miner", "hashrate", "blockchain", "digital asset", "digital assets", "web3"],
+      "match_field": "summary"
     },
     {
       "theme_zh": "AI平台/應用",
@@ -207,7 +217,9 @@
         "Internet Software/Services",
         "Information Technology Services"
       ],
-      "note": "Requires keyword filter for AI business"
+      "keyword_filter": ["artificial intelligence", "ai ", "machine learning", "generative", "large language", "neural", "deep learning", "foundation model"],
+      "exclude_keywords": ["bitcoin", "crypto", "cryptocurrency", "mining", "miner", "hashrate", "blockchain", "digital asset", "digital assets", "web3"],
+      "match_field": "summary"
     },
     {
       "theme_zh": "雲端基礎設施",
@@ -218,7 +230,10 @@
         "Information Technology Services",
         "Data Processing Services",
         "Computer Communications"
-      ]
+      ],
+      "keyword_filter": ["cloud", "infrastructure", "platform", "hosting", "colocation", "compute", "network", "virtualization", "data center"],
+      "exclude_keywords": ["bitcoin", "crypto", "cryptocurrency", "mining", "miner", "hashrate", "blockchain", "digital asset", "digital assets", "web3"],
+      "match_field": "summary"
     },
     {
       "theme_zh": "數據中心/IDC",
@@ -229,7 +244,9 @@
         "Information Technology Services",
         "Real Estate Investment Trusts"
       ],
-      "note": "Requires keyword filter for data center business"
+      "keyword_filter": ["data center", "colocation", "hosting", "infrastructure", "digital infrastructure", "reit"],
+      "exclude_keywords": ["bitcoin", "crypto", "cryptocurrency", "mining", "miner", "hashrate", "blockchain", "digital asset", "digital assets", "web3"],
+      "match_field": "summary"
     },
     {
       "theme_zh": "網絡安全",
@@ -240,7 +257,9 @@
         "Software - Infrastructure",
         "Information Technology Services"
       ],
-      "note": "Requires keyword filter for cybersecurity business"
+      "keyword_filter": ["cybersecurity", "security", "threat", "detection", "encryption", "privacy", "identity", "zero trust"],
+      "exclude_keywords": ["bitcoin", "crypto", "cryptocurrency", "mining", "miner", "hashrate", "blockchain", "digital asset", "digital assets", "web3"],
+      "match_field": "summary"
     },
     {
       "theme_zh": "生物科技/創新藥",
@@ -323,7 +342,10 @@
         "Capital Markets",
         "Investment Banks/Brokers",
         "Financial Data & Stock Exchanges"
-      ]
+      ],
+      "keyword_filter": ["exchange", "broker", "brokerage", "investment bank", "securities", "trading", "market maker", "financial data"],
+      "exclude_keywords": ["bitcoin", "crypto", "cryptocurrency", "mining", "miner", "hashrate", "blockchain", "digital asset", "digital assets", "web3"],
+      "match_field": "summary"
     },
     {
       "theme_zh": "資產管理/基金",
@@ -361,7 +383,9 @@
         "Financial Data & Stock Exchanges",
         "Capital Markets"
       ],
-      "note": "Requires keyword filter for fintech/payment business"
+      "keyword_filter": ["payment", "payments", "fintech", "financial technology", "credit", "card", "transaction", "processing", "software", "platform", "exchange", "broker", "brokerage", "investment bank", "securities", "trading", "market maker"],
+      "exclude_keywords": ["bitcoin", "crypto", "cryptocurrency", "mining", "miner", "hashrate", "blockchain", "digital asset", "digital assets", "web3", "digital infrastructure", "compute at scale", "energy-intensive use cases"],
+      "match_field": "summary"
     },
     {
       "theme_zh": "石油/天然氣",
