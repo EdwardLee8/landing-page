@@ -1,0 +1,574 @@
+{
+  "description": "US Theme Definition - Industry-based mapping. Each theme maps to a set of industries from company_info table.",
+  "mapping_method": "industry",
+  "themes": [
+    {
+      "theme_zh": "百貨/超市/零售",
+      "theme_en": "Department Stores / Supermarkets / Retail",
+      "category": "消費",
+      "industries": [
+        "Department Stores",
+        "Grocery Stores",
+        "Discount Stores",
+        "Food Retail",
+        "Specialty Retail",
+        "Apparel Retail",
+        "Apparel/Footwear Retail",
+        "Internet Retail",
+        "Home Improvement Retail",
+        "Home Improvement Chains",
+        "Wholesale Distributors",
+        "REIT - Retail",
+        "Electronics/Appliance Stores",
+        "Food Distributors",
+        "Pharmaceutical Retailers"
+      ]
+    },
+    {
+      "theme_zh": "零售/消費",
+      "theme_en": "Retail / Consumer",
+      "category": "消費",
+      "industries": [
+        "Department Stores",
+        "Grocery Stores",
+        "Discount Stores",
+        "Food Retail",
+        "Specialty Retail",
+        "Apparel Retail",
+        "Apparel/Footwear Retail",
+        "Internet Retail",
+        "Home Improvement Retail",
+        "Home Improvement Chains",
+        "Wholesale Distributors",
+        "REIT - Retail",
+        "Consumer Electronics",
+        "Electronics/Appliances",
+        "Furnishings, Fixtures & Appliances",
+        "Other Consumer Specialties",
+        "Other Consumer Services",
+        "Consumer Sundries",
+        "Luxury Goods",
+        "Footwear & Accessories"
+      ]
+    },
+    {
+      "theme_zh": "電商/直銷",
+      "theme_en": "E-commerce / Direct Sales",
+      "category": "消費",
+      "industries": [
+        "Internet Retail",
+        "Internet Content & Information",
+        "Internet Software/Services"
+      ]
+    },
+    {
+      "theme_zh": "食品飲料",
+      "theme_en": "Food & Beverage",
+      "category": "消費",
+      "industries": [
+        "Packaged Foods",
+        "Food: Specialty/Candy",
+        "Food: Meat/Fish/Dairy",
+        "Food: Major Diversified",
+        "Beverages - Brewers",
+        "Beverages - Non-Alcoholic",
+        "Beverages - Wineries & Distilleries",
+        "Beverages: Alcoholic",
+        "Beverages: Non-Alcoholic",
+        "Confectioners"
+      ]
+    },
+    {
+      "theme_zh": "服裝/時尚品牌",
+      "theme_en": "Apparel / Fashion",
+      "category": "消費",
+      "industries": [
+        "Apparel Manufacturing",
+        "Apparel Retail",
+        "Apparel/Footwear",
+        "Apparel/Footwear Retail",
+        "Textile Manufacturing",
+        "Textiles",
+        "Luxury Goods",
+        "Footwear & Accessories"
+      ]
+    },
+    {
+      "theme_zh": "汽車/零部件",
+      "theme_en": "Automobile / Components",
+      "category": "工業",
+      "industries": [
+        "Auto Manufacturers",
+        "Auto Parts",
+        "Auto Parts: OEM",
+        "Automotive Aftermarket",
+        "Motor Vehicles",
+        "Recreational Vehicles"
+      ]
+    },
+    {
+      "theme_zh": "電動車/新能源車",
+      "theme_en": "EV / New Energy Vehicles",
+      "category": "新能源",
+      "industries": [
+        "Auto Manufacturers"
+      ],
+      "note": "Requires keyword filter for EV-related business description"
+    },
+    {
+      "theme_zh": "半導體",
+      "theme_en": "Semiconductors",
+      "category": "科技",
+      "industries": [
+        "Semiconductors",
+        "Semiconductor Equipment & Materials",
+        "Electronic Components",
+        "Electronic Production Equipment"
+      ]
+    },
+    {
+      "theme_zh": "記憶體/存儲晶片",
+      "theme_en": "Memory / Storage Chips",
+      "category": "科技",
+      "industries": [
+        "Semiconductors",
+        "Semiconductor Equipment & Materials"
+      ],
+      "note": "Requires keyword filter for memory/storage business"
+    },
+    {
+      "theme_zh": "CPU/處理器",
+      "theme_en": "CPU / Processors",
+      "category": "科技",
+      "industries": [
+        "Semiconductors",
+        "Computer Hardware",
+        "Computer Processing Hardware"
+      ],
+      "note": "Requires keyword filter for CPU/processor business"
+    },
+    {
+      "theme_zh": "GPU/AI晶片",
+      "theme_en": "GPU / AI Chips",
+      "category": "科技",
+      "industries": [
+        "Semiconductors"
+      ],
+      "note": "Requires keyword filter for GPU/AI business"
+    },
+    {
+      "theme_zh": "類比/射頻/嵌入式晶片",
+      "theme_en": "Analog / RF / Embedded Chips",
+      "category": "科技",
+      "industries": [
+        "Semiconductors",
+        "Electronic Components"
+      ],
+      "note": "Requires keyword filter for analog/RF/embedded business"
+    },
+    {
+      "theme_zh": "晶圓代工/封測",
+      "theme_en": "Foundry / OSAT",
+      "category": "科技",
+      "industries": [
+        "Semiconductors",
+        "Semiconductor Equipment & Materials"
+      ],
+      "note": "Requires keyword filter for foundry/OSAT business"
+    },
+    {
+      "theme_zh": "半導體設備/EDA",
+      "theme_en": "Semiconductor Equipment / EDA",
+      "category": "科技",
+      "industries": [
+        "Semiconductor Equipment & Materials",
+        "Electronic Production Equipment"
+      ]
+    },
+    {
+      "theme_zh": "軟件/SaaS",
+      "theme_en": "Software / SaaS",
+      "category": "科技",
+      "industries": [
+        "Software - Application",
+        "Software - Infrastructure",
+        "Packaged Software",
+        "Information Technology Services",
+        "Data Processing Services"
+      ]
+    },
+    {
+      "theme_zh": "AI平台/應用",
+      "theme_en": "AI Platform / Applications",
+      "category": "科技",
+      "industries": [
+        "Software - Application",
+        "Software - Infrastructure",
+        "Internet Software/Services",
+        "Information Technology Services"
+      ],
+      "note": "Requires keyword filter for AI business"
+    },
+    {
+      "theme_zh": "雲端基礎設施",
+      "theme_en": "Cloud Infrastructure",
+      "category": "科技",
+      "industries": [
+        "Software - Infrastructure",
+        "Information Technology Services",
+        "Data Processing Services",
+        "Computer Communications"
+      ]
+    },
+    {
+      "theme_zh": "數據中心/IDC",
+      "theme_en": "Data Center / IDC",
+      "category": "科技",
+      "industries": [
+        "Software - Infrastructure",
+        "Information Technology Services",
+        "Real Estate Investment Trusts"
+      ],
+      "note": "Requires keyword filter for data center business"
+    },
+    {
+      "theme_zh": "網絡安全",
+      "theme_en": "Cybersecurity",
+      "category": "科技",
+      "industries": [
+        "Software - Application",
+        "Software - Infrastructure",
+        "Information Technology Services"
+      ],
+      "note": "Requires keyword filter for cybersecurity business"
+    },
+    {
+      "theme_zh": "生物科技/創新藥",
+      "theme_en": "Biotech / Innovative Drugs",
+      "category": "醫藥",
+      "industries": [
+        "Biotechnology",
+        "Diagnostics & Research"
+      ]
+    },
+    {
+      "theme_zh": "大藥廠/製藥",
+      "theme_en": "Big Pharma / Pharmaceuticals",
+      "category": "醫藥",
+      "industries": [
+        "Pharmaceuticals: Major",
+        "Drug Manufacturers - General",
+        "Drug Manufacturers - Specialty & Generic",
+        "Pharmaceuticals: Generic",
+        "Pharmaceuticals: Other"
+      ]
+    },
+    {
+      "theme_zh": "醫療器械/設備",
+      "theme_en": "Medical Devices / Equipment",
+      "category": "醫藥",
+      "industries": [
+        "Medical Devices",
+        "Medical Instruments & Supplies",
+        "Medical Specialties"
+      ]
+    },
+    {
+      "theme_zh": "醫療服務/醫院",
+      "theme_en": "Medical Services / Hospitals",
+      "category": "醫藥",
+      "industries": [
+        "Medical Care Facilities",
+        "Medical/Nursing Services",
+        "Hospital/Nursing Management",
+        "Health Information Services",
+        "Healthcare Plans"
+      ]
+    },
+    {
+      "theme_zh": "銀行",
+      "theme_en": "Banks",
+      "category": "金融",
+      "industries": [
+        "Banks - Regional",
+        "Banks - Diversified",
+        "Major Banks",
+        "Regional Banks",
+        "Savings Banks"
+      ]
+    },
+    {
+      "theme_zh": "大型/多元化銀行",
+      "theme_en": "Large / Diversified Banks",
+      "category": "金融",
+      "industries": [
+        "Banks - Diversified",
+        "Major Banks"
+      ]
+    },
+    {
+      "theme_zh": "區域性銀行",
+      "theme_en": "Regional Banks",
+      "category": "金融",
+      "industries": [
+        "Banks - Regional",
+        "Regional Banks"
+      ]
+    },
+    {
+      "theme_zh": "券商/交易所",
+      "theme_en": "Securities / Exchanges",
+      "category": "金融",
+      "industries": [
+        "Capital Markets",
+        "Investment Banks/Brokers",
+        "Financial Data & Stock Exchanges"
+      ]
+    },
+    {
+      "theme_zh": "資產管理/基金",
+      "theme_en": "Asset Management / Funds",
+      "category": "金融",
+      "industries": [
+        "Asset Management",
+        "Investment Managers",
+        "Investment Trusts/Mutual Funds"
+      ]
+    },
+    {
+      "theme_zh": "保險",
+      "theme_en": "Insurance",
+      "category": "金融",
+      "industries": [
+        "Insurance - Diversified",
+        "Insurance - Life",
+        "Insurance - Property & Casualty",
+        "Insurance - Reinsurance",
+        "Insurance - Specialty",
+        "Insurance Brokers",
+        "Insurance Brokers/Services",
+        "Life/Health Insurance",
+        "Property/Casualty Insurance",
+        "Multi-Line Insurance"
+      ]
+    },
+    {
+      "theme_zh": "金融科技/支付",
+      "theme_en": "Fintech / Payments",
+      "category": "金融",
+      "industries": [
+        "Credit Services",
+        "Financial Data & Stock Exchanges",
+        "Capital Markets"
+      ],
+      "note": "Requires keyword filter for fintech/payment business"
+    },
+    {
+      "theme_zh": "石油/天然氣",
+      "theme_en": "Oil & Gas",
+      "category": "能源",
+      "industries": [
+        "Oil & Gas E&P",
+        "Oil & Gas Equipment & Services",
+        "Oil & Gas Integrated",
+        "Oil & Gas Midstream",
+        "Oil & Gas Production",
+        "Oil & Gas Refining & Marketing",
+        "Oil Refining/Marketing",
+        "Oilfield Services/Equipment",
+        "Integrated Oil"
+      ]
+    },
+    {
+      "theme_zh": "可再生能源",
+      "theme_en": "Renewable Energy",
+      "category": "新能源",
+      "industries": [
+        "Alternative Power Generation",
+        "Solar",
+        "Utilities - Renewable"
+      ]
+    },
+    {
+      "theme_zh": "電池/儲能",
+      "theme_en": "Battery / Energy Storage",
+      "category": "新能源",
+      "industries": [
+        "Electrical Equipment & Parts"
+      ],
+      "note": "Requires keyword filter for battery/energy storage business"
+    },
+    {
+      "theme_zh": "公用事業/電力",
+      "theme_en": "Utilities / Electric Power",
+      "category": "能源",
+      "industries": [
+        "Electric Utilities",
+        "Utilities - Regulated Electric",
+        "Utilities - Regulated Gas",
+        "Utilities - Regulated Water",
+        "Utilities - Diversified",
+        "Utilities - Independent Power Producers",
+        "Gas Distributors",
+        "Water Utilities"
+      ]
+    },
+    {
+      "theme_zh": "航空航天/國防",
+      "theme_en": "Aerospace & Defense",
+      "category": "工業",
+      "industries": [
+        "Aerospace & Defense"
+      ]
+    },
+    {
+      "theme_zh": "工業自動化/機器人",
+      "theme_en": "Industrial Automation / Robotics",
+      "category": "工業",
+      "industries": [
+        "Specialty Industrial Machinery",
+        "Industrial Machinery",
+        "Farm & Heavy Construction Machinery",
+        "Electrical Equipment & Parts"
+      ],
+      "note": "Requires keyword filter for automation/robotics business"
+    },
+    {
+      "theme_zh": "物流/運輸",
+      "theme_en": "Logistics / Transportation",
+      "category": "工業",
+      "industries": [
+        "Air Freight/Couriers",
+        "Airlines",
+        "Airports & Air Services",
+        "Integrated Freight & Logistics",
+        "Marine Shipping",
+        "Railroads",
+        "Trucking",
+        "Travel Services"
+      ]
+    },
+    {
+      "theme_zh": "建築/工程",
+      "theme_en": "Construction / Engineering",
+      "category": "工業",
+      "industries": [
+        "Engineering & Construction",
+        "Building Materials",
+        "Building Products",
+        "Building Products & Equipment",
+        "Construction Materials",
+        "Homebuilding",
+        "Residential Construction"
+      ]
+    },
+    {
+      "theme_zh": "房地產/REITs",
+      "theme_en": "Real Estate / REITs",
+      "category": "金融",
+      "industries": [
+        "Real Estate Investment Trusts",
+        "Real Estate Development",
+        "Real Estate Services",
+        "Real Estate - Development",
+        "Real Estate - Diversified",
+        "REIT - Diversified",
+        "REIT - Hotel & Motel",
+        "REIT - Industrial",
+        "REIT - Mortgage",
+        "REIT - Office",
+        "REIT - Residential",
+        "REIT - Retail",
+        "REIT - Specialty",
+        "Mortgage Finance"
+      ]
+    },
+    {
+      "theme_zh": "酒店/旅遊",
+      "theme_en": "Hotels / Tourism",
+      "category": "消費",
+      "industries": [
+        "Hotels/Resorts/Cruise lines",
+        "Resorts & Casinos",
+        "Lodging",
+        "Travel Services",
+        "Leisure"
+      ]
+    },
+    {
+      "theme_zh": "博彩/休閒",
+      "theme_en": "Casinos / Leisure",
+      "category": "消費",
+      "industries": [
+        "Casinos/Gaming",
+        "Gambling",
+        "Resorts & Casinos",
+        "Leisure",
+        "Movies/Entertainment",
+        "Entertainment"
+      ]
+    },
+    {
+      "theme_zh": "媒體/串流",
+      "theme_en": "Media / Streaming",
+      "category": "消費",
+      "industries": [
+        "Entertainment",
+        "Movies/Entertainment",
+        "Broadcasting",
+        "Publishing",
+        "Publishing: Books/Magazines",
+        "Media Conglomerates"
+      ]
+    },
+    {
+      "theme_zh": "電訊/通訊",
+      "theme_en": "Telecom / Communications",
+      "category": "通訊",
+      "industries": [
+        "Telecom Services",
+        "Major Telecommunications",
+        "Wireless Telecommunications",
+        "Specialty Telecommunications",
+        "Communication Equipment",
+        "Telecommunications Equipment"
+      ]
+    },
+    {
+      "theme_zh": "採礦/金屬",
+      "theme_en": "Mining / Metals",
+      "category": "材料",
+      "industries": [
+        "Gold",
+        "Silver",
+        "Copper",
+        "Aluminum",
+        "Steel",
+        "Other Industrial Metals & Mining",
+        "Other Metals/Minerals",
+        "Other Precious Metals & Mining",
+        "Precious Metals",
+        "Coking Coal",
+        "Coal",
+        "Thermal Coal",
+        "Uranium"
+      ]
+    },
+    {
+      "theme_zh": "化工/材料",
+      "theme_en": "Chemicals / Materials",
+      "category": "材料",
+      "industries": [
+        "Chemicals",
+        "Chemicals: Agricultural",
+        "Chemicals: Major Diversified",
+        "Chemicals: Specialty",
+        "Specialty Chemicals",
+        "Containers/Packaging",
+        "Packaging & Containers",
+        "Paper & Paper Products",
+        "Pulp & Paper"
+      ]
+    }
+  ]
+}
