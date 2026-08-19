@@ -1,414 +1,387 @@
 <!DOCTYPE html>
-<html lang="zh-Hant-HK">
+<html lang="zh-HK">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港股 2026 中期業績前景庫</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<title>港股 2026 中期業績前景庫 | AI10XPRO</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:16px;min-height:100vh}
-#pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
-.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
-.pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
-.pw-box p{font-size:13px;color:#888;margin-bottom:24px}
-.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:10px 14px;border-radius:4px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px}
-.pw-box input:focus{border-color:#d4a647}
-.pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
-.pw-box button:hover{background:#e8bc5a}
-.pw-error{color:#ef5350;font-size:12px;margin-top:8px;min-height:18px}
-a{color:#d4a647;text-decoration:none}
-.page-header{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px}
-.back-btn:hover{background:#d4a64720}
-.page-title{font-size:20px;font-weight:700;color:#fff}
-.page-subtitle{font-size:12px;color:#888;margin-top:2px}
-.filter-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:16px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
-.filter-group{display:flex;flex-direction:column;gap:4px}
-.filter-label{font-size:11px;color:#888;font-weight:600;letter-spacing:.5px}
-select,input[type=text],input[type=number]{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 10px;border-radius:4px;font-size:13px;font-family:inherit;min-width:120px;outline:none}
-select:focus,input:focus{border-color:#d4a647}
-.btn{padding:7px 16px;border-radius:4px;font-size:13px;font-family:inherit;cursor:pointer;border:none;font-weight:600}
-.btn-primary{background:#d4a647;color:#080808}
-.btn-ghost{background:transparent;border:1px solid #444;color:#aaa}
-.stats-bar{padding:10px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:12px;color:#888;display:flex;gap:16px;flex-wrap:wrap}
-.stats-bar b{color:#d4a647;font-size:14px}
-.table-wrap{overflow-x:auto;padding:0 0 40px}
-table{width:100%;border-collapse:collapse;min-width:1100px}
-thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
-th{padding:10px 12px;text-align:left;font-size:13px;font-weight:700;color:#d4a647;white-space:nowrap;cursor:pointer;user-select:none}
-th:hover{color:#e8bc5a}
-th.sort-asc .sort-icon::after{content:" ▲"}
-th.sort-desc .sort-icon::after{content:" ▼"}
-th:not(.sort-asc):not(.sort-desc) .sort-icon::after{content:" ⇅";opacity:.4}
-tbody tr{border-bottom:1px solid #1a1a2e;cursor:pointer}
-tbody tr:hover{background:#1a1a2e}
-td{padding:9px 12px;vertical-align:middle}
-td.code{color:#d4a647;font-weight:700}
-td.name{color:#fff;font-weight:600;max-width:140px}
-td.thesis{color:#bbb;font-size:13px;max-width:360px;white-space:normal;line-height:1.45}
-td.num{text-align:center}
-td.num.pos{color:#4caf50}
-td.num.neg{color:#ef5350}
-td.num.na{color:#555}
-.tag{display:inline-block;padding:3px 9px;border-radius:12px;font-size:12px;font-weight:700;white-space:nowrap}
-.tag-grow{background:#1a3a2a;color:#4caf50;border:1px solid #4caf5044}
-.tag-follow{background:#1a2a3a;color:#64b5f6;border:1px solid #64b5f644}
-.tag-turn{background:#2a2a1a;color:#ffb74d;border:1px solid #ffb74d66}
-.tag-mid{background:#1e1e28;color:#aaa;border:1px solid #444}
-.tag-weak{background:#2a2218;color:#ff9800;border:1px solid #ff980044}
-.tag-bad{background:#2a1a1a;color:#ef5350;border:1px solid #ef535044}
-.pri-max{background:#2a1a3a;color:#ce93d8;border:1px solid #ce93d844}
-.pri-hi{background:#1a2a3a;color:#90caf9;border:1px solid #90caf944}
-.pri-mid{background:#1e1e1e;color:#bbb;border:1px solid #444}
-.pri-lo{background:#1a1a1a;color:#777;border:1px solid #333}
-.score-pill{display:inline-block;min-width:36px;padding:2px 8px;border-radius:10px;font-weight:700;text-align:center}
-.sc-a{background:#1a3a2a;color:#4caf50}
-.sc-b{background:#1a2a3a;color:#64b5f6}
-.sc-c{background:#2a2a1a;color:#ffb74d}
-.sc-d{background:#3a1a1a;color:#ef5350}
-.pagination{display:flex;justify-content:center;align-items:center;gap:6px;padding:20px 24px;flex-wrap:wrap}
-.page-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#aaa;padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:13px}
-.page-btn.active,.page-btn:hover{background:#d4a64720;border-color:#d4a647;color:#d4a647}
-.empty{text-align:center;padding:60px 20px;color:#555}
-#modal{display:none;position:fixed;inset:0;background:#000a;z-index:80;overflow:auto;padding:24px}
-#modal.open{display:block}
-.modal-box{background:#0d0d14;border:1px solid #2a2a3e;border-radius:10px;max-width:860px;margin:40px auto;padding:28px 28px 36px}
-.modal-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px}
-.modal-top h3{color:#fff;font-size:20px}
-.modal-close{background:transparent;border:1px solid #444;color:#aaa;padding:4px 12px;border-radius:14px;cursor:pointer;font-family:inherit}
-.kv{display:grid;grid-template-columns:140px 1fr;gap:8px 14px;font-size:14px;line-height:1.55}
-.kv dt{color:#888}
-.kv dd{color:#e8e0d0;white-space:pre-wrap}
-.help-btn{position:fixed;top:16px;right:16px;z-index:50;background:#0d0d14;border:1px solid #d4a64766;color:#d4a647;font-family:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:18px;cursor:pointer}
-.help-panel{display:none;background:#0d0d14;border-bottom:2px solid #d4a64766;padding:18px 24px 22px;max-width:1280px;margin:0 auto;font-size:14px;color:#ccc;line-height:1.7}
-.help-panel.open{display:block}
-.help-panel h3{color:#d4a647;margin-bottom:10px}
-.help-panel li{margin:4px 0 4px 18px}
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--yellow:#d29922;--orange:#db6d28}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;line-height:1.6}
+#lock{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:1rem}
+#lock input{padding:.8rem 1.2rem;font-size:1.1rem;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);width:280px;text-align:center}
+#lock button{padding:.8rem 2rem;font-size:1rem;border:none;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;font-weight:600}
+#lock button:hover{opacity:.85}
+#lock .err{color:var(--red);font-size:.9rem;min-height:1.2em}
+#lock .hint{color:var(--muted);font-size:.85rem}
+#app{display:none;max-width:1200px;margin:0 auto;padding:1rem}
+.header{text-align:center;padding:1.5rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.header h1{font-size:1.6rem;color:var(--text)}
+.header .sub{color:var(--muted);font-size:.9rem;margin-top:.3rem}
+.stats{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin:.8rem 0}
+.stats .chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:.3rem .8rem;font-size:.85rem;color:var(--muted)}
+.stats .chip b{color:var(--text)}
+.toolbar{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.toolbar input[type=text]{flex:1;min-width:200px;padding:.6rem .8rem;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:.95rem}
+.toolbar select{padding:.6rem .8rem;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:.9rem;cursor:pointer}
+.toolbar select option{background:var(--card)}
+.filters{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.filters .fbtn{padding:.3rem .7rem;border:1px solid var(--border);border-radius:16px;background:transparent;color:var(--muted);cursor:pointer;font-size:.82rem;transition:.15s}
+.filters .fbtn:hover{border-color:var(--accent)}
+.filters .fbtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+thead th{position:sticky;top:0;background:var(--card);border-bottom:2px solid var(--border);padding:.6rem .4rem;text-align:left;cursor:pointer;white-space:nowrap;z-index:1}
+thead th:hover{color:var(--accent)}
+thead th .arrow{font-size:.7rem;color:var(--muted)}
+tbody tr{border-bottom:1px solid var(--border);cursor:pointer;transition:.1s}
+tbody tr:hover{background:var(--card)}
+tbody tr.expanded{background:var(--card)}
+td{padding:.5rem .4rem;vertical-align:top}
+.score{font-weight:700;font-size:1rem}
+.score-high{color:var(--green)}
+.score-mid{color:var(--yellow)}
+.score-low{color:var(--muted)}
+.score-vlow{color:var(--red)}
+.cat-badge{display:inline-block;padding:.15rem .5rem;border-radius:10px;font-size:.75rem;white-space:nowrap}
+.cat-1{background:rgba(63,185,80,.15);color:var(--green)}  /* 結構性增長 */
+.cat-2{background:rgba(88,166,255,.15);color:var(--accent)} /* 增長改善 */
+.cat-3{background:rgba(210,153,34,.15);color:var(--yellow)} /* 正面趨勢 */
+.cat-4{background:rgba(139,148,158,.15);color:var(--muted)} /* 中性 */
+.cat-5{background:rgba(219,109,40,.15);color:var(--orange)} /* 差轉好 */
+.cat-6{background:rgba(139,148,158,.1);color:var(--muted)}  /* 偏弱 */
+.cat-7{background:rgba(248,81,73,.1);color:var(--red)}      /* 基本面轉弱 */
+.detail-row>td{padding:0;border:none}
+.detail{overflow:hidden;max-height:0;transition:max-height .3s ease}
+.detail.open{max-height:8000px}
+.detail-inner{padding:.8rem 1rem;border-top:1px solid var(--border)}
+.sec{margin-bottom:1rem}
+.sec h4{color:var(--accent);font-size:.9rem;margin-bottom:.3rem;border-left:3px solid var(--accent);padding-left:.5rem}
+.sec .field{margin-bottom:.5rem}
+.sec .flabel{color:var(--muted);font-size:.82rem;font-weight:600;margin-bottom:.15rem}
+.sec .fval{color:var(--text);font-size:.88rem;white-space:pre-wrap;word-break:break-word}
+.scorebars{display:flex;gap:.8rem;flex-wrap:wrap;margin:.5rem 0}
+.scorebar{text-align:center;min-width:80px}
+.scorebar .bar{height:6px;border-radius:3px;background:var(--border);overflow:hidden;margin:.2rem 0}
+.scorebar .fill{height:100%;border-radius:3px}
+.scorebar .lbl{font-size:.75rem;color:var(--muted)}
+.scorebar .num{font-size:.85rem;font-weight:600;color:var(--text)}
+.pagination{display:flex;gap:.3rem;justify-content:center;margin-top:1rem;flex-wrap:wrap}
+.pagination button{padding:.4rem .8rem;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text);cursor:pointer;font-size:.85rem}
+.pagination button.active{background:var(--accent);color:#fff}
+.pagination button:disabled{opacity:.4;cursor:default}
+.empty{text-align:center;padding:3rem;color:var(--muted)}
+@media(max-width:768px){
+#app{padding:.5rem}
+table{font-size:.8rem}
+td,th{padding:.4rem .2rem}
+.header h1{font-size:1.3rem}
+.toolbar input[type=text]{min-width:150px}
+}
 </style>
 </head>
 <body>
-<button class="help-btn" onclick="document.getElementById('help').classList.toggle('open')">ⓘ 點解讀</button>
-<div class="help-panel" id="help">
-  <h3>港股 2026 中期／季度前景庫</h3>
-  <p>來源：HKEX 7/1–8/19 中期（13400）／季度（13600）公告，再按前景打分。撳一列睇完整依據、催化劑、風險同 6–18 個月展望。</p>
-  <ul>
-    <li><b>前景評分 0–100</b>：愈高愈似「生意越做越好」</li>
-    <li><b>最高／高優先</b>：結構性增長或改善，值得跟進</li>
-    <li><b>低優先／偏弱</b>：基本面轉弱，唔係今輪狩獵區</li>
-    <li>數字來自公告原文；單位各間公司唔同，唔好跨公司直接比絕對值</li>
-  </ul>
+
+<div id="lock">
+  <h2>港股 2026 中期業績前景庫</h2>
+  <p class="hint">請輸入密碼以查看 307 隻港股 H1 業績分析</p>
+  <input type="password" id="pw" placeholder="密碼" onkeydown="if(event.key==='Enter')doUnlock()">
+  <button onclick="doUnlock()">解鎖</button>
+  <div class="err" id="err"></div>
 </div>
 
-<div id="pw-overlay">
-  <div class="pw-box">
-    <h2>港股 2026 中期業績前景庫</h2>
-    <p>請輸入密碼以繼續</p>
-    <p style="font-size:13px;color:#d4a647;margin-bottom:8px;">密碼可到 Patreon 聊天區獲取</p>
-    <input type="password" id="pw-input" placeholder="密碼" autocomplete="off">
-    <button onclick="checkPassword()">進入</button>
-    <div class="pw-error" id="pw-error"></div>
+<div id="app">
+  <div class="header">
+    <h1>港股 2026 中期業績前景庫</h1>
+    <div class="sub">307 隻港股 · 2026 H1 業績深度分析 · 更新日期 2026-08-20</div>
+    <div class="stats" id="stats"></div>
   </div>
-</div>
-
-<div class="page-header">
-  <a href="/login.html" class="back-btn">&#8592; 會員入口</a>
-  <div>
-    <div class="page-title">港股 2026 中期業績前景庫</div>
-    <div class="page-subtitle">7 月 1 日至 8 月 19 日 HKEX 中期／季度 · 307 間 · 撳列睇詳情</div>
+  <div class="toolbar">
+    <input type="text" id="search" placeholder="搜尋股票代號 / 公司名稱 / 行業…" oninput="doFilter()">
+    <select id="sortBy" onchange="doSort()">
+      <option value="score-desc">評分 ↓</option>
+      <option value="score-asc">評分 ↑</option>
+      <option value="code-asc">代號 ↑</option>
+      <option value="name-asc">名稱 ↑</option>
+    </select>
   </div>
-</div>
-
-<div class="filter-bar">
-  <div class="filter-group">
-    <span class="filter-label">搜尋</span>
-    <input type="text" id="f-search" placeholder="代號 / 名稱 / 關鍵字">
-  </div>
-  <div class="filter-group">
-    <span class="filter-label">分析分類</span>
-    <select id="f-cat"><option value="">全部</option></select>
-  </div>
-  <div class="filter-group">
-    <span class="filter-label">優先等級</span>
-    <select id="f-pri"><option value="">全部</option></select>
-  </div>
-  <div class="filter-group">
-    <span class="filter-label">業績類型</span>
-    <select id="f-type"><option value="">全部</option></select>
-  </div>
-  <div class="filter-group">
-    <span class="filter-label">評分 ≥</span>
-    <input type="number" id="f-score" min="0" max="100" placeholder="0" style="width:80px">
-  </div>
-  <div class="filter-group" style="margin-left:auto;flex-direction:row;gap:8px">
-    <button class="btn btn-ghost" onclick="resetFilters()">重置</button>
-    <button class="btn btn-primary" onclick="applyFilters()">篩選</button>
-  </div>
-</div>
-<div class="stats-bar" id="stats">載入中…</div>
-<div class="table-wrap">
-<table>
-  <thead>
-    <tr>
-      <th onclick="sortBy('code')">代號 <span class="sort-icon"></span></th>
-      <th onclick="sortBy('name')">名稱 <span class="sort-icon"></span></th>
-      <th onclick="sortBy('date')">公告日 <span class="sort-icon"></span></th>
-      <th onclick="sortBy('type')">類型 <span class="sort-icon"></span></th>
-      <th onclick="sortBy('category')">分析分類 <span class="sort-icon"></span></th>
-      <th onclick="sortBy('priority')">優先 <span class="sort-icon"></span></th>
-      <th onclick="sortBy('score')">評分 <span class="sort-icon"></span></th>
-      <th onclick="sortBy('rev_yoy')">收入同比% <span class="sort-icon"></span></th>
-      <th onclick="sortBy('ni_yoy')">淨利同比% <span class="sort-icon"></span></th>
-      <th>一句觀點</th>
-    </tr>
-  </thead>
-  <tbody id="tbody"></tbody>
-</table>
-<div class="empty" id="empty" style="display:none">找不到符合條件的股票</div>
-</div>
-<div class="pagination" id="pager"></div>
-
-<div id="modal" onclick="if(event.target.id==='modal')closeModal()">
-  <div class="modal-box">
-    <div class="modal-top">
-      <div>
-        <h3 id="m-title"></h3>
-        <div id="m-sub" style="color:#888;font-size:13px;margin-top:4px"></div>
-      </div>
-      <button class="modal-close" onclick="closeModal()">關閉 ✕</button>
-    </div>
-    <dl class="kv" id="m-kv"></dl>
-  </div>
+  <div class="filters" id="filters"></div>
+  <table>
+    <thead>
+      <tr>
+        <th onclick="setSort('score')">評分 <span class="arrow" id="arr-score">▼</span></th>
+        <th onclick="setSort('code')">代號 <span class="arrow" id="arr-code"></span></th>
+        <th>公司名稱</th>
+        <th>行業</th>
+        <th>發展階段</th>
+        <th onclick="setSort('category')">分類 <span class="arrow" id="arr-category"></span></th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="pagination" id="pager"></div>
 </div>
 
 <script>
-const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
-const PAGE_SIZE = 40;
-let ALL = [];
-let filtered = [];
-let sortCol = "score";
-let sortDir = -1;
-let currentPage = 1;
+let ROWS=[], SORT='score-desc', FILTER_CAT='all', SEARCH='', PAGE=1, PERPAGE=50;
 
-async function _sha256(s) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
-}
-async function _decryptEnc(b64, pw) {
-  const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-  const salt = raw.slice(0,16), nonce = raw.slice(16,28), ct = raw.slice(28);
-  const km = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
-  const key = await crypto.subtle.deriveKey(
-    {name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"},
-    km, {name:"AES-GCM", length:256}, false, ["decrypt"]);
-  const plain = await crypto.subtle.decrypt({name:"AES-GCM", iv:nonce}, key, ct);
-  return JSON.parse(new TextDecoder().decode(plain));
-}
-async function checkPassword() {
-  const pw = document.getElementById("pw-input").value;
-  const h = await _sha256(pw);
-  if (h !== _PW_HASH) {
-    document.getElementById("pw-error").textContent = "密碼錯誤，請再試";
-    document.getElementById("pw-input").value = "";
-    document.getElementById("pw-input").focus();
-    return;
-  }
-  document.getElementById("pw-overlay").style.display = "none";
-  sessionStorage.setItem("unified_auth", "1");
-  sessionStorage.setItem("unified_auth_pw", pw);
-  loadAndInit(pw);
-}
-async function loadAndInit(pw) {
-  try {
-    const r = await fetch("hk_h1_2026_data.enc?" + Date.now());
-    if (!r.ok) throw new Error("fetch");
-    const data = await _decryptEnc(await r.text(), pw);
-    ALL = data.rows || data;
-    fillSelects();
-    applyFilters();
-  } catch (e) {
-    document.getElementById("pw-overlay").style.display = "flex";
-    document.getElementById("pw-error").textContent = "密碼錯誤或數據加載失敗";
+async function doUnlock(){
+  const pw=document.getElementById('pw').value;
+  const errEl=document.getElementById('err');
+  errEl.textContent='';
+  try{
+    const resp=await fetch('hk_h1_2026_data.enc');
+    if(!resp.ok)throw new Error('enc file not found');
+    const b64=await resp.text();
+    const raw=atob(b64);
+    const salt=Uint8Array.from(raw.slice(0,16),c=>c.charCodeAt(0));
+    const nonce=Uint8Array.from(raw.slice(16,28),c=>c.charCodeAt(0));
+    const ct=Uint8Array.from(raw.slice(28),c=>c.charCodeAt(0));
+    const key=await deriveKey(pw,salt);
+    const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:nonce},key,ct);
+    const dec=new TextDecoder();
+    const data=JSON.parse(dec.decode(pt));
+    ROWS=data.rows||[];
+    document.getElementById('lock').style.display='none';
+    document.getElementById('app').style.display='block';
+    initPage();
+  }catch(e){
+    errEl.textContent='密碼錯誤或解密失敗';
   }
 }
-function uniq(key) {
-  return [...new Set(ALL.map(r => r[key]).filter(Boolean))].sort();
+
+async function deriveKey(pw,salt){
+  const enc=new TextEncoder();
+  const keyMaterial=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey(
+    {name:'PBKDF2',salt:salt,iterations:100000,hash:'SHA-256'},
+    keyMaterial,
+    {name:'AES-GCM',length:256},
+    false,
+    ['decrypt']
+  );
 }
-function fillSelects() {
-  const cat = document.getElementById("f-cat");
-  const pri = document.getElementById("f-pri");
-  const typ = document.getElementById("f-type");
-  uniq("category").forEach(v => cat.insertAdjacentHTML("beforeend", `<option>${esc(v)}</option>`));
-  uniq("priority").forEach(v => pri.insertAdjacentHTML("beforeend", `<option>${esc(v)}</option>`));
-  uniq("type").forEach(v => typ.insertAdjacentHTML("beforeend", `<option>${esc(v)}</option>`));
-}
-function esc(s) {
-  return String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-function catClass(v) {
-  if (!v) return "tag-mid";
-  if (v.includes("結構性增長")) return "tag-grow";
-  if (v.includes("值得跟進")) return "tag-follow";
-  if (v.includes("差轉好")) return "tag-turn";
-  if (v.includes("中性")) return "tag-mid";
-  if (v.includes("偏弱")) return "tag-weak";
-  if (v.includes("轉弱") || v.includes("低優先")) return "tag-bad";
-  return "tag-mid";
-}
-function priClass(v) {
-  if (v === "最高優先") return "pri-max";
-  if (v === "高優先" || v === "較高優先") return "pri-hi";
-  if (v === "低優先" || v === "偏弱") return "pri-lo";
-  return "pri-mid";
-}
-function scoreClass(n) {
-  if (n >= 85) return "sc-a";
-  if (n >= 70) return "sc-b";
-  if (n >= 50) return "sc-c";
-  return "sc-d";
-}
-function numTd(v) {
-  if (v == null || v === "") return '<td class="num na">—</td>';
-  const n = Number(v);
-  if (isNaN(n)) return `<td class="num">${esc(v)}</td>`;
-  const cls = n > 0 ? "pos" : n < 0 ? "neg" : "";
-  return `<td class="num ${cls}">${n.toFixed(1)}</td>`;
-}
-function applyFilters() {
-  const q = document.getElementById("f-search").value.trim().toLowerCase();
-  const cat = document.getElementById("f-cat").value;
-  const pri = document.getElementById("f-pri").value;
-  const typ = document.getElementById("f-type").value;
-  const minS = parseFloat(document.getElementById("f-score").value);
-  filtered = ALL.filter(r => {
-    if (cat && r.category !== cat) return false;
-    if (pri && r.priority !== pri) return false;
-    if (typ && r.type !== typ) return false;
-    if (!isNaN(minS) && (r.score == null || r.score < minS)) return false;
-    if (q) {
-      const blob = [r.code, r.name, r.thesis, r.catalyst, r.outlook, r.category].join(" ").toLowerCase();
-      if (!blob.includes(q)) return false;
-    }
-    return true;
+
+function initPage(){
+  // Stats
+  const statsEl=document.getElementById('stats');
+  const cats={};
+  let scoreSum=0,scoreMin=999,scoreMax=0;
+  ROWS.forEach(r=>{
+    const c=r.category||'其他';
+    cats[c]=(cats[c]||0)+1;
+    if(r.score){scoreSum+=r.score;scoreMin=Math.min(scoreMin,r.score);scoreMax=Math.max(scoreMax,r.score);}
   });
-  currentPage = 1;
-  updateSort();
+  statsEl.innerHTML=`<span class="chip">總數 <b>${ROWS.length}</b></span>`+
+    `<span class="chip">評分 <b>${scoreMin}–${scoreMax}</b></span>`+
+    `<span class="chip">平均 <b>${(scoreSum/ROWS.length).toFixed(1)}</b></span>`+
+    Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span class="chip">${k} <b>${v}</b></span>`).join('');
+
+  // Category filters
+  const fEl=document.getElementById('filters');
+  fEl.innerHTML=`<button class="fbtn active" onclick="setFilter('all')">全部 ${ROWS.length}</button>`+
+    Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<button class="fbtn" onclick="setFilter('${k.replace(/'/g,"\\'")}')">${k} ${v}</button>`).join('');
   renderTable();
-  renderPager();
-  const hi = filtered.filter(r => r.score != null && r.score >= 85).length;
-  document.getElementById("stats").innerHTML =
-    `<span>顯示 <b>${filtered.length}</b> / ${ALL.length}</span>` +
-    `<span>評分≥85：<b>${hi}</b></span>` +
-    `<span>結構性增長：<b>${filtered.filter(r => (r.category||"").includes("結構性增長")).length}</b></span>`;
 }
-function resetFilters() {
-  document.getElementById("f-search").value = "";
-  document.getElementById("f-cat").value = "";
-  document.getElementById("f-pri").value = "";
-  document.getElementById("f-type").value = "";
-  document.getElementById("f-score").value = "";
-  applyFilters();
-}
-function sortBy(col) {
-  if (sortCol === col) sortDir *= -1;
-  else { sortCol = col; sortDir = (col === "name" || col === "code" || col === "category") ? 1 : -1; }
-  currentPage = 1;
-  updateSort();
+
+function setFilter(cat){
+  FILTER_CAT=cat;
+  PAGE=1;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
   renderTable();
-  renderPager();
 }
-function missing(v) {
-  return v == null || v === "" || (typeof v === "number" && isNaN(v));
-}
-function updateSort() {
-  filtered.sort((a, b) => {
-    let va = a[sortCol], vb = b[sortCol];
-    const am = missing(va), bm = missing(vb);
-    if (am && bm) return 0;
-    if (am) return 1;
-    if (bm) return -1;
-    if (typeof va === "string" || typeof vb === "string") {
-      return String(va).localeCompare(String(vb), undefined, {numeric:true, sensitivity:"variant"}) * sortDir;
-    }
-    return (va - vb) * sortDir;
-  });
-  document.querySelectorAll("th").forEach(th => th.classList.remove("sort-asc","sort-desc"));
-  const idx = ["code","name","date","type","category","priority","score","rev_yoy","ni_yoy"].indexOf(sortCol);
-  if (idx >= 0) document.querySelectorAll("th")[idx].classList.add(sortDir > 0 ? "sort-asc" : "sort-desc");
-}
-function renderTable() {
-  const start = (currentPage - 1) * PAGE_SIZE;
-  const page = filtered.slice(start, start + PAGE_SIZE);
-  const tb = document.getElementById("tbody");
-  document.getElementById("empty").style.display = page.length ? "none" : "block";
-  tb.innerHTML = page.map(r => `
-    <tr onclick="openRow('${r.code}')">
-      <td class="code">${esc(r.code)}</td>
-      <td class="name">${esc(r.name)}</td>
-      <td>${esc(r.date || "—")}</td>
-      <td>${esc(r.type || "—")}</td>
-      <td><span class="tag ${catClass(r.category)}">${esc(r.category || "—")}</span></td>
-      <td><span class="tag ${priClass(r.priority)}">${esc(r.priority || "—")}</span></td>
-      <td style="text-align:center"><span class="score-pill ${scoreClass(r.score||0)}">${r.score ?? "—"}</span></td>
-      ${numTd(r.rev_yoy)}
-      ${numTd(r.ni_yoy)}
-      <td class="thesis">${esc(r.thesis || "—")}</td>
-    </tr>`).join("");
-}
-function renderPager() {
-  const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const el = document.getElementById("pager");
-  let html = `<button class="page-btn" ${currentPage<=1?"disabled":""} onclick="goPage(${currentPage-1})">上一頁</button>`;
-  for (let i = 1; i <= pages; i++) {
-    if (pages > 12 && Math.abs(i-currentPage) > 3 && i !== 1 && i !== pages) {
-      if (i === 2 || i === pages-1) html += `<span style="color:#555">…</span>`;
-      continue;
-    }
-    html += `<button class="page-btn ${i===currentPage?"active":""}" onclick="goPage(${i})">${i}</button>`;
+
+function setSort(field){
+  if(SORT.startsWith(field+'-')){
+    SORT=field+'-'+(SORT.endsWith('asc')?'desc':'asc');
+  }else{
+    SORT=field+'-desc';
   }
-  html += `<button class="page-btn" ${currentPage>=pages?"disabled":""} onclick="goPage(${currentPage+1})">下一頁</button>`;
-  el.innerHTML = html;
+  // Update arrows
+  ['score','code','category'].forEach(f=>{
+    const el=document.getElementById('arr-'+f);
+    if(el)el.textContent=SORT.startsWith(f)?(SORT.endsWith('asc')?'▲':'▼'):'';
+  });
+  document.getElementById('sortBy').value=SORT;
+  renderTable();
 }
-function goPage(p) { currentPage = p; renderTable(); renderPager(); window.scrollTo(0, 180); }
 
-const FIELDS = [
-  ["period","業績期"],["type","業績類型"],["category","分析分類"],["priority","優先等級"],
-  ["score","前景評分"],["rationale","評分依據"],["thesis","一句投資觀點"],
-  ["revenue","收入／營業收入"],["rev_yoy","收入同比%"],["gm","毛利率%"],["gm_chg","毛利率變動（百分點）"],
-  ["op_profit","營業／經調整盈利"],["op_yoy","營業／經調整盈利同比%"],
-  ["ni","股東應佔溢利／淨利潤"],["ni_yoy","淨利潤同比%"],["ocf","經營現金流"],
-  ["leverage","淨現金／淨負債／槓桿"],["dividend","股息"],["margin_trend","利潤率趨勢"],
-  ["leading","領先指標"],["catalyst","催化劑"],["risk","主要風險"],
-  ["outlook","6–18個月展望"],["cash_quality","現金流質素"]
-];
-function openRow(code) {
-  const r = ALL.find(x => x.code === code);
-  if (!r) return;
-  document.getElementById("m-title").textContent = `${r.code}  ${r.name || ""}`;
-  document.getElementById("m-sub").textContent = `${r.date || ""} · ${r.period || ""} · 評分 ${r.score ?? "—"}`;
-  document.getElementById("m-kv").innerHTML = FIELDS.map(([k, lab]) => {
-    const v = r[k];
-    if (v == null || v === "") return "";
-    return `<dt>${esc(lab)}</dt><dd>${esc(v)}</dd>`;
-  }).join("");
-  document.getElementById("modal").classList.add("open");
+function doSort(){
+  SORT=document.getElementById('sortBy').value;
+  renderTable();
 }
-function closeModal() { document.getElementById("modal").classList.remove("open"); }
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 
-document.addEventListener("DOMContentLoaded", function() {
-  if (sessionStorage.getItem("unified_auth") === "1") {
-    document.getElementById("pw-overlay").style.display = "none";
-    const pw = sessionStorage.getItem("unified_auth_pw") || "";
-    if (pw) loadAndInit(pw);
-  } else {
-    document.getElementById("pw-input").focus();
-    document.getElementById("pw-input").addEventListener("keydown", e => {
-      if (e.key === "Enter") checkPassword();
+function doFilter(){
+  SEARCH=document.getElementById('search').value.toLowerCase().trim();
+  PAGE=1;
+  renderTable();
+}
+
+function getFiltered(){
+  let f=ROWS;
+  if(FILTER_CAT!=='all')f=f.filter(r=>(r.category||'')===FILTER_CAT);
+  if(SEARCH){
+    f=f.filter(r=>{
+      const s=(r.code+' '+r.name+' '+(r.industry||'')+' '+(r.stage||'')+' '+(r.category||'')).toLowerCase();
+      return s.includes(SEARCH);
     });
   }
-});
+  // Sort
+  const [field,dir]=SORT.split('-');
+  f.sort((a,b)=>{
+    let av=a[field]||'',bv=b[field]||'';
+    if(typeof av==='number'&&typeof bv==='number')return dir==='asc'?av-bv:bv-av;
+    return dir==='asc'?String(av).localeCompare(String(bv), 'zh'):String(bv).localeCompare(String(av), 'zh');
+  });
+  return f;
+}
+
+function scoreClass(s){
+  if(s>=85)return'score-high';
+  if(s>=70)return'score-mid';
+  if(s>=50)return'score-low';
+  return'score-vlow';
+}
+
+function catClass(cat){
+  if(!cat)return'cat-4';
+  if(cat.includes('結構性'))return'cat-1';
+  if(cat.includes('增長改善'))return'cat-2';
+  if(cat.includes('正面'))return'cat-3';
+  if(cat.includes('中性'))return'cat-4';
+  if(cat.includes('差轉好'))return'cat-5';
+  if(cat.includes('偏弱'))return'cat-6';
+  if(cat.includes('轉弱'))return'cat-7';
+  return'cat-4';
+}
+
+function renderTable(){
+  const filtered=getFiltered();
+  const tbody=document.getElementById('tbody');
+  const totalPages=Math.max(1,Math.ceil(filtered.length/PERPAGE));
+  if(PAGE>totalPages)PAGE=totalPages;
+  const start=(PAGE-1)*PERPAGE;
+  const pageData=filtered.slice(start,start+PERPAGE);
+
+  tbody.innerHTML=pageData.map((r,idx)=>{
+    const realIdx=ROWS.indexOf(r);
+    const s=r.score||0;
+    return `<tr class="row" onclick="toggleRow(${realIdx})" id="row-${realIdx}">
+      <td class="score ${scoreClass(s)}">${s}</td>
+      <td>${r.code||''}</td>
+      <td><b>${r.name||''}</b></td>
+      <td style="color:var(--muted)">${(r.industry||'').substring(0,18)}</td>
+      <td style="color:var(--muted)">${(r.stage||'').substring(0,25)}</td>
+      <td><span class="cat-badge ${catClass(r.category)}">${r.category||''}</span></td>
+    </tr>
+    <tr class="detail-row" id="dr-${realIdx}"><td colspan="6">
+      <div class="detail" id="d-${realIdx}">
+        <div class="detail-inner" id="di-${realIdx}"></div>
+      </div>
+    </td></tr>`;
+  }).join('');
+
+  // Pager
+  const pager=document.getElementById('pager');
+  if(totalPages<=1){pager.innerHTML='';return;}
+  let html='';
+  if(PAGE>1)html+=`<button onclick="goPage(${PAGE-1})">‹ 上一頁</button>`;
+  for(let p=1;p<=Math.min(totalPages,10);p++){
+    html+=`<button class="${p===PAGE?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  }
+  if(totalPages>10)html+=`<button disabled>… ${totalPages}</button>`;
+  if(PAGE<totalPages)html+=`<button onclick="goPage(${PAGE+1})">下一頁 ›</button>`;
+  pager.innerHTML=html;
+}
+
+function goPage(p){PAGE=p;renderTable();window.scrollTo(0,0);}
+
+function toggleRow(idx){
+  const d=document.getElementById('d-'+idx);
+  const di=document.getElementById('di-'+idx);
+  const row=document.getElementById('row-'+idx);
+  if(d.classList.contains('open')){
+    d.classList.remove('open');
+    row.classList.remove('expanded');
+    return;
+  }
+  // Close all others
+  document.querySelectorAll('.detail.open').forEach(el=>el.classList.remove('open'));
+  document.querySelectorAll('.row.expanded').forEach(el=>el.classList.remove('expanded'));
+
+  // Build detail
+  const r=ROWS[idx];
+  di.innerHTML=buildDetail(r);
+  d.classList.add('open');
+  row.classList.add('expanded');
+}
+
+function buildDetail(r){
+  // Score bars
+  const scores=[
+    {k:'g_score',max:25,label:'增長動能',color:'var(--green)'},
+    {k:'p_score',max:20,label:'盈利能力',color:'var(--accent)'},
+    {k:'c_score',max:15,label:'現金流',color:'var(--yellow)'},
+    {k:'v_score',max:20,label:'可見度',color:'var(--orange)'},
+    {k:'s_score',max:20,label:'策略選擇權',color:'#a371f7'},
+  ];
+  let bars=`<div class="scorebars">`;
+  scores.forEach(s=>{
+    const v=r[s.k]||0;
+    const pct=Math.min(100,(v/s.max)*100);
+    bars+=`<div class="scorebar"><div class="lbl">${s.label}</div><div class="bar"><div class="fill" style="width:${pct}%;background:${s.color}"></div></div><div class="num">${v}/${s.max}</div></div>`;
+  });
+  if(r.risk_ded){
+    bars+=`<div class="scorebar"><div class="lbl" style="color:var(--red)">風險扣分</div><div class="bar"><div class="fill" style="width:100%;background:var(--red)"></div></div><div class="num" style="color:var(--red)">-${r.risk_ded}</div></div>`;
+  }
+  bars+=`</div>`;
+
+  // Sections
+  const sections=[
+    {title:'基本面分析',fields:[
+      {l:'行業/商業模式',v:r.industry},
+      {l:'發展階段',v:r.stage},
+      {l:'分類',v:r.category},
+      {l:'核心判斷',v:r.core_judgment},
+      {l:'財務主線',v:r.financials},
+      {l:'分部動能',v:r.segment},
+    ]},
+    {title:'前瞻與驗證',fields:[
+      {l:'領先指標/訂單',v:r.leading},
+      {l:'現金流與資產負債表',v:r.cashflow},
+      {l:'管理層指引/前瞻',v:r.guidance},
+      {l:'外部行業驗證',v:r.industry_validation},
+      {l:'主要催化劑',v:r.catalyst},
+      {l:'主要風險',v:r.risk},
+    ]},
+    {title:'展望與策略',fields:[
+      {l:'6–18個月展望',v:r.outlook},
+      {l:'資本配置/股東回報',v:r.capital},
+      {l:'Thesis驗證條件',v:r.thesis_valid},
+      {l:'Thesis失效條件',v:r.thesis_invalid},
+      {l:'未來判斷因果鏈',v:r.causal_chain},
+    ]},
+    {title:'完整摘要',fields:[
+      {l:'發展全景摘要',v:r.summary},
+    ]},
+  ];
+
+  let html=bars;
+  sections.forEach(sec=>{
+    const hasContent=sec.fields.some(f=>f.v&&f.v.trim());
+    if(!hasContent)return;
+    html+=`<div class="sec"><h4>${sec.title}</h4>`;
+    sec.fields.forEach(f=>{
+      if(!f.v||!f.v.trim())return;
+      html+=`<div class="field"><div class="flabel">${f.l}</div><div class="fval">${f.v}</div></div>`;
+    });
+    html+=`</div>`;
+  });
+
+  // Meta
+  html+=`<div style="color:var(--muted);font-size:.8rem;margin-top:.5rem">分析日期: ${r.date||''} | 業績期: ${r.period||''}</div>`;
+  return html;
+}
 </script>
 </body>
 </html>
