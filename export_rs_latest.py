@@ -52,7 +52,7 @@ def get_client():
         database=CLICKHOUSE_DB or 'quant',
         username=CLICKHOUSE_USER or 'quant',
         password=CLICKHOUSE_PASSWORD or 'quant123',
-        send_receive_timeout=600,
+        send_receive_timeout=1800,
     )
 
 
