@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>港股 2026 中期業績前景庫</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:16px;min-height:100vh}
+#pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
+.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
+.pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
+.pw-box p{font-size:13px;color:#888;margin-bottom:24px}
+.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:10px 14px;border-radius:4px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px}
+.pw-box input:focus{border-color:#d4a647}
+.pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+.pw-box button:hover{background:#e8bc5a}
+.pw-error{color:#ef5350;font-size:12px;margin-top:8px;min-height:18px}
+a{color:#d4a647;text-decoration:none}
+.page-header{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px}
+.back-btn:hover{background:#d4a64720}
+.page-title{font-size:20px;font-weight:700;color:#fff}
+.page-subtitle{font-size:12px;color:#888;margin-top:2px}
+.filter-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:16px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.filter-group{display:flex;flex-direction:column;gap:4px}
+.filter-label{font-size:11px;color:#888;font-weight:600;letter-spacing:.5px}
+select,input[type=text],input[type=number]{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 10px;border-radius:4px;font-size:13px;font-family:inherit;min-width:120px;outline:none}
+select:focus,input:focus{border-color:#d4a647}
+.btn{padding:7px 16px;border-radius:4px;font-size:13px;font-family:inherit;cursor:pointer;border:none;font-weight:600}
+.btn-primary{background:#d4a647;color:#080808}
+.btn-ghost{background:transparent;border:1px solid #444;color:#aaa}
+.stats-bar{padding:10px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:12px;color:#888;display:flex;gap:16px;flex-wrap:wrap}
+.stats-bar b{color:#d4a647;font-size:14px}
+.table-wrap{overflow-x:auto;padding:0 0 40px}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
+th{padding:10px 12px;text-align:left;font-size:13px;font-weight:700;color:#d4a647;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:#e8bc5a}
+th.sort-asc .sort-icon::after{content:" ▲"}
+th.sort-desc .sort-icon::after{content:" ▼"}
+th:not(.sort-asc):not(.sort-desc) .sort-icon::after{content:" ⇅";opacity:.4}
+tbody tr{border-bottom:1px solid #1a1a2e;cursor:pointer}
+tbody tr:hover{background:#1a1a2e}
+td{padding:9px 12px;vertical-align:middle}
+td.code{color:#d4a647;font-weight:700}
+td.name{color:#fff;font-weight:600;max-width:140px}
+td.thesis{color:#bbb;font-size:13px;max-width:360px;white-space:normal;line-height:1.45}
+td.num{text-align:center}
+td.num.pos{color:#4caf50}
+td.num.neg{color:#ef5350}
+td.num.na{color:#555}
+.tag{display:inline-block;padding:3px 9px;border-radius:12px;font-size:12px;font-weight:700;white-space:nowrap}
+.tag-grow{background:#1a3a2a;color:#4caf50;border:1px solid #4caf5044}
+.tag-follow{background:#1a2a3a;color:#64b5f6;border:1px solid #64b5f644}
+.tag-turn{background:#2a2a1a;color:#ffb74d;border:1px solid #ffb74d66}
+.tag-mid{background:#1e1e28;color:#aaa;border:1px solid #444}
+.tag-weak{background:#2a2218;color:#ff9800;border:1px solid #ff980044}
+.tag-bad{background:#2a1a1a;color:#ef5350;border:1px solid #ef535044}
+.pri-max{background:#2a1a3a;color:#ce93d8;border:1px solid #ce93d844}
+.pri-hi{background:#1a2a3a;color:#90caf9;border:1px solid #90caf944}
+.pri-mid{background:#1e1e1e;color:#bbb;border:1px solid #444}
+.pri-lo{background:#1a1a1a;color:#777;border:1px solid #333}
+.score-pill{display:inline-block;min-width:36px;padding:2px 8px;border-radius:10px;font-weight:700;text-align:center}
+.sc-a{background:#1a3a2a;color:#4caf50}
+.sc-b{background:#1a2a3a;color:#64b5f6}
+.sc-c{background:#2a2a1a;color:#ffb74d}
+.sc-d{background:#3a1a1a;color:#ef5350}
+.pagination{display:flex;justify-content:center;align-items:center;gap:6px;padding:20px 24px;flex-wrap:wrap}
+.page-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#aaa;padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:13px}
+.page-btn.active,.page-btn:hover{background:#d4a64720;border-color:#d4a647;color:#d4a647}
+.empty{text-align:center;padding:60px 20px;color:#555}
+#modal{display:none;position:fixed;inset:0;background:#000a;z-index:80;overflow:auto;padding:24px}
+#modal.open{display:block}
+.modal-box{background:#0d0d14;border:1px solid #2a2a3e;border-radius:10px;max-width:860px;margin:40px auto;padding:28px 28px 36px}
+.modal-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px}
+.modal-top h3{color:#fff;font-size:20px}
+.modal-close{background:transparent;border:1px solid #444;color:#aaa;padding:4px 12px;border-radius:14px;cursor:pointer;font-family:inherit}
+.kv{display:grid;grid-template-columns:140px 1fr;gap:8px 14px;font-size:14px;line-height:1.55}
+.kv dt{color:#888}
+.kv dd{color:#e8e0d0;white-space:pre-wrap}
+.help-btn{position:fixed;top:16px;right:16px;z-index:50;background:#0d0d14;border:1px solid #d4a64766;color:#d4a647;font-family:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:18px;cursor:pointer}
+.help-panel{display:none;background:#0d0d14;border-bottom:2px solid #d4a64766;padding:18px 24px 22px;max-width:1280px;margin:0 auto;font-size:14px;color:#ccc;line-height:1.7}
+.help-panel.open{display:block}
+.help-panel h3{color:#d4a647;margin-bottom:10px}
+.help-panel li{margin:4px 0 4px 18px}
+</style>
+</head>
+<body>
+<button class="help-btn" onclick="document.getElementById('help').classList.toggle('open')">ⓘ 點解讀</button>
+<div class="help-panel" id="help">
+  <h3>港股 2026 中期／季度前景庫</h3>
+  <p>來源：HKEX 7/1–8/19 中期（13400）／季度（13600）公告，再按前景打分。撳一列睇完整依據、催化劑、風險同 6–18 個月展望。</p>
+  <ul>
+    <li><b>前景評分 0–100</b>：愈高愈似「生意越做越好」</li>
+    <li><b>最高／高優先</b>：結構性增長或改善，值得跟進</li>
+    <li><b>低優先／偏弱</b>：基本面轉弱，唔係今輪狩獵區</li>
+    <li>數字來自公告原文；單位各間公司唔同，唔好跨公司直接比絕對值</li>
+  </ul>
+</div>
+
+<div id="pw-overlay">
+  <div class="pw-box">
+    <h2>港股 2026 中期業績前景庫</h2>
+    <p>請輸入密碼以繼續</p>
+    <p style="font-size:13px;color:#d4a647;margin-bottom:8px;">密碼可到 Patreon 聊天區獲取</p>
+    <input type="password" id="pw-input" placeholder="密碼" autocomplete="off">
+    <button onclick="checkPassword()">進入</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<div class="page-header">
+  <a href="/login.html" class="back-btn">&#8592; 會員入口</a>
+  <div>
+    <div class="page-title">港股 2026 中期業績前景庫</div>
+    <div class="page-subtitle">7 月 1 日至 8 月 19 日 HKEX 中期／季度 · 307 間 · 撳列睇詳情</div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-group">
+    <span class="filter-label">搜尋</span>
+    <input type="text" id="f-search" placeholder="代號 / 名稱 / 關鍵字">
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">分析分類</span>
+    <select id="f-cat"><option value="">全部</option></select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">優先等級</span>
+    <select id="f-pri"><option value="">全部</option></select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">業績類型</span>
+    <select id="f-type"><option value="">全部</option></select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">評分 ≥</span>
+    <input type="number" id="f-score" min="0" max="100" placeholder="0" style="width:80px">
+  </div>
+  <div class="filter-group" style="margin-left:auto;flex-direction:row;gap:8px">
+    <button class="btn btn-ghost" onclick="resetFilters()">重置</button>
+    <button class="btn btn-primary" onclick="applyFilters()">篩選</button>
+  </div>
+</div>
+<div class="stats-bar" id="stats">載入中…</div>
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th onclick="sortBy('code')">代號 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('name')">名稱 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('date')">公告日 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('type')">類型 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('category')">分析分類 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('priority')">優先 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('score')">評分 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rev_yoy')">收入同比% <span class="sort-icon"></span></th>
+      <th onclick="sortBy('ni_yoy')">淨利同比% <span class="sort-icon"></span></th>
+      <th>一句觀點</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+<div class="empty" id="empty" style="display:none">找不到符合條件的股票</div>
+</div>
+<div class="pagination" id="pager"></div>
+
+<div id="modal" onclick="if(event.target.id==='modal')closeModal()">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div>
+        <h3 id="m-title"></h3>
+        <div id="m-sub" style="color:#888;font-size:13px;margin-top:4px"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">關閉 ✕</button>
+    </div>
+    <dl class="kv" id="m-kv"></dl>
+  </div>
+</div>
+
+<script>
+const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
+const PAGE_SIZE = 40;
+let ALL = [];
+let filtered = [];
+let sortCol = "score";
+let sortDir = -1;
+let currentPage = 1;
+
+async function _sha256(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+async function _decryptEnc(b64, pw) {
+  const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const salt = raw.slice(0,16), nonce = raw.slice(16,28), ct = raw.slice(28);
+  const km = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    {name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"},
+    km, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({name:"AES-GCM", iv:nonce}, key, ct);
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+async function checkPassword() {
+  const pw = document.getElementById("pw-input").value;
+  const h = await _sha256(pw);
+  if (h !== _PW_HASH) {
+    document.getElementById("pw-error").textContent = "密碼錯誤，請再試";
+    document.getElementById("pw-input").value = "";
+    document.getElementById("pw-input").focus();
+    return;
+  }
+  document.getElementById("pw-overlay").style.display = "none";
+  sessionStorage.setItem("unified_auth", "1");
+  sessionStorage.setItem("unified_auth_pw", pw);
+  loadAndInit(pw);
+}
+async function loadAndInit(pw) {
+  try {
+    const r = await fetch("hk_h1_2026_data.enc?" + Date.now());
+    if (!r.ok) throw new Error("fetch");
+    const data = await _decryptEnc(await r.text(), pw);
+    ALL = data.rows || data;
+    fillSelects();
+    applyFilters();
+  } catch (e) {
+    document.getElementById("pw-overlay").style.display = "flex";
+    document.getElementById("pw-error").textContent = "密碼錯誤或數據加載失敗";
+  }
+}
+function uniq(key) {
+  return [...new Set(ALL.map(r => r[key]).filter(Boolean))].sort();
+}
+function fillSelects() {
+  const cat = document.getElementById("f-cat");
+  const pri = document.getElementById("f-pri");
+  const typ = document.getElementById("f-type");
+  uniq("category").forEach(v => cat.insertAdjacentHTML("beforeend", `<option>${esc(v)}</option>`));
+  uniq("priority").forEach(v => pri.insertAdjacentHTML("beforeend", `<option>${esc(v)}</option>`));
+  uniq("type").forEach(v => typ.insertAdjacentHTML("beforeend", `<option>${esc(v)}</option>`));
+}
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function catClass(v) {
+  if (!v) return "tag-mid";
+  if (v.includes("結構性增長")) return "tag-grow";
+  if (v.includes("值得跟進")) return "tag-follow";
+  if (v.includes("差轉好")) return "tag-turn";
+  if (v.includes("中性")) return "tag-mid";
+  if (v.includes("偏弱")) return "tag-weak";
+  if (v.includes("轉弱") || v.includes("低優先")) return "tag-bad";
+  return "tag-mid";
+}
+function priClass(v) {
+  if (v === "最高優先") return "pri-max";
+  if (v === "高優先" || v === "較高優先") return "pri-hi";
+  if (v === "低優先" || v === "偏弱") return "pri-lo";
+  return "pri-mid";
+}
+function scoreClass(n) {
+  if (n >= 85) return "sc-a";
+  if (n >= 70) return "sc-b";
+  if (n >= 50) return "sc-c";
+  return "sc-d";
+}
+function numTd(v) {
+  if (v == null || v === "") return '<td class="num na">—</td>';
+  const n = Number(v);
+  if (isNaN(n)) return `<td class="num">${esc(v)}</td>`;
+  const cls = n > 0 ? "pos" : n < 0 ? "neg" : "";
+  return `<td class="num ${cls}">${n.toFixed(1)}</td>`;
+}
+function applyFilters() {
+  const q = document.getElementById("f-search").value.trim().toLowerCase();
+  const cat = document.getElementById("f-cat").value;
+  const pri = document.getElementById("f-pri").value;
+  const typ = document.getElementById("f-type").value;
+  const minS = parseFloat(document.getElementById("f-score").value);
+  filtered = ALL.filter(r => {
+    if (cat && r.category !== cat) return false;
+    if (pri && r.priority !== pri) return false;
+    if (typ && r.type !== typ) return false;
+    if (!isNaN(minS) && (r.score == null || r.score < minS)) return false;
+    if (q) {
+      const blob = [r.code, r.name, r.thesis, r.catalyst, r.outlook, r.category].join(" ").toLowerCase();
+      if (!blob.includes(q)) return false;
+    }
+    return true;
+  });
+  currentPage = 1;
+  updateSort();
+  renderTable();
+  renderPager();
+  const hi = filtered.filter(r => r.score != null && r.score >= 85).length;
+  document.getElementById("stats").innerHTML =
+    `<span>顯示 <b>${filtered.length}</b> / ${ALL.length}</span>` +
+    `<span>評分≥85：<b>${hi}</b></span>` +
+    `<span>結構性增長：<b>${filtered.filter(r => (r.category||"").includes("結構性增長")).length}</b></span>`;
+}
+function resetFilters() {
+  document.getElementById("f-search").value = "";
+  document.getElementById("f-cat").value = "";
+  document.getElementById("f-pri").value = "";
+  document.getElementById("f-type").value = "";
+  document.getElementById("f-score").value = "";
+  applyFilters();
+}
+function sortBy(col) {
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = (col === "name" || col === "code" || col === "category") ? 1 : -1; }
+  currentPage = 1;
+  updateSort();
+  renderTable();
+  renderPager();
+}
+function missing(v) {
+  return v == null || v === "" || (typeof v === "number" && isNaN(v));
+}
+function updateSort() {
+  filtered.sort((a, b) => {
+    let va = a[sortCol], vb = b[sortCol];
+    const am = missing(va), bm = missing(vb);
+    if (am && bm) return 0;
+    if (am) return 1;
+    if (bm) return -1;
+    if (typeof va === "string" || typeof vb === "string") {
+      return String(va).localeCompare(String(vb), undefined, {numeric:true, sensitivity:"variant"}) * sortDir;
+    }
+    return (va - vb) * sortDir;
+  });
+  document.querySelectorAll("th").forEach(th => th.classList.remove("sort-asc","sort-desc"));
+  const idx = ["code","name","date","type","category","priority","score","rev_yoy","ni_yoy"].indexOf(sortCol);
+  if (idx >= 0) document.querySelectorAll("th")[idx].classList.add(sortDir > 0 ? "sort-asc" : "sort-desc");
+}
+function renderTable() {
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page = filtered.slice(start, start + PAGE_SIZE);
+  const tb = document.getElementById("tbody");
+  document.getElementById("empty").style.display = page.length ? "none" : "block";
+  tb.innerHTML = page.map(r => `
+    <tr onclick="openRow('${r.code}')">
+      <td class="code">${esc(r.code)}</td>
+      <td class="name">${esc(r.name)}</td>
+      <td>${esc(r.date || "—")}</td>
+      <td>${esc(r.type || "—")}</td>
+      <td><span class="tag ${catClass(r.category)}">${esc(r.category || "—")}</span></td>
+      <td><span class="tag ${priClass(r.priority)}">${esc(r.priority || "—")}</span></td>
+      <td style="text-align:center"><span class="score-pill ${scoreClass(r.score||0)}">${r.score ?? "—"}</span></td>
+      ${numTd(r.rev_yoy)}
+      ${numTd(r.ni_yoy)}
+      <td class="thesis">${esc(r.thesis || "—")}</td>
+    </tr>`).join("");
+}
+function renderPager() {
+  const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const el = document.getElementById("pager");
+  let html = `<button class="page-btn" ${currentPage<=1?"disabled":""} onclick="goPage(${currentPage-1})">上一頁</button>`;
+  for (let i = 1; i <= pages; i++) {
+    if (pages > 12 && Math.abs(i-currentPage) > 3 && i !== 1 && i !== pages) {
+      if (i === 2 || i === pages-1) html += `<span style="color:#555">…</span>`;
+      continue;
+    }
+    html += `<button class="page-btn ${i===currentPage?"active":""}" onclick="goPage(${i})">${i}</button>`;
+  }
+  html += `<button class="page-btn" ${currentPage>=pages?"disabled":""} onclick="goPage(${currentPage+1})">下一頁</button>`;
+  el.innerHTML = html;
+}
+function goPage(p) { currentPage = p; renderTable(); renderPager(); window.scrollTo(0, 180); }
+
+const FIELDS = [
+  ["period","業績期"],["type","業績類型"],["category","分析分類"],["priority","優先等級"],
+  ["score","前景評分"],["rationale","評分依據"],["thesis","一句投資觀點"],
+  ["revenue","收入／營業收入"],["rev_yoy","收入同比%"],["gm","毛利率%"],["gm_chg","毛利率變動（百分點）"],
+  ["op_profit","營業／經調整盈利"],["op_yoy","營業／經調整盈利同比%"],
+  ["ni","股東應佔溢利／淨利潤"],["ni_yoy","淨利潤同比%"],["ocf","經營現金流"],
+  ["leverage","淨現金／淨負債／槓桿"],["dividend","股息"],["margin_trend","利潤率趨勢"],
+  ["leading","領先指標"],["catalyst","催化劑"],["risk","主要風險"],
+  ["outlook","6–18個月展望"],["cash_quality","現金流質素"]
+];
+function openRow(code) {
+  const r = ALL.find(x => x.code === code);
+  if (!r) return;
+  document.getElementById("m-title").textContent = `${r.code}  ${r.name || ""}`;
+  document.getElementById("m-sub").textContent = `${r.date || ""} · ${r.period || ""} · 評分 ${r.score ?? "—"}`;
+  document.getElementById("m-kv").innerHTML = FIELDS.map(([k, lab]) => {
+    const v = r[k];
+    if (v == null || v === "") return "";
+    return `<dt>${esc(lab)}</dt><dd>${esc(v)}</dd>`;
+  }).join("");
+  document.getElementById("modal").classList.add("open");
+}
+function closeModal() { document.getElementById("modal").classList.remove("open"); }
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+document.addEventListener("DOMContentLoaded", function() {
+  if (sessionStorage.getItem("unified_auth") === "1") {
+    document.getElementById("pw-overlay").style.display = "none";
+    const pw = sessionStorage.getItem("unified_auth_pw") || "";
+    if (pw) loadAndInit(pw);
+  } else {
+    document.getElementById("pw-input").focus();
+    document.getElementById("pw-input").addEventListener("keydown", e => {
+      if (e.key === "Enter") checkPassword();
+    });
+  }
+});
+</script>
+</body>
+</html>
