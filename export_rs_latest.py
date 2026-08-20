@@ -242,8 +242,19 @@ def export_latest(client, end_date: str, cfg: dict) -> dict:
         GROUP BY symbol
     ) AS a ON a.symbol = l.symbol
     """
-    ohlcv_df = pd.DataFrame(client.query(ohlcv_q).result_rows,
-                            columns=['symbol', 'close', 'volume', 'amount'])
+    try:
+        ohlcv_df = pd.DataFrame(client.query(ohlcv_q).result_rows,
+                                columns=['symbol', 'close', 'volume', 'amount'])
+    except Exception as e:
+        print(f"  [WARN] 20d turnover query failed ({e}); fallback same-day amount")
+        simple_q = f"""
+        SELECT symbol, close, volume, close*volume AS amount
+        FROM quant.daily_ohlcv
+        WHERE market = '{market}' AND trade_date = '{end_date}'
+          AND symbol IN ('{sym_list}') AND close > 0
+        """
+        ohlcv_df = pd.DataFrame(client.query(simple_q).result_rows,
+                                columns=['symbol', 'close', 'volume', 'amount'])
 
     # 4. Market cap
     if stock_info_exists:
