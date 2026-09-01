@@ -1,0 +1,31 @@
+{
+  "primary_horizon": "fwd_60d",
+  "train_years": 3,
+  "oos_years": 0,
+  "n_folds": 15,
+  "timeframes": [
+    "5d",
+    "10d",
+    "15d",
+    "20d",
+    "30d",
+    "50d",
+    "100d",
+    "200d",
+    "365d"
+  ],
+  "fwd_horizons": [
+    5,
+    20,
+    60,
+    120,
+    250
+  ],
+  "select_top_n": 50,
+  "select_bot_n": 50,
+  "universe_top_n": 1000,
+  "panel_first_date": "2007-06-15",
+  "panel_last_date": "2026-04-16",
+  "panel_rows": 19274380,
+  "run_at": "2026-05-10 14:05:26"
+}

@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A股關鍵字資料庫</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>港</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="js/opencc.full.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
+a{color:#d4a647;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ── Password ── */
+#pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
+.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
+.pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
+.pw-box p{font-size:13px;color:#888;margin-bottom:16px}
+.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:10px 14px;border-radius:4px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;transition:border-color .2s}
+.pw-box input:focus{border-color:#d4a647}
+.pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
+.pw-box button:hover{background:#e8bc5a}
+.pw-error{color:#ef5350;font-size:12px;margin-top:8px;min-height:18px}
+
+/* ── Layout ── */
+#app{display:none}
+.page-header{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px;transition:background .2s;white-space:nowrap}
+.back-btn:hover{background:#d4a64720;text-decoration:none}
+.page-title{font-size:20px;font-weight:700;color:#fff}
+.page-subtitle{font-size:12px;color:#888;margin-top:2px}
+.stats-bar{padding:8px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:12px;color:#666;display:flex;gap:16px;flex-wrap:wrap}
+.stats-bar b{color:#d4a647}
+
+/* ── Tabs ── */
+.tab-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:0 24px;display:flex;overflow-x:auto}
+.tab{padding:14px 20px;font-size:14px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;user-select:none;white-space:nowrap}
+.tab.active{color:#d4a647;border-bottom-color:#d4a647}
+.tab:hover:not(.active){color:#bbb}
+
+/* ── Keyword/company panels ── */
+.search-wrap{padding:20px 24px;background:#080808;border-bottom:1px solid #111}
+.search-box{position:relative;max-width:600px}
+.search-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:11px 44px 11px 16px;border-radius:6px;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s}
+.search-box input:focus{border-color:#d4a647}
+.clear-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#666;font-size:18px;cursor:pointer;padding:2px 4px;transition:color .2s;display:none}
+.clear-btn:hover{color:#d4a647}
+.clear-btn.visible{display:block}
+.search-hint{font-size:12px;color:#666;margin-top:8px}
+.results{padding:0 24px 40px}
+.result-count{font-size:12px;color:#666;padding:12px 0 8px}
+.result-count b{color:#d4a647}
+.company-card{background:#0d0d14;border:1px solid #1e1e2e;border-radius:6px;padding:14px 16px;margin-bottom:10px}
+.company-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.co-symbol{color:#d4a647;font-weight:700;font-size:15px;font-family:monospace;min-width:80px}
+.co-name{color:#fff;font-weight:600;font-size:14px}
+.co-name-zh{color:#aaa;font-size:13px;margin-left:2px}
+.co-sector{font-size:12px;color:#888;background:#1a1a2e;padding:2px 8px;border-radius:10px}
+.co-industry{font-size:11px;color:#666;margin-top:3px}
+.co-summary{font-size:13px;color:#b0a898;line-height:1.6;margin:10px 0 12px;padding:10px 12px;background:#111;border-left:2px solid #d4a64740;border-radius:0 4px 4px 0}
+.kw-list{display:flex;flex-wrap:wrap;gap:6px}
+.kw-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:12px;font-size:12px;cursor:pointer;transition:all .2s;user-select:none}
+.kw-tag:hover{opacity:.8;transform:scale(1.02)}
+.kw-high{background:#1e2a1e;border:1px solid #4caf5044}
+.kw-mid{background:#1e1e2a;border:1px solid #5c6bc044}
+.kw-low{background:#1e1e1e;border:1px solid #33333344}
+.kw-tag .kw-zh{font-weight:600;color:#e8e0d0;font-size:13px}
+.kw-tag .kw-en{color:#666;font-size:11px}
+.kw-tag .kw-dot{color:#555;margin:0 1px}
+.kw-result-card{background:#0d0d14;border:1px solid #1e1e2e;border-radius:6px;padding:16px;margin-bottom:10px}
+.kw-result-header{display:flex;align-items:baseline;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.kw-result-zh{font-size:16px;font-weight:700;color:#fff}
+.kw-result-en{font-size:13px;color:#777}
+.kw-result-count{font-size:12px;color:#888;margin-left:auto}
+.kw-co-list{display:flex;flex-direction:column;gap:6px}
+.kw-co-item{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:6px;padding:10px 14px;cursor:pointer;transition:all .2s}
+.kw-co-item:hover{border-color:#d4a647;background:#d4a64710}
+.kw-co-header{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.kw-co-sym{color:#d4a647;font-weight:700;font-family:monospace;font-size:13px;flex-shrink:0}
+.kw-co-namez{color:#ddd;font-size:13px;font-weight:500}
+.kw-co-name{color:#666;font-size:11px}
+.kw-co-sum{color:#888;font-size:12px;line-height:1.5;margin-top:4px}
+
+/* ── Q1 2026 metrics ── */
+.q1-line{display:flex;flex-wrap:wrap;gap:10px 14px;font-size:11.5px;font-family:Consolas,monospace;color:#aaa;margin-top:6px;padding-top:6px;border-top:1px dashed #2a2a3e}
+.q1-cell{white-space:nowrap}
+.q1-cell b{color:#ccc;font-weight:500}
+.q1-up{color:#4ade80}
+.q1-dn{color:#ef5350}
+.q1-na{color:#555;font-style:italic}
+.kw-q1-summary{display:inline-flex;gap:10px;margin-left:auto;font-family:Consolas,monospace;font-size:12px;color:#888}
+.kw-q1-summary span{white-space:nowrap}
+.q1-noq{opacity:.55}
+
+/* ── Theme panel ── */
+.theme-cat{background:#0d0d14;border:1px solid #1e1e2e;border-radius:6px;padding:14px 16px;margin:14px 24px}
+.theme-cat-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;border-bottom:1px solid #1f1f2e;padding-bottom:8px}
+.theme-cat-name{font-size:18px;font-weight:700;color:#d4a647}
+.theme-cat-meta{font-size:12px;color:#888;font-family:Consolas,monospace}
+.theme-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.theme-card{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:6px;padding:10px 12px;cursor:pointer;transition:all .15s}
+.theme-card:hover{border-color:#d4a647;background:#d4a64710}
+.theme-card.open{border-color:#d4a647;grid-column:1/-1;cursor:default}
+.theme-card-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.theme-name{font-size:14px;font-weight:600;color:#fff}
+.theme-en{font-size:11px;color:#666}
+.theme-n{font-size:11px;color:#888;margin-left:auto;font-family:Consolas,monospace}
+.theme-q1{display:flex;gap:10px;font-size:11.5px;font-family:Consolas,monospace;color:#aaa;margin-top:4px}
+.theme-cos{margin-top:10px;padding-top:8px;border-top:1px dashed #2a2a3e}
+.sort-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#aaa;padding:4px 10px;font-size:12px;border-radius:4px;cursor:pointer;margin-left:4px}
+.sort-btn.active{background:#d4a647;color:#000;border-color:#d4a647;font-weight:600}
+.sort-btn:hover{border-color:#d4a647}
+
+/* ── Correlation cluster panel ── */
+#corr-panel{display:none}
+.corr-toolbar{padding:14px 24px;background:#080808;border-bottom:1px solid #111;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.corr-search-box{position:relative;flex:1;min-width:200px;max-width:420px}
+.corr-search-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:9px 36px 9px 14px;border-radius:6px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s}
+.corr-search-box input:focus{border-color:#d4a647}
+.corr-search-box .cs-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#666;font-size:16px;cursor:pointer;display:none}
+.corr-search-box .cs-clear.visible{display:block}
+.corr-search-box .cs-clear:hover{color:#d4a647}
+
+/* Threshold toggle */
+.thresh-bar{padding:10px 24px;background:#080808;border-bottom:1px solid #111;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.thresh-label{font-size:12px;color:#666;margin-right:4px;white-space:nowrap}
+.thresh-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#888;padding:5px 14px;border-radius:4px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s}
+.thresh-btn:hover{border-color:#d4a64766;color:#bbb}
+.thresh-btn.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
+.thresh-info{font-size:12px;color:#555;margin-left:4px}
+
+/* Sector filter */
+.sector-bar{padding:10px 24px;background:#080808;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sec-btn{background:transparent;border:1px solid #252535;color:#666;padding:4px 12px;border-radius:14px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s;white-space:nowrap}
+.sec-btn:hover{border-color:#555;color:#aaa}
+.sec-btn.active{background:#1a1a2e;border-color:#d4a647;color:#d4a647}
+.sec-count{font-size:10px;color:#555;margin-left:3px}
+
+.corr-body{padding:16px 24px 40px}
+
+/* Cluster card */
+.cl-card{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;margin-bottom:12px;overflow:hidden;transition:border-color .2s}
+.cl-card.highlighted{border-color:#d4a647;box-shadow:0 0 0 1px #d4a64733}
+.cl-card.sector-card{border-color:#2a2a3e}
+.cl-head{padding:14px 16px;cursor:pointer;display:flex;align-items:flex-start;gap:12px;user-select:none}
+.cl-head:hover{background:#111}
+.cl-badge{background:#d4a64720;border:1px solid #d4a64744;color:#d4a647;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.cl-badge.sector-badge{background:#1e1e2a;border-color:#3a3a4e;color:#8bc34a}
+.cl-title-wrap{flex:1;min-width:0}
+.cl-title{font-size:15px;font-weight:700;color:#fff;line-height:1.4}
+.cl-subsec{font-size:12px;color:#d4a64799;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.cl-desc-en{font-size:14px;color:#c8c0b0;margin-top:6px;line-height:1.6}
+.cl-desc-zh{font-size:14px;color:#a09888;margin-top:4px;line-height:1.6}
+.cl-chevron{color:#555;font-size:14px;transition:transform .2s;margin-left:auto;flex-shrink:0;margin-top:3px}
+.cl-card.open .cl-chevron{transform:rotate(180deg)}
+.cl-body{display:none;border-top:1px solid #1a1a2e;padding:16px 18px}
+.cl-card.open .cl-body{display:block}
+
+/* Companies in cluster */
+.cl-companies{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.cl-co{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:6px;padding:8px 13px;cursor:pointer;transition:all .2s;display:flex;flex-wrap:wrap;align-items:baseline;gap:0 10px}
+.cl-co:hover{border-color:#d4a647;background:#d4a64714}
+.cl-co.target{border-color:#d4a647;background:#d4a64720}
+.cl-co-sym{color:#d4a647;font-weight:700;font-family:monospace;font-size:13px;flex-shrink:0}
+.cl-co-namez{color:#ccc;font-size:13px;font-weight:500}
+.cl-co-name{color:#555;font-size:11px}
+.cl-co-sum{color:#7a7a8a;font-size:12px;line-height:1.5;margin-top:4px;width:100%}
+
+/* Keywords row */
+.cl-kws{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.cl-kw{background:#1e1e2a;border:1px solid #2a2a3e;color:#aaa;font-size:12px;padding:3px 10px;border-radius:8px}
+
+/* Section header */
+.section-hdr{font-size:12px;color:#555;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid #111}
+.section-hdr-lg{font-size:14px;color:#888;font-weight:700;margin:28px 0 10px;display:flex;align-items:center;gap:8px}
+.section-hdr-lg span{font-size:12px;color:#555;font-weight:400}
+
+/* Loading / empty */
+.loading{text-align:center;padding:60px 20px;color:#555}
+.spinner{width:30px;height:30px;border:2px solid #222;border-top-color:#d4a647;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:60px 20px;color:#555;font-size:14px}
+mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
+</style>
+</head>
+<body>
+
+
+<style id="_help_css">
+.help-btn{position:fixed;top:16px;right:16px;z-index:50;background:#0d0d14;border:1px solid #d4a64766;color:#d4a647;font-family:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:18px;cursor:pointer;transition:all .15s}
+.help-btn:hover{background:#d4a64720;border-color:#d4a647}
+.help-panel{display:none;background:#0d0d14;border-bottom:2px solid #d4a64766;padding:18px 24px 22px;max-width:1280px;margin:0 auto;font-size:14px;color:#ccc;line-height:1.7}
+.help-panel.open{display:block}
+.help-panel h3{font-size:16px;font-weight:700;color:#d4a647;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.help-panel h3 .help-close{background:transparent;border:1px solid #444;color:#888;font-family:inherit;font-size:12px;padding:4px 12px;border-radius:14px;cursor:pointer}
+.help-panel h3 .help-close:hover{border-color:#d4a647;color:#d4a647}
+.help-panel h4{font-size:14px;font-weight:700;color:#e8e0d0;margin:14px 0 6px}
+.help-panel ul{margin:6px 0 6px 20px}
+.help-panel li{margin:3px 0}
+.help-panel p{margin:6px 0}
+.help-panel b{color:#e8e0d0}
+</style>
+
+<button class="help-btn" onclick="_toggleHelp()">ⓘ 點解讀</button>
+<div class="help-panel" id="_help_panel">
+  <h3>點解讀「關鍵字資料庫」<button class="help-close" onclick="_toggleHelp()">收埋 ✕</button></h3>
+  <p>每間公司嘅業務關鍵字（AI 從年報、業績稿抽取）。</p>
+<p><b>「相關性分組」</b>= 業務類似嘅公司歸同一組。</p>
+<p><b>點用：</b></p>
+<ul>
+  <li>搵「同主題、細市值替代股」<br>例：龍頭太貴 → 揾相似業務嘅二三線</li>
+  <li>揾「同個 theme 嘅一籃子」做組合</li>
+  <li>用關鍵字 filter 倒過嚟睇邊啲公司有呢類業務</li>
+</ul>
+</div>
+<script>
+(function(){
+  const KEY = "_help_seen_kw-cn";
+  const panel = document.getElementById("_help_panel");
+  if (!localStorage.getItem(KEY)) {
+    panel.classList.add("open");
+  }
+  window._toggleHelp = function() {
+    const isOpen = panel.classList.toggle("open");
+    if (!isOpen) localStorage.setItem(KEY, "1");
+  };
+})();
+</script>
+
+
+<!-- ── Password overlay ── -->
+<div id="pw-overlay">
+  <div class="pw-box">
+    <h2>A股關鍵字資料庫</h2>
+    <p>此頁面受密碼保護</p>
+    <input type="password" id="pw-input" placeholder="輸入密碼" autocomplete="off" maxlength="64">
+    <button id="pw-submit">進入</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<!-- ── App ── -->
+<div id="app">
+  <div class="page-header">
+    <a href="/" class="back-btn">← 返回首頁</a>
+    <div>
+      <div class="page-title">A股關鍵字資料庫</div>
+      <div class="page-subtitle">CN A-Share Business Keywords &amp; Correlation Clusters</div>
+    </div>
+  </div>
+
+  <div class="tab-bar" style="justify-content:space-between">
+    <div style="display:flex">
+      <div class="tab active" data-tab="kw2co" onclick="switchTab('kw2co')">關鍵字 → 公司</div>
+      <div class="tab" data-tab="co2kw" onclick="switchTab('co2kw')">公司 → 關鍵字</div>
+      <div class="tab" data-tab="corr"  onclick="switchTab('corr')">高相關股票群組</div>
+      <div class="tab" data-tab="theme" onclick="switchTab('theme')">概念主題</div>
+    </div>
+    <div style="display:flex;align-items:center;padding:0 12px;gap:4px;font-size:12px">
+      <button id="zh-hk-btn" class="zh-toggle" onclick="setZhMode('hk')" style="padding:4px 10px;border:1px solid #2a2a3a;background:#0d0d14;color:#888;cursor:pointer;border-radius:3px;font-size:12px">繁</button>
+      <button id="zh-cn-btn" class="zh-toggle" onclick="setZhMode('cn')" style="padding:4px 10px;border:1px solid #2a2a3a;background:#0d0d14;color:#888;cursor:pointer;border-radius:3px;font-size:12px">简</button>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="stats-bar"><span>載入中…</span></div>
+
+  <!-- Keyword / company panels -->
+  <div id="kw-panel">
+    <div class="search-wrap">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="搜尋關鍵字" autocomplete="off" spellcheck="false">
+        <button class="clear-btn" id="clear-btn" onclick="clearKwSearch()">×</button>
+      </div>
+      <div class="search-hint" id="search-hint">輸入關鍵字，例如：银行、科技</div>
+      <div style="margin-top:8px;display:flex;align-items:center;gap:4px;font-size:12px;color:#888">
+        排序：
+        <button class="sort-btn active" data-k="ry" onclick="setSortKey('ry')">營收 YoY</button>
+        <button class="sort-btn" data-k="gy" onclick="setSortKey('gy')">毛利 YoY</button>
+      </div>
+    </div>
+    <div class="results" id="results"><div class="empty">請輸入關鍵字開始搜尋</div></div>
+  </div>
+
+  <!-- Correlation cluster panel -->
+  <div id="corr-panel">
+    <div class="corr-toolbar">
+      <div class="corr-search-box">
+        <input type="text" id="corr-search" placeholder="搜尋公司代號或名稱（可用中文）…" autocomplete="off" oninput="onCorrSearch(this.value)">
+        <button class="cs-clear" id="cs-clear" onclick="clearCorrSearch()">×</button>
+      </div>
+      <span style="font-size:12px;color:#555">輸入代號找出所屬群組及所有高相關同業</span>
+    </div>
+    <div class="thresh-bar">
+      <span class="thresh-label">計算方法：</span>
+      <button class="thresh-btn active" data-method="pearson" onclick="setMethod('pearson')">Pearson 線性</button>
+      <button class="thresh-btn" data-method="spearman" onclick="setMethod('spearman')">Spearman 排名</button>
+      <button class="thresh-btn" data-method="beta_adj" onclick="setMethod('beta_adj')">Beta 調整</button>
+      <button class="thresh-btn" data-method="louvain" onclick="setMethod('louvain')">Louvain 社群</button>
+    </div>
+    <div class="thresh-bar" style="border-top:none;padding-top:2px">
+      <span class="thresh-label">相關系數閾值：</span>
+      <button class="thresh-btn active" data-t="0.8" onclick="setThresh('0.8')">0.80 高度相關</button>
+      <button class="thresh-btn" data-t="0.7" onclick="setThresh('0.7')">0.70 中度相關</button>
+      <button class="thresh-btn" data-t="0.6" onclick="setThresh('0.6')">0.60 廣泛相關</button>
+      <button class="thresh-btn" data-t="0.5" onclick="setThresh('0.5')">0.50 弱相關</button>
+      <span style="margin-left:16px;margin-right:4px;font-size:12px;color:#666;white-space:nowrap">最小組員數：</span>
+      <button class="thresh-btn active" data-m="1" onclick="setMinSize(1)">全部</button>
+      <button class="thresh-btn" data-m="3" onclick="setMinSize(3)">≥ 3</button>
+      <button class="thresh-btn" data-m="5" onclick="setMinSize(5)">≥ 5</button>
+      <button class="thresh-btn" data-m="10" onclick="setMinSize(10)">≥ 10</button>
+      <span class="thresh-info" id="thresh-info"></span>
+    </div>
+    <div class="sector-bar" id="sector-bar"></div>
+    <div class="corr-body" id="corr-body">
+      <div class="loading"><div class="spinner"></div>載入群組資料…</div>
+    </div>
+  </div>
+
+  <!-- Theme panel -->
+  <div id="theme-panel" style="display:none">
+    <div class="corr-toolbar">
+      <span style="font-size:13px;color:#aaa">A 股概念主題（67 主題 / 12 板塊）— Q1 2026 業績匯總</span>
+      <span style="margin-left:auto;font-size:12px;color:#888">排序：</span>
+      <button class="sort-btn active" data-k="ry" onclick="setSortKey('ry')">營收 YoY</button>
+      <button class="sort-btn" data-k="gy" onclick="setSortKey('gy')">毛利 YoY</button>
+    </div>
+    <div class="corr-body" id="theme-body"><div class="loading"><div class="spinner"></div>載入主題資料…</div></div>
+  </div>
+</div>
+
+<script>
+// ── Password ──────────────────────────────────────────────
+const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
+const SESSION_KEY = "unified_auth";
+let _pw = sessionStorage.getItem(SESSION_KEY + "_pw") || "";
+async function _sha256(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function _decryptEnc(b64, pw) {
+  const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const salt = raw.slice(0, 16), nonce = raw.slice(16, 28), ct = raw.slice(28);
+  const keyMat = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" },
+    keyMat, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce }, key, ct);
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+async function checkPassword() {
+  const raw = document.getElementById("pw-input").value;
+  const h = await _sha256(raw);
+  if (h === _PW_HASH) {
+    _pw = raw;
+    sessionStorage.setItem(SESSION_KEY, "1");
+    sessionStorage.setItem(SESSION_KEY + "_pw", _pw);
+    document.getElementById("pw-overlay").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    initApp();
+  } else {
+    document.getElementById("pw-error").textContent = "密碼錯誤，請重試";
+    document.getElementById("pw-input").value = "";
+    document.getElementById("pw-input").focus();
+  }
+}
+document.getElementById("pw-submit").addEventListener("click", checkPassword);
+document.getElementById("pw-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") checkPassword();
+  document.getElementById("pw-error").textContent = "";
+});
+if (sessionStorage.getItem(SESSION_KEY) === "1" && _pw) {
+  document.getElementById("pw-overlay").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  initApp();
+} else if (sessionStorage.getItem(SESSION_KEY) === "1" && !_pw) {
+  sessionStorage.removeItem(SESSION_KEY);
+}
+
+// ── State ─────────────────────────────────────────────────
+let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {}, KW_TO_ZH = {}, SYM_TO_SUM = {}, SYM_TO_NZ = {}, SYM_TO_MCAP = {};
+let DB_CN = null, DB_HK = null;        // raw simplified + converted traditional
+let CORR_CN = null, CORR_HK = null;    // raw simplified + converted traditional
+let zhMode = localStorage.getItem("cn_kw_zhMode") || "hk";
+let _convCn2Hk = null;
+let currentTab = "kw2co", kwSearchTimer = null;
+let CORR_DATA = null;
+let corrLoaded = false, corrSearchQ = "";
+
+// Deep clone + s2hk convert. Only walks plain objects/arrays/strings.
+function deepConvertZh(node, conv) {
+  if (typeof node === "string") return /[㐀-鿿]/.test(node) ? conv(node) : node;
+  if (Array.isArray(node)) return node.map(x => deepConvertZh(x, conv));
+  if (node && typeof node === "object") {
+    const o = {};
+    for (const k in node) o[k] = deepConvertZh(node[k], conv);
+    return o;
+  }
+  return node;
+}
+
+function getConverter() {
+  if (_convCn2Hk) return _convCn2Hk;
+  if (typeof OpenCC === "undefined") throw new Error("opencc-js 未載入");
+  _convCn2Hk = OpenCC.Converter({ from: "cn", to: "hk" });
+  return _convCn2Hk;
+}
+let currentThresh  = "0.8";
+let currentSector  = "";
+let currentMinSize = 1;
+let currentMethod  = "pearson";
+
+function getMethodData() {
+  return CORR_DATA.by_method ? CORR_DATA.by_method[currentMethod] : CORR_DATA;
+}
+
+function setMethod(m) {
+  currentMethod = m;
+  currentSector = "";
+  document.querySelectorAll(".thresh-btn[data-method]").forEach(b =>
+    b.classList.toggle("active", b.dataset.method === m));
+  if (!corrLoaded) return;
+  updateThreshInfo();
+  buildSectorBar();
+  if (corrSearchQ) renderCorrSearch(corrSearchQ);
+  else renderCorrView();
+}
+
+// ── Init ──────────────────────────────────────────────────
+function rebuildIndices() {
+  KW_INDEX = {}; KW_ZH_INDEX = {}; KW_TO_ZH = {};
+  SYM_TO_SUM = {}; SYM_TO_NZ = {}; SYM_TO_MCAP = {};
+  let totalKws = 0;
+  for (const co of DB) {
+    if (co.sum) SYM_TO_SUM[co.s] = co.sum;
+    if (co.nz) SYM_TO_NZ[co.s] = co.nz;
+    SYM_TO_MCAP[co.s] = co.mcap || 0;
+    if (!co.kws) continue;
+    for (const kw of co.kws) {
+      totalKws++;
+      const key = kw.e.toLowerCase().trim();
+      if (!KW_INDEX[key]) {
+        KW_INDEX[key] = { en: kw.e, zh: kw.z || "", companies: [] };
+        if (kw.z) KW_ZH_INDEX[kw.z.trim()] = KW_INDEX[key];
+      }
+      KW_INDEX[key].companies.push({ s: co.s, n: co.n, nz: co.nz || "", sec: co.sec || "", w: kw.w || 0.5 });
+    }
+  }
+  for (const e of Object.values(KW_INDEX)) e.companies.sort((a, b) => (SYM_TO_MCAP[b.s]||0) - (SYM_TO_MCAP[a.s]||0));
+  for (const [k, v] of Object.entries(KW_INDEX)) if (v.zh) KW_TO_ZH[k] = v.zh;
+  document.getElementById("stats-bar").innerHTML =
+    `<span><b>${DB.length.toLocaleString()}</b> 間公司</span>` +
+    `<span><b>${Object.keys(KW_INDEX).length.toLocaleString()}</b> 個關鍵字</span>` +
+    `<span><b>${totalKws.toLocaleString()}</b> 個映射</span>`;
+}
+
+function updateZhToggleUi() {
+  const hk = document.getElementById("zh-hk-btn"), cn = document.getElementById("zh-cn-btn");
+  if (!hk || !cn) return;
+  const active = "background:#d4a647;color:#0a0a12;border-color:#d4a647";
+  const idle   = "background:#0d0d14;color:#888;border-color:#2a2a3a";
+  hk.style.cssText = "padding:4px 10px;cursor:pointer;border-radius:3px;font-size:12px;border:1px solid;" + (zhMode === "hk" ? active : idle);
+  cn.style.cssText = "padding:4px 10px;cursor:pointer;border-radius:3px;font-size:12px;border:1px solid;" + (zhMode === "cn" ? active : idle);
+}
+
+function applyZhMode() {
+  DB = (zhMode === "hk") ? DB_HK : DB_CN;
+  CORR_DATA = (zhMode === "hk") ? CORR_HK : CORR_CN;
+  rebuildIndices();
+  updateZhToggleUi();
+  // re-render whatever's currently shown
+  const kwQ = document.getElementById("search-input")?.value?.trim() || "";
+  if (kwQ) runKwSearch(kwQ);
+  if (corrLoaded) {
+    updateThreshInfo();
+    buildSectorBar();
+    if (corrSearchQ) renderCorrSearch(corrSearchQ);
+    else renderCorrView();
+  }
+}
+
+function setZhMode(m) {
+  if (m !== "hk" && m !== "cn") return;
+  if (m === zhMode) return;
+  zhMode = m;
+  localStorage.setItem("cn_kw_zhMode", m);
+  applyZhMode();
+}
+
+async function initApp() {
+  try {
+    const r = await fetch("cn_keywords_export.enc");
+    DB_CN = await _decryptEnc(await r.text(), _pw);
+  } catch(e) {
+    document.getElementById("stats-bar").innerHTML = `<span style="color:#ef5350">載入失敗: ${e.message}</span>`;
+    return;
+  }
+  try {
+    DB_HK = deepConvertZh(DB_CN, getConverter());
+  } catch(e) {
+    DB_HK = DB_CN; // fallback if opencc-js failed to load
+    console.error("OpenCC 轉換失敗，使用簡體:", e);
+    const sb = document.getElementById("stats-bar");
+    if (sb) sb.innerHTML += `<span style="color:#ef5350">⚠ 繁體轉換引擎載入失敗，僅顯示簡體</span>`;
+  }
+  applyZhMode();
+  document.getElementById("search-input").addEventListener("input", e => {
+    const v = e.target.value;
+    document.getElementById("clear-btn").classList.toggle("visible", v.length > 0);
+    clearTimeout(kwSearchTimer);
+    kwSearchTimer = setTimeout(() => runKwSearch(v.trim()), 250);
+  });
+}
+
+// ── Tab switching ─────────────────────────────────────────
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
+  document.getElementById("kw-panel").style.display   = (tab==="kw2co"||tab==="co2kw") ? "block" : "none";
+  document.getElementById("corr-panel").style.display = tab === "corr" ? "block" : "none";
+  document.getElementById("theme-panel").style.display = tab === "theme" ? "block" : "none";
+  if (tab === "corr" && !corrLoaded) loadCorrData();
+  if (tab === "theme" && !themesLoaded) loadThemesData();
+  if (tab === "kw2co") {
+    document.getElementById("search-input").placeholder = "搜尋關鍵字（英文或中文）";
+    document.getElementById("search-hint").textContent  = "輸入關鍵字，例如：银行、科技";
+  } else if (tab === "co2kw") {
+    document.getElementById("search-input").placeholder = "搜尋公司名稱、股票代號或中文名稱";
+    document.getElementById("search-hint").textContent  = "輸入代號或名稱，例如：000001.SZ、平安銀行";
+  }
+}
+
+// ── Load correlation clusters ────────────────────────────
+async function loadCorrData() {
+  try {
+    const r = await fetch("cn_corr_clusters.enc");
+    CORR_CN = await _decryptEnc(await r.text(), _pw);
+    try {
+      CORR_HK = deepConvertZh(CORR_CN, getConverter());
+    } catch(e) {
+      CORR_HK = CORR_CN;
+      console.error("OpenCC 轉換 corr 失敗:", e);
+    }
+    CORR_DATA = (zhMode === "hk") ? CORR_HK : CORR_CN;
+    corrLoaded = true;
+    updateThreshInfo();
+    buildSectorBar();
+    renderCorrView();
+  } catch(e) {
+    document.getElementById("corr-body").innerHTML =
+      `<div class="empty" style="color:#ef5350">載入失敗: ${e.message}</div>`;
+  }
+}
+
+// ── Sector filter bar ────────────────────────────────────
+const SEC_ZH = {
+  "Financial Services": "金融服務",
+  "Basic Materials": "基礎原材料",
+  "Industrials": "工業",
+  "Energy": "能源",
+  "Communication Services": "通訊服務",
+  "Consumer Cyclical": "可選消費",
+  "Consumer Defensive": "必需消費",
+  "Healthcare": "醫療保健",
+  "Real Estate": "房地產",
+  "Technology": "科技",
+  "Utilities": "公用事業",
+};
+function secZh(s) { return SEC_ZH[s] || s || ""; }
+
+function buildSectorBar() {
+  const tData = getMethodData().by_thresh[currentThresh];
+  const filtered = tData.clusters.filter(cl => cl.n >= currentMinSize);
+  const count = {};
+  for (const cl of filtered) {
+    const s = cl.top_sec || "";
+    if (s) count[s] = (count[s] || 0) + 1;
+  }
+  const sectors = Object.keys(count).sort();
+  const total = filtered.length;
+
+  let html = `<button class="sec-btn active" data-sec="" onclick="setSector('')">全部<span class="sec-count">${total}</span></button>`;
+  for (const s of sectors) {
+    html += `<button class="sec-btn" data-sec="${escHtml(s)}" onclick="setSector('${escHtml(s)}')">${escHtml(secZh(s))}<span class="sec-count">${count[s]}</span></button>`;
+  }
+  document.getElementById("sector-bar").innerHTML = html;
+}
+
+function setSector(sec) {
+  currentSector = sec;
+  document.querySelectorAll(".sec-btn").forEach(b => b.classList.toggle("active", b.dataset.sec === sec));
+  if (corrSearchQ) renderCorrSearch(corrSearchQ);
+  else renderCorrView();
+}
+
+// ── Threshold switching ───────────────────────────────────
+function setThresh(t) {
+  currentThresh = t;
+  currentSector = "";
+  document.querySelectorAll(".thresh-btn[data-t]").forEach(b => b.classList.toggle("active", b.dataset.t === t));
+  if (!corrLoaded) return;
+  updateThreshInfo();
+  buildSectorBar();
+  if (corrSearchQ) renderCorrSearch(corrSearchQ);
+  else renderCorrView();
+}
+
+function setMinSize(m) {
+  currentMinSize = m;
+  currentSector = "";
+  document.querySelectorAll(".thresh-btn[data-m]").forEach(b => b.classList.toggle("active", +b.dataset.m === m));
+  if (!corrLoaded) return;
+  updateThreshInfo();
+  buildSectorBar();
+  if (corrSearchQ) renderCorrSearch(corrSearchQ);
+  else renderCorrView();
+}
+
+function updateThreshInfo() {
+  if (!CORR_DATA) return;
+  const tData = getMethodData().by_thresh[currentThresh];
+  const ug = getMethodData().unclustered_groups || [];
+  const filtered = tData.clusters.filter(cl => cl.n >= currentMinSize);
+  const filteredStocks = filtered.reduce((s,c)=>s+c.n,0);
+  const minTxt = currentMinSize > 1 ? `（≥${currentMinSize} 股）` : "";
+  document.getElementById("thresh-info").textContent =
+    `${filtered.length} 個群組${minTxt}，涵蓋 ${filteredStocks} 間股票，另有 ${getMethodData().n_unclustered || ug.reduce((s,g)=>s+g.n,0)} 間未分群`;
+}
+
+// ── Corr search ───────────────────────────────────────────
+function onCorrSearch(val) {
+  corrSearchQ = val.trim();
+  document.getElementById("cs-clear").classList.toggle("visible", corrSearchQ.length > 0);
+  if (!corrLoaded) return;
+  if (corrSearchQ) renderCorrSearch(corrSearchQ);
+  else renderCorrView();
+}
+
+function clearCorrSearch() {
+  document.getElementById("corr-search").value = "";
+  document.getElementById("cs-clear").classList.remove("visible");
+  corrSearchQ = "";
+  if (corrLoaded) renderCorrView();
+}
+
+// ── Build unique sub-sector labels — multi-level disambiguation ──
+function buildSubLabels(clusters) {
+  const tc = s => s.replace(/\b\w/g, c => c.toUpperCase());
+  const kwLabel = k => KW_TO_ZH[k.toLowerCase().trim()] || tc(k);
+  const labels = {};
+  for (let depth = 1; depth <= 5; depth++) {
+    const keyOf = cl => (cl.top_sec||"") + "|" + (cl.top_kws||[]).slice(0,depth).join("|");
+    const count = {};
+    for (const cl of clusters) { const k=keyOf(cl); count[k]=(count[k]||0)+1; }
+    for (const cl of clusters) {
+      if (labels[cl.id] !== undefined) continue;
+      const kws = cl.top_kws || [];
+      if (count[keyOf(cl)] === 1 || depth === 5) {
+        labels[cl.id] = kws.slice(0,depth).filter(Boolean).map(kwLabel).join(" · ");
+      }
+    }
+  }
+  for (const cl of clusters) {
+    if (!labels[cl.id]) labels[cl.id] = (cl.top_kws?.[0] ? kwLabel(cl.top_kws[0]) : (cl.top_sec||""))+` #${cl.id}`;
+  }
+  return labels;
+}
+
+// ── Render all (default) ──────────────────────────────────
+function renderCorrView() {
+  const tData = getMethodData().by_thresh[currentThresh];
+  const allClusters = [...tData.clusters]
+    .filter(cl => cl.n >= currentMinSize)
+    .sort((a, b) => {
+      const sa = (a.top_sec || "").localeCompare(b.top_sec || "");
+      return sa !== 0 ? sa : b.n - a.n;
+    });
+  const subLabels = buildSubLabels(allClusters);
+  const clusters = currentSector
+    ? allClusters.filter(cl => (cl.top_sec || "") === currentSector)
+    : allClusters;
+
+  const clusterSyms = new Set();
+  for (const cl of allClusters) for (const co of cl.companies) clusterSyms.add(co.s);
+
+  const ug = getMethodData().unclustered_groups || [];
+  const ugFiltered = currentSector
+    ? ug.filter(g => (g.sec || "") === currentSector)
+    : [...ug].sort((a, b) => (a.sec || "").localeCompare(b.sec || ""));
+
+  const namedClusters = clusters.filter(cl => cl.top_sec);
+  const mixedClusters = clusters.filter(cl => !cl.top_sec);
+
+  const minTxt = currentMinSize > 1 ? `（≥${currentMinSize} 股）` : "";
+  let html = `<div class="section-hdr">已分群股票 — 顯示 ${clusters.length} 個群組${minTxt}${currentSector ? `（${secZh(currentSector)}）` : ""}，每對相關系數 ≥ ${currentThresh}</div>`;
+  for (const cl of namedClusters) html += renderClusterCard(cl, new Set(), false, subLabels[cl.id]);
+
+  if (mixedClusters.length) {
+    html += `<div class="section-hdr-lg">跨行業群組<span>— ${mixedClusters.length} 個群組，股票跨越多個行業</span></div>`;
+    for (const cl of mixedClusters) html += renderClusterCard(cl, new Set(), false, subLabels[cl.id]);
+  }
+
+  if (ugFiltered.length) {
+    html += `<div class="section-hdr-lg">未分群股票（按行業歸組）<span>— 與其他股票相關系數均 &lt; 0.60</span></div>`;
+    for (const g of ugFiltered) html += renderSectorGroupCard(g, new Set(), false, clusterSyms);
+  }
+
+  document.getElementById("corr-body").innerHTML = html;
+}
+
+// ── Render search result ──────────────────────────────────
+function renderCorrSearch(q) {
+  const tData = getMethodData().by_thresh[currentThresh];
+  const allClusters = tData.clusters.filter(cl => cl.n >= currentMinSize);
+  const subLabels = buildSubLabels(allClusters);
+  const clusters = currentSector
+    ? allClusters.filter(cl => (cl.top_sec || "") === currentSector)
+    : allClusters;
+  const symToCluster = tData.sym_to_cluster || {};
+  const ug = currentSector
+    ? (getMethodData().unclustered_groups || []).filter(g => (g.sec || "") === currentSector)
+    : (getMethodData().unclustered_groups || []);
+  const ql = q.toLowerCase();
+
+  const matchSyms = new Set();
+  for (const cl of clusters) {
+    for (const co of cl.companies) {
+      const nz = co.nz || SYM_TO_NZ[co.s] || "";
+      if (co.s.toLowerCase().includes(ql) || co.n.toLowerCase().includes(ql) || nz.includes(q))
+        matchSyms.add(co.s);
+    }
+  }
+  let matchUg = [];
+  for (const g of ug) {
+    const found = g.companies.filter(co => {
+      const nz = co.nz || SYM_TO_NZ[co.s] || "";
+      return co.s.toLowerCase().includes(ql) || co.n.toLowerCase().includes(ql) || nz.includes(q);
+    });
+    if (found.length) matchUg.push({ g, found });
+  }
+
+  if (!matchSyms.size && !matchUg.length) {
+    document.getElementById("corr-body").innerHTML = `<div class="empty">找不到「${escHtml(q)}」</div>`;
+    return;
+  }
+
+  const clusterIds = new Set();
+  for (const s of matchSyms) {
+    const cid = symToCluster[s];
+    if (cid !== undefined) clusterIds.add(cid);
+  }
+
+  let html = "";
+  if (clusterIds.size) {
+    html += `<div class="section-hdr">所屬群組（${clusterIds.size} 個）</div>`;
+    for (const cid of clusterIds) {
+      const cl = clusters.find(c => c.id === cid);
+      if (cl) html += renderClusterCard(cl, matchSyms, true, subLabels[cid]);
+    }
+  }
+  if (matchUg.length) {
+    html += `<div class="section-hdr">行業分組（未分群）</div>`;
+    for (const { g, found } of matchUg) {
+      html += renderSectorGroupCard(g, new Set(found.map(c => c.s)), true);
+    }
+  }
+
+  document.getElementById("corr-body").innerHTML = html || `<div class="empty">無群組記錄</div>`;
+  clusterIds.forEach(cid => openCluster("cl-" + cid));
+  matchUg.forEach(({ g }) => openCluster("sg-" + g.sec.replace(/\s+/g, "_")));
+}
+
+// ── Render cluster card ───────────────────────────────────
+function renderClusterCard(cl, highlightSyms, autoOpen, subLabel) {
+  const isHighlighted = cl.companies.some(c => highlightSyms.has(c.s));
+  const rawDesc = cl.desc || {};
+  const descEn = typeof rawDesc === "object" ? (rawDesc.en || "") : String(rawDesc);
+  const descZh = typeof rawDesc === "object" ? (rawDesc.zh || "") : "";
+
+  const kws = cl.top_kws || [];
+  const subSec = subLabel !== undefined ? subLabel
+    : (kws.length ? kws[0].replace(/\b\w/g, c => c.toUpperCase()) : "");
+  const secLabel = secZh(cl.top_sec) || "跨行業";
+
+  const cosHtml = [...cl.companies].sort((a,b)=>(SYM_TO_MCAP[b.s]||0)-(SYM_TO_MCAP[a.s]||0)).map(co => {
+    const isTarget = highlightSyms.has(co.s);
+    const nz = co.nz || SYM_TO_NZ[co.s] || "";
+    const nzShort = nz.length > 12 ? nz.slice(0,12)+"…" : nz;
+    const enShort = co.n.length > 20 ? co.n.slice(0,20)+"…" : co.n;
+    const sum = SYM_TO_SUM[co.s] || "";
+    const sumShort = sum.length > 120 ? sum.slice(0,120)+"…" : sum;
+    return `<div class="cl-co ${isTarget ? "target" : ""}" onclick="jumpToCompany('${escHtml(co.s)}')">
+      <div class="cl-co-sym">${escHtml(co.s)}</div>
+      ${nzShort ? `<div class="cl-co-namez">${escHtml(nzShort)}</div>` : ""}
+      <div class="cl-co-name">${escHtml(enShort)}</div>
+      ${sumShort ? `<div class="cl-co-sum">${escHtml(sumShort)}</div>` : ""}
+    </div>`;
+  }).join("");
+
+  const skipN = subSec ? (subSec.split(" · ").length) : 0;
+  const kwsHtml = kws.slice(skipN).map(k => `<span class="cl-kw">${escHtml(k)}</span>`).join("");
+
+  const cardId = "cl-" + cl.id;
+  return `<div class="cl-card ${isHighlighted ? "highlighted" : ""}" id="${cardId}">
+    <div class="cl-head" onclick="toggleCluster('${cardId}')">
+      <span class="cl-badge">${cl.n} 間</span>
+      <div class="cl-title-wrap">
+        <div class="cl-title">${escHtml(secLabel)}${subSec ? ` <span style="color:#d4a64799;font-weight:400;font-size:13px">— ${escHtml(subSec)}</span>` : ""}</div>
+        ${descEn ? `<div class="cl-desc-en">${escHtml(descEn)}</div>` : ""}
+        ${descZh ? `<div class="cl-desc-zh">${escHtml(descZh)}</div>` : ""}
+      </div>
+      <span class="cl-chevron">▼</span>
+    </div>
+    <div class="cl-body">
+      <div class="cl-companies">${cosHtml}</div>
+      ${kwsHtml ? `<div class="cl-kws">${kwsHtml}</div>` : ""}
+    </div>
+  </div>`;
+}
+
+// ── Render sector group card (unclustered) ────────────────
+function renderSectorGroupCard(g, highlightSyms, autoOpen, excludeSyms) {
+  const cardId = "sg-" + g.sec.replace(/\s+/g, "_");
+  const exclude = excludeSyms || new Set();
+  const companies = g.companies.filter(co => !exclude.has(co.s));
+  if (!companies.length) return "";
+  const cosHtml = companies.map(co => {
+    const isTarget = highlightSyms.has(co.s);
+    const nz = co.nz || SYM_TO_NZ[co.s] || "";
+    const nzShort = nz.length > 12 ? nz.slice(0,12)+"…" : nz;
+    const enShort = co.n.length > 18 ? co.n.slice(0,18)+"…" : co.n;
+    const sum = SYM_TO_SUM[co.s] || "";
+    const sumShort = sum.length > 120 ? sum.slice(0,120)+"…" : sum;
+    return `<div class="cl-co ${isTarget ? "target" : ""}" onclick="jumpToCompany('${escHtml(co.s)}')">
+      <div class="cl-co-sym">${escHtml(co.s)}</div>
+      ${nzShort ? `<div class="cl-co-namez">${escHtml(nzShort)}</div>` : ""}
+      <div class="cl-co-name">${escHtml(enShort)}</div>
+      ${sumShort ? `<div class="cl-co-sum">${escHtml(sumShort)}</div>` : ""}
+    </div>`;
+  }).join("");
+
+  return `<div class="cl-card sector-card" id="${cardId}">
+    <div class="cl-head" onclick="toggleCluster('${cardId}')">
+      <span class="cl-badge sector-badge">${companies.length} 間</span>
+      <div class="cl-title-wrap">
+        <div class="cl-title">${escHtml(secZh(g.sec))}</div>
+        <div class="cl-desc-zh">此行業內與其他股票相關系數均低於 0.60，未能歸入相關群組</div>
+      </div>
+      <span class="cl-chevron">▼</span>
+    </div>
+    <div class="cl-body">
+      <div class="cl-companies">${cosHtml}</div>
+    </div>
+  </div>`;
+}
+
+// Toggle cluster open/close
+const openClusters = new Set();
+function toggleCluster(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (openClusters.has(id)) { openClusters.delete(id); el.classList.remove("open"); }
+  else { openClusters.add(id); el.classList.add("open"); }
+}
+function openCluster(id) {
+  const el = document.getElementById(id);
+  if (el && !openClusters.has(id)) { openClusters.add(id); el.classList.add("open"); }
+}
+
+// ── Keyword search ────────────────────────────────────────
+function clearKwSearch() {
+  document.getElementById("search-input").value = "";
+  document.getElementById("clear-btn").classList.remove("visible");
+  document.getElementById("results").innerHTML = '<div class="empty">請輸入搜尋內容</div>';
+}
+
+function runKwSearch(query) {
+  if (!query) { document.getElementById("results").innerHTML = '<div class="empty">請輸入搜尋內容</div>'; return; }
+  if (currentTab === "kw2co") searchKw2Co(query);
+  else searchCo2Kw(query);
+}
+
+function searchKw2Co(query) {
+  const q = query.toLowerCase(), results = [];
+  if (KW_INDEX[q]) results.push({ entry: KW_INDEX[q], score: 2 });
+  for (const [key, entry] of Object.entries(KW_INDEX)) {
+    if (key !== q && key.includes(q)) results.push({ entry, score: 1 });
+  }
+  for (const [zh, entry] of Object.entries(KW_ZH_INDEX)) {
+    if (!results.some(r => r.entry === entry) && zh.includes(query)) results.push({ entry, score: 1.5 });
+  }
+  results.sort((a, b) => b.score - a.score || b.entry.companies.length - a.entry.companies.length);
+  const top = results.slice(0, 50);
+  const div = document.getElementById("results");
+  if (!top.length) { div.innerHTML = `<div class="result-count">找不到相關關鍵字</div>`; return; }
+  let html = `<div class="result-count">找到 <b>${results.length}</b> 個關鍵字，顯示前 ${top.length} 個</div>`;
+  for (const { entry } of top) {
+    const sortedAll = sortByRevYoy(entry.companies);
+    const cos = sortedAll.slice(0, 60);
+    const agg = aggKwQ1(entry.companies);
+    const aggHtml = agg ? `<span class="kw-q1-summary">
+      <span>Q1 營收 YoY: ${fmtPct(agg.revYoy)}</span>
+      <span>毛利 YoY: ${fmtPct(agg.gpYoy)}</span>
+      <span>淨利 YoY: ${fmtPct(agg.niYoy)}</span>
+      <span style="color:#666">(${agg.n}/${entry.companies.length} 已公告)</span>
+    </span>` : `<span class="kw-q1-summary" style="opacity:.5">Q1 數據暫缺</span>`;
+    html += `<div class="kw-result-card"><div class="kw-result-header">
+      ${entry.zh ? `<span class="kw-result-zh">${hl(entry.zh, query)}</span>` : ""}
+      <span class="kw-result-en">${hl(entry.en, query)}</span>
+      <span class="kw-result-count">${entry.companies.length} 間</span>
+      ${aggHtml}
+    </div><div class="kw-co-list">`;
+    for (const co of cos) {
+      const sym = co.s;
+      const namez = co.nz || "";
+      const namen = co.n.length>30?co.n.slice(0,30)+"…":co.n;
+      const sum = (SYM_TO_SUM[co.s]||"").slice(0,100);
+      html += `<div class="kw-co-item ${co.q1?"":"q1-noq"}" onclick="jumpToCompany('${escHtml(co.s)}')">
+        <div class="kw-co-header">
+          <span class="kw-co-sym">${escHtml(sym)}</span>
+          <span class="kw-co-namez">${escHtml(namez||namen)}</span>
+          ${namez?`<span class="kw-co-name">${escHtml(namen)}</span>`:""}
+        </div>
+        ${sum?`<div class="kw-co-sum">${escHtml(sum)}</div>`:""}
+        ${renderCoQ1(co)}
+      </div>`;
+    }
+    if (entry.companies.length > 60) html += `<div style="font-size:12px;color:#666;align-self:center;padding:4px 8px">…還有 ${entry.companies.length-60} 間</div>`;
+    html += `</div></div>`;
+  }
+  div.innerHTML = html;
+}
+
+function searchCo2Kw(query) {
+  const q = query.toLowerCase(), matches = [];
+  for (const co of DB) {
+    const sm = co.s.toLowerCase().includes(q);
+    const nm = co.n.toLowerCase().includes(q);
+    const nzm = (co.nz||"").includes(query);
+    if (sm || nm || nzm) matches.push({ co, score: sm ? (co.s.toLowerCase()===q?3:2) : (nzm?1.5:1) });
+  }
+  matches.sort((a, b) => b.score - a.score);
+  const top = matches.slice(0, 30);
+  const div = document.getElementById("results");
+  if (!top.length) { div.innerHTML = `<div class="result-count">找不到相關公司</div>`; return; }
+  let html = `<div class="result-count">找到 <b>${matches.length}</b> 間公司，顯示前 ${top.length} 間</div>`;
+  for (const { co } of top) {
+    const kws = (co.kws||[]).slice(0,25);
+    const symDisplay = co.s;
+    html += `<div class="company-card"><div class="company-header">
+      <span class="co-symbol">${hl(symDisplay,query.toUpperCase())}</span>
+      <span class="co-name">${hl(co.n,query)}</span>
+      ${co.nz?`<span class="co-name-zh">${hl(co.nz,query)}</span>`:""}
+      ${co.sec?`<span class="co-sector">${escHtml(co.sec)}</span>`:""}
+    </div>`;
+    if (co.ind) html += `<div class="co-industry">${escHtml(co.ind)}</div>`;
+    if (co.sum) html += `<div class="co-summary">${escHtml(co.sum)}</div>`;
+    html += renderCoQ1(co);
+    if (kws.length) {
+      html += `<div class="kw-list">`;
+      for (const kw of kws) {
+        html += `<span class="kw-tag ${kwColor(kw.w)}" onclick="searchByKw('${escHtml(kw.z||kw.e)}')">
+          ${kw.z?`<span class="kw-zh">${escHtml(kw.z)}</span><span class="kw-dot">·</span>`:""}
+          <span class="kw-en">${escHtml(kw.e)}</span>
+        </span>`;
+      }
+      html += `</div>`;
+    } else html += `<div style="font-size:12px;color:#555">無關鍵字資料</div>`;
+    html += `</div>`;
+  }
+  div.innerHTML = html;
+}
+
+function jumpToCompany(symbol) {
+  switchTab("co2kw");
+  const input = document.getElementById("search-input");
+  input.value = symbol;
+  document.getElementById("clear-btn").classList.add("visible");
+  runKwSearch(symbol);
+}
+function searchByKw(kw) {
+  switchTab("kw2co");
+  const input = document.getElementById("search-input");
+  input.value = kw;
+  document.getElementById("clear-btn").classList.add("visible");
+  runKwSearch(kw);
+}
+
+// ── Q1 2026 helpers ──
+function fmtAmt(v) {
+  if (v == null || isNaN(v)) return "—";
+  const a = Math.abs(v);
+  if (a >= 1e8)  return (v/1e8).toFixed(2)  + "億";
+  if (a >= 1e4)  return (v/1e4).toFixed(0)  + "萬";
+  return v.toFixed(0);
+}
+function fmtPct(v) {
+  if (v == null || isNaN(v)) return "—";
+  const cls = v >= 0 ? "q1-up" : "q1-dn";
+  return `<span class="${cls}">${v>=0?"+":""}${v.toFixed(1)}%</span>`;
+}
+function fmtNum(v, dp) {
+  if (v == null || isNaN(v)) return "—";
+  return v.toFixed(dp==null?2:dp);
+}
+function renderCoQ1(co) {
+  if (!co.q1) return `<div class="q1-line q1-na">Q1 2026: 暫無業績公告</div>`;
+  const q = co.q1;
+  return `<div class="q1-line">
+    <span class="q1-cell">營收: <b>${fmtAmt(q.rev)}</b> ${fmtPct(q.ry)}</span>
+    <span class="q1-cell">毛利: <b>${fmtAmt(q.gp)}</b> ${fmtPct(q.gy)}</span>
+    <span class="q1-cell">淨利: <b>${fmtAmt(q.ni)}</b> ${fmtPct(q.ny)}</span>
+    <span class="q1-cell">ROE: <b>${q.roe==null?"—":fmtNum(q.roe,2)+"%"}</b></span>
+    <span class="q1-cell">P/OCF: <b>${q.pocf==null||q.pocf<=0?"—":fmtNum(q.pocf,1)+"x"}</b></span>
+  </div>`;
+}
+function aggKwQ1(companies) {
+  let rev26=0, rev25=0, gp26=0, gp25=0, ni26=0, ni25=0, n=0;
+  for (const co of companies) {
+    const q = co.q1; if (!q) continue;
+    if (q.rev != null && q.ry != null) {
+      const r25 = q.rev / (1 + q.ry/100);
+      if (isFinite(r25)) { rev26 += q.rev; rev25 += r25; }
+    }
+    if (q.gp != null && q.gy != null) {
+      const g25 = q.gp / (1 + q.gy/100);
+      if (isFinite(g25)) { gp26 += q.gp; gp25 += g25; }
+    }
+    if (q.ni != null && q.ny != null) {
+      const n25 = q.ni / (1 + q.ny/100);
+      if (isFinite(n25)) { ni26 += q.ni; ni25 += n25; }
+    }
+    n++;
+  }
+  if (!n) return null;
+  return {
+    n,
+    revYoy: rev25 ? (rev26/rev25 - 1)*100 : null,
+    gpYoy:  gp25  ? (gp26/gp25  - 1)*100 : null,
+    niYoy:  ni25  ? (ni26/ni25  - 1)*100 : null,
+  };
+}
+let SORT_KEY = 'ry';
+function setSortKey(k) {
+  SORT_KEY = k;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b.dataset.k===k));
+  const inp = document.getElementById('search-input');
+  if (inp && inp.value) runKwSearch(inp.value);
+  if (themesLoaded && document.getElementById('theme-panel').style.display==='block') renderThemeView();
+}
+// ── Theme tab ──
+let THEMES_DATA = null, themesLoaded = false;
+async function loadThemesData() {
+  try {
+    const r = await fetch("cn_themes.enc");
+    THEMES_DATA = await _decryptEnc(await r.text(), _pw);
+    themesLoaded = true;
+    renderThemeView();
+  } catch (e) {
+    document.getElementById("theme-body").innerHTML = `<div class="empty">載入失敗: ${e.message}</div>`;
+  }
+}
+function renderThemeView() {
+  if (!THEMES_DATA) return;
+  const { themes, categories } = THEMES_DATA;
+  // group themes by category
+  const byCat = {};
+  for (const t of themes) (byCat[t.cat] ||= []).push(t);
+  // categories sorted by ry desc
+  const catOrder = categories.slice().sort((a,b) => (b[SORT_KEY]??-999)-(a[SORT_KEY]??-999));
+  let html = '';
+  for (const c of catOrder) {
+    const ts = (byCat[c.cat]||[]).slice().sort((a,b)=>(b[SORT_KEY]??-999)-(a[SORT_KEY]??-999));
+    html += `<div class="theme-cat"><div class="theme-cat-h">
+      <span class="theme-cat-name">${escHtml(c.cat)}</span>
+      <span class="theme-cat-meta">${c.n} 公司 · ${c.nQ1} 已公告 · 營收YoY ${fmtPct(c.ry)} · 毛利YoY ${fmtPct(c.gy)} · 淨利YoY ${fmtPct(c.ny)}</span>
+    </div><div class="theme-grid">`;
+    for (const t of ts) {
+      html += `<div class="theme-card" onclick="toggleTheme(this,'${escHtml(t.tz)}')">
+        <div class="theme-card-h">
+          <span class="theme-name">${escHtml(t.tz)}</span>
+          <span class="theme-en">${escHtml(t.te)}</span>
+          <span class="theme-n">${t.n}/${t.nQ1}</span>
+        </div>
+        <div class="theme-q1">營收 ${fmtPct(t.ry)} · 毛利 ${fmtPct(t.gy)} · 淨利 ${fmtPct(t.ny)}</div>
+      </div>`;
+    }
+    html += `</div></div>`;
+  }
+  document.getElementById("theme-body").innerHTML = html;
+}
+function toggleTheme(el, tz) {
+  if (el.classList.contains('open')) { el.classList.remove('open'); el.querySelector('.theme-cos')?.remove(); return; }
+  const t = THEMES_DATA.themes.find(x => x.tz === tz);
+  if (!t) return;
+  // close other open in same grid
+  el.parentNode.querySelectorAll('.theme-card.open').forEach(o => { o.classList.remove('open'); o.querySelector('.theme-cos')?.remove(); });
+  el.classList.add('open');
+  // build company list sorted by q1.ry desc
+  const cos = t.syms.map(s => DB.find(c => c.s === s)).filter(Boolean);
+  const sorted = sortByRevYoy(cos).slice(0, 80);
+  let inner = `<div class="theme-cos"><div style="font-size:12px;color:#888;margin-bottom:6px">成員 keyword: ${t.kws.map(k=>escHtml(k)).join(' · ')}</div><div class="kw-co-list">`;
+  for (const co of sorted) {
+    const sym = co.s, namen = co.n.length>30?co.n.slice(0,30)+"…":co.n;
+    inner += `<div class="kw-co-item ${co.q1?"":"q1-noq"}" onclick="event.stopPropagation();jumpToCompany('${escHtml(sym)}')">
+      <div class="kw-co-header">
+        <span class="kw-co-sym">${escHtml(sym)}</span>
+        <span class="kw-co-namez">${escHtml(co.nz||namen)}</span>
+        ${co.nz?`<span class="kw-co-name">${escHtml(namen)}</span>`:""}
+      </div>${renderCoQ1(co)}</div>`;
+  }
+  if (t.syms.length > 80) inner += `<div style="font-size:12px;color:#666;padding:4px 8px">…還有 ${t.syms.length-80} 間</div>`;
+  inner += `</div></div>`;
+  el.insertAdjacentHTML('beforeend', inner);
+}
+
+function sortByRevYoy(arr) {
+  return arr.slice().sort((a,b) => {
+    const ay = a.q1?.[SORT_KEY], by = b.q1?.[SORT_KEY];
+    if (ay==null && by==null) return 0;
+    if (ay==null) return 1;
+    if (by==null) return -1;
+    return by - ay;
+  });
+}
+
+function hl(text, query) {
+  if (!query) return escHtml(text);
+  return escHtml(text).replace(new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi"), m=>`<mark>${m}</mark>`);
+}
+function escHtml(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function kwColor(w) { return w>=0.8?"kw-high":w>=0.6?"kw-mid":"kw-low"; }
+</script>
+</body>
+</html>

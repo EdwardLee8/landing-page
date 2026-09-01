@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>港股 2026 中期業績前景庫 | AI10XPRO</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--yellow:#d29922;--orange:#db6d28}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;line-height:1.6}
+#lock{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:1rem}
+#lock input{padding:.8rem 1.2rem;font-size:1.1rem;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);width:280px;text-align:center}
+#lock button{padding:.8rem 2rem;font-size:1rem;border:none;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;font-weight:600}
+#lock button:hover{opacity:.85}
+#lock .err{color:var(--red);font-size:.9rem;min-height:1.2em}
+#lock .hint{color:var(--muted);font-size:.85rem}
+#app{display:none;max-width:1200px;margin:0 auto;padding:1rem}
+.header{text-align:center;padding:1.5rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.header h1{font-size:1.6rem;color:var(--text)}
+.header .sub{color:var(--muted);font-size:.9rem;margin-top:.3rem}
+.stats{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin:.8rem 0}
+.stats .chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:.3rem .8rem;font-size:.85rem;color:var(--muted)}
+.stats .chip b{color:var(--text)}
+.toolbar{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.toolbar input[type=text]{flex:1;min-width:200px;padding:.6rem .8rem;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:.95rem}
+.toolbar select{padding:.6rem .8rem;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:.9rem;cursor:pointer}
+.toolbar select option{background:var(--card)}
+.filters{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.filters .fbtn{padding:.3rem .7rem;border:1px solid var(--border);border-radius:16px;background:transparent;color:var(--muted);cursor:pointer;font-size:.82rem;transition:.15s}
+.filters .fbtn:hover{border-color:var(--accent)}
+.filters .fbtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+thead th{position:sticky;top:0;background:var(--card);border-bottom:2px solid var(--border);padding:.6rem .4rem;text-align:left;cursor:pointer;white-space:nowrap;z-index:1}
+thead th:hover{color:var(--accent)}
+thead th .arrow{font-size:.7rem;color:var(--muted)}
+tbody tr{border-bottom:1px solid var(--border);cursor:pointer;transition:.1s}
+tbody tr:hover{background:var(--card)}
+tbody tr.expanded{background:var(--card)}
+td{padding:.5rem .4rem;vertical-align:top}
+.score{font-weight:700;font-size:1rem}
+.score-high{color:var(--green)}
+.score-mid{color:var(--yellow)}
+.score-low{color:var(--muted)}
+.score-vlow{color:var(--red)}
+.cat-badge{display:inline-block;padding:.15rem .5rem;border-radius:10px;font-size:.75rem;white-space:nowrap}
+.cat-1{background:rgba(63,185,80,.15);color:var(--green)}  /* 結構性增長 */
+.cat-2{background:rgba(88,166,255,.15);color:var(--accent)} /* 增長改善 */
+.cat-3{background:rgba(210,153,34,.15);color:var(--yellow)} /* 正面趨勢 */
+.cat-4{background:rgba(139,148,158,.15);color:var(--muted)} /* 中性 */
+.cat-5{background:rgba(219,109,40,.15);color:var(--orange)} /* 差轉好 */
+.cat-6{background:rgba(139,148,158,.1);color:var(--muted)}  /* 偏弱 */
+.cat-7{background:rgba(248,81,73,.1);color:var(--red)}      /* 基本面轉弱 */
+.detail-row>td{padding:0;border:none}
+.detail{overflow:hidden;max-height:0;transition:max-height .3s ease}
+.detail.open{max-height:8000px}
+.detail-inner{padding:.8rem 1rem;border-top:1px solid var(--border)}
+.sec{margin-bottom:1rem}
+.sec h4{color:var(--accent);font-size:.9rem;margin-bottom:.3rem;border-left:3px solid var(--accent);padding-left:.5rem}
+.sec .field{margin-bottom:.5rem}
+.sec .flabel{color:var(--muted);font-size:.82rem;font-weight:600;margin-bottom:.15rem}
+.sec .fval{color:var(--text);font-size:.88rem;white-space:pre-wrap;word-break:break-word}
+.scorebars{display:flex;gap:.8rem;flex-wrap:wrap;margin:.5rem 0}
+.scorebar{text-align:center;min-width:80px}
+.scorebar .bar{height:6px;border-radius:3px;background:var(--border);overflow:hidden;margin:.2rem 0}
+.scorebar .fill{height:100%;border-radius:3px}
+.scorebar .lbl{font-size:.75rem;color:var(--muted)}
+.scorebar .num{font-size:.85rem;font-weight:600;color:var(--text)}
+.pagination{display:flex;gap:.3rem;justify-content:center;margin-top:1rem;flex-wrap:wrap}
+.pagination button{padding:.4rem .8rem;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text);cursor:pointer;font-size:.85rem}
+.pagination button.active{background:var(--accent);color:#fff}
+.pagination button:disabled{opacity:.4;cursor:default}
+.empty{text-align:center;padding:3rem;color:var(--muted)}
+@media(max-width:768px){
+#app{padding:.5rem}
+table{font-size:.8rem}
+td,th{padding:.4rem .2rem}
+.header h1{font-size:1.3rem}
+.toolbar input[type=text]{min-width:150px}
+}
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <h2>港股 2026 中期業績前景庫</h2>
+  <p class="hint">請輸入密碼以查看 307 隻港股 H1 業績分析</p>
+  <input type="password" id="pw" placeholder="密碼" onkeydown="if(event.key==='Enter')doUnlock()">
+  <button onclick="doUnlock()">解鎖</button>
+  <div class="err" id="err"></div>
+</div>
+
+<div id="app">
+  <div class="header">
+    <h1>港股 2026 中期業績前景庫</h1>
+    <div class="sub"><span id="datasetCount">載入後顯示</span> 隻港股 · 2026 H1 業績深度分析 · 更新日期 <span id="generatedDate">載入後顯示</span></div>
+    <div class="stats" id="stats"></div>
+  </div>
+  <div class="toolbar">
+    <input type="text" id="search" placeholder="搜尋股票代號 / 公司名稱 / 行業…" oninput="doFilter()">
+    <select id="sortBy" onchange="doSort()">
+      <option value="score-desc">評分 ↓</option>
+      <option value="score-asc">評分 ↑</option>
+      <option value="code-asc">代號 ↑</option>
+      <option value="name-asc">名稱 ↑</option>
+    </select>
+  </div>
+  <div class="filters" id="filters"></div>
+  <table>
+    <thead>
+      <tr>
+        <th onclick="setSort('score')">評分 <span class="arrow" id="arr-score">▼</span></th>
+        <th onclick="setSort('code')">代號 <span class="arrow" id="arr-code"></span></th>
+        <th>公司名稱</th>
+        <th>行業</th>
+        <th>發展階段</th>
+        <th onclick="setSort('category')">分類 <span class="arrow" id="arr-category"></span></th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="pagination" id="pager"></div>
+</div>
+
+<script>
+let ROWS=[], SORT='score-desc', FILTER_CAT='all', SEARCH='', PAGE=1, PERPAGE=50;
+
+async function doUnlock(){
+  const pw=document.getElementById('pw').value;
+  const errEl=document.getElementById('err');
+  errEl.textContent='';
+  try{
+    const resp=await fetch('hk_h1_2026_data.enc?v='+Date.now());
+    if(!resp.ok)throw new Error('enc file not found');
+    const b64=await resp.text();
+    const raw=atob(b64);
+    const salt=Uint8Array.from(raw.slice(0,16),c=>c.charCodeAt(0));
+    const nonce=Uint8Array.from(raw.slice(16,28),c=>c.charCodeAt(0));
+    const ct=Uint8Array.from(raw.slice(28),c=>c.charCodeAt(0));
+    const key=await deriveKey(pw,salt);
+    const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:nonce},key,ct);
+    const dec=new TextDecoder();
+    const data=JSON.parse(dec.decode(pt));
+    ROWS=data.rows||[];
+    document.getElementById('datasetCount').textContent=data.count||ROWS.length;
+    document.getElementById('generatedDate').textContent=data.generated||data.updated||'';
+    document.getElementById('lock').style.display='none';
+    document.getElementById('app').style.display='block';
+    initPage();
+  }catch(e){
+    errEl.textContent='密碼錯誤或解密失敗';
+  }
+}
+
+async function deriveKey(pw,salt){
+  const enc=new TextEncoder();
+  const keyMaterial=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey(
+    {name:'PBKDF2',salt:salt,iterations:100000,hash:'SHA-256'},
+    keyMaterial,
+    {name:'AES-GCM',length:256},
+    false,
+    ['decrypt']
+  );
+}
+
+function initPage(){
+  // Stats
+  const statsEl=document.getElementById('stats');
+  const cats={};
+  let scoreSum=0,scoreMin=999,scoreMax=0;
+  ROWS.forEach(r=>{
+    const c=r.category||'其他';
+    cats[c]=(cats[c]||0)+1;
+    if(r.score){scoreSum+=r.score;scoreMin=Math.min(scoreMin,r.score);scoreMax=Math.max(scoreMax,r.score);}
+  });
+  statsEl.innerHTML=`<span class="chip">總數 <b>${ROWS.length}</b></span>`+
+    `<span class="chip">評分 <b>${scoreMin}–${scoreMax}</b></span>`+
+    `<span class="chip">平均 <b>${(scoreSum/ROWS.length).toFixed(1)}</b></span>`+
+    Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span class="chip">${k} <b>${v}</b></span>`).join('');
+
+  // Category filters
+  const fEl=document.getElementById('filters');
+  fEl.innerHTML=`<button class="fbtn active" onclick="setFilter('all')">全部 ${ROWS.length}</button>`+
+    Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<button class="fbtn" onclick="setFilter('${k.replace(/'/g,"\\'")}')">${k} ${v}</button>`).join('');
+  renderTable();
+}
+
+function setFilter(cat){
+  FILTER_CAT=cat;
+  PAGE=1;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderTable();
+}
+
+function setSort(field){
+  if(SORT.startsWith(field+'-')){
+    SORT=field+'-'+(SORT.endsWith('asc')?'desc':'asc');
+  }else{
+    SORT=field+'-desc';
+  }
+  // Update arrows
+  ['score','code','category'].forEach(f=>{
+    const el=document.getElementById('arr-'+f);
+    if(el)el.textContent=SORT.startsWith(f)?(SORT.endsWith('asc')?'▲':'▼'):'';
+  });
+  document.getElementById('sortBy').value=SORT;
+  renderTable();
+}
+
+function doSort(){
+  SORT=document.getElementById('sortBy').value;
+  renderTable();
+}
+
+function doFilter(){
+  SEARCH=document.getElementById('search').value.toLowerCase().trim();
+  PAGE=1;
+  renderTable();
+}
+
+function getFiltered(){
+  let f=ROWS;
+  if(FILTER_CAT!=='all')f=f.filter(r=>(r.category||'')===FILTER_CAT);
+  if(SEARCH){
+    f=f.filter(r=>{
+      const s=(r.code+' '+r.name+' '+(r.industry||'')+' '+(r.stage||'')+' '+(r.category||'')).toLowerCase();
+      return s.includes(SEARCH);
+    });
+  }
+  // Sort
+  const [field,dir]=SORT.split('-');
+  f.sort((a,b)=>{
+    let av=a[field]||'',bv=b[field]||'';
+    if(typeof av==='number'&&typeof bv==='number')return dir==='asc'?av-bv:bv-av;
+    return dir==='asc'?String(av).localeCompare(String(bv), 'zh'):String(bv).localeCompare(String(av), 'zh');
+  });
+  return f;
+}
+
+function scoreClass(s){
+  if(s>=85)return'score-high';
+  if(s>=70)return'score-mid';
+  if(s>=50)return'score-low';
+  return'score-vlow';
+}
+
+function catClass(cat){
+  if(!cat)return'cat-4';
+  if(cat.includes('結構性'))return'cat-1';
+  if(cat.includes('增長改善'))return'cat-2';
+  if(cat.includes('正面'))return'cat-3';
+  if(cat.includes('中性'))return'cat-4';
+  if(cat.includes('差轉好'))return'cat-5';
+  if(cat.includes('偏弱'))return'cat-6';
+  if(cat.includes('轉弱'))return'cat-7';
+  return'cat-4';
+}
+
+function renderTable(){
+  const filtered=getFiltered();
+  const tbody=document.getElementById('tbody');
+  const totalPages=Math.max(1,Math.ceil(filtered.length/PERPAGE));
+  if(PAGE>totalPages)PAGE=totalPages;
+  const start=(PAGE-1)*PERPAGE;
+  const pageData=filtered.slice(start,start+PERPAGE);
+
+  tbody.innerHTML=pageData.map((r,idx)=>{
+    const realIdx=ROWS.indexOf(r);
+    const s=r.score||0;
+    return `<tr class="row" onclick="toggleRow(${realIdx})" id="row-${realIdx}">
+      <td class="score ${scoreClass(s)}">${s}</td>
+      <td>${r.code||''}</td>
+      <td><b>${r.name||''}</b></td>
+      <td style="color:var(--muted)">${(r.industry||'').substring(0,18)}</td>
+      <td style="color:var(--muted)">${(r.stage||'').substring(0,25)}</td>
+      <td><span class="cat-badge ${catClass(r.category)}">${r.category||''}</span></td>
+    </tr>
+    <tr class="detail-row" id="dr-${realIdx}"><td colspan="6">
+      <div class="detail" id="d-${realIdx}">
+        <div class="detail-inner" id="di-${realIdx}"></div>
+      </div>
+    </td></tr>`;
+  }).join('');
+
+  // Pager
+  const pager=document.getElementById('pager');
+  if(totalPages<=1){pager.innerHTML='';return;}
+  let html='';
+  if(PAGE>1)html+=`<button onclick="goPage(${PAGE-1})">‹ 上一頁</button>`;
+  for(let p=1;p<=Math.min(totalPages,10);p++){
+    html+=`<button class="${p===PAGE?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  }
+  if(totalPages>10)html+=`<button disabled>… ${totalPages}</button>`;
+  if(PAGE<totalPages)html+=`<button onclick="goPage(${PAGE+1})">下一頁 ›</button>`;
+  pager.innerHTML=html;
+}
+
+function goPage(p){PAGE=p;renderTable();window.scrollTo(0,0);}
+
+function toggleRow(idx){
+  const d=document.getElementById('d-'+idx);
+  const di=document.getElementById('di-'+idx);
+  const row=document.getElementById('row-'+idx);
+  if(d.classList.contains('open')){
+    d.classList.remove('open');
+    row.classList.remove('expanded');
+    return;
+  }
+  // Close all others
+  document.querySelectorAll('.detail.open').forEach(el=>el.classList.remove('open'));
+  document.querySelectorAll('.row.expanded').forEach(el=>el.classList.remove('expanded'));
+
+  // Build detail
+  const r=ROWS[idx];
+  di.innerHTML=buildDetail(r);
+  d.classList.add('open');
+  row.classList.add('expanded');
+}
+
+function buildDetail(r){
+  // Score bars
+  const scores=[
+    {k:'g_score',max:25,label:'增長動能',color:'var(--green)'},
+    {k:'p_score',max:20,label:'盈利能力',color:'var(--accent)'},
+    {k:'c_score',max:15,label:'現金流',color:'var(--yellow)'},
+    {k:'v_score',max:20,label:'可見度',color:'var(--orange)'},
+    {k:'s_score',max:20,label:'策略選擇權',color:'#a371f7'},
+  ];
+  let bars=`<div class="scorebars">`;
+  scores.forEach(s=>{
+    const v=r[s.k]||0;
+    const pct=Math.min(100,(v/s.max)*100);
+    bars+=`<div class="scorebar"><div class="lbl">${s.label}</div><div class="bar"><div class="fill" style="width:${pct}%;background:${s.color}"></div></div><div class="num">${v}/${s.max}</div></div>`;
+  });
+  if(r.risk_ded){
+    bars+=`<div class="scorebar"><div class="lbl" style="color:var(--red)">風險扣分</div><div class="bar"><div class="fill" style="width:100%;background:var(--red)"></div></div><div class="num" style="color:var(--red)">-${r.risk_ded}</div></div>`;
+  }
+  bars+=`</div>`;
+
+  // Sections
+  const sections=[
+    {title:'基本面分析',fields:[
+      {l:'行業/商業模式',v:r.industry},
+      {l:'發展階段',v:r.stage},
+      {l:'分類',v:r.category},
+      {l:'核心判斷',v:r.core_judgment},
+      {l:'財務主線',v:r.financials},
+      {l:'分部動能',v:r.segment},
+    ]},
+    {title:'前瞻與驗證',fields:[
+      {l:'領先指標/訂單',v:r.leading},
+      {l:'現金流與資產負債表',v:r.cashflow},
+      {l:'管理層指引/前瞻',v:r.guidance},
+      {l:'外部行業驗證',v:r.industry_validation},
+      {l:'主要催化劑',v:r.catalyst},
+      {l:'主要風險',v:r.risk},
+    ]},
+    {title:'展望與策略',fields:[
+      {l:'6–18個月展望',v:r.outlook},
+      {l:'資本配置/股東回報',v:r.capital},
+      {l:'Thesis驗證條件',v:r.thesis_valid},
+      {l:'Thesis失效條件',v:r.thesis_invalid},
+      {l:'未來判斷因果鏈',v:r.causal_chain},
+    ]},
+    {title:'完整摘要',fields:[
+      {l:'發展全景摘要',v:r.summary},
+    ]},
+  ];
+
+  let html=bars;
+  sections.forEach(sec=>{
+    const hasContent=sec.fields.some(f=>f.v&&f.v.trim());
+    if(!hasContent)return;
+    html+=`<div class="sec"><h4>${sec.title}</h4>`;
+    sec.fields.forEach(f=>{
+      if(!f.v||!f.v.trim())return;
+      html+=`<div class="field"><div class="flabel">${f.l}</div><div class="fval">${f.v}</div></div>`;
+    });
+    html+=`</div>`;
+  });
+
+  // Meta
+  html+=`<div style="color:var(--muted);font-size:.8rem;margin-top:.5rem">分析日期: ${r.date||''} | 業績期: ${r.period||''}</div>`;
+  return html;
+}
+</script>
+</body>
+</html>

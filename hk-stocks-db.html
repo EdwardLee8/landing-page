@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>港股2025下半年資料庫</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:20px;min-height:100vh}
+a{color:#d4a647;text-decoration:none}
+a:hover{text-decoration:underline}
+.page-header{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px;transition:background .2s}
+.back-btn:hover{background:#d4a64720;text-decoration:none}
+.page-title{font-size:20px;font-weight:700;color:#fff}
+.page-subtitle{font-size:12px;color:#888;margin-top:2px}
+.filter-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:16px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.filter-group{display:flex;flex-direction:column;gap:4px}
+.filter-label{font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+select,input[type=text]{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 10px;border-radius:4px;font-size:13px;font-family:inherit;min-width:120px;cursor:pointer;outline:none;transition:border-color .2s}
+select:focus,input[type=text]:focus{border-color:#d4a647}
+input[type=text]{min-width:180px}
+.filter-actions{display:flex;gap:8px;align-items:flex-end;margin-left:auto}
+.btn{padding:7px 16px;border-radius:4px;font-size:13px;font-family:inherit;cursor:pointer;border:none;transition:all .2s;font-weight:600}
+.btn-primary{background:#d4a647;color:#080808}
+.btn-primary:hover{background:#e8bc5a}
+.btn-ghost{background:transparent;border:1px solid #444;color:#aaa}
+.btn-ghost:hover{border-color:#d4a647;color:#d4a647}
+.stats-bar{padding:10px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:12px;color:#888;display:flex;gap:16px;flex-wrap:wrap}
+.stats-bar span b{color:#d4a647;font-size:14px}
+.table-wrap{overflow-x:auto;padding:0 0 40px}
+table{width:100%;border-collapse:collapse;min-width:960px}
+thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
+th{padding:10px 12px;text-align:left;font-size:14px;font-weight:700;color:#d4a647;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:#e8bc5a}
+th.sort-asc .sort-icon::after{content:" ▲"}
+th.sort-desc .sort-icon::after{content:" ▼"}
+th:not(.sort-asc):not(.sort-desc) .sort-icon::after{content:" ⇅";opacity:.4}
+tbody tr{border-bottom:1px solid #1a1a2e;transition:background .15s}
+tbody tr:hover{background:#1a1a2e}
+td{padding:9px 12px;vertical-align:middle;white-space:nowrap}
+td.code{color:#d4a647;font-weight:600;font-size:15px}
+td.name{color:#fff;font-weight:600;max-width:160px;white-space:normal;word-break:break-all}
+td.industry{color:#aaa;font-size:16px}
+td.num{text-align:center !important;font-size:15px}
+td.num.pos{color:#4caf50}
+td.num.neg{color:#ef5350}
+td.num.na{color:#555}
+.tag{display:inline-block;padding:4px 12px;border-radius:12px;font-size:15px;font-weight:700}
+.tag-growth{background:#1a3a2a;color:#4caf50;border:1px solid #4caf5044}
+.tag-value{background:#1a2a3a;color:#64b5f6;border:1px solid #64b5f644}
+.tag-spec{background:#3a2a1a;color:#ff9800;border:1px solid #ff980044}
+.tag-trouble{background:#2a1a1a;color:#ef5350;border:1px solid #ef535044}
+.tag-na{background:#1e1e1e;color:#666;border:1px solid #33333344}
+.tag-large{background:#2a1a3a;color:#ce93d8;border:1px solid #ce93d844}
+.tag-mid{background:#1a2a3a;color:#90caf9;border:1px solid #90caf944}
+.tag-small{background:#1a1e2a;color:#78909c;border:1px solid #78909c44}
+.tag-yes{background:#1a3a1a;color:#66bb6a;border:1px solid #66bb6a44}
+.tag-no{background:#2a1a1a;color:#ef9a9a;border:1px solid #ef9a9a44}
+.pagination{display:flex;justify-content:center;align-items:center;gap:6px;padding:20px 24px;flex-wrap:wrap}
+.page-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#aaa;padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s}
+.page-btn:hover,.page-btn.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
+.page-btn:disabled{opacity:.3;cursor:not-allowed}
+.page-info{color:#666;font-size:13px;padding:0 8px}
+.empty{text-align:center;padding:60px 20px;color:#555}
+.empty-icon{font-size:40px;margin-bottom:12px}
+
+/* ── Multi-select dropdown ─────────────────────────────────── */
+.ms-wrap{position:relative;display:inline-block}
+.ms-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 32px 7px 10px;border-radius:4px;font-size:13px;font-family:inherit;min-width:120px;cursor:pointer;outline:none;transition:border-color .2s;text-align:left;position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ms-btn::after{content:'\25BE';position:absolute;right:10px;top:50%;transform:translateY(-50%);opacity:.6;font-size:11px}
+.ms-wrap.open .ms-btn{border-color:#d4a647}
+.ms-dropdown{position:absolute;top:calc(100% + 4px);left:0;background:#1a1a2e;border:1px solid #2a2a3e;border-radius:4px;min-width:150px;z-index:200;max-height:260px;overflow-y:auto;display:none;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.ms-wrap.open .ms-dropdown{display:block}
+.ms-item{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:13px;transition:background .15s;user-select:none}
+.ms-item:hover{background:#2a2a3e}
+.ms-item input[type=checkbox]{accent-color:#d4a647;width:14px;height:14px;flex-shrink:0;cursor:pointer}
+.ms-clear{padding:7px 14px;font-size:12px;color:#888;cursor:pointer;border-top:1px solid #2a2a3e;text-align:center;transition:color .15s}
+.ms-clear:hover{color:#d4a647}
+</style>
+</head>
+<body>
+
+
+<div class="page-header">
+  <a href="/" class="back-btn">&#8592; 返回主頁</a>
+  <div>
+    <div class="page-title">港股2025下半年資料庫</div>
+    <div class="page-subtitle">2025年12月年結的港股 &middot; 共2,012隻 &middot; 數據截至2026年4月2日</div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-group">
+    <span class="filter-label">搜尋</span>
+    <input type="text" id="f-search" placeholder="股票代碼 / 名稱">
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">行業</span>
+    <div class="ms-wrap" id="f-industry"><button class="ms-btn" data-placeholder="全部行業" style="min-width:140px">全部行業</button><div class="ms-dropdown"></div></div>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">市值類型</span>
+    <div class="ms-wrap" id="f-cap"><button class="ms-btn" data-placeholder="全部">全部</button><div class="ms-dropdown"></div></div>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">1個月類型</span>
+    <div class="ms-wrap" id="f-type1m"><button class="ms-btn" data-placeholder="全部">全部</button><div class="ms-dropdown"></div></div>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">3個月類型</span>
+    <div class="ms-wrap" id="f-type3m"><button class="ms-btn" data-placeholder="全部">全部</button><div class="ms-dropdown"></div></div>
+  </div>
+  <div class="filter-actions">
+    <button class="btn btn-ghost" onclick="resetFilters()">重置</button>
+    <button class="btn btn-primary" onclick="applyFilters()">篩選</button>
+  </div>
+</div>
+
+<div class="stats-bar" id="stats-bar"><span>載入中&#8230;</span></div>
+
+<div class="table-wrap">
+<table id="stocks-table">
+  <thead>
+    <tr>
+      <th onclick="sortBy('code')" data-col="code">代碼 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('name')" data-col="name">名稱 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('industry')" data-col="industry">行業 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('mktcap')" data-col="mktcap" style="text-align:center">市值(億) <span class="sort-icon"></span></th>
+      <th onclick="sortBy('cap_type')" data-col="cap_type">市值類型 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rev_growth_h2')" data-col="rev_growth_h2" style="text-align:center">下半年收入增 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('gp_growth_h2')" data-col="gp_growth_h2" style="text-align:center">下半年毛利增 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rel_1m')" data-col="rel_1m" style="text-align:center">1個月vs恒指 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('rel_3m')" data-col="rel_3m" style="text-align:center">3個月vs恒指 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('type_1m')" data-col="type_1m">1個月類型 <span class="sort-icon"></span></th>
+      <th onclick="sortBy('type_3m')" data-col="type_3m">3個月類型 <span class="sort-icon"></span></th>
+    </tr>
+  </thead>
+  <tbody id="table-body"></tbody>
+</table>
+<div class="empty" id="empty-state" style="display:none">
+  <div class="empty-icon">&#128269;</div>
+  <div>找不到符合條件的股票</div>
+</div>
+</div>
+
+<div class="pagination" id="pagination"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  loadAndInit('hkdb-free-2604');
+});
+
+
+async function _decryptEnc(b64, pw) {
+  const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const salt = raw.slice(0,16), nonce = raw.slice(16,28), ct = raw.slice(28);
+  const keyMat = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    {name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"},
+    keyMat, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({name:"AES-GCM", iv:nonce}, key, ct);
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+let RAW_DATA = [];
+
+async function loadAndInit(pw) {
+  try {
+    const r = await fetch("hk_stocks_data_orig.enc");
+    RAW_DATA = await _decryptEnc(await r.text(), pw);
+    initApp();
+  } catch(e) {
+    alert("數據載入失敗，請重試");
+  }
+}
+
+
+const PAGE_SIZE = 50;
+let filtered = [];
+let sortCol = 'mktcap';
+let sortDir = -1;
+let currentPage = 1;
+
+
+function parseNum(v) {
+  if (!v || v === '#VALUE!' || v === '' || v === '—') return null;
+  return parseFloat(v.replace(/[%,]/g, ''));
+}
+
+function numCell(v) {
+  const n = parseNum(v);
+  if (n === null) return '<td class="num na">—</td>';
+  const cls = n > 0 ? 'pos' : n < 0 ? 'neg' : '';
+  return '<td class="num ' + cls + '">' + v + '</td>';
+}
+
+function typeTag(v) {
+  const map = {'成長股':'growth','價值股':'value','投機股':'spec','困境股':'trouble','資料不足':'na'};
+  const cls = map[v] || 'na';
+  return '<span class="tag tag-' + cls + '">' + (v || '—') + '</span>';
+}
+
+function capTag(v) {
+  const map = {'大型股':'large','中型股':'mid','小型股':'small','資料不足':'na'};
+  const cls = map[v] || 'na';
+  return '<span class="tag tag-' + cls + '">' + (v || '—') + '</span>';
+}
+
+function perfTag(v) {
+  if (v === 'YES') return '<span class="tag tag-yes">✓ 好</span>';
+  if (v === 'NO') return '<span class="tag tag-no">✗ 差</span>';
+  return '<span class="tag tag-na">—</span>';
+}
+
+function applyFilters() {
+  const search = document.getElementById('f-search').value.trim().toLowerCase();
+  const industries_sel = msGetById('f-industry');
+  const caps    = msGetById('f-cap');
+  const type1ms = msGetById('f-type1m');
+  const type3ms = msGetById('f-type3m');
+
+  filtered = RAW_DATA.filter(function(s) {
+    if (search && !s.code.toLowerCase().includes(search) && !s.name.toLowerCase().includes(search)) return false;
+    if (industries_sel.length && !industries_sel.includes(s.industry)) return false;
+    if (caps.length    && !caps.includes(s.cap_type))    return false;
+    if (type1ms.length && !type1ms.includes(s.type_1m))  return false;
+    if (type3ms.length && !type3ms.includes(s.type_3m))  return false;
+    return true;
+  });
+
+  currentPage = 1;
+  if (sortCol) doSort(false);
+  render();
+}
+
+function resetFilters() {
+  document.getElementById('f-search').value = '';
+  ['f-industry','f-cap','f-type1m','f-type3m'].forEach(function(id) { msClearById(id); });
+  filtered = [...RAW_DATA];
+  currentPage = 1;
+  render();
+}
+
+function sortBy(col) {
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = 1; }
+  document.querySelectorAll('th').forEach(function(th) {
+    th.classList.remove('sort-asc','sort-desc');
+    if (th.dataset.col === col) th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+  });
+  doSort(true);
+  render();
+}
+
+function doSort(resetPage) {
+  filtered.sort(function(a, b) {
+    let av = a[sortCol], bv = b[sortCol];
+    const an = parseNum(av), bn = parseNum(bv);
+    if (an !== null && bn !== null) return (an - bn) * sortDir;
+    if (an !== null) return -sortDir;
+    if (bn !== null) return sortDir;
+    return ((av || '').localeCompare(bv || '', 'zh-Hant')) * sortDir;
+  });
+  if (resetPage) currentPage = 1;
+}
+
+function render() {
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page = filtered.slice(start, start + PAGE_SIZE);
+  const tbody = document.getElementById('table-body');
+  const empty = document.getElementById('empty-state');
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = '';
+  } else {
+    empty.style.display = 'none';
+    tbody.innerHTML = page.map(function(s) {
+      return '<tr>' +
+        '<td class="code">' + s.code + '</td>' +
+        '<td class="name">' + s.name + '</td>' +
+        '<td class="industry">' + (s.industry || '—') + '</td>' +
+        numCell(s.mktcap) +
+        '<td>' + capTag(s.cap_type) + '</td>' +
+        numCell(s.rev_growth_h2) +
+        numCell(s.gp_growth_h2) +
+        numCell(s.rel_1m) +
+        numCell(s.rel_3m) +
+        '<td>' + typeTag(s.type_1m) + '</td>' +
+        '<td>' + typeTag(s.type_3m) + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  const counts = {'成長股':0,'價值股':0,'投機股':0,'困境股':0};
+  filtered.forEach(function(s) { if (counts[s.type_1m] !== undefined) counts[s.type_1m]++; });
+  document.getElementById('stats-bar').innerHTML =
+    '<span>共 <b>' + filtered.length + '</b> 隻</span>' +
+    Object.entries(counts).map(function(e) { return '<span>' + e[0] + ' <b>' + e[1] + '</b></span>'; }).join('');
+
+  renderPagination();
+}
+
+function renderPagination() {
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
+  const pag = document.getElementById('pagination');
+  if (total <= 1) { pag.innerHTML = ''; return; }
+
+  let html = '<button class="page-btn" onclick="goPage(' + (currentPage-1) + ')" ' + (currentPage===1?'disabled':'') + '>&#8249;</button>';
+
+  const range = [];
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || Math.abs(i - currentPage) <= 2) range.push(i);
+    else if (range[range.length-1] !== '…') range.push('…');
+  }
+  range.forEach(function(p) {
+    if (p === '…') html += '<span class="page-info">…</span>';
+    else html += '<button class="page-btn ' + (p===currentPage?'active':'') + '" onclick="goPage(' + p + ')">' + p + '</button>';
+  });
+
+  html += '<button class="page-btn" onclick="goPage(' + (currentPage+1) + ')" ' + (currentPage===total?'disabled':'') + '>&#8250;</button>';
+  html += '<span class="page-info">' + currentPage + ' / ' + total + ' 頁</span>';
+  pag.innerHTML = html;
+}
+
+function goPage(p) {
+  const total = Math.ceil(filtered.length / PAGE_SIZE);
+  if (p < 1 || p > total) return;
+  currentPage = p;
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+document.getElementById('f-search').addEventListener('keydown', function(e) { if (e.key === 'Enter') applyFilters(); });
+
+function initApp() {
+  filtered = [...RAW_DATA];
+  const industries = [...new Set(RAW_DATA.map(s => s.industry).filter(Boolean))].sort((a,b) => a.localeCompare(b,'zh-Hant'));
+  msInit('f-industry', industries);
+  msInit('f-cap',    ['大型股','中型股','小型股']);
+  msInit('f-type1m', ['成長股','價值股','投機股','困境股','資料不足']);
+  msInit('f-type3m', ['成長股','價值股','投機股','困境股','資料不足']);
+  doSort(false);
+  document.querySelectorAll('th').forEach(function(th) {
+    if (th.dataset.col === 'mktcap') th.classList.add('sort-desc');
+  });
+  render();
+}
+
+/* ── Multi-select helpers ───────────────────────────────────── */
+function msInit(wrapperId, opts) {
+  const wrap = document.getElementById(wrapperId);
+  if (!wrap) return;
+  const btn = wrap.querySelector('.ms-btn');
+  const drop = wrap.querySelector('.ms-dropdown');
+  // Build options
+  opts.forEach(function(opt) {
+    const label = document.createElement('label');
+    label.className = 'ms-item';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.value = opt;
+    cb.addEventListener('change', function() { msUpdateBtn(wrap); });
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(opt));
+    drop.appendChild(label);
+  });
+  const clear = document.createElement('div');
+  clear.className = 'ms-clear';
+  clear.textContent = '清除選擇';
+  clear.addEventListener('click', function(e) { e.stopPropagation(); msClear(wrap); });
+  drop.appendChild(clear);
+  btn.addEventListener('click', function(e) { e.stopPropagation(); msToggle(wrap); });
+}
+
+function msToggle(wrap) {
+  const isOpen = wrap.classList.contains('open');
+  document.querySelectorAll('.ms-wrap.open').forEach(function(w) { w.classList.remove('open'); });
+  if (!isOpen) wrap.classList.add('open');
+}
+
+function msClear(wrap) {
+  wrap.querySelectorAll('input[type=checkbox]').forEach(function(cb) { cb.checked = false; });
+  msUpdateBtn(wrap);
+}
+
+function msUpdateBtn(wrap) {
+  const btn = wrap.querySelector('.ms-btn');
+  const selected = msGetSelected(wrap);
+  btn.textContent = selected.length ? selected.join(', ') : (btn.dataset.placeholder || '全部');
+  btn.title = btn.textContent;
+}
+
+function msGetSelected(wrap) {
+  const vals = [];
+  wrap.querySelectorAll('input[type=checkbox]:checked').forEach(function(cb) { vals.push(cb.value); });
+  return vals;
+}
+
+function msGetById(id) {
+  const wrap = document.getElementById(id);
+  return wrap ? msGetSelected(wrap) : [];
+}
+
+function msClearById(id) {
+  const wrap = document.getElementById(id);
+  if (wrap) msClear(wrap);
+}
+
+document.addEventListener('click', function() {
+  document.querySelectorAll('.ms-wrap.open').forEach(function(w) { w.classList.remove('open'); });
+});
+
+</script>
+</body>
+</html>
