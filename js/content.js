@@ -57,7 +57,6 @@ const SITE_CONTENT = {
       { value: "2012",   label: "開始年份（Facebook「發掘十倍股」）" },
       { value: "19,000+", label: "Facebook 追蹤者" },
       { value: "500+",   label: "深度分析文章" },
-      { value: "+36%",   label: "2025 模擬組合回報" },
     ],
   },
 
