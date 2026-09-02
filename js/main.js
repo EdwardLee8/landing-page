@@ -106,23 +106,16 @@ function renderHero(author) {
   ctaLink.removeAttribute("target");
   ctaLink.removeAttribute("rel");
 
-  // Unified entry button (prominent)
-  const unifiedEntry = el("a", { href: "/login.html", class: "btn-unified-entry", text: "🔐  會員資料庫完整入口 →" });
-
-  // Free tools row
-  const freeRow = el("div", { class: "hero-tool-row" });
-  freeRow.append(
-    el("span", { class: "hero-tool-label", text: "免費" }),
-    el("a", { href: "/hk-stocks-db.html", class: "btn-tool btn-tool-free", text: "港股業績 (Patreon取密碼)" }),
-    el("a", { href: "/hk-keywords-free.html", class: "btn-tool btn-tool-free", text: "港股關鍵字(免密碼)" })
-  );
+  // Two clear homepage entry points
+  const memberEntry = el("a", { href: "/login.html", class: "btn-unified-entry", text: "🔐  會員密碼入口 →" });
+  const freeEntry = el("a", { href: "/free-tools.html", class: "btn-unified-entry", text: "🔓  免費內容入口 →" });
 
   container.append(
     el("h1", { class: "hero-name", text: author.name }),
     el("p", { class: "hero-tagline", text: author.tagline }),
     el("p", { class: "hero-sub", text: author.subTagline }),
     el("div", { class: "hero-cta-group" },
-      el("div", { class: "hero-tool-group" }, unifiedEntry, freeRow)
+      el("div", { class: "hero-tool-group" }, memberEntry, freeEntry)
     )
   );
 }
