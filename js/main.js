@@ -22,10 +22,12 @@ function esc(str) {
     .replace(/'/g, "&#39;");
 }
 
-// Safe URL: only allow http/https schemes
+// Safe URL: only allow http/https schemes (relative paths resolve against
+// location.origin so on-site links like "/free-tools.html" work; dangerous
+// schemes such as javascript:/data: still fail the protocol check below)
 function safeUrl(url) {
   try {
-    const u = new URL(url);
+    const u = new URL(url, location.origin);
     if (u.protocol === "http:" || u.protocol === "https:") return u.href;
   } catch (_) { /* ignore */ }
   return "#";
