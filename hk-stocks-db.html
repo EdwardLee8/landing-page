@@ -148,22 +148,15 @@ td.num.na{color:#555}
 
 <div class="pagination" id="pagination"></div>
 
+<script src="js/member-auth.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   loadAndInit('hkdb-free-2604');
 });
 
 
-async function _decryptEnc(b64, pw) {
-  const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-  const salt = raw.slice(0,16), nonce = raw.slice(16,28), ct = raw.slice(28);
-  const keyMat = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
-  const key = await crypto.subtle.deriveKey(
-    {name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"},
-    keyMat, {name:"AES-GCM", length:256}, false, ["decrypt"]);
-  const plain = await crypto.subtle.decrypt({name:"AES-GCM", iv:nonce}, key, ct);
-  return JSON.parse(new TextDecoder().decode(plain));
-}
+// 解密實作集中於 js/member-auth.js。本頁為免費資料,密碼直接寫在頁內。
+const _decryptEnc = (b64, pw) => MemberAuth.decrypt(b64, pw);
 
 let RAW_DATA = [];
 

@@ -17,6 +17,8 @@ import sys, os, json, base64, argparse
 from pathlib import Path
 from collections import defaultdict
 
+import enc_utils
+
 # ── Paths ──────────────────────────────────────────────────────────────
 HERE = Path(__file__).resolve().parent
 LANDING_PAGE = HERE / "landing-page"
@@ -25,7 +27,7 @@ RS_ENC = LANDING_PAGE / "us_rs_latest.enc"
 DEFAULT_OUTPUT = LANDING_PAGE / "us_theme_strength.json"
 
 # ── Encryption ─────────────────────────────────────────────────────────
-PW = "Inv-2604-H8rW"
+PW = enc_utils.get_password()  # 見 .env.example
 
 def aes_decrypt(b64_text: str) -> dict:
     from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC

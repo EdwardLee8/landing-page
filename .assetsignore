@@ -14,5 +14,26 @@ __pycache__/
 .DS_Store
 Thumbs.db
 .env*
+.dev.vars*
 wrangler.jsonc
+netlify.toml
 package*.json
+README.md
+
+# ── 建置產物:加密前的明文資料,絕不可部署 ──────────────
+# 與 .gitignore 同一份清單。Cloudflare Workers 以本機目錄為部署來源,
+# 即使檔案未進 git,只要存在於工作目錄仍會被上傳,故此處必須重複列出。
+us_rs_latest.json
+hk_rs_latest.json
+cn_rs_latest.json
+us_rs_movers.json
+hk_rs_movers.json
+cn_rs_movers.json
+us_weinstein_latest.json
+hk_weinstein_latest.json
+cn_weinstein_latest.json
+us_stocks_data.json
+us_theme_strength.json
+us_themes_industry.json
+backtest_finetune/
+backtest_walkforward/

@@ -19,3 +19,24 @@ _verify_*.py
 !.dev.vars.example
 .env*
 !.env.example
+
+# ── 建置產物:加密前的明文資料 ────────────────────────────
+# 這些檔案是 .enc 的來源,由匯出腳本在本機產生,腳本之間也會互相讀取,
+# 因此保留在工作目錄,但絕不可進入 git 或部署(repo 為 public,
+# 且 publish 目錄即 repo 根目錄 → 一旦追蹤即等同免費公開付費資料)。
+us_rs_latest.json
+hk_rs_latest.json
+cn_rs_latest.json
+us_rs_movers.json
+hk_rs_movers.json
+cn_rs_movers.json
+us_weinstein_latest.json
+hk_weinstein_latest.json
+cn_weinstein_latest.json
+us_stocks_data.json
+us_theme_strength.json
+us_themes_industry.json
+
+# 回測輸出(內部分析用,非網站內容)
+backtest_finetune/
+backtest_walkforward/

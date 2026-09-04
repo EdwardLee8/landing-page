@@ -208,13 +208,13 @@ a:hover{text-decoration:underline}
   </div>
 </div>
 
+<script src="js/member-auth.js"></script>
 <script>
-const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
+// 密碼雜湊、SHA-256 與 AES-GCM 解密集中於 js/member-auth.js,
+// 避免同一段密碼學程式碼散落在十幾個頁面各自維護。
+const _PW_HASH = MemberAuth.PW_HASH;
 
-async function _sha256(s) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
-}
+const _sha256 = MemberAuth.sha256;
 
 async function checkPassword() {
   const val = document.getElementById("pw-input").value;

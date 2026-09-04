@@ -148,6 +148,7 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
 <p><b>訊號：</b> 🚀 早期突破（Stage 2 初期）&nbsp;·&nbsp; 📈 回調買入（Stage 2 均線附近）&nbsp;·&nbsp; ⚠️ 警告（Stage 3/3B）&nbsp;·&nbsp; 🚫 迴避（Stage 4）</p>
 <p><b>小貼士：</b>篩選 Stage 2 配合 Composite ≥ 81，效果最佳。</p>
 </div>
+<script src="js/member-auth.js"></script>
 <script>
 (function(){
   const KEY = "_help_seen_rs-us";
@@ -338,11 +339,10 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
 <div class="pagination" id="pagination"></div>
 
 <script>
-const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591"; // member password (login.html)
-async function _sha256(s) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-}
+// 密碼雜湊、SHA-256 與 AES-GCM 解密集中於 js/member-auth.js,
+// 避免同一段密碼學程式碼散落在十幾個頁面各自維護。
+const _PW_HASH = MemberAuth.PW_HASH;
+const _sha256 = MemberAuth.sha256;
 async function checkPassword() {
   const h = await _sha256(document.getElementById('pw-input').value);
   if (h === _PW_HASH) {
@@ -371,28 +371,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // ── Decryption (PBKDF2 + AES-256-GCM) ─────────────────────────────────────
 // ENC_PASS read from sessionStorage (set by login.html or this page after auth)
 function _getEncPass(){ return sessionStorage.getItem("unified_auth_pw") || ""; }
-async function deriveKey(password, salt) {
-  const keyMaterial = await crypto.subtle.importKey(
-    "raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]
-  );
-  return crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt, iterations: 100_000, hash: "SHA-256" },
-    keyMaterial,
-    { name: "AES-GCM", length: 256 },
-    false,
-    ["decrypt"]
-  );
-}
 
-async function decryptAsset(b64Data) {
-  const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
-  const salt = raw.slice(0, 16);
-  const nonce = raw.slice(16, 28);
-  const ct     = raw.slice(28);
-  const key    = await deriveKey(_getEncPass(), salt);
-  const pt     = await crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce }, key, ct);
-  return JSON.parse(new TextDecoder().decode(pt));
-}
+const decryptAsset = (b64) => MemberAuth.decrypt(b64);
 
 async function loadData() {
   try {

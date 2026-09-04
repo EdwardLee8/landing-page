@@ -12,11 +12,13 @@ import os
 import sys
 from datetime import date, datetime
 
+import enc_utils
+
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 
-PASSWORD = sys.argv[1] if len(sys.argv) > 1 else "Inv-2604-H8rW"
+PASSWORD = enc_utils.get_password(argv_index=1)
 CSV_PATH = sys.argv[2] if len(sys.argv) > 2 else os.path.expanduser(
     "~/.hermes/cache/documents/doc_a3934abce9cd_hk_2026h1_db.csv"
 )

@@ -142,6 +142,7 @@ td.num.na{color:#555}
   <li>避開困境股；投機股小心 momentum 散場</li>
 </ul>
 </div>
+<script src="js/member-auth.js"></script>
 <script>
 (function(){
   const KEY = "_help_seen_us-stocks";
@@ -237,11 +238,10 @@ td.num.na{color:#555}
 <div class="pagination" id="pagination"></div>
 
 <script>
-const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
-async function _sha256(s) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-}
+// 密碼雜湊、SHA-256 與 AES-GCM 解密集中於 js/member-auth.js,
+// 避免同一段密碼學程式碼散落在十幾個頁面各自維護。
+const _PW_HASH = MemberAuth.PW_HASH;
+const _sha256 = MemberAuth.sha256;
 async function checkPassword() {
   const pw = document.getElementById('pw-input').value;
   const h  = await _sha256(pw);
@@ -283,13 +283,8 @@ async function loadAndInit() {
   try {
     const resp = await fetch('us_stocks_data.enc');
     const b64  = (await resp.text()).trim();
-    const raw  = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-    const salt = raw.slice(0,16), nonce = raw.slice(16,28), ct = raw.slice(28);
-    const km   = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
-    const key  = await crypto.subtle.deriveKey({name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"},
-      km, {name:"AES-GCM", length:256}, false, ["decrypt"]);
-    const pt   = await crypto.subtle.decrypt({name:"AES-GCM", iv:nonce}, key, ct);
-    RAW_DATA = JSON.parse(new TextDecoder().decode(pt));
+    // 解密實作集中於 js/member-auth.js
+    RAW_DATA = await MemberAuth.decrypt(b64, pw);
     filtered = [...RAW_DATA];
     initApp();
   } catch(e) {

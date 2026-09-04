@@ -20,17 +20,21 @@ from config.settings import (
 import clickhouse_connect
 import pandas as pd
 
+import enc_utils
+
+
+# 統一會員密碼 —— 與 login.html 相同,由環境變數 MEMBER_DATA_PASSWORD 提供。
+# 會員在 /login 登入後,原始密碼存於 sessionStorage,各頁再用它解密 .enc。
+_PW = enc_utils.get_password()
 
 # Per-market configuration
 MARKETS = {
-    # Unified member password — same as login.html. All .enc readable only
-    # after user logs in via /login (which stores raw pw in sessionStorage).
     'US': dict(table='us_rs_rating',  market='US', currency='USD',
-               password='Inv-2604-H8rW', output_prefix='us_rs_latest'),
+               password=_PW, output_prefix='us_rs_latest'),
     'HK': dict(table='hk_rs_rating',  market='HK', currency='HKD',
-               password='Inv-2604-H8rW', output_prefix='hk_rs_latest'),
+               password=_PW, output_prefix='hk_rs_latest'),
     'CN': dict(table='cn_rs_rating',  market='CN', currency='CNY',
-               password='Inv-2604-H8rW', output_prefix='cn_rs_latest'),
+               password=_PW, output_prefix='cn_rs_latest'),
 }
 
 # Preferred-share regex (US: -PA/-PD/-PK; HK preferred shares are rare;
