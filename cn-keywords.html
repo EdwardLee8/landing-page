@@ -8,7 +8,6 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>港</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="js/opencc.full.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
@@ -393,8 +392,27 @@ function deepConvertZh(node, conv) {
   return node;
 }
 
-function getConverter() {
+// opencc.full.js 有 1.1MB,原本在 <head> 同步載入,會擋住整頁解析 ——
+// 但它只在資料解密後做簡繁轉換時才用得到,登入畫面完全用不上。
+// 改為需要時才注入,並在開始下載資料時先行預載,兩者平行進行。
+let _openccLoading = null;
+function loadOpenCC() {
+  if (window.OpenCC) return Promise.resolve();
+  if (!_openccLoading) {
+    _openccLoading = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "js/opencc.full.js";
+      s.onload = resolve;
+      s.onerror = () => reject(new Error("opencc-js 載入失敗"));
+      document.head.appendChild(s);
+    });
+  }
+  return _openccLoading;
+}
+
+async function getConverter() {
   if (_convCn2Hk) return _convCn2Hk;
+  await loadOpenCC();
   if (typeof OpenCC === "undefined") throw new Error("opencc-js 未載入");
   _convCn2Hk = OpenCC.Converter({ from: "cn", to: "hk" });
   return _convCn2Hk;
@@ -482,6 +500,7 @@ function setZhMode(m) {
 }
 
 async function initApp() {
+  loadOpenCC().catch(() => {});   // 與資料下載平行,不阻塞
   try {
     const r = await fetch("cn_keywords_export.enc");
     DB_CN = await _decryptEnc(await r.text(), _pw);
@@ -490,7 +509,7 @@ async function initApp() {
     return;
   }
   try {
-    DB_HK = deepConvertZh(DB_CN, getConverter());
+    DB_HK = deepConvertZh(DB_CN, await getConverter());
   } catch(e) {
     DB_HK = DB_CN; // fallback if opencc-js failed to load
     console.error("OpenCC 轉換失敗，使用簡體:", e);
@@ -530,7 +549,7 @@ async function loadCorrData() {
     const r = await fetch("cn_corr_clusters.enc");
     CORR_CN = await _decryptEnc(await r.text(), _pw);
     try {
-      CORR_HK = deepConvertZh(CORR_CN, getConverter());
+      CORR_HK = deepConvertZh(CORR_CN, await getConverter());
     } catch(e) {
       CORR_HK = CORR_CN;
       console.error("OpenCC 轉換 corr 失敗:", e);

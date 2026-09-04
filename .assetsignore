@@ -37,3 +37,9 @@ us_theme_strength.json
 us_themes_industry.json
 backtest_finetune/
 backtest_walkforward/
+
+# Worker 程式碼與文件不是網站內容,不應對外提供
+worker/
+docs/
+*.mjs
+wrangler*.jsonc

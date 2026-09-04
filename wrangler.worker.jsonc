@@ -1,0 +1,21 @@
+{
+  // 伺服器端會員授權版本的部署設定。目前站上使用的是 wrangler.jsonc
+  // (純靜態,無授權);要切換到本設定請先讀 docs/server-auth.md。
+  //
+  //   npx wrangler deploy --config wrangler.worker.jsonc
+  //
+  // 部署前必須先設定三個 secret:
+  //   npx wrangler secret put MEMBER_PASSWORD      --config wrangler.worker.jsonc
+  //   npx wrangler secret put MEMBER_DATA_PASSWORD --config wrangler.worker.jsonc
+  //   npx wrangler secret put SESSION_SECRET       --config wrangler.worker.jsonc
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "landing-page",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-04-22",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS"
+  }
+}

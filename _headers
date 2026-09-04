@@ -1,44 +1,40 @@
+# Cloudflare(Workers Assets / Pages)使用本檔;Netlify 使用 netlify.toml。
+# 兩份設定必須保持一致 —— 修改其中一份時請同步另一份。
+
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
 
-/css/*
-  Cache-Control: public, max-age=0, must-revalidate
-
-/js/*
-  Cache-Control: public, max-age=0, must-revalidate
-
+# HTML 每次都要重新驗證,確保改版後立即生效
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
 
-/web_data.json
-  Cache-Control: public, max-age=0, must-revalidate
+# 自家 JS/CSS:短快取 + stale-while-revalidate,省掉每個檔案的往返,
+# 同時把改版後的過時視窗控制在數分鐘內
+/css/*
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+
+/js/*
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+
+# 第三方函式庫不會變動,直接長快取(1.1MB,值得省)
+/js/opencc.full.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/hk-top100-reports/vendor/*
+  Cache-Control: public, max-age=31536000, immutable
 
 /assets/*
   Cache-Control: public, max-age=604800
 
-/etf-report/data/*
-  Cache-Control: public, max-age=3600
-  X-Robots-Tag: noindex, noai, noimageai
-
-/etf-report/*
-  X-Robots-Tag: noindex, noai
-
-/us_rs_latest.json
+# 首頁資料
+/web_data.json
   Cache-Control: public, max-age=0, must-revalidate
-  X-Robots-Tag: noindex, noai
 
-/us_rs_latest.enc
-  Cache-Control: public, max-age=0, must-revalidate
-  X-Robots-Tag: noindex, noai, noimageai
-  Content-Type: text/plain; charset=utf-8
-
-/*.json
-  X-Robots-Tag: noindex, noai
-
+# 加密資料:每日更新,一小時快取足夠
 /*.enc
   Cache-Control: public, max-age=3600
   X-Robots-Tag: noindex, noai, noimageai
@@ -53,3 +49,19 @@
   Cache-Control: public, max-age=3600
   X-Robots-Tag: noindex, noai, noimageai
   Content-Type: text/plain; charset=utf-8
+
+/us_research_data/*.enc
+  Cache-Control: public, max-age=3600
+  X-Robots-Tag: noindex, noai, noimageai
+  Content-Type: text/plain; charset=utf-8
+
+/etf-report/data/*
+  Cache-Control: public, max-age=3600
+  X-Robots-Tag: noindex, noai, noimageai
+
+/etf-report/*
+  X-Robots-Tag: noindex, noai
+
+# 其餘公開 JSON(免費資料)不進搜尋引擎索引
+/*.json
+  X-Robots-Tag: noindex, noai
