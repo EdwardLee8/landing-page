@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>港股市值 Top 100 深度報告</title>
+  <meta name="description" content="港股市值最大 100 間上市公司深度分析，可按公司、代號、行業搜尋。" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand" id="brandHome">
+        <span class="mark">HK</span>
+        <div>
+          <h1>港股市值 Top 100</h1>
+          <p>深度分析報告 · 2026 年 9 月</p>
+        </div>
+      </div>
+      <div class="stats" id="stats"></div>
+    </header>
+
+    <section id="browse" class="browse">
+      <div class="toolbar">
+        <input id="q" type="search" placeholder="搜尋公司、股份代號或英文名，例如 騰訊、00700、Tencent" autocomplete="off" />
+        <select id="sort">
+          <option value="rank">按市值排名</option>
+          <option value="name">按公司名稱</option>
+          <option value="code">按股份代號</option>
+        </select>
+      </div>
+      <div id="chips" class="chips"></div>
+      <p id="count" class="count"></p>
+      <div id="grid" class="grid"></div>
+    </section>
+
+    <section id="article" class="article hidden">
+      <button id="back" class="back" type="button">← 返回列表</button>
+      <div class="article-head">
+        <p class="eyebrow" id="artMeta"></p>
+        <h2 id="artTitle"></h2>
+      </div>
+      <nav id="toc" class="toc"></nav>
+      <article id="viewer" class="viewer">載入中…</article>
+    </section>
+
+    <footer class="foot">
+      本站報告僅供參考，不構成任何投資建議。數據以港交所公告為準，估值為推算。
+    </footer>
+  </div>
+  <script src="vendor/marked.min.js"></script>
+  <script src="vendor/purify.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
