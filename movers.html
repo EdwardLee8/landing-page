@@ -243,6 +243,7 @@ async function loadAll(){
   const fetches = MARKETS.map(async m => {
     try {
       const resp = await fetch(m.file);
+      if (resp.status === 401) return MemberAuth.handleUnauthorized();
       const b64  = await resp.text();
       state.data[m.key] = await decryptAsset(b64.trim());
     } catch (e) {

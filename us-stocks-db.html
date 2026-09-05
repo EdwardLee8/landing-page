@@ -283,6 +283,7 @@ async function loadAndInit() {
   if (!pw) { console.error('US-stocks-db: no auth password in sessionStorage'); return; }
   try {
     const resp = await fetch('us_stocks_data.enc');
+    if (resp.status === 401) return MemberAuth.handleUnauthorized();
     const b64  = (await resp.text()).trim();
     // 解密實作集中於 js/member-auth.js
     RAW_DATA = await MemberAuth.decrypt(b64, pw);

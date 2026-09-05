@@ -503,6 +503,7 @@ async function initApp() {
   loadOpenCC().catch(() => {});   // 與資料下載平行,不阻塞
   try {
     const r = await fetch("cn_keywords_export.enc");
+    if (r.status === 401) return MemberAuth.handleUnauthorized();
     DB_CN = await _decryptEnc(await r.text(), _pw);
   } catch(e) {
     document.getElementById("stats-bar").innerHTML = `<span style="color:#ef5350">載入失敗: ${e.message}</span>`;
@@ -547,6 +548,7 @@ function switchTab(tab) {
 async function loadCorrData() {
   try {
     const r = await fetch("cn_corr_clusters.enc");
+    if (r.status === 401) return MemberAuth.handleUnauthorized();
     CORR_CN = await _decryptEnc(await r.text(), _pw);
     try {
       CORR_HK = deepConvertZh(CORR_CN, await getConverter());
@@ -1066,6 +1068,7 @@ let THEMES_DATA = null, themesLoaded = false;
 async function loadThemesData() {
   try {
     const r = await fetch("cn_themes.enc");
+    if (r.status === 401) return MemberAuth.handleUnauthorized();
     THEMES_DATA = await _decryptEnc(await r.text(), _pw);
     themesLoaded = true;
     renderThemeView();

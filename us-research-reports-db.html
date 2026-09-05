@@ -273,6 +273,7 @@ async function loadAndInit(pw) {
   try {
     sub.textContent = "載入 index…";
     const r = await fetch("us_research_index.enc?" + Date.now(), {cache: "no-store"});
+    if (r.status === 401) return MemberAuth.handleUnauthorized();
     if (!r.ok) throw new Error("HTTP " + r.status);
     const encRaw = await r.text();
     sub.textContent = "解密 index (size " + encRaw.length + ")…";
@@ -501,6 +502,7 @@ async function openStock(symbol) {
   if (!detailCache[symbol]) {
     try {
       const r = await fetch(`us_research_data/${symbol}.enc?` + Date.now());
+      if (r.status === 401) return MemberAuth.handleUnauthorized();
       if (!r.ok) throw new Error("HTTP " + r.status);
       detailCache[symbol] = await _decryptEnc(await r.text(), _pw);
     } catch(e) {

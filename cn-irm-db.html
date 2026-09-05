@@ -242,6 +242,7 @@ async function loadAndInit(pw) {
   _pw = pw;
   try {
     const r = await fetch("cn_irm_index.enc");
+    if (r.status === 401) return MemberAuth.handleUnauthorized();
     const enc = await r.text();
     ALL = await _decryptEnc(enc, pw);
     // Normalize: parse dateRange into latest/earliest
@@ -381,6 +382,7 @@ async function openStock(code, name) {
   document.body.style.overflow = "hidden";
   try {
     const r = await fetch(`cn_irm_data/${code}.enc`);
+    if (r.status === 401) return MemberAuth.handleUnauthorized();
     if (!r.ok) throw new Error("找不到檔案 (" + r.status + ")");
     const enc = await r.text();
     const data = await _decryptEnc(enc, _pw);

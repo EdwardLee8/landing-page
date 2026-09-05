@@ -277,6 +277,7 @@ let RAW_DATA = [];
 async function loadAndInit(pw) {
   try {
     const r = await fetch("hk_stocks_data.enc");
+    if (r.status === 401) return MemberAuth.handleUnauthorized();
     RAW_DATA = await _decryptEnc(await r.text(), pw);
     initApp();
   } catch(e) {

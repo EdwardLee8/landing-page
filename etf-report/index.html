@@ -388,6 +388,7 @@ async function loadPeriod(mkt, period) {
         section.innerHTML = '<div class="loading">載入中…</div>';
         if (window._ENCRYPTED) {
             const resp = await fetch(`data/${key}.enc`);
+            if (resp.status === 401) return MemberAuth.handleUnauthorized();
             const b64 = await resp.text();
             _cache[key] = await _decryptEnc(b64, _pw);
         } else {

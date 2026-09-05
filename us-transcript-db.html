@@ -426,6 +426,7 @@ async function loadAndInit(pw) {
   _pw = pw;
   try {
     const r = await fetch("us_transcript_index.enc?" + Date.now());
+    if (r.status === 401) return MemberAuth.handleUnauthorized();
     if (!r.ok) throw new Error("HTTP " + r.status);
     ALL = await _decryptEnc(await r.text(), pw);
     buildSectorOptions();
@@ -666,6 +667,7 @@ async function openStock(symbol, name, sector, quarter) {
   if (!detailCache[symbol]) {
     try {
       const r = await fetch(`us_transcript_data/${symbol}.enc`);
+      if (r.status === 401) return MemberAuth.handleUnauthorized();
       if (!r.ok) throw new Error("HTTP " + r.status);
       detailCache[symbol] = await _decryptEnc(await r.text(), _pw);
     } catch(e) {

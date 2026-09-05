@@ -95,6 +95,7 @@ function setMinSize(m) {
 async function initApp() {
   try {
     const r = await fetch(KW_CONFIG.dataUrl);
+    if (r.status === 401) return MemberAuth.handleUnauthorized(SESSION_KEY);
     DB = await _decryptEnc(await r.text(), _pw);
   } catch(e) {
     document.getElementById("stats-bar").innerHTML = `<span style="color:#ef5350">載入失敗: ${e.message}</span>`;
@@ -150,6 +151,7 @@ function switchTab(tab) {
 async function loadCorrData() {
   try {
     const r = await fetch(KW_CONFIG.corrUrl);
+    if (r.status === 401) return MemberAuth.handleUnauthorized(SESSION_KEY);
     CORR_DATA = await _decryptEnc(await r.text(), _pw);
     corrLoaded = true;
     updateThreshInfo();

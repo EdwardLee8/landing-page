@@ -378,6 +378,7 @@ const decryptAsset = (b64) => MemberAuth.decrypt(b64);
 async function loadData() {
   try {
     const resp = await fetch('cn_rs_latest.enc');
+    if (resp.status === 401) return MemberAuth.handleUnauthorized();
     const b64  = await resp.text();
     const data  = await decryptAsset(b64.trim());
 

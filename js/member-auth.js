@@ -89,6 +89,16 @@
     sessionStorage.removeItem(keyOf(sessionKey) + "_pw");
   }
 
+  /**
+   * session cookie 過期(通常係分頁開太耐、超過 12 小時)導致 .enc
+   * 請求回 401 時呼叫:清掉本地登入狀態,重新載入頁面令密碼框重新出現。
+   * 每個 fetch(.enc) 之後檢查 resp.status === 401 就叫呢個。
+   */
+  function handleUnauthorized(sessionKey) {
+    clear(sessionKey);
+    location.reload();
+  }
+
   async function deriveKey(pw, salt) {
     var keyMat = await crypto.subtle.importKey(
       "raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
@@ -180,6 +190,7 @@
     verify: verify,
     login: login,
     logoutRemote: logoutRemote,
+    handleUnauthorized: handleUnauthorized,
     password: password,
     isAuthed: isAuthed,
     store: store,
