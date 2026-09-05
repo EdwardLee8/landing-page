@@ -22,6 +22,8 @@ backtest_walkforward_hk/
 # 加密前的明文資料(見 7e58191):repo 為 public,追蹤呢啲即等於免費公開
 # 會員付費資料。CN 市場對應嘅檔案同上面已移除嘅 hk_*/us_* 版本睇齊。
 cn_keywords_export.json
+hk_keywords_export.json
+us_keywords_export.json
 cn_themes.json
 us_stocks_data.json
 

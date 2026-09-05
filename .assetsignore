@@ -35,6 +35,10 @@ cn_weinstein_latest.json
 us_stocks_data.json
 us_theme_strength.json
 us_themes_industry.json
+hk_keywords_export.json
+cn_keywords_export.json
+us_keywords_export.json
+cn_themes.json
 backtest_finetune/
 backtest_walkforward/
 
