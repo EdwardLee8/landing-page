@@ -12,7 +12,9 @@
 `worker/index.js` 把「誰可以下載 `.enc`」變成伺服器決定的事。加密層保留
 作為縱深防禦 —— 就算 Worker 設定失誤導致檔案外流,內容仍是密文。
 
-**目前尚未啟用。** 站上跑的仍是純靜態的 `wrangler.jsonc`。
+**已於 2026-09-05 啟用。** `wrangler.jsonc` 就是本文說的 Worker 設定
+（原本分成兩個檔案，但 Cloudflare Workers Builds 的自動部署只會讀
+`wrangler.jsonc`，一直把站台部署回沒有驗證的純靜態版本，因此已合併）。
 
 ## 運作方式
 
@@ -45,9 +47,9 @@ node worker/index.test.mjs
 1. 設定三個 secret:
 
    ```bash
-   npx wrangler secret put MEMBER_PASSWORD      --config wrangler.worker.jsonc
-   npx wrangler secret put MEMBER_DATA_PASSWORD --config wrangler.worker.jsonc
-   npx wrangler secret put SESSION_SECRET       --config wrangler.worker.jsonc
+   npx wrangler secret put MEMBER_PASSWORD     
+   npx wrangler secret put MEMBER_DATA_PASSWORD
+   npx wrangler secret put SESSION_SECRET      
    ```
 
    - `MEMBER_PASSWORD` — 會員在登入頁輸入的密碼
@@ -58,13 +60,13 @@ node worker/index.test.mjs
 2. 先在本機驗證:
 
    ```bash
-   npx wrangler dev --config wrangler.worker.jsonc
+   npx wrangler dev
    ```
 
 3. 部署:
 
    ```bash
-   npx wrangler deploy --config wrangler.worker.jsonc
+   npx wrangler deploy
    ```
 
 ## 前端需要的改動

@@ -37,7 +37,7 @@ delta 壓縮,每次匯出都是完整存一份新的 blob。
    npx wrangler r2 bucket create landing-page-member-data
    ```
 
-   `wrangler.worker.jsonc` 已經預先寫好對應的 `r2_buckets` 綁定。
+   `wrangler.jsonc` 已經預先寫好對應的 `r2_buckets` 綁定。
 
 2. 先啟用伺服器端授權 Worker(見 `docs/server-auth.md`),確認 `/api/login`
    等端點正常運作。
@@ -52,7 +52,7 @@ delta 壓縮,每次匯出都是完整存一份新的 blob。
 4. 部署接上 R2 的 Worker:
 
    ```bash
-   npx wrangler deploy --config wrangler.worker.jsonc
+   npx wrangler deploy
    ```
 
 5. 用 Playwright 或手動測試幾個會員頁,確認資料還是拿得到(這時應該是

@@ -8,7 +8,7 @@
 
 前置作業(只需做一次):
     npx wrangler r2 bucket create landing-page-member-data
-    # 並在 wrangler.worker.jsonc 確認 r2_buckets 綁定(已預先寫好)
+    # 並在 wrangler.jsonc 確認 r2_buckets 綁定(已預先寫好)
 
 用法:
     # 上傳所有現有 .enc(初次遷移用一次即可)

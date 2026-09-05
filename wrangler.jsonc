@@ -1,14 +1,46 @@
 {
+  // 唯一的部署設定。Cloudflare Workers Builds 連住呢個 GitHub repo,
+  // 每次 push 到 master 都會自動跑 `wrangler deploy` 並讀呢個檔案 ——
+  // 所以呢度必須係「有會員驗證」嗰個版本。
+  //
+  // 歷史教訓(2026-09-05):以前分開兩個設定,wrangler.jsonc 係純靜態、
+  // wrangler.worker.jsonc 先有驗證。自動部署一路用緊純靜態嗰個,結果
+  // 每次 push 都會靜靜雞拆走登入保護(.enc 變成任何人可以直接下載),
+  // 而且因為純靜態設定冇 main script,部署會連 Worker 同 secret 一併
+  // 換走,所以 secret 都會唔見。合併成一個設定之後兩個問題一次過解決。
+  //
+  // 三個 secret(唔會存喺 repo,用 wrangler 設定):
+  //   npx wrangler secret put MEMBER_PASSWORD
+  //   npx wrangler secret put MEMBER_DATA_PASSWORD
+  //   npx wrangler secret put SESSION_SECRET
+  // 詳情見 docs/server-auth.md。
+  //
+  // r2_buckets 係選用的:冇綁時 worker/index.js 會自動退回讀靜態資產
+  // (即係現時行為)。見 docs/r2-data-storage.md。
+  //   npx wrangler r2 bucket create landing-page-member-data
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "landing-page",
+  "main": "worker/index.js",
   "compatibility_date": "2026-04-22",
-  "observability": {
-    "enabled": true
-  },
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "binding": "ASSETS",
+    // 必須開:唔開嘅話 .enc 會由靜態資產層直接送出,完全繞過
+    // worker/index.js 的驗證。
+    "run_worker_first": true
   },
-  "compatibility_flags": [
-    "nodejs_compat"
+  "kv_namespaces": [
+    { "binding": "LOGIN_RATE_LIMIT", "id": "b77c3a35755e4384828205d3300d71ff" }
+  ],
+  // 每分鐘上限用 Cloudflare 原生節流(喺邊緣強制執行,幾乎零延遲)。
+  // 用 KV 做呢件事會慢 0.6 秒以上,改成背景寫入又會因為最終一致而擋唔到連發。
+  "ratelimits": [
+    {
+      "name": "LOGIN_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 10, "period": 60 }
+    }
   ]
 }
