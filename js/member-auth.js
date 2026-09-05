@@ -16,7 +16,7 @@
 
   // 會員密碼的 SHA-256。更換密碼請用 rotate_password.py --update-html,
   // 它會同時重新加密所有 .enc 並更新此處與各頁面的雜湊值。
-  var PW_HASH = "3ab800d4dbbfad6b94d8b1b29a6aa4cd24175576f16e649c2b6a3892f9bdf158";
+  var PW_HASH = "86f2eb06149717c68e0a3fc4cb3876a4c17258de79f3f19c96f3137b342a3c2b";
 
   var DEFAULT_SESSION_KEY = "unified_auth";
   var ITERATIONS = 100000;

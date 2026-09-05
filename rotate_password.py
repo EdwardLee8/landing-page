@@ -70,11 +70,26 @@ def rotate_one(path: Path, old_pw: str, new_pw: str, dry_run: bool) -> tuple[Pat
 
 
 def update_html_hashes(old_pw: str, new_pw: str, dry_run: bool) -> list[str]:
-    """把各頁面內的 _PW_HASH 由舊密碼的 SHA-256 換成新密碼的。"""
+    """把 _PW_HASH 由舊密碼的 SHA-256 換成新密碼的。
+
+    自從加解密邏輯集中到 js/member-auth.js,大部分頁面都改引用
+    MemberAuth.PW_HASH,真正的常數只剩兩處:該模組本身,以及尚未
+    改用共用模組的 hk-stocks-pro.html(免費頁 hk-stocks-db.html 走
+    的是另一組密碼,故意不在此列)。
+    """
     old_hash = enc_utils.password_hash(old_pw)
     new_hash = enc_utils.password_hash(new_pw)
     changed = []
-    for html in sorted(HERE.glob("*.html")) + sorted((HERE / "etf-report").glob("*.html")):
+    candidates = (
+        [HERE / "js" / "member-auth.js", HERE / "hk-stocks-pro.html"]
+        + sorted(HERE.glob("*.html"))
+        + sorted((HERE / "etf-report").glob("*.html"))
+    )
+    seen = set()
+    for html in candidates:
+        if html in seen or not html.exists():
+            continue
+        seen.add(html)
         text = html.read_text(encoding="utf-8")
         if old_hash not in text:
             continue
