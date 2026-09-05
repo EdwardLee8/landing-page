@@ -23,11 +23,11 @@
   "assets": {
     "directory": ".",
     "binding": "ASSETS",
-    "run_worker_first": true
+    // 前端(15 個頁面)未完成 docs/server-auth.md 講嘅遷移之前,
+    // 唔可以開 run_worker_first——會令所有訪客(包括啱密碼者)都攞唔到
+    // .enc,因為前端從未同伺服器建立過 session cookie。遷移完成先開返。
+    "run_worker_first": false
   },
-  "r2_buckets": [
-    { "binding": "DATA_BUCKET", "bucket_name": "landing-page-member-data" }
-  ],
   "kv_namespaces": [
     { "binding": "LOGIN_RATE_LIMIT", "id": "b77c3a35755e4384828205d3300d71ff" }
   ]
