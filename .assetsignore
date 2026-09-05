@@ -42,6 +42,10 @@ cn_themes.json
 backtest_finetune/
 backtest_walkforward/
 
+# 已損毀(中文字被存成字面 "?")、冇任何頁面連過去嘅孤兒資料夾,
+# 已被 public_top20_reports/ 取代,唔應該再部署(避免搜尋引擎索引到亂碼)
+/reports/
+
 # Worker 程式碼與文件不是網站內容,不應對外提供
 worker/
 docs/
