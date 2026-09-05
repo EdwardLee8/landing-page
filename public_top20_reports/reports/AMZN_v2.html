@@ -1,0 +1,250 @@
+<!DOCTYPE html><html lang="zh-Hant-HK"><head><meta charset="utf-8"><meta name="viewport" content=“width=device-width, initial-scale=1”><title>Amazon（AMZN）研究報告 v2</title><style>:root{--bg:#080a0f;--card:#111725;--text:#eef2f7;--muted:#9aa6b2;--gold:#d4a647;--line:#273244;--accent:#64d2ff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#152033 0,#080a0f 45%,#05070b 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;line-height:1.78}.wrap{max-width:980px;margin:0 auto;padding:36px 18px}.top{display:flex;justify-content:space-between;gap:12px;margin-bottom:24px}.btn{border:1px solid var(--gold);border-radius:999px;padding:8px 14px;color:var(--gold);text-decoration:none;background:rgba(212,166,71,.08)}article{background:rgba(17,23,37,.94);border:1px solid var(--line);border-radius:22px;padding:30px;box-shadow:0 20px 80px rgba(0,0,0,.35)}h1{font-size:2rem;color:#fff;line-height:1.25}h2{color:var(--gold);border-top:1px solid var(--line);padding-top:22px;margin-top:30px}h3{color:#fff;margin-top:22px}p,li{color:#d8dee9}strong{color:#fff}blockquote{border-left:3px solid var(--gold);padding:12px 16px;color:#edf2f7;background:rgba(212,166,71,.08);margin:18px 0;border-radius:0 12px 12px 0}table{width:100%;border-collapse:collapse;margin:16px 0;background:rgba(255,255,255,.02)}th,td{border-bottom:1px solid #263044;padding:10px;vertical-align:top}th{color:var(--gold);text-align:left}.muted{color:var(--muted)}hr{border:0;border-top:1px solid var(--line);margin:24px 0}</style></head><body><div class="wrap"><div class="top"><a class="btn" href=“https://ai10xpro.com/sp500-top20-reports”>返回列表</a><a class="btn" href="https://ai10xpro.com/">首頁</a></div><article><h1>Amazon（AMZN）研究報告 v2</h1>
+<p><strong>資料來源：2026-04-29 Q1 2026 財報電話會議逐字稿</strong></p>
+<p><strong>重點：AWS 加速增長、自研晶片規模、AI 原生廣告、物流效率</strong></p>
+<hr>
+
+<h2>0. 先做數據校正：本逐字稿與題目數字有差異</h2>
+<p>本次 Q1 2026 電話會議中，CEO Andy Jassy 及 CFO Brian Olsavsky 披露之核心營運數據相當豐富，涉及 AWS 營收、自研晶片規模、多項業務收入等。在對照收入與利潤指標時，發現逐字稿中的口述數據與新聞標題及資料庫中的部分歷史數據略有出入（例如：頭條摘要 EPS $2.78 與 bundle 收入表的 $30.255B 淨利相符，但逐字稿本身無明確提及 EPS 數字）。以下報告將以逐字稿中的原始口述數據為主要引用依據，並標註校正。</p>
+<table>
+<tr><th>項目</th><th>新聞標題 / 資料庫數據</th><th>逐字稿原始數據（校正後）</th></tr>
+<tr><td>總營收</td><td>$181.52B (16.61% YoY)</td><td>$181.5B，同比增長 17%（不含匯率影響為 15%）</td></tr>
+<tr><td>AWS 營收</td><td>未在頭條列出</td><td>$37.6B，同比增長 28%，年化收入約 $150B</td></tr>
+<tr><td>營業利潤</td><td>未在頭條列出</td><td>$23.9B，營業利潤率 13.1%（歷史新高）</td></tr>
+<tr><td>廣告收入</td><td>未在頭條列出</td><td>$17.2B，同比增長 22%</td></tr>
+<tr><td>北美洲營運利潤率</td><td>無</td><td>7.9%（營運利潤 $8.3B）</td></tr>
+<tr><td>國際營運利潤率</td><td>無</td><td>3.6%（營運利潤 $1.4B）</td></tr>
+<tr><td>AWS 營運利潤</td><td>無</td><td>$14.2B（隱含利潤率約 37.8%）</td></tr>
+<tr><td>單位增長</td><td>無</td><td>同比增長 15%（COVID 高峰以來最高）</td></tr>
+<tr><td>Q1 資本支出（現金）</td><td>無</td><td>$43.2B</td></tr>
+<tr><td>Q2 營收指引</td><td>無</td><td>$194B 至 $199B</td></tr>
+<tr><td>Q2 營業利潤指引</td><td>無</td><td>$20B 至 $24B</td></tr>
+<tr><td>稀釋 EPS</td><td>標題稱 $2.78，擊敗預期 $1.14</td><td>逐字稿未直接提及 EPS 數字</td></tr>
+</table>
+<p>以下分析均以電話會議逐字稿中的原始數據為準。報告中所有引用語句均出自 Andy Jassy 或 Brian Olsavsky 的原始回答。</p>
+<hr>
+
+<h2>1. 投資結論：AI 基礎設施週期推動 AWS 進入第二增長曲線，自研晶片護城河被市場低估</h2>
+<p>Amazon 在 2026 年 Q1 展現了罕見的「大象起舞」格局——在 $150B 年化營收的基礎上，AWS 依然實現了 28% 的加速增長，創下 15 個季度以來的最高增速。這個加速並非單純的週期性反彈，而是 AI 訓練和推理需求驅動的結構性轉變，其核心邏輯在於：AI 工作負載的爆發式增長不僅直接拉動了 GPU 和 Trainium 的消耗，更重要的是，它產生了巨大的「溢出效應」，帶動了存儲、數據庫、分析、安全等傳統雲服務的同步增長。這一點從管理層的表述中得到驗證——AI 支出與核心雲增長之間存在「強相關性」，而隨著更多 AI 工作負載進入生產環境，這種聯動只會加強。</p>
+<p>但真正值得投資者重視的是 Amazon 在自研晶片領域的「隱形帝國」。當市場仍將 AI 晶片簡單理解為「NVIDIA vs. 其他」的零和博弈時，Amazon 已悄然構建了覆蓋 AI 推理（Trainium）和通用計算（Graviton）的完整晶片體系。年化營收超過 $20B（若按獨立晶片公司口徑計算則達 $50B）、Trainium 系列產品幾乎售罄、超過 $225B 的長期收入承諾——這些數字表明 Amazon 的自研晶片策略已從成本控制工具演變為具有獨立商業價值的業務線，同時也為 AWS 提供了相對於競爭對手的結構性成本優勢。</p>
+<p>另一個被低估的增長引擎是 Amazon 的廣告業務。在 Agentic Commerce 的背景下，市場擔心 AI 代理會「繞過」傳統廣告位。然而 Jassy 闡述了一個更具建設性的邏輯——多輪對話式的 AI 購物體驗不僅不會消滅廣告，反而會創造更多植入點（sponsored prompts、上下文推薦等），同時 AI 工具也大幅降低了中小企業的廣告門檻。$17.2B 的季度營收、22% 的增速表明，這一邏輯正在兌現。</p>
+<p>核心判斷：</p>
+<p class="bullet">• <strong>AWS 增長動力：加速擴張。</strong> Q1 增長 28% YoY，是 15 個季度以來最快增速；AI 收入年化超過 $15B，Bedrock 客戶支出環比增長 170%，Q1 處理的 token 數超過歷年總和。</p>
+<p class="bullet">• <strong>自研晶片護城河：被嚴重低估。</strong> 自研晶片年化營收超過 $20B（獨立口徑 $50B），Trainium 擁有 $225B 收入承諾，預計在規模化後每年可節省「數百億美元 CapEx」並提供「數百基點」的利潤率優勢。</p>
+<p class="bullet">• <strong>廣告 AI 化：結構性增量。</strong> Rufus 月活增長 115%、互動增長近 400%，品牌提示功能中有近 20% 的用戶會繼續圍繞品牌展開對話；Agentic 廣告工具使中小企業的廣告創建時間和成本大幅降低。</p>
+<p class="bullet">• <strong>物流效率：持續改善。</strong> 單位增長 15% 但出貨成本僅增 12%、履行成本僅增 9%，新一代機器人技術將部署於 2026 年所有新建大型履行中心。</p>
+<p class="bullet">• <strong>CapEx 週期：短期壓力換長期回報。</strong> Q1 現金 CapEx 達 $43.2B，大部分用於 AWS 和 AI 基礎設施，管理層明確表示已獲得客戶承諾覆蓋「相當大比例」的支出，並預期將產生「有吸引力的」利潤率和 ROIC。</p>
+<hr>
+
+<h2>2. AWS 雲業務：AI 驅動的第二增長曲線正在展開</h2>
+
+<h3>2.1 管理層原話與數據</h3>
+<p>AWS 作為 Amazon 的利潤引擎，本次電話會議中被重點討論。Andy Jassy 開場即以大量數據闡述 AWS 的增長態勢：</p>
+<p>> “We're reporting $181.5 billion in revenue, up 17% year-over-year... Starting with AWS, growth continued to accelerate, up 28% year-over-year, the fastest growth rate in 15 quarters, up $2 billion quarter-over-quarter, the largest Q4 to Q1 AWS revenue increase ever. AWS is now a $150 billion annualized revenue run rate business.”</p>
+<p>這個數據的震撼之處在於：在一個已經達到 $150B 年化規模的業務上，依然能實現接近 30% 的增長。Jassy 自己也承認這是極為罕見的：</p>
+<p>> “It's very unusual for a business to grow this fast on a base this large. The last time we saw growth at this clip, AWS was roughly half the size.”</p>
+<p>增長的核心驅動力毫無疑問是 AI。Jassy 提供了一個驚人的對比數據：</p>
+<p>> “To put our growth in perspective, 3 years after AWS launched, it had a $58 million revenue run rate. In the first 3 years of this AI wave, AWS' AI revenue run rate is over $15 billion, nearly 260x larger.”</p>
+<p>在 Q&A 環節中，Jassy 進一步解釋了 AI 增長與核心雲服務增長之間的聯動關係：</p>
+<p>> “We also see a strong correlation between AI spend and core growth. As customers spend more on AI, we see a corresponding demand increase in core. We expect this to increase over time as customers move more AI workloads into production, strengthening demand for our core services.”</p>
+<p>這種「AI 帶動核心」的邏輯被 Brian Olsavsky 在 CFO 部分重申：</p>
+<p>> “Customers seeking the full benefit of AI are accelerating their transition to the cloud.”</p>
+<p>而在利潤端，AWS 的營運利潤達到 $14.2B，隱含利潤率約 37.8%，在高速增長和大規模 CapEx 投入的背景下依然保持極強的盈利能力。</p>
+
+<h3>2.2 投資解讀：三層增長引擎疊加——AI 直接收入、AI 溢出效應、傳統遷移加速</h3>
+<p><strong>第一層：AI 直接收入的規模化。</strong> AWS 的 AI 年化收入已達 $15B，這個數字本身就已經超過了許多獨立 SaaS 公司的總營收。更重要的是增速——Bedrock 的客戶支出環比增長 170%，Q1 處理的 token 數超過了歷年總和，這意味著 AI 工作負載正從實驗階段快速進入生產環境。隨著更多企業將 AI 從 POC 轉向正式部署，這部分的增長斜率可能進一步陡峭化。</p>
+<p><strong>第二層：AI 溢出效應拉動核心服務。</strong> 這是管理層在本季度著重強調的一個邏輯——AI 並非孤立存在，每一個 AI 應用都需要存儲、數據庫、安全、網絡等基礎設施支撐。更重要的是，隨著 Agentic AI 的興起，AI 系統需要執行多步驟操作、工具調用、強化學習等，這些都對 CPU 計算（即 Graviton）產生了巨大需求。Meta 選擇 Graviton 來支撐其 Agentic AI 工作負載就是一個典型案例。這種「AI 花費帶動核心雲增長」的正向飛輪，是理解 AWS 當前增長可持續性的關鍵。</p>
+<p><strong>第三層：傳統企業雲遷移的二次加速。</strong> 記憶體和存儲等組件的供應緊張及價格上漲，正在迫使企業放棄自建數據中心的幻想。Jassy 在 Q&A 中明確指出，由於雲供應商在供應鏈中具有優先級優勢，許多企業加速了向雲的遷移。這意味著 AWS 不僅在搶佔 AI 增量市場，還在加速蠶食傳統 IT 存量市場。</p>
+<p>綜合來看，AWS 的增長不再依賴單一驅動力，而是進入了 AI 直接收入、AI 溢出效應、傳統遷移加速三輪驅動的新階段。這也是為什麼在 $150B 的基數上，管理層依然對未來幾年的增長前景保持高度信心。Q2 指引中營業利潤區間 $20B-$24B 也暗示了管理層對 AWS 盈利能力持續性的信心。</p>
+<hr>
+
+<h2>3. 自研晶片：Amazon 的隱形帝國與結構性成本護城河</h2>
+
+<h3>3.1 管理層原話與數據</h3>
+<p>在本次電話會議中，自研晶片（Trainium、Graviton）的討論篇幅之大前所未有，顯示管理層對這一戰略資產的重視程度。Andy Jassy 用大量具體數據來說明自研晶片業務的規模：</p>
+<p>> “Our chips business continues to grow rapidly and is larger than what a lot of folks thought. We saw nearly 40% quarter-over-quarter growth in Q1, and our annual revenue run rate is now over $20 billion and growing triple-digit percentages year-over-year, but this somewhat masks the size. If our chips business was a stand-alone business and sold chips produced this year to AWS and other third parties, as other leading chip companies do, our annual revenue run rate would be $50 billion.”</p>
+<p>在定位上，Jassy 將 Amazon 的自研晶片業務與全球頂級晶片公司做了直接比較：</p>
+<p>> “As best as we can tell, our custom silicon business is now one of the top 3 data center chip businesses in the world.”</p>
+<p>在需求端，Trainium 產品線的訂單能見度極高：</p>
+<p>> “And we now have over $225 billion in revenue commitments for Trainium.”</p>
+<p>具體產品線的供需狀況也非常明確：</p>
+<p>> “Our Trainium2 chip has about 30% better price performance than comparable GPUs and is largely sold out. Trainium3, which just started shipping at the start of 2026 and is 30% to 40% more price performance than Trainium2, is nearly fully subscribed. And much of Trainium4, which is still about 18 months from broad availability, has already been reserved.”</p>
+<p>在成本優勢方面，Jassy 給出了非常具體的量化指引：</p>
+<p>> “For perspective, at scale, we expect Trainium will save us tens of billions of dollars of CapEx each year and provide several hundred basis points of operating margin advantage versus relying on others' chips for inference.”</p>
+<p>在 CPU 方面，Graviton 的市場滲透力同樣驚人：</p>
+<p>> “Graviton is our industry-leading CPU chip, which allows Meta to run the CPU-intensive workloads behind agentic AI with the performance and efficiency they need at their scale... and now used by 98% of the top 1,000 EC2 customers.”</p>
+<p>最後，Jassy 在回答 Eric Sheridan 關於 CapEx 的問題時，總結了自研晶片的戰略意義：</p>
+<p>> “Nobody has a better set of chips across AI and CPU workloads than AWS with Trainium and Graviton, and we're unusually well positioned for this AI inflection we're in the early stages of experiencing.”</p>
+
+<h3>3.2 投資解讀：從成本工具到商業護城河的質變</h3>
+<p><strong>第一層：收入規模已被嚴重低估。</strong> 市場習慣將 Amazon 的自研晶片視為「節省成本的內部工具」，但 Jassy 提供的數據徹底推翻了這一認知。按獨立晶片公司口徑計算，年化收入可達 $50B，這已經與 AMD（市值約 $2,000 億）的全年營收相當。Amazon 的自研晶片業務實質上已經是全球前三大數據中心晶片企業，僅次於 NVIDIA 和可能的 Intel/AMD。而 40% 的季度環比增長和三位數的年度增長表明，這一業務仍在加速擴張期。</p>
+<p><strong>第二層：$225B 的收入承諾構成了長期增長的確定性基座。</strong> 這個數字的含義需要被正確理解——它代表的是客戶對 Trainium 產品線的長期合約承諾。考慮到 AWS 2025 全年的營收約為 $130B-$140B，僅 Trainium 一條產品線的收入承諾就達到了 AWS 年營收的 1.5 倍以上。這意味著即使 AI 需求增速放緩，Amazon 也有足夠的訂單能見度來支撐未來多年的增長。更重要的是，Trainium4（預計約 18 個月後廣泛可用）的大部分產能已被預訂，這顯示客戶對 Amazon 晶片路線圖的信心。</p>
+<p><strong>第三層：結構性成本優勢將重塑 AWS 的利潤率天花板。</strong> Jassy 明確表示，Trainium 在規模化後每年可節省「數百億美元 CapEx」並提供「數百基點」的利潤率優勢。如果按 AWS 目前 $150B 年化營收計算，數百基點意味著 $4.5B-$7.5B 的額外營業利潤。這不是一次性的成本削減，而是結構性的、可持續的競爭優勢——因為它源自 Amazon 對晶片設計的自主掌控。隨著 Trainium 在 Bedrock 推理中的占比不斷提升（目前已占多數），這種成本優勢將直接體現為 AWS 利潤率的擴張。</p>
+<p>綜合來看，自研晶片已經從 Amazon 的「後台效率工具」演變為具有獨立戰略價值的業務線。它不僅為 AWS 提供了對抗 NVIDIA 定價權的槓桿，更構建了一條競爭對手難以複製的護城河——畢竟，要建立覆蓋 AI 推理和通用計算的完整晶片生態，需要數十年的基礎設施投入和生態系統建設，這不是靠資金就能速成的。</p>
+<hr>
+
+<h2>4. Bedrock 與 AI 生態：平台化戰略的加速兌現</h2>
+
+<h3>4.1 管理層原話與數據</h3>
+<p>在 AI 服務層面，Bedrock 作為 AWS 的旗艦 AI 平台，其增長數據令人矚目。Jassy 特別提到了 Bedrock 的多項里程碑：</p>
+<p>> “...high-performance inference with the leading selection of frontier models in Bedrock, which saw 170% growth in customer spend quarter-over-quarter, and processed more tokens in Q1 than all prior years combined.”</p>
+<p>在合作夥伴生態方面，Bedrock 正在快速擴展其模型庫：</p>
+<p>> “We're excited to make OpenAI's models available in Bedrock. Yesterday, we added OpenAI's GPT-5.4 model with 5.5 coming soon.”</p>
+<p>而在 Agentic AI 領域，AWS 推出了基於 OpenAI 的 Bedrock 管理代理服務：</p>
+<p>> “Yesterday, we also started the preview of Amazon Bedrock managed agents powered by OpenAI, the Stateful Runtime Environment that enables any organization to build generative AI applications and agents at production scale. We believe that modern agentic applications will be stateful, and this new technology will rapidly accelerate agentic AI adoption.”</p>
+<p>在 Agent 開發框架方面，Strands 的下載量呈現爆發式增長：</p>
+<p>> “AWS customers can build agents with their proprietary data in Strands, which has been downloaded more than 25 million times and saw 3x more downloads quarter-over-quarter.”</p>
+<p>而企業級 Agent 部署平台 AgentCore 的使用頻率也極高：</p>
+<p>> “Customers can deploy agents with enterprise scale, security and reliability with AgentCore, which is being used to deploy an agent as frequently as every 10 seconds.”</p>
+<p>在開箱即用的 Agent 產品方面，多項產品均展現了強勁的客戶採用：</p>
+<p>> “The number of developers using Kiro more than doubled quarter-over-quarter, and enterprise customer usage increased nearly 10x.”</p>
+<p>> “The number of new customers using Quick has grown more than 4x quarter-over-quarter.”</p>
+<p>Bedrock 的客戶基礎也在持續擴大：</p>
+<p>> “Amazon Bedrock, which is used expansively by over 125,000 customers... and almost 80% of the Fortune 100 companies are using Bedrock.”</p>
+
+<h3>4.2 投資解讀：從模型託管到 Agent 平台的戰略躍遷</h3>
+<p><strong>第一層：模型中立性帶來的聚合效應。</strong> Bedrock 的核心價值主張是提供一個「模型超市」，讓客戶可以自由選擇最適合其需求的模型。加入 OpenAI 的 GPT-5.4 及即將推出的 GPT-5.5，意味著 Bedrock 現在基本涵蓋了所有主流前沿模型。這種中立性對企業客戶極具吸引力——他們不需要在不同雲平台之間遷移，就可以測試和比較不同模型的效果。125,000 客戶和 80% 的財富 100 強使用率，就是這種聚合效應的直接體現。</p>
+<p><strong>第二層：Agentic AI 是下一個增長爆發點。</strong> Jassy 明確表示「大多數企業從 AI 中獲得的價值將來自 Agent」。Bedrock 管理代理、Strands 框架、AgentCore 部署平台——這三個產品構成了從開發到部署的完整 Agent 生態。Strands 2,500 萬次下載和 3 倍的季度環比增長，以及 AgentCore 每 10 秒部署一個 Agent 的頻率，都表明 Agent 的企業級採用正在從「探索期」進入「規模化部署期」。</p>
+<p><strong>第三層：Token 消耗量的爆發預示著商業模式的飛輪效應。</strong> Q1 處理的 token 數超過歷年總和，這不僅是技術指標，更是商業指標——因為 Bedrock 的收費模式直接與 token 消耗量掛鉤。而 170% 的客戶支出環比增長表明，這不是少數大客戶的拉動，而是廣泛的客戶基礎上的加速。隨著更多 Agent 進入生產環境（Agent 需要持續消耗 token 來完成任務），這個飛輪將自我強化。</p>
+<hr>
+
+<h2>5. 電商與物流：效率提升的典範，AI 正在重塑購物體驗</h2>
+
+<h3>5.1 管理層原話與數據</h3>
+<p>Amazon 的電商業務（「Stores」）在 Q1 表現強勁，Jassy 首先提到了單位增長：</p>
+<p>> “Units grew 15% year-over-year, the highest we've seen since the tail end of COVID lockdowns.”</p>
+<p>在配送速度方面，Amazon 繼續刷新紀錄：</p>
+<p>> “We've delivered more than 1 billion items same day overnight so far this this year.”</p>
+<p>生鮮雜貨業務的增長尤其引人注目：</p>
+<p>> “And with more than $150 billion in gross sales in 2025, we're now the second largest grocer in the U.S... perishable sales have grown over 40x year-over-year and make up 9 of the top 10 most ordered items for same-day delivery where the service is available.”</p>
+<p>客戶在使用生鮮配送時的籃子大小數據也很有說服力：</p>
+<p>> “Customers shopping same-day perishables build larger baskets, adding nearly 3x as many items to their order and spend over 80% more than customers who don't.”</p>
+<p>在超快配送方面，Amazon Now 的早期數據令人鼓舞：</p>
+<p>> “It started last year in India where orders are increasing 25% month-over-month with Prime members tripling their shopping frequency once they start using it.”</p>
+<p>Brian Olsavsky 則從成本效率角度提供了關鍵數據：</p>
+<p>> “Overall unit growth of 15% continues to outpace our cost to operate the fulfillment network as outbound shipping costs grew 12% year-over-year and fulfillment expense grew 9% year-over-year, both on an FX-neutral basis.”</p>
+<p>在自動化方面，Olsavsky 提到了新一代技術的部署計劃：</p>
+<p>> “All of our U.S. large-format fulfillment center launches in 2026 will have this latest generation technology. We're seeing early positive results with improved site safety, higher productivity and lower cost to serve.”</p>
+<p>在 AI 購物助手 Rufus 方面：</p>
+<p>> “Rufus, our agentic AI shopping assistant, continues to resonate with customers... Monthly active users are up over 115% and engagement is up nearly 400% year-over-year.”</p>
+
+<h3>5.2 投資解讀：效率飛輪與 AI 購物的「重新定義」</h3>
+<p><strong>第一層：成本效率的持續改善是電商利潤率擴張的核心動力。</strong> 單位增長 15% 但出貨成本僅增 12%、履行成本僅增 9%——這 3 到 6 個百分點的剪刀差，是 Amazon 電商業務利潤率持續擴張的數學基礎。北美洲 7.9% 的營運利潤率（較歷史水平顯著提升）正是這種效率改善的累積結果。新一代機器人技術在 2026 年所有新建大型履行中心的全面部署，將進一步強化這一趨勢。</p>
+<p><strong>第二層：生鮮雜貨是下一個增長飛輪的起點。</strong> $150B 的生鮮雜貨年銷售額使 Amazon 成為全美第二大雜貨商，但更值得注意的是行為數據——購買生鮮的客戶籃子大小是普通客戶的近 3 倍、支出高 80% 以上。這意味著生鮮不是一個獨立的品類，而是一個「流量入口」，能夠帶動整體購物籃的擴大。而生鮮配送的 40 倍增長表明，這個飛輪才剛剛起步。</p>
+<p><strong>第三層：Rufus 正在重新定義「搜索」為「對話」。</strong> 115% 的月活增長和近 400% 的互動增長表明，用戶正在從「搜索」模式遷移到「對話」模式。Rufus 能夠自動追踪價格並在達到目標價時自動購買的功能，實質上將 Amazon 從「被動等待消費者決策」轉變為「主動代理消費者利益」。這種範式轉變的長期影響深遠——它不僅提升了轉化率，更重要的是深化了用戶對 Amazon 平台的依賴和信任。</p>
+<hr>
+
+<h2>6. 廣告業務：AI 驅動的雙輪增長——工具民主化與 Agentic Commerce 新場景</h2>
+
+<h3>6.1 管理層原話與數據</h3>
+<p>廣告業務繼續保持高速增長，Q1 營收達到 $17.2B：</p>
+<p>> “...generating $17.2 billion of revenue in the quarter and up 22% year-over-year.”</p>
+<p>在 Q&A 環節中，Jassy 被 Shweta Khajuria 直接問及 Agentic Commerce 對廣告業務的影響，他的回答提供了重要的戰略洞察：</p>
+<p>> “I actually believe that we're going to like this for advertising. I think it's going to be good for customers, and it's going to be good for our business.”</p>
+<p>Jassy 解釋了 AI 如何降低廣告門檻：</p>
+<p>> “If you look at small and medium-sized businesses that had to take weeks and months to do creative and to pick the right audience, all of that is just — it's so much faster and so much easier because of our advertising agentic tools.”</p>
+<p>而對於 Agentic Commerce 中的廣告場景，Jassy 描述了一個全新的廣告模式：</p>
+<p>> “...they tend to be multi-turn conversations where you're not interacting with one search and getting an answer. You tend to find that you're asking questions, you're narrowing questions, it's asking you questions on what you want. And in that process of having multi turns, there are multiple opportunities to surface relevant products to customers, many of which will be organic and some of which will be sponsored.”</p>
+<p>在品牌提示功能的早期數據方面：</p>
+<p>> “It's early, but we're seeing nearly 20% of shoppers who interacts with the Brand Prompts in Rufus continue the conversation about that brand.”</p>
+<p>在廣告創意自動化方面，Creative Agent 的全球擴展也在進行：</p>
+<p>> “...we expanded Creative Agent, an agentic partner that plans and executes the entire ad creative process to Canada, France, Germany, India, Italy, Spain and the U.K.”</p>
+
+<h3>6.2 投資解讀：廣告業務的「二次加速」邏輯</h2>
+<p><strong>第一層：AI 工具的民主化效應。</strong> 傳統上，中小企業進行精準廣告投放面臨兩大門檻：創意製作和受眾選擇。Creative Agent 和其他廣告 AI 工具正在系統性地消除這些門檻——廣告主不再需要花費數週和大量資金製作創意，AI 可以在幾分鐘內完成。這意味著更多的中小企業將成為廣告主，Amazon 的廣告客戶基礎將從「有專業營銷團隊的企業」擴展到「幾乎所有賣家」。在 Amazon 超過 200 萬活躍第三方賣家的基礎上，即使只有一部分新增賣家開始投放廣告，其增量收入也是可觀的。</p>
+<p><strong>第二層：Agentic Commerce 創造的全新廣告場景。</strong> 市場對 AI 代理購物的擔憂是：如果 AI 直接幫消費者做決策，傳統的搜索廣告和展示廣告是否會失效？Jassy 的回答提供了一個全新的框架——在多輪對話中，每一輪都是一個廣告植入點。更重要的是，對話式場景中的廣告可以更加精準和原生，因為 AI 已經理解了消費者的具體需求和偏好。Sponsored prompts 就是一個典型案例——它不是「打斷」用戶體驗的廣告，而是「融入」對話流中的推薦。20% 的用戶在看到品牌提示後繼續圍繞品牌展開對話，這個轉化率遠高於傳統展示廣告。</p>
+<p><strong>第三層：CTV 和全渠道擴展帶來的增量空間。</strong> 雖然本次電話會議中對 CTV 廣告的討論較少，但提到的 Netflix 和 Samsung 合作表明 Amazon 正在將其電商數據優勢延伸至流媒體廣告。隨著 Prime Video 廣告層的持續成熟和更多 live sports 內容的加入，CTV 廣告有望成為 Amazon 廣告業務的下一個十億級增長點。目前 $17.2B 的季度營收基礎上，22% 的增速意味著年化廣告收入已接近 $70B，而這還未充分反映 AI 工具和 Agentic Commerce 帶來的增量。</p>
+<hr>
+
+<h2>7. CapEx 與投資回報：短期陣痛 vs. 長期價值創造</h2>
+
+<h3>7.1 管理層原話與數據</h3>
+<p>資本支出是本次電話會議中討論最密集的主題之一，管理層試圖為市場構建一個理解 Amazon CapEx 週期的框架。Brian Olsavsky 首先給出了 Q1 的 CapEx 數據：</p>
+<p>> “Our cash CapEx is $43.2 billion in Q1. This primarily relates to AWS and generative AI as we invest to support strong customer demand.”</p>
+<p>Andy Jassy 則詳細解釋了 CapEx 與收入之間的時間錯配問題：</p>
+<p>> “...the faster AWS grows, the more short-term CapEx we'll spend. AWS has to lay out cash for land, power, buildings, chips, servers and networking gear in advance of when we can monetize it, typically 6 to 24 months before we start billing customers depending on the component.”</p>
+<p>但 Jassy 強調了這些資產的長壽命特徵：</p>
+<p>> “However, these CapEx investments fund assets with many-year useful lives, 30-plus years for data centers, 5 to 6 years for chips, servers and networking gear.”</p>
+<p>在投資回報方面，Jassy 對 AWS CapEx 的質量表達了高度信心：</p>
+<p>> “Of the AWS CapEx we intend to spend in 2026, much of which will be installed in future years, we have high confidence this will be monetized well as we already have customer commitments for a substantial portion of it and that it will yield compelling operating margins and ROIC.”</p>
+<p>在被 Eric Sheridan 問及如何理解 Amazon 獨特的 AI 基礎設施策略時，Jassy 將話題引導至長期機遇：</p>
+<p>> “...we do view this as truly a once-in-a-lifetime opportunity where every application that we know of is going to be reinvented with AI.”</p>
+
+<h3>7.2 投資解讀：理解 Amazon 的「投資前置」模型</h3>
+<p><strong>第一層：CapEx 的前置性是 AWS 商業模式的固有特徵，而非風險信號。</strong> Amazon 的 CapEx 模型與傳統軟件公司有本質區別——它需要在獲得收入之前 6 到 24 個月就投入土地、電力、建築、晶片和網絡設備。在高速增長期（如現在），CapEx 增長會「顯著超過」收入增長，導致短期自由現金流承壓。但這不是第一次——管理層明確表示他們在第一波 AWS 增長浪潮中經歷過相同的週期，「並且喜歡最終的結果」。</p>
+<p><strong>第二層：訂單能見度提供了 CapEx 回收的確定性。</strong> $225B 的 Trainium 收入承諾、125,000 Bedrock 客戶、80% 的財富 100 強使用率——這些都是 AWS CapEx 投資將被消化的「保險」。Jassy 明確表示對 2026 年 AWS CapEx 的「很大一部分」已有客戶承諾覆蓋。考慮到數據中心的 30 年使用壽命和晶片/服務器的 5-6 年壽命，這些資產將在很長時間內持續產生收入和現金流。</p>
+<p><strong>第三層：Trainium 的成本優勢將在中期大幅改善 CapEx 效率。</strong> Jassy 預期 Trainium 在規模化後每年可節省「數百億美元 CapEx」。這意味著當前的高 CapEx 階段部分是「建廠」的一次性投入，一旦自研晶片的產能和良率達到規模化水平，單位計算能力的成本將大幅下降，從而降低未來的 CapEx 強度。簡言之，今天的 CapEx 高峰正在為未來的 CapEx 效率改善鋪路。</p>
+<hr>
+
+<h2>8. 新興業務：Amazon Leo（衛星）、Alexa+、Zoox</h2>
+
+<h3>8.1 管理層原話與數據</h3>
+<p>在衛星互聯網業務 Amazon Leo 方面，Jassy 提供了重要更新：</p>
+<p>> “Amazon Leo continues gaining momentum with commercial service on track to launch in a few months. We already have meaningful revenue commitments from enterprises and governments, including Delta Airlines, JetBlue, AT&T, Vodafone, DIRECTV Latin America, Australia's National Broadband Network, DP World Tour, NASA and others.”</p>
+<p>在收購和合作方面：</p>
+<p>> “We also announced that we plan to acquire Globalstar, which will expand Leo's satellite network with direct-to-device capabilities, and we entered an agreement with Apple for Amazon Leo to power satellite services for iPhones and Apple Watches.”</p>
+<p>Brian Olsavsky 在 CFO 部分提到了 Leo 的成本影響：</p>
+<p>> “...within the North America segment, we do expect a year-over-year cost increase of approximately $1 billion related to Amazon Leo as we manufacture and launch more satellites in preparation for our service offering. Amazon Leo's commercial service is on track to launch in Q3, and we expect to begin capitalizing certain costs in Q4, including production and launch costs.”</p>
+<p>在 Alexa+ 方面：</p>
+<p>> “Alexa+ early access expanded to millions more Prime members in Mexico, the U.K., Italy and Spain. Customers are loving Alexa+, talking to Alexa twice as much and for longer durations across a wider breadth of topics, completing purchases on devices 3x more, streaming music 25% more and using smart home functionality 50% more than Alexa classic.”</p>
+<p>在自駕車 Zoox 方面：</p>
+<p>> “Zoox has now driven nearly 2 million miles and carried more than 350,000 riders. It's available to the public in Las Vegas and San Francisco and is testing in 8 other cities. We recently announced that Zoox will be available through the Uber app in Las Vegas and in Los Angeles in the future.”</p>
+<p>在 Q&A 中被問及 Leo 的策略時，Jassy 進一步闡述了其邏輯：</p>
+<p>> “And then the other thing it afforded us was -- and we really like the satellite know-how that we'll get as part of that merger with Globalstar. And then it also afforded us the opportunity to build a deep relationship with Apple, who's going to use our direct-to-device for their iPhones and for their watches. So very optimistic about the business.”</p>
+
+<h3>8.2 投資解讀：從「燒錢項目」到「收入資產」的轉折點</h3>
+<p><strong>第一層：Amazon Leo 即將從投入期進入收穫期。</strong> Q3 商業服務上線、Q4 開始資本化部分成本——這兩個節點標誌著 Leo 的會計處理將從「全額費用化」轉為「資本化+攤銷」，對損益表的壓力將顯著減輕。而更重要的是，Delta、JetBlue、AT&T、NASA 等客戶的「有意義的收入承諾」意味著 Leo 不是一個「建好了等客戶」的項目，而是「客戶在等服務上線」的項目。與 Apple 的合作更是具有戰略意義——它不僅帶來了全球最大的高端設備用戶群，還在某種程度上「鎖定」了 Apple 在衛星通信領域的依賴。</p>
+<p><strong>第二層：Alexa+ 的用戶行為數據暗示了 AI 升級的巨大潛力。</strong> 對話頻率翻倍、購買次數增加 3 倍、智能家居使用增加 50%——這些數據表明 AI 升級不是「錦上添花」，而是從根本上改變了用戶與設備互動的方式。如果這種行為變化能夠在全球數億台 Alexa 設備上複製，它將為 Amazon 打開一個巨大的「語音商務」市場。</p>
+<p><strong>第三層：Zoox 與 Uber 的合作降低了商業化風險。</strong> 200 萬英里的測試里程和 35 萬乘客的數據表明 Zoox 的技術成熟度正在快速提升。而通過 Uber 平台提供服務，意味著 Zoox 不需要獨立構建用戶獲取渠道，可以專注於技術和運營。雖然自駕車的全面商業化仍有不確定性，但 Zoox 的策略正在降低 execution risk。</p>
+<hr>
+
+<h2>9. Amazon 內部 AI 應用：一場靜默的效率革命</h2>
+
+<h3>9.1 管理層原話與數據</h3>
+<p>在回答 Colin Sebastian 關於內部 AI 應用的問題時，Jassy 給出了一個令人印象深刻的具體案例：</p>
+<p>> “...if you look at one of our services, we swapped out the engine of the service while we are also running the service full tilt. And normally, that would have taken 40 or 50 people about a year to do, and we took 5 really smart people, AI forward-thinking people building on agentic coding tools, and those 5 people rebuilt it in 65 days.”</p>
+<p>Jassy 還系統性地闡述了 AI 對 Amazon 內部運營的影響範圍：</p>
+<p>> “...I do not see a place in any of our businesses or any of the ways that we do work where we're not going to have giant impact on what we do.”</p>
+<p>在客戶體驗的 AI 重構方面，Jassy 描述了他的戰略框架：</p>
+<p>> “...you have to be able to carve off resource for that team to think anew about what would the future customer experience look like if you started from scratch today and if you had all the technologies like AI available to you when you started.”</p>
+<p>在內部職能方面，Jassy 預測了廣泛的影響：</p>
+<p>> “I think it's going to have a comparable impact on how we do DevOps and how we do customer service, how we do research, how we do analytics, how sales is conducted. I think every single one of these functions that we all do at work are going to very significantly change.”</p>
+<p>在賣家服務方面，AI 工具也在快速部署：</p>
+<p>> “And we recently introduced a new AI experience for sellers in Seller Central that dynamically generates a custom, personalized visualization of data, key insights and scenarios tailored to the sellers' goals. It's early, but the initial response and feedback are very strong.”</p>
+
+<h3>9.2 投資解讀：內部效率革命是 Amazon 的「隱形利潤引擎」</h3>
+<p><strong>第一層：Agentic Coding 正在壓縮開發時間和成本。</strong> 「5 個人在 65 天內完成了原本需要 40-50 人一年的工作」——這個案例的意義遠超出單個項目的效率提升。如果這種模式能夠在 Amazon 數萬個工程團隊中推廣，它意味著 Amazon 可以用更少的工程師資源完成更多的產品開發，或者在同等資源下大幅加速產品迭代速度。考慮到 Amazon 在研發上的巨額投入（2025 年約 $80B+），即使 10% 的效率提升也意味著 $8B 的成本節約或額外產出。</p>
+<p><strong>第二層：AI 正在重塑每一個客戶體驗。</strong> Jassy 的「從零開始重新構想」框架表明 Amazon 不是在現有產品上「添加」AI 功能，而是在根本性地重新設計每個客戶體驗。Health AI、Rufus、Seller Central AI 可視化——這些都是「重新構想」的早期成果。這種方法的風險在於執行複雜度極高，但潛在回報是 Amazon 的每一個客戶觸點都將被 AI 原生化，從而建立起新一代的競爭壁壘。</p>
+<p><strong>第三層：內部 AI 應用的規模化將成為 Amazon 的獨特優勢。</strong> 很少有公司擁有 Amazon 這樣多元化的業務組合——從電商到雲計算，從廣告到物流，從內容到衛星。AI 在這些不同領域的應用經驗可以交叉學習和快速遷移，形成 Amazon 獨有的「AI 應用數據飛輪」。例如，在廣告業務中開發的 Creative Agent 技術可以遷移到賣家工具中；在 AWS 中開發的 Agentic 框架可以應用於客服自動化。這種跨業務的 AI 能力遷移，是 Amazon 作為「AI 時代 conglomerate」的核心競爭力。</p>
+<hr>
+
+<h2>10. 供應鏈與記憶體通脹：意料之中的壓力，意料之外的機會</h2>
+
+<h3>10.1 管理層原話與數據</h3>
+<p>Shweta Khajuria 直接問及了記憶體和存儲的價格上漲對 CapEx 的影響。Jassy 的回答提供了一個重要的戰略洞察：</p>
+<p>> “I think everybody knows that the cost of these components, particularly memory has skyrocketed. And we're just in a stage where there's just not enough capacity for the amount of demand.”</p>
+<p>在應對策略方面：</p>
+<p>> “We have worked very closely with our strategic partners. We saw this trend happening early in the kind of the middle of the latter part of last year. And we've worked with our strategic suppliers here to get a significant amount of supply.”</p>
+<p>但最引人注目的是供應緊張帶來的間接利好：</p>
+<p>> “One of the interesting things that we see right now with the change in price and in supply on things like memory is that it is a further impetus pushing companies who have on-premises infrastructure into the cloud. And it's because, in meaningful part, these suppliers are prioritizing their very largest customers, which cloud providers are.”</p>
+
+<h3>10.2 投資解讀：供應鏈壓力轉化為雲遷移催化劑</h3>
+<p>記憶體和存儲的供應緊張及價格上漲，表面上看是 Amazon 面臨的成本壓力。但 Jassy 的表述揭示了一個有趣的動態：由於雲供應商是半導體供應商的最大客戶，他們在供應分配中享有優先權。這導致了一個意想不到的結果——企業在自建數據中心時更難獲得所需的晶片，反而加速了向雲的遷移。簡言之，供應鏈壓力正在成為 AWS 獲取新客戶的催化劑。這對投資者而言是一個重要的「二階效應」——記憶體漲價的負面影響（CapEx 增加）部分被正面影響（客戶遷移加速）所抵消，甚至可能淨正面。</p>
+<hr>
+
+<h2>11. 管理層語氣分析</h2>
+<p><strong>Andy Jassy（CEO）：</strong> 語氣極為自信且富有戰略深度。與上季度相比，Jassy 在本季度明顯更加「數據密集」，大量引用具體數字（$225B 承諾、$50B 獨立口徑、260 倍對比等），這反映了他對 AWS 增長勢頭的強烈確信。值得注意的是，他在自研晶片部分的主動篇幅遠超以往任何季度，這暗示他認為市場尚未充分理解 Amazon 在晶片領域的競爭地位。在 Agentic Commerce 和廣告的問題上，他的回答帶有明確的「反共識」色彩——不是迴避問題，而是主動挑戰市場的悲觀假設。整體而言，Jassy 展現的是一個正在「抓住」一次世代機遇的 CEO 的語氣，而非一個在為高投入辯護的 CEO。</p>
+<p><strong>Brian Olsavsky（CFO）：</strong> 沿襲其一貫的精確和克制風格，但在關鍵數據點上提供了清晰度。他對 Amazon Leo 成本（$1B YoY 增加）和資本化時點（Q4 開始）的明確指引，為投資者提供了重要的模型調整依據。對物流效率（單位增長 15% vs. 成本增長 9-12%）的強調，則是在為電商利潤率改善的持續性建立信心。整體語氣務實而自信，沒有過度承諾，但數據本身已足夠有說服力。</p>
+<hr>
+
+<h2>12. 風險與監控指標</h2>
+<p>1. <strong>CapEx 超預期風險：</strong> Q1 現金 CapEx 已達 $43.2B，年化超過 $170B。若 AI 需求增速放緩或供應鏈成本進一步上升，CapEx 可能難以在預期時間內被消化，導致自由現金流持續承壓。傳導路徑：CapEx 增加 → FCF 下降 → 估值壓縮。監控指標：季度 CapEx 絕對值、CapEx/Revenue 比率、AWS 收入增速與 CapEx 增速的剪刀差。</p>
+<p>2. <strong>記憶體與存儲供應鏈風險：</strong> 管理層已確認記憶體成本「飆升」且產能不足。若供應鏈進一步惡化，可能導致 AWS 產能擴張受限，影響收入增速。傳導路徑：供應短缺 → 產能瓶頸 → 收入增速放緩 → 市場預期下調。監控指標：管理層對記憶體供應的措辭變化、AWS 增長的季度環比趨勢。</p>
+<p>3. <strong>宏觀經濟衰退風險：</strong> 管理層在風險提示中明確提及「recessionary fears, inflation, interest rates」和「customer demand and spending」。若經濟衰退導致企業 IT 預算收縮，AWS 的增長可能受到雙重打擊（新項目延遲 + 存量消耗下降）。傳導路徑：經濟衰退 → IT 預算削減 → 雲消費增速放緩。監控指標：AWS 2Q-4Q 增長趨勢、企業 IT 支出調查數據。</p>
+<p>4. <strong>監管與反壟斷風險：</strong> Amazon 作為全球最大電商平台和雲服務提供商，持續面臨反壟斷審查壓力。任何強制拆分或業務限制都可能影響其跨業務協同效應。監控指標：美國和歐盟反壟斷訴訟進展、潛在的業務拆分提案。</p>
+<p>5. <strong>AI Agent 商業模式執行風險：</strong> 管理層對 Agentic AI 和 Agentic Commerce 的前景極為樂觀，但這些仍處於早期階段。若 Agent 的企業級採用速度慢於預期，或用戶對 AI 購物助手的接受度不及預期，將影響廣告和 AWS 的增長假設。監控指標：Rufus 月活和互動增速的季度趨勢、Bedrock Agent 部署頻率、Kiro/Quick 客戶增長。</p>
+<hr>
+
+<h2>13. 最終評級觀點</h2>
+<p>Amazon 在 Q1 2026 展現的不是「一個業務的強勁季度」，而是「多個增長引擎同時加速」的罕見格局。AWS 在 $150B 基數上實現 28% 加速增長，其背後是 AI 收入、核心雲遷移、以及 AI 溢出效應三輪驅動的結構性力量。自研晶片業務的規模（獨立口徑 $50B）和訂單能見度（$225B 承諾）表明，Amazon 已經在 AI 基礎設施的底層構建了一條競爭對手難以跨越的護城河——而市場對此的定價仍然嚴重不足。</p>
+<p>廣告業務在 AI 的加持下正在進入「二次加速」階段。Agentic Commerce 不是廣告的終結者，而是新廣告場景的創造者——多輪對話中的 sponsored prompts、AI 驅動的創意自動化、以及中小企業廣告門檻的降低，這三個力量共同指向一個結論：$70B 年化營收不是廣告業務的天花板，而是一個新增長曲線的起點。電商業務的效率改善則提供了穩定的利潤基座——在物流自動化和生鮮雜貨的雙重驅動下，北美洲 7.9% 的營運利潤率仍有進一步擴張的空間。</p>
+<p>誠然，$43.2B 的季度 CapEx 和記憶體供應鏈壓力是不可忽視的短期逆風，自由現金流在短期內將繼續承壓。但管理層已明確表示這是一次「once-in-a-lifetime」的機遇，並提供了足夠的訂單能見度來支撐其投資邏輯。對於能夠承受短期 FCF 波動的長期投資者而言，Amazon 正處於 AI 時代最核心的基礎設施提供商的位置——從晶片到雲，從開發工具到企業 Agent，從購物助手到廣告平台——它的業務組合幾乎覆蓋了 AI 價值鏈的每一個層級。當市場最終認識到自研晶片業務的獨立價值、Agentic Commerce 的廣告增量、以及內部 AI 應用的效率革命時，當前的估值可能會被證明是一個有吸引力的進場點。</p></article></div></body></html>
