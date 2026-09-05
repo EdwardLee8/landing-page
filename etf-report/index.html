@@ -444,12 +444,12 @@ async function checkPw() {
     if (_pwChecking) return;
     _pwChecking = true;
     const val = document.getElementById("pw-input").value;
-    const h = await _sha256(val);
+    const dataPassword = await MemberAuth.login(val);
     _pwChecking = false;
-    if (h === _PW_HASH) {
-        _pw = val;
+    if (dataPassword) {
+        _pw = dataPassword;
         sessionStorage.setItem(_SESSION, "1");
-        sessionStorage.setItem("unified_auth_pw", val);
+        sessionStorage.setItem("unified_auth_pw", dataPassword);
         document.getElementById("pw-overlay").style.display = "none";
         document.getElementById("etf-app").style.display = "block";
         switchMarket("HK");

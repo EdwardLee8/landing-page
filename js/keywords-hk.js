@@ -26,9 +26,9 @@ const _sha256 = MemberAuth.sha256;
 const _decryptEnc = (b64, pw) => MemberAuth.decrypt(b64, pw, SESSION_KEY);
 async function checkPassword() {
   const raw = document.getElementById("pw-input").value;
-  const h = await _sha256(raw);
-  if (h === _PW_HASH) {
-    _pw = raw;
+  const dataPassword = await MemberAuth.login(raw);
+  if (dataPassword) {
+    _pw = dataPassword;
     sessionStorage.setItem(SESSION_KEY, "1");
     sessionStorage.setItem(SESSION_KEY + "_pw", _pw);
     document.getElementById("pw-overlay").style.display = "none";

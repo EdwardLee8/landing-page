@@ -180,11 +180,11 @@ const _sha256 = MemberAuth.sha256;
 
 async function checkPassword(){
   const pw = document.getElementById('pw-input').value;
-  const h  = await _sha256(pw);
-  if (h === _PW_HASH){
+  const dataPassword = await MemberAuth.login(pw);
+  if (dataPassword){
     document.getElementById('pw-overlay').style.display='none';
     sessionStorage.setItem('unified_auth','1');
-    sessionStorage.setItem('unified_auth_pw', pw);
+    sessionStorage.setItem('unified_auth_pw', dataPassword);
     await loadAll();
   } else {
     document.getElementById('pw-error').textContent='密碼錯誤，請再試';

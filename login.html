@@ -219,10 +219,10 @@ const _sha256 = MemberAuth.sha256;
 async function checkPassword() {
   const val = document.getElementById("pw-input").value;
   if (!val) return;
-  const h = await _sha256(val);
-  if (h === _PW_HASH) {
+  const dataPassword = await MemberAuth.login(val);
+  if (dataPassword) {
     sessionStorage.setItem("unified_auth", "1");
-    sessionStorage.setItem("unified_auth_pw", val);
+    sessionStorage.setItem("unified_auth_pw", dataPassword);
     showDashboard();
   } else {
     document.getElementById("pw-error").textContent = "密碼錯誤，請再試";
@@ -240,6 +240,7 @@ function showDashboard() {
 }
 
 function logout() {
+  MemberAuth.logoutRemote();
   sessionStorage.removeItem("unified_auth");
   sessionStorage.removeItem("unified_auth_pw");
   location.reload();

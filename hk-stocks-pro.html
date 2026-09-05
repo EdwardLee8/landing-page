@@ -244,12 +244,12 @@ td.num.na{color:#555}
 const _PW_HASH = MemberAuth.PW_HASH;
 const _sha256 = MemberAuth.sha256;
 async function checkPassword() {
-  const h = await _sha256(document.getElementById('pw-input').value);
-  if (h === _PW_HASH) {
+  const dataPassword = await MemberAuth.login(document.getElementById('pw-input').value);
+  if (dataPassword) {
     document.getElementById('pw-overlay').style.display = 'none';
     sessionStorage.setItem('unified_auth', '1');
-    sessionStorage.setItem('unified_auth_pw', document.getElementById('pw-input').value);
-    loadAndInit(document.getElementById('pw-input').value);
+    sessionStorage.setItem('unified_auth_pw', dataPassword);
+    loadAndInit(dataPassword);
   } else {
     const err = document.getElementById('pw-error');
     err.textContent = '密碼錯誤，請再試';

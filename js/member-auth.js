@@ -41,6 +41,34 @@
     return (await sha256(raw)) === PW_HASH;
   }
 
+  /**
+   * 向伺服器驗證密碼(見 docs/server-auth.md)。成功會取得 HttpOnly
+   * session cookie(供後續 .enc 請求使用)同解密用的 dataPassword。
+   * 回傳 dataPassword,密碼錯誤或伺服器出錯一律回傳 null。
+   */
+  async function login(rawPassword) {
+    try {
+      var resp = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: rawPassword }),
+        credentials: "same-origin",
+      });
+      if (!resp.ok) return null;
+      var body = await resp.json();
+      return body.dataPassword || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /** 清除伺服器 session cookie。 */
+  async function logoutRemote() {
+    try {
+      await fetch("/api/logout", { method: "POST", credentials: "same-origin" });
+    } catch (e) {}
+  }
+
   /** 取出本次 session 的原始密碼,未登入時回傳空字串。 */
   function password(sessionKey) {
     return sessionStorage.getItem(keyOf(sessionKey) + "_pw") || "";
@@ -150,6 +178,8 @@
     PW_HASH: PW_HASH,
     sha256: sha256,
     verify: verify,
+    login: login,
+    logoutRemote: logoutRemote,
     password: password,
     isAuthed: isAuthed,
     store: store,

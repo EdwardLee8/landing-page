@@ -391,12 +391,12 @@ const _decryptEnc = (b64, pw) => MemberAuth.decrypt(b64, pw);
 async function checkPassword() {
   const pw = document.getElementById("pw-input").value;
   if (!pw) return;
-  const h = await _sha256(pw);
-  if (h === _PW_HASH) {
+  const dataPassword = await MemberAuth.login(pw);
+  if (dataPassword) {
     document.getElementById("pw-overlay").style.display = "none";
     sessionStorage.setItem("unified_auth", "1");
-    sessionStorage.setItem("unified_auth_pw", pw);
-    loadAndInit(pw);
+    sessionStorage.setItem("unified_auth_pw", dataPassword);
+    loadAndInit(dataPassword);
   } else {
     document.getElementById("pw-error").textContent = "密碼錯誤，請再試";
     document.getElementById("pw-input").value = "";
