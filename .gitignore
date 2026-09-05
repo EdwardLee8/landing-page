@@ -7,9 +7,8 @@ __pycache__/
 # Backtest panel cache (regenerated from ClickHouse)
 rs_panel*.parquet
 
-# 零散/大型回測輸出:冇文件化(metadata.json)、或者太大唔啱放呢個網站 repo。
-# 有 metadata.json + 細細個(< 1MB)嘅結構化跑分(例如 backtest_finetune/、
-# backtest_walkforward*/)一直都有 commit,依然照跟。
+# 回測輸出(內部分析用,非網站內容;7e58191 已將 backtest_finetune/、
+# backtest_walkforward/ 移出追蹤,呢度將所有同類輸出對齊同一政策)
 backtest_9tf_full_results.csv
 backtest_9tf_fwd_*.csv
 backtest_multi_tf_results.csv
@@ -17,6 +16,14 @@ backtest_results.csv
 walk_forward_results.csv
 backtest_weinstein/
 backtest_weinstein_robust/
+backtest_walkforward_cn/
+backtest_walkforward_hk/
+
+# 加密前的明文資料(見 7e58191):repo 為 public,追蹤呢啲即等於免費公開
+# 會員付費資料。CN 市場對應嘅檔案同上面已移除嘅 hk_*/us_* 版本睇齊。
+cn_keywords_export.json
+cn_themes.json
+us_stocks_data.json
 
 # 舊、已損毀(中文字被存成字面 "?")、冇任何頁面連過去嘅孤兒資料夾,
 # 已被 public_top20_reports/ 取代。
