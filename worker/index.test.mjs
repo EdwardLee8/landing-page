@@ -123,6 +123,11 @@ check('接上 R2 後,未登入仍被擋', r.status === 401);
 r = await worker.fetch(new Request(`${B}/hk_rs_latest.enc`, authed), envWithR2);
 check('R2 裡不存在的物件回 404', r.status === 404, `status=${r.status}`);
 
+r = await worker.fetch(new Request(`${B}/hk_h1_2026_industry_top3_data/00012_HendersonLand_20260905.md`, authed), env);
+check('行業首三報告資料夾:登入可取', r.status === 200, `status=${r.status}`);
+r = await worker.fetch(new Request(`${B}/hk_h1_2026_industry_top3_data/00012_HendersonLand_20260905.md`), env);
+check('行業首三報告資料夾:未登入被擋', r.status === 401, `status=${r.status}`);
+
 // ── /api/login 節流(每分鐘上限 + 24 小時累計錯誤上限) ──────────────
 function fakeKv() {
   const store = new Map();

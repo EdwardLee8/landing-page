@@ -37,7 +37,8 @@ function isProtected(pathname) {
     || pathname.startsWith("/cn_irm_data/")
     || pathname.startsWith("/us_transcript_data/")
     || pathname.startsWith("/us_research_data/")
-    || pathname.startsWith("/etf-report/data/");
+    || pathname.startsWith("/etf-report/data/")
+    || pathname.startsWith("/hk_h1_2026_industry_top3_data/");
 }
 
 /** R2 object key = 拿掉開頭的 "/"。目錄結構原封不動搬過去。 */
