@@ -27,5 +27,8 @@
   },
   "r2_buckets": [
     { "binding": "DATA_BUCKET", "bucket_name": "landing-page-member-data" }
+  ],
+  "kv_namespaces": [
+    { "binding": "LOGIN_RATE_LIMIT", "id": "b77c3a35755e4384828205d3300d71ff" }
   ]
 }

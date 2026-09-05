@@ -116,5 +116,34 @@ check('接上 R2 後,未登入仍被擋', r.status === 401);
 r = await worker.fetch(new Request(`${B}/hk_rs_latest.enc`, authed), envWithR2);
 check('R2 裡不存在的物件回 404', r.status === 404, `status=${r.status}`);
 
+// ── /api/login 節流(每分鐘上限 + 24 小時累計錯誤上限) ──────────────
+function fakeKv() {
+  const store = new Map();
+  return {
+    async get(key) { return store.has(key) ? store.get(key) : null; },
+    async put(key, value) { store.set(key, value); },
+  };
+}
+const loginReq = (password, ip) => new Request(`${B}/api/login`, {
+  method: 'POST', body: JSON.stringify({ password }),
+  headers: { 'CF-Connecting-IP': ip },
+});
+
+const envRateLimit = { ...env, LOGIN_RATE_LIMIT: fakeKv() };
+for (let i = 0; i < 10; i++) {
+  r = await worker.fetch(loginReq('wrong', '1.2.3.4'), envRateLimit);
+}
+check('每分鐘上限之內仍正常回應(401)', r.status === 401, `status=${r.status}`);
+r = await worker.fetch(loginReq('wrong', '1.2.3.4'), envRateLimit);
+check('超過每分鐘上限回 429', r.status === 429, `status=${r.status}`);
+r = await worker.fetch(loginReq('wrong', '9.9.9.9'), envRateLimit);
+check('另一個 IP 唔受影響', r.status === 401, `status=${r.status}`);
+
+const kvFailLimit = fakeKv();
+await kvFailLimit.put('fail:5.5.5.5', '100');
+const envFailLimit = { ...env, LOGIN_RATE_LIMIT: kvFailLimit };
+r = await worker.fetch(loginReq('correct-horse', '5.5.5.5'), envFailLimit);
+check('24 小時內累計 100 次錯誤後,即使密碼啱都鎖住', r.status === 429, `status=${r.status}`);
+
 console.log(`\n${pass} 通過, ${fail} 失敗`);
 process.exit(fail ? 1 : 0);

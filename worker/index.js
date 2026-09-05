@@ -124,6 +124,26 @@ function missingConfig(env) {
   return !env.MEMBER_PASSWORD || !env.SESSION_SECRET;
 }
 
+// /api/login 節流:同一 IP 每分鐘最多 10 次請求,24 小時內累計 100 次
+// 密碼錯誤就暫時鎖住。冇綁 LOGIN_RATE_LIMIT(KV)時整段跳過,行為等同未加此功能前。
+const LOGIN_WINDOW_LIMIT = 10;
+const LOGIN_WINDOW_TTL_SECONDS = 60;
+const LOGIN_FAIL_LIMIT = 100;
+const LOGIN_FAIL_TTL_SECONDS = 24 * 60 * 60;
+
+async function kvCount(kv, key) {
+  const raw = await kv.get(key);
+  return raw ? parseInt(raw, 10) : 0;
+}
+
+/** 讀取並遞增計數,超過上限就唔遞增,回傳係咪仲喺上限之內。 */
+async function checkAndIncrement(kv, key, limit, ttlSeconds) {
+  const count = await kvCount(kv, key);
+  if (count >= limit) return false;
+  await kv.put(key, String(count + 1), { expirationTtl: ttlSeconds });
+  return true;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -131,6 +151,16 @@ export default {
     if (url.pathname === "/api/login") {
       if (request.method !== "POST") return json({ error: "method not allowed" }, 405);
       if (missingConfig(env)) return json({ error: "server not configured" }, 500);
+      const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+      if (env.LOGIN_RATE_LIMIT) {
+        const withinMinuteLimit = await checkAndIncrement(
+          env.LOGIN_RATE_LIMIT, `min:${ip}`, LOGIN_WINDOW_LIMIT, LOGIN_WINDOW_TTL_SECONDS);
+        if (!withinMinuteLimit) return json({ error: "請求太頻密,請稍後再試" }, 429);
+        const failCount = await kvCount(env.LOGIN_RATE_LIMIT, `fail:${ip}`);
+        if (failCount >= LOGIN_FAIL_LIMIT) {
+          return json({ error: "錯誤次數過多,已暫時鎖定,請稍後再試" }, 429);
+        }
+      }
       let body;
       try {
         body = await request.json();
@@ -138,6 +168,11 @@ export default {
         return json({ error: "invalid body" }, 400);
       }
       if (!timingSafeEqual(String(body?.password ?? ""), env.MEMBER_PASSWORD)) {
+        if (env.LOGIN_RATE_LIMIT) {
+          const failCount = await kvCount(env.LOGIN_RATE_LIMIT, `fail:${ip}`);
+          await env.LOGIN_RATE_LIMIT.put(
+            `fail:${ip}`, String(failCount + 1), { expirationTtl: LOGIN_FAIL_TTL_SECONDS });
+        }
         return json({ error: "密碼錯誤" }, 401);
       }
       const token = await issueToken(env.SESSION_SECRET);
