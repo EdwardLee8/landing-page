@@ -13,19 +13,51 @@
  *   2. 之後所有受保護路徑(*.enc 等)都必須帶著有效 cookie,否則 401。
  *   3. POST /api/logout 清除 cookie。
  *
- * 尚未啟用 —— 部署方式與前端改動見 docs/server-auth.md。
+ * 資料來源(可選):若綁定了 R2 bucket(env.DATA_BUCKET,見
+ * wrangler.worker.jsonc 的 r2_buckets),受保護路徑會從 R2 讀取,不再
+ * 從隨 git 部署的靜態資產讀取 —— 這是解決「.enc 每次重新加密都是全新
+ * 內容、git 每天多存幾十 MB」的正解。沒有綁定 R2 時退回原本的靜態資產,
+ * 方便本機 `wrangler dev` 不需要先建好 bucket 就能測。
+ *
+ * 尚未啟用 —— 部署方式與前端改動見 docs/server-auth.md 與
+ * docs/r2-data-storage.md。
  */
 
 const SESSION_COOKIE = "member_session";
 const SESSION_TTL_SECONDS = 12 * 60 * 60; // 12 小時
 
+// hk-stocks-db.html 是免費頁,用頁面自帶的另一組密碼(不是會員密碼),
+// 不應該被這裡的 cookie 檢查擋下 —— 否則免費頁會連帶失效。
+const PUBLIC_ENC_PATHS = new Set(["/hk_stocks_data_orig.enc"]);
+
 /** 需要登入才能取得的路徑。 */
 function isProtected(pathname) {
+  if (PUBLIC_ENC_PATHS.has(pathname)) return false;
   return pathname.endsWith(".enc")
     || pathname.startsWith("/cn_irm_data/")
     || pathname.startsWith("/us_transcript_data/")
     || pathname.startsWith("/us_research_data/")
     || pathname.startsWith("/etf-report/data/");
+}
+
+/** R2 object key = 拿掉開頭的 "/"。目錄結構原封不動搬過去。 */
+function r2Key(pathname) {
+  return pathname.replace(/^\/+/, "");
+}
+
+async function serveProtected(request, env, pathname) {
+  if (!env.DATA_BUCKET) {
+    // 尚未接上 R2:退回舊行為,從靜態資產讀(本機開發、或 R2 遷移前的過渡期)。
+    return env.ASSETS.fetch(request);
+  }
+  const obj = await env.DATA_BUCKET.get(r2Key(pathname));
+  if (obj === null) return new Response("Not Found", { status: 404 });
+  const headers = new Headers();
+  obj.writeHttpMetadata(headers);
+  headers.set("etag", obj.httpEtag);
+  if (!headers.has("content-type")) headers.set("content-type", "text/plain; charset=utf-8");
+  headers.set("cache-control", "private, max-age=3600"); // 會員資料,不给共用快取存
+  return new Response(obj.body, { headers });
 }
 
 const encoder = new TextEncoder();
@@ -131,6 +163,7 @@ export default {
       if (missingConfig(env)) return json({ error: "server not configured" }, 500);
       const ok = await verifyToken(readCookie(request, SESSION_COOKIE), env.SESSION_SECRET);
       if (!ok) return json({ error: "需要登入" }, 401);
+      return serveProtected(request, env, url.pathname);
     }
 
     return env.ASSETS.fetch(request);

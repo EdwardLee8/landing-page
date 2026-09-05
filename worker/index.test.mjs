@@ -83,5 +83,38 @@ check('未設定 secret 時不放行', r.status === 500, `status=${r.status}`);
 r = await worker.fetch(new Request(`${B}/api/logout`, { method: 'POST' }), env);
 check('登出清除 cookie', /Max-Age=0/.test(r.headers.get('Set-Cookie') || ''));
 
+// ── 免費頁的資料檔不應被會員 cookie 檔住 ──────────────────────────
+// hk-stocks-db.html 用頁面自帶密碼(非會員密碼),不登入也該拿得到。
+r = await worker.fetch(new Request(`${B}/hk_stocks_data_orig.enc`), env);
+check('免費頁資料不需 cookie', r.status === 200 && (await r.text()) === 'ASSET',
+  `status=${r.status}`);
+
+// ── 接上 R2 之後,受保護路徑改從 R2 讀,不再走 ASSETS ──────────────
+const fakeBucket = {
+  store: new Map([['us_rs_latest.enc', 'r2-content']]),
+  async get(key) {
+    if (!this.store.has(key)) return null;
+    const body = this.store.get(key);
+    return {
+      body: new ReadableStream({
+        start(c) { c.enqueue(new TextEncoder().encode(body)); c.close(); },
+      }),
+      httpEtag: '"fake-etag"',
+      writeHttpMetadata() {},
+    };
+  },
+};
+const envWithR2 = { ...env, DATA_BUCKET: fakeBucket };
+
+r = await worker.fetch(new Request(`${B}/us_rs_latest.enc`, authed), envWithR2);
+check('接上 R2 後,登入可從 R2 取得資料',
+  r.status === 200 && (await r.text()) === 'r2-content', `status=${r.status}`);
+
+r = await worker.fetch(new Request(`${B}/us_rs_latest.enc`), envWithR2);
+check('接上 R2 後,未登入仍被擋', r.status === 401);
+
+r = await worker.fetch(new Request(`${B}/hk_rs_latest.enc`, authed), envWithR2);
+check('R2 裡不存在的物件回 404', r.status === 404, `status=${r.status}`);
+
 console.log(`\n${pass} 通過, ${fail} 失敗`);
 process.exit(fail ? 1 : 0);

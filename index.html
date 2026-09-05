@@ -41,6 +41,36 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/theme-2026-a.css?v=20260902-a2026">
+
+  <!-- 結構化資料:讓 Google 能理解「這是誰的網站」,有機會拿到
+       rich snippet(例如搜尋結果附帶的社群連結、網站名稱)。 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://ai10xpro.com/#website",
+        "url": "https://ai10xpro.com/",
+        "name": "Edward LEE｜發掘十倍股",
+        "description": "港股美股投資分析，深度財報解讀，精準捕捉市場先機。",
+        "inLanguage": "zh-Hant-HK",
+        "publisher": { "@id": "https://ai10xpro.com/#organization" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://ai10xpro.com/#organization",
+        "name": "Edward LEE｜發掘十倍股",
+        "url": "https://ai10xpro.com/",
+        "sameAs": [
+          "https://www.facebook.com/28investment",
+          "https://www.instagram.com/edwardleeten/",
+          "https://twitter.com/EdwardLee239412"
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body class="design-a26">
 

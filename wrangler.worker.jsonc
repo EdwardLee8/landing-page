@@ -8,6 +8,12 @@
   //   npx wrangler secret put MEMBER_PASSWORD      --config wrangler.worker.jsonc
   //   npx wrangler secret put MEMBER_DATA_PASSWORD --config wrangler.worker.jsonc
   //   npx wrangler secret put SESSION_SECRET       --config wrangler.worker.jsonc
+  //
+  // r2_buckets 是選用的:沒有這段設定時,worker/index.js 會自動退回
+  // 讀取靜態資產(現在的行為)。要解決「.enc 每天重新加密、git 每天
+  // 多存幾十 MB」的問題才需要建 bucket、接上這段 —— 見
+  // docs/r2-data-storage.md。
+  //   npx wrangler r2 bucket create landing-page-member-data
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "landing-page",
   "main": "worker/index.js",
@@ -17,5 +23,8 @@
   "assets": {
     "directory": ".",
     "binding": "ASSETS"
-  }
+  },
+  "r2_buckets": [
+    { "binding": "DATA_BUCKET", "bucket_name": "landing-page-member-data" }
+  ]
 }
