@@ -147,10 +147,30 @@ r = await worker.fetch(loginReq('wrong', '9.9.9.9'), envRateLimit);
 check('另一個 IP 唔受影響', r.status === 401, `status=${r.status}`);
 
 const kvFailLimit = fakeKv();
-await kvFailLimit.put('fail:5.5.5.5', '100');
+const nowMinute = Math.floor(Date.now() / 60000);
+await kvFailLimit.put('rl:5.5.5.5', JSON.stringify({ win: nowMinute, n: 0, f: 100 }));
 const envFailLimit = { ...env, LOGIN_RATE_LIMIT: kvFailLimit };
 r = await worker.fetch(loginReq('correct-horse', '5.5.5.5'), envFailLimit);
 check('24 小時內累計 100 次錯誤後,即使密碼啱都鎖住', r.status === 429, `status=${r.status}`);
+
+// 成功登入唔應該計入錯誤數,亦唔可以因為之前的分鐘窗口而被鎖
+const kvOldWindow = fakeKv();
+await kvOldWindow.put('rl:7.7.7.7', JSON.stringify({ win: nowMinute - 5, n: 10, f: 3 }));
+const envOldWindow = { ...env, LOGIN_RATE_LIMIT: kvOldWindow };
+r = await worker.fetch(loginReq('correct-horse', '7.7.7.7'), envOldWindow);
+check('上一分鐘的次數唔會殘留到新一分鐘', r.status === 200, `status=${r.status}`);
+const savedState = JSON.parse(await kvOldWindow.get('rl:7.7.7.7'));
+check('成功登入唔會增加錯誤計數', savedState.f === 3 && savedState.n === 1,
+  JSON.stringify(savedState));
+
+// KV 寫入必須交畀 ctx.waitUntil,唔可以阻塞回應
+let waited = 0;
+const ctx = { waitUntil(p) { waited++; return p; } };
+const kvCtx = fakeKv();
+r = await worker.fetch(loginReq('correct-horse', '8.8.8.8'),
+  { ...env, LOGIN_RATE_LIMIT: kvCtx }, ctx);
+check('登入成功且 KV 寫入交畀 waitUntil(唔阻塞回應)',
+  r.status === 200 && waited === 1, `status=${r.status} waitUntil=${waited}`);
 
 console.log(`\n${pass} 通過, ${fail} 失敗`);
 process.exit(fail ? 1 : 0);
