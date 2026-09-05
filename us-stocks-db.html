@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>美股2025Q4資料庫</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
@@ -142,6 +143,7 @@ td.num.na{color:#555}
   <li>避開困境股；投機股小心 momentum 散場</li>
 </ul>
 </div>
+<script src="js/member-auth.js"></script>
 <script>
 (function(){
   const KEY = "_help_seen_us-stocks";
@@ -169,7 +171,8 @@ td.num.na{color:#555}
 </div>
 
 <div class="page-header">
-  <a href="/" class="back-btn">&#8592; 返回主頁</a>
+  <a href="/" class="back-btn">&#8592; 返回首頁</a>
+  <a href="/login.html" class="back-btn">&#8592; 返回資料庫首頁</a>
   <div>
     <div class="page-title">美股2025Q4資料庫</div>
     <div class="page-subtitle">S&P500及主要美股 &middot; 共2,643隻 &middot; 數據截至2026年4月1日</div>
@@ -237,18 +240,17 @@ td.num.na{color:#555}
 <div class="pagination" id="pagination"></div>
 
 <script>
-const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
-async function _sha256(s) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-}
+// 密碼雜湊、SHA-256 與 AES-GCM 解密集中於 js/member-auth.js,
+// 避免同一段密碼學程式碼散落在十幾個頁面各自維護。
+const _PW_HASH = MemberAuth.PW_HASH;
+const _sha256 = MemberAuth.sha256;
 async function checkPassword() {
   const pw = document.getElementById('pw-input').value;
-  const h  = await _sha256(pw);
-  if (h === _PW_HASH) {
+  const dataPassword = await MemberAuth.login(pw);
+  if (dataPassword) {
     document.getElementById('pw-overlay').style.display = 'none';
     sessionStorage.setItem('unified_auth', '1');
-    sessionStorage.setItem('unified_auth_pw', pw);
+    sessionStorage.setItem('unified_auth_pw', dataPassword);
     await loadAndInit();
   } else {
     document.getElementById('pw-error').textContent = '密碼錯誤，請再試';
@@ -256,15 +258,18 @@ async function checkPassword() {
     document.getElementById('pw-input').focus();
   }
 }
-document.addEventListener('DOMContentLoaded', function() {
-  if (sessionStorage.getItem('unified_auth') === '1' && sessionStorage.getItem('unified_auth_pw')) {
+document.addEventListener('DOMContentLoaded', async function() {
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPassword();
+  });
+  // sessionStorage 只限本分頁;由書籤/新分頁進來時靠 cookie 回復登入
+  const pw = sessionStorage.getItem('unified_auth_pw') || await MemberAuth.resume() || '';
+  if (pw) {
     document.getElementById('pw-overlay').style.display = 'none';
     loadAndInit();
   } else {
+    sessionStorage.removeItem('unified_auth');
     document.getElementById('pw-input').focus();
-    document.getElementById('pw-input').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') checkPassword();
-    });
   }
 });
 
@@ -282,14 +287,10 @@ async function loadAndInit() {
   if (!pw) { console.error('US-stocks-db: no auth password in sessionStorage'); return; }
   try {
     const resp = await fetch('us_stocks_data.enc');
+    if (resp.status === 401) return MemberAuth.handleUnauthorized();
     const b64  = (await resp.text()).trim();
-    const raw  = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-    const salt = raw.slice(0,16), nonce = raw.slice(16,28), ct = raw.slice(28);
-    const km   = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
-    const key  = await crypto.subtle.deriveKey({name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"},
-      km, {name:"AES-GCM", length:256}, false, ["decrypt"]);
-    const pt   = await crypto.subtle.decrypt({name:"AES-GCM", iv:nonce}, key, ct);
-    RAW_DATA = JSON.parse(new TextDecoder().decode(pt));
+    // 解密實作集中於 js/member-auth.js
+    RAW_DATA = await MemberAuth.decrypt(b64, pw);
     filtered = [...RAW_DATA];
     initApp();
   } catch(e) {

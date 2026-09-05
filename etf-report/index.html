@@ -9,6 +9,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
        background: #f8fafc; color: #1e293b; font-size: 13px; }
 .header { background: linear-gradient(135deg, #1e3a5f, #1e40af); color: #fff; padding: 20px 32px; }
 .header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.header-nav { margin-top: 10px; }
+.header-nav a { display: inline-block; margin-right: 8px; color: #fff; font-size: 12px;
+                text-decoration: none; border: 1px solid rgba(255,255,255,.55);
+                padding: 5px 12px; border-radius: 4px; }
+.header-nav a:hover { background: rgba(255,255,255,.15); }
 .header p  { opacity: 0.8; font-size: 12px; }
 .method-box { background: #fff; border-left: 4px solid #3b82f6;
               margin: 16px 24px; padding: 12px 16px; border-radius: 4px;
@@ -113,6 +118,10 @@ td.aum  { color: #94a3b8; font-size: 11px; }
 <div class="header">
     <h1>ETF 一致性基準比較報告</h1>
     <p>生成時間：2026-04-20 04:55 &nbsp;|&nbsp; 資料來源：ClickHouse quant.daily_ohlcv</p>
+    <p class="header-nav">
+        <a href="/">&#8592; 返回首頁</a>
+        <a href="/login.html">&#8592; 返回資料庫首頁</a>
+    </p>
 </div>
 <div class="method-box">
     <strong>方法論：月份一致性評分（避免單月爆升扭曲結果）</strong><br>
@@ -240,18 +249,9 @@ td.aum  { color: #94a3b8; font-size: 11px; }
             <div class="period-section active" id="US-12M"></div><div class="period-section " id="US-6M"></div><div class="period-section " id="US-3M"></div><div class="period-section " id="US-1M"></div>
         </div>
 </div>
+<script src="../js/member-auth.js"></script>
 <script>window._ENCRYPTED = true;
-async function _decryptEnc(b64, password) {
-    const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-    const salt = raw.slice(0, 16), nonce = raw.slice(16, 28), ct = raw.slice(28);
-    const km = await crypto.subtle.importKey('raw',
-        new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
-    const key = await crypto.subtle.deriveKey(
-        {name:'PBKDF2', salt, iterations:100000, hash:'SHA-256'},
-        km, {name:'AES-GCM', length:256}, false, ['decrypt']);
-    const dec = await crypto.subtle.decrypt({name:'AES-GCM', iv:nonce}, key, ct);
-    return JSON.parse(new TextDecoder().decode(dec));
-}
+const _decryptEnc = (b64, pw) => MemberAuth.decrypt(b64, pw);
 
 function switchMarket(mkt) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.mkt === mkt));
@@ -397,6 +397,7 @@ async function loadPeriod(mkt, period) {
         section.innerHTML = '<div class="loading">載入中…</div>';
         if (window._ENCRYPTED) {
             const resp = await fetch(`data/${key}.enc`);
+            if (resp.status === 401) return MemberAuth.handleUnauthorized();
             const b64 = await resp.text();
             _cache[key] = await _decryptEnc(b64, _pw);
         } else {
@@ -442,24 +443,23 @@ function switchMarket(mkt) {
     if (period) loadPeriod(mkt, period).then(() => applyFilters(mkt));
 }
 
-const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
+// 密碼雜湊、SHA-256 與 AES-GCM 解密集中於 js/member-auth.js,
+// 避免同一段密碼學程式碼散落在十幾個頁面各自維護。
+const _PW_HASH = MemberAuth.PW_HASH;
 const _SESSION = "unified_auth";
 let _pw = sessionStorage.getItem("unified_auth_pw") || null;
-async function _sha256(s) {
-    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-}
+const _sha256 = MemberAuth.sha256;
 let _pwChecking = false;
 async function checkPw() {
     if (_pwChecking) return;
     _pwChecking = true;
     const val = document.getElementById("pw-input").value;
-    const h = await _sha256(val);
+    const dataPassword = await MemberAuth.login(val);
     _pwChecking = false;
-    if (h === _PW_HASH) {
-        _pw = val;
+    if (dataPassword) {
+        _pw = dataPassword;
         sessionStorage.setItem(_SESSION, "1");
-        sessionStorage.setItem("unified_auth_pw", val);
+        sessionStorage.setItem("unified_auth_pw", dataPassword);
         document.getElementById("pw-overlay").style.display = "none";
         document.getElementById("etf-app").style.display = "block";
         switchMarket("HK");
@@ -474,12 +474,17 @@ document.getElementById("pw-input").addEventListener("keydown", e => {
     if (e.key === "Enter") checkPw();
     document.getElementById("pw-error").textContent = "";
 });
-if (sessionStorage.getItem(_SESSION) === "1" && _pw) {
-    document.getElementById("pw-overlay").style.display = "none";
-    document.getElementById("etf-app").style.display = "block";
-    switchMarket("HK");
-} else if (sessionStorage.getItem(_SESSION) === "1") {
-    document.getElementById("pw-input").focus();
-}
+// sessionStorage 只限本分頁;由書籤/新分頁進來時靠 cookie 回復登入
+(async () => {
+    if (!_pw) _pw = await MemberAuth.resume(_SESSION);
+    if (_pw) {
+        document.getElementById("pw-overlay").style.display = "none";
+        document.getElementById("etf-app").style.display = "block";
+        switchMarket("HK");
+    } else {
+        sessionStorage.removeItem(_SESSION);
+        document.getElementById("pw-input").focus();
+    }
+})();
 </script>
 </body></html>

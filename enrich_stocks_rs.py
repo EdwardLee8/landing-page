@@ -30,13 +30,15 @@ from config.settings import (
 )
 import clickhouse_connect
 
+import enc_utils
+
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 
 HERE = Path(__file__).resolve().parent
-PW = "Inv-2604-H8rW"          # member password (RS rating, Weinstein, etc.)
+PW = enc_utils.get_password()  # 會員密碼(RS rating、Weinstein 等),見 .env.example
 PW_HKDB = "hkdb-free-2604"    # separate password for free hk-stocks-db page
 GROWTH_THRESHOLD = 10.0    # %
 

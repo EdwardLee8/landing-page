@@ -39,13 +39,28 @@ Disallow: /
 User-agent: Googlebot
 Allow: /
 Disallow: /etf-report/
+Disallow: /login.html
 Disallow: /hk-keywords.html
+Disallow: /hk-keywords-pro.html
 Disallow: /us-keywords.html
 Disallow: /cn-keywords.html
-Disallow: /hk-stocks-db.html
 Disallow: /us-stocks-db.html
+Disallow: /hk-stocks-pro.html
+Disallow: /hk-rs-rating.html
+Disallow: /us-rs-rating.html
+Disallow: /cn-rs-rating.html
+Disallow: /movers.html
+Disallow: /cn-irm-db.html
+Disallow: /us-transcript-db.html
+Disallow: /us-research-reports-db.html
+Disallow: /hk-h1-2026-db.html
+Disallow: /hk-h1-2026-industry-top3.html
 Disallow: /*.json
+Disallow: /*.enc
 
 User-agent: *
 Disallow: /etf-report/
 Disallow: /*.json
+Disallow: /*.enc
+
+Sitemap: https://ai10xpro.com/sitemap.xml

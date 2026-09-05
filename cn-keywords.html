@@ -8,7 +8,6 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>港</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="js/opencc.full.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
@@ -217,6 +216,7 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
   <li>用關鍵字 filter 倒過嚟睇邊啲公司有呢類業務</li>
 </ul>
 </div>
+<script src="js/member-auth.js"></script>
 <script>
 (function(){
   const KEY = "_help_seen_kw-cn";
@@ -246,7 +246,8 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 <!-- ── App ── -->
 <div id="app">
   <div class="page-header">
-    <a href="/" class="back-btn">← 返回首頁</a>
+    <a href="/" class="back-btn">&#8592; 返回首頁</a>
+    <a href="/login.html" class="back-btn">&#8592; 返回資料庫首頁</a>
     <div>
       <div class="page-title">A股關鍵字資料庫</div>
       <div class="page-subtitle">CN A-Share Business Keywords &amp; Correlation Clusters</div>
@@ -334,28 +335,18 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 
 <script>
 // ── Password ──────────────────────────────────────────────
-const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
+// 密碼雜湊、SHA-256 與 AES-GCM 解密集中於 js/member-auth.js,
+// 避免同一段密碼學程式碼散落在十幾個頁面各自維護。
+const _PW_HASH = MemberAuth.PW_HASH;
 const SESSION_KEY = "unified_auth";
 let _pw = sessionStorage.getItem(SESSION_KEY + "_pw") || "";
-async function _sha256(s) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-}
-async function _decryptEnc(b64, pw) {
-  const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-  const salt = raw.slice(0, 16), nonce = raw.slice(16, 28), ct = raw.slice(28);
-  const keyMat = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
-  const key = await crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" },
-    keyMat, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
-  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce }, key, ct);
-  return JSON.parse(new TextDecoder().decode(plain));
-}
+const _sha256 = MemberAuth.sha256;
+const _decryptEnc = (b64, pw) => MemberAuth.decrypt(b64, pw);
 async function checkPassword() {
   const raw = document.getElementById("pw-input").value;
-  const h = await _sha256(raw);
-  if (h === _PW_HASH) {
-    _pw = raw;
+  const dataPassword = await MemberAuth.login(raw);
+  if (dataPassword) {
+    _pw = dataPassword;
     sessionStorage.setItem(SESSION_KEY, "1");
     sessionStorage.setItem(SESSION_KEY + "_pw", _pw);
     document.getElementById("pw-overlay").style.display = "none";
@@ -372,13 +363,17 @@ document.getElementById("pw-input").addEventListener("keydown", e => {
   if (e.key === "Enter") checkPassword();
   document.getElementById("pw-error").textContent = "";
 });
-if (sessionStorage.getItem(SESSION_KEY) === "1" && _pw) {
-  document.getElementById("pw-overlay").style.display = "none";
-  document.getElementById("app").style.display = "block";
-  initApp();
-} else if (sessionStorage.getItem(SESSION_KEY) === "1" && !_pw) {
-  sessionStorage.removeItem(SESSION_KEY);
-}
+// sessionStorage 只限本分頁;由書籤/新分頁進來時靠 cookie 回復登入
+(async () => {
+  if (!_pw) _pw = await MemberAuth.resume(SESSION_KEY) || "";
+  if (_pw) {
+    document.getElementById("pw-overlay").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    initApp();
+  } else {
+    sessionStorage.removeItem(SESSION_KEY);
+  }
+})();
 
 // ── State ─────────────────────────────────────────────────
 let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {}, KW_TO_ZH = {}, SYM_TO_SUM = {}, SYM_TO_NZ = {}, SYM_TO_MCAP = {};
@@ -402,8 +397,27 @@ function deepConvertZh(node, conv) {
   return node;
 }
 
-function getConverter() {
+// opencc.full.js 有 1.1MB,原本在 <head> 同步載入,會擋住整頁解析 ——
+// 但它只在資料解密後做簡繁轉換時才用得到,登入畫面完全用不上。
+// 改為需要時才注入,並在開始下載資料時先行預載,兩者平行進行。
+let _openccLoading = null;
+function loadOpenCC() {
+  if (window.OpenCC) return Promise.resolve();
+  if (!_openccLoading) {
+    _openccLoading = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "js/opencc.full.js";
+      s.onload = resolve;
+      s.onerror = () => reject(new Error("opencc-js 載入失敗"));
+      document.head.appendChild(s);
+    });
+  }
+  return _openccLoading;
+}
+
+async function getConverter() {
   if (_convCn2Hk) return _convCn2Hk;
+  await loadOpenCC();
   if (typeof OpenCC === "undefined") throw new Error("opencc-js 未載入");
   _convCn2Hk = OpenCC.Converter({ from: "cn", to: "hk" });
   return _convCn2Hk;
@@ -491,15 +505,17 @@ function setZhMode(m) {
 }
 
 async function initApp() {
+  loadOpenCC().catch(() => {});   // 與資料下載平行,不阻塞
   try {
     const r = await fetch("cn_keywords_export.enc");
+    if (r.status === 401) return MemberAuth.handleUnauthorized();
     DB_CN = await _decryptEnc(await r.text(), _pw);
   } catch(e) {
     document.getElementById("stats-bar").innerHTML = `<span style="color:#ef5350">載入失敗: ${e.message}</span>`;
     return;
   }
   try {
-    DB_HK = deepConvertZh(DB_CN, getConverter());
+    DB_HK = deepConvertZh(DB_CN, await getConverter());
   } catch(e) {
     DB_HK = DB_CN; // fallback if opencc-js failed to load
     console.error("OpenCC 轉換失敗，使用簡體:", e);
@@ -537,9 +553,10 @@ function switchTab(tab) {
 async function loadCorrData() {
   try {
     const r = await fetch("cn_corr_clusters.enc");
+    if (r.status === 401) return MemberAuth.handleUnauthorized();
     CORR_CN = await _decryptEnc(await r.text(), _pw);
     try {
-      CORR_HK = deepConvertZh(CORR_CN, getConverter());
+      CORR_HK = deepConvertZh(CORR_CN, await getConverter());
     } catch(e) {
       CORR_HK = CORR_CN;
       console.error("OpenCC 轉換 corr 失敗:", e);
@@ -1056,6 +1073,7 @@ let THEMES_DATA = null, themesLoaded = false;
 async function loadThemesData() {
   try {
     const r = await fetch("cn_themes.enc");
+    if (r.status === 401) return MemberAuth.handleUnauthorized();
     THEMES_DATA = await _decryptEnc(await r.text(), _pw);
     themesLoaded = true;
     renderThemeView();

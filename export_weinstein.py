@@ -19,10 +19,15 @@ from config.settings import (CLICKHOUSE_HOST, CLICKHOUSE_PORT, CLICKHOUSE_DB,
 import clickhouse_connect
 import pandas as pd
 
+import enc_utils
+
+# 統一會員密碼,由環境變數 MEMBER_DATA_PASSWORD 提供。
+_PW = enc_utils.get_password()
+
 MARKETS = {
-    'US': dict(market='US', prefix='us_weinstein_latest', password='Inv-2604-H8rW'),
-    'HK': dict(market='HK', prefix='hk_weinstein_latest', password='Inv-2604-H8rW'),
-    'CN': dict(market='CN', prefix='cn_weinstein_latest', password='Inv-2604-H8rW'),
+    'US': dict(market='US', prefix='us_weinstein_latest', password=_PW),
+    'HK': dict(market='HK', prefix='hk_weinstein_latest', password=_PW),
+    'CN': dict(market='CN', prefix='cn_weinstein_latest', password=_PW),
 }
 
 OUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))

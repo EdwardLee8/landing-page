@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>港股相對強度評分</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
@@ -148,6 +149,7 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
 <p><b>訊號：</b> 🚀 早期突破（Stage 2 初期）&nbsp;·&nbsp; 📈 回調買入（Stage 2 均線附近）&nbsp;·&nbsp; ⚠️ 警告（Stage 3/3B）&nbsp;·&nbsp; 🚫 迴避（Stage 4）</p>
 <p><b>小貼士：</b>篩選 Stage 2 配合 Composite ≥ 81，效果最佳。</p>
 </div>
+<script src="js/member-auth.js"></script>
 <script>
 (function(){
   const KEY = "_help_seen_rs-hk";
@@ -175,7 +177,8 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
 </div>
 
 <div class="page-header">
-  <a href="/" class="back-btn">&#8592; 返回主頁</a>
+  <a href="/" class="back-btn">&#8592; 返回首頁</a>
+  <a href="/login.html" class="back-btn">&#8592; 返回資料庫首頁</a>
   <div>
     <div class="page-title">港股相對強度評分</div>
     <div class="page-subtitle" id="data-date">載入中&#8230;</div>
@@ -338,17 +341,16 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
 <div class="pagination" id="pagination"></div>
 
 <script>
-const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591"; // member password (login.html)
-async function _sha256(s) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-}
+// 密碼雜湊、SHA-256 與 AES-GCM 解密集中於 js/member-auth.js,
+// 避免同一段密碼學程式碼散落在十幾個頁面各自維護。
+const _PW_HASH = MemberAuth.PW_HASH;
+const _sha256 = MemberAuth.sha256;
 async function checkPassword() {
-  const h = await _sha256(document.getElementById('pw-input').value);
-  if (h === _PW_HASH) {
+  const dataPassword = await MemberAuth.login(document.getElementById('pw-input').value);
+  if (dataPassword) {
     document.getElementById('pw-overlay').style.display = 'none';
     sessionStorage.setItem('unified_auth', '1');
-    sessionStorage.setItem('unified_auth_pw', document.getElementById('pw-input').value);
+    sessionStorage.setItem('unified_auth_pw', dataPassword);
     await loadData();
   } else {
     document.getElementById('pw-error').textContent = '密碼錯誤，請再試';
@@ -356,47 +358,31 @@ async function checkPassword() {
     document.getElementById('pw-input').focus();
   }
 }
-document.addEventListener('DOMContentLoaded', function() {
-  if (sessionStorage.getItem('unified_auth') === '1') {
+document.addEventListener('DOMContentLoaded', async function() {
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPassword();
+  });
+  // sessionStorage 只限本分頁;由書籤/新分頁進來時靠 cookie 回復登入
+  const pw = sessionStorage.getItem('unified_auth_pw') || await MemberAuth.resume() || '';
+  if (pw) {
     document.getElementById('pw-overlay').style.display = 'none';
     loadData();
   } else {
+    sessionStorage.removeItem('unified_auth');
     document.getElementById('pw-input').focus();
-    document.getElementById('pw-input').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') checkPassword();
-    });
   }
 });
 
 // ── Decryption (PBKDF2 + AES-256-GCM) ─────────────────────────────────────
 // ENC_PASS read from sessionStorage (set by login.html or this page after auth)
 function _getEncPass(){ return sessionStorage.getItem("unified_auth_pw") || ""; }
-async function deriveKey(password, salt) {
-  const keyMaterial = await crypto.subtle.importKey(
-    "raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]
-  );
-  return crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt, iterations: 100_000, hash: "SHA-256" },
-    keyMaterial,
-    { name: "AES-GCM", length: 256 },
-    false,
-    ["decrypt"]
-  );
-}
 
-async function decryptAsset(b64Data) {
-  const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
-  const salt = raw.slice(0, 16);
-  const nonce = raw.slice(16, 28);
-  const ct     = raw.slice(28);
-  const key    = await deriveKey(_getEncPass(), salt);
-  const pt     = await crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce }, key, ct);
-  return JSON.parse(new TextDecoder().decode(pt));
-}
+const decryptAsset = (b64) => MemberAuth.decrypt(b64);
 
 async function loadData() {
   try {
     const resp = await fetch('hk_rs_latest.enc');
+    if (resp.status === 401) return MemberAuth.handleUnauthorized();
     const b64  = await resp.text();
     const data  = await decryptAsset(b64.trim());
 

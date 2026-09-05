@@ -26,10 +26,10 @@ from collections import defaultdict
 GOOGLE_SHEET_ID = "1S7KMB3Ke4X4lN3RN-0Z1TrpAGxSfraKKhM3W-68NApA"
 GID = 1  # portfolio sheet
 
-DISCORD_WEBHOOK = os.environ.get(
-    "DISCORD_PORTFOLIO_WEBHOOK_URL",
-    "https://discord.com/api/webhooks/1511780931302723628/GWs3dTmZz1fhvvzfMJ6Ha2tjzYugLgK4ZxG49lnkCYr58ZXLZmWJ1ZzXv9oQ3wmknB_Q",
-)
+# Webhook 一律由環境變數提供,不得寫死在檔案中(本 repo 為 public)。
+DISCORD_WEBHOOK = os.environ.get("DISCORD_PORTFOLIO_WEBHOOK_URL")
+if not DISCORD_WEBHOOK:
+    sys.exit("錯誤:未設定環境變數 DISCORD_PORTFOLIO_WEBHOOK_URL,參考 .env.example。")
 
 # ClickHouse config from quant-db settings
 sys.path.insert(0, "/mnt/p/Shared/code/quant-db")

@@ -1,25 +1,47 @@
-# Netlify deployment configuration
+# Netlify 部署設定。
+# Cloudflare(Workers Assets / Pages)讀的是 _headers —— 兩份必須保持一致,
+# 修改其中一份時請同步另一份。
 
 [build]
-  publish = "."    # root of repo is the site
+  publish = "."    # repo 根目錄即網站根目錄
+
+# 注意:publish 目錄等於 repo 根目錄,所以任何被 git 追蹤的檔案都會對外
+# 提供下載。加密前的明文資料因此不可進入 git(見 .gitignore)。
 
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options        = "DENY"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy        = "strict-origin-when-cross-origin"
-    Permissions-Policy     = "camera=(), microphone=(), geolocation=()"
+    X-Frame-Options         = "DENY"
+    X-Content-Type-Options  = "nosniff"
+    Referrer-Policy         = "strict-origin-when-cross-origin"
+    Permissions-Policy      = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/css/*"
   [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+    Cache-Control = "public, max-age=300, stale-while-revalidate=86400"
 
 [[headers]]
   for = "/js/*"
   [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+    Cache-Control = "public, max-age=300, stale-while-revalidate=86400"
+
+# 第三方函式庫不會變動,直接長快取
+[[headers]]
+  for = "/js/opencc.full.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/hk-top100-reports/vendor/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "/assets/*"
@@ -27,12 +49,56 @@
     Cache-Control = "public, max-age=604800"
 
 [[headers]]
-  for = "/*.html"
+  for = "/web_data.json"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Redirect all 404s back to index (SPA-friendly, optional)
-# [[redirects]]
-#   from   = "/*"
-#   to     = "/index.html"
-#   status = 200
+# 加密資料:每日更新,一小時快取足夠
+[[headers]]
+  for = "/*.enc"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    X-Robots-Tag  = "noindex, noai, noimageai"
+    Content-Type  = "text/plain; charset=utf-8"
+
+[[headers]]
+  for = "/cn_irm_data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    X-Robots-Tag  = "noindex, noai, noimageai"
+    Content-Type  = "text/plain; charset=utf-8"
+
+[[headers]]
+  for = "/us_transcript_data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    X-Robots-Tag  = "noindex, noai, noimageai"
+    Content-Type  = "text/plain; charset=utf-8"
+
+[[headers]]
+  for = "/us_research_data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    X-Robots-Tag  = "noindex, noai, noimageai"
+    Content-Type  = "text/plain; charset=utf-8"
+
+[[headers]]
+  for = "/etf-report/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    X-Robots-Tag  = "noindex, noai, noimageai"
+
+[[headers]]
+  for = "/etf-report/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, noai"
+
+[[headers]]
+  for = "/*.json"
+  [headers.values]
+    X-Robots-Tag = "noindex, noai"
+
+[[redirects]]
+  from   = "/*"
+  to     = "/404.html"
+  status = 404

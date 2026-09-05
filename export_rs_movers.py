@@ -20,17 +20,21 @@ from config.settings import (
 import clickhouse_connect
 import pandas as pd
 
+import enc_utils
+
+
+# 統一會員密碼 —— 與 login.html / RS rating 檔相同,由環境變數提供。
+_PW = enc_utils.get_password()
 
 MARKETS = {
-    # Unified member password — same as login.html / RS rating files.
     'US': dict(market='US', movers='us_rs_movers', rs='us_rs_rating',
-               currency='USD', password='Inv-2604-H8rW',
+               currency='USD', password=_PW,
                output_prefix='us_rs_movers'),
     'HK': dict(market='HK', movers='hk_rs_movers', rs='hk_rs_rating',
-               currency='HKD', password='Inv-2604-H8rW',
+               currency='HKD', password=_PW,
                output_prefix='hk_rs_movers'),
     'CN': dict(market='CN', movers='cn_rs_movers', rs='cn_rs_rating',
-               currency='CNY', password='Inv-2604-H8rW',
+               currency='CNY', password=_PW,
                output_prefix='cn_rs_movers'),
 }
 

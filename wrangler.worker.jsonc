@@ -1,0 +1,40 @@
+{
+  // 伺服器端會員授權版本的部署設定。目前站上使用的是 wrangler.jsonc
+  // (純靜態,無授權);要切換到本設定請先讀 docs/server-auth.md。
+  //
+  //   npx wrangler deploy --config wrangler.worker.jsonc
+  //
+  // 部署前必須先設定三個 secret:
+  //   npx wrangler secret put MEMBER_PASSWORD      --config wrangler.worker.jsonc
+  //   npx wrangler secret put MEMBER_DATA_PASSWORD --config wrangler.worker.jsonc
+  //   npx wrangler secret put SESSION_SECRET       --config wrangler.worker.jsonc
+  //
+  // r2_buckets 是選用的:沒有這段設定時,worker/index.js 會自動退回
+  // 讀取靜態資產(現在的行為)。要解決「.enc 每天重新加密、git 每天
+  // 多存幾十 MB」的問題才需要建 bucket、接上這段 —— 見
+  // docs/r2-data-storage.md。
+  //   npx wrangler r2 bucket create landing-page-member-data
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "landing-page",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-04-22",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "kv_namespaces": [
+    { "binding": "LOGIN_RATE_LIMIT", "id": "b77c3a35755e4384828205d3300d71ff" }
+  ],
+  // 每分鐘上限用 Cloudflare 原生節流(喺邊緣強制執行,幾乎零延遲)。
+  // 用 KV 做呢件事會慢 0.6 秒以上,改成背景寫入又會因為最終一致而擋唔到連發。
+  "ratelimits": [
+    {
+      "name": "LOGIN_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 10, "period": 60 }
+    }
+  ]
+}

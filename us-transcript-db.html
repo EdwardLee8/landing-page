@@ -230,6 +230,7 @@ tbody tr.row-neutral{border-left:3px solid #444}
   <li>Search 關鍵字 → 揾邊啲公司提到（例：搜「AI infrastructure」）</li>
 </ul>
 </div>
+<script src="js/member-auth.js"></script>
 <script>
 (function(){
   const KEY = "_help_seen_us-transcript";
@@ -256,7 +257,8 @@ tbody tr.row-neutral{border-left:3px solid #444}
 </div>
 
 <div class="page-header">
-  <a href="/login.html" class="back-btn">&#8592; 返回入口</a>
+  <a href="/" class="back-btn">&#8592; 返回首頁</a>
+  <a href="/login.html" class="back-btn">&#8592; 返回資料庫首頁</a>
   <div>
     <div class="page-title">美股業績電話會議資料庫</div>
     <div class="page-subtitle" id="page-subtitle">載入中…</div>
@@ -367,7 +369,9 @@ tbody tr.row-neutral{border-left:3px solid #444}
 </div>
 
 <script>
-const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
+// 密碼雜湊、SHA-256 與 AES-GCM 解密集中於 js/member-auth.js,
+// 避免同一段密碼學程式碼散落在十幾個頁面各自維護。
+const _PW_HASH = MemberAuth.PW_HASH;
 
 // ── State ────────────────────────────────────────────────────────────────────
 let ALL = [], filtered = [];
@@ -380,33 +384,20 @@ let fRS75 = false, fSig70 = false, fNewThemes = false;
 let _sectors = [];
 
 // ── Crypto ───────────────────────────────────────────────────────────────────
-async function _sha256(s) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-}
+const _sha256 = MemberAuth.sha256;
 
-async function _decryptEnc(b64, pw) {
-  const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-  const salt = raw.slice(0,16), nonce = raw.slice(16,28), ct = raw.slice(28);
-  const km = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw),
-    "PBKDF2", false, ["deriveKey"]);
-  const key = await crypto.subtle.deriveKey(
-    {name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"},
-    km, {name:"AES-GCM", length:256}, false, ["decrypt"]);
-  const plain = await crypto.subtle.decrypt({name:"AES-GCM", iv:nonce}, key, ct);
-  return JSON.parse(new TextDecoder().decode(plain));
-}
+const _decryptEnc = (b64, pw) => MemberAuth.decrypt(b64, pw);
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
 async function checkPassword() {
   const pw = document.getElementById("pw-input").value;
   if (!pw) return;
-  const h = await _sha256(pw);
-  if (h === _PW_HASH) {
+  const dataPassword = await MemberAuth.login(pw);
+  if (dataPassword) {
     document.getElementById("pw-overlay").style.display = "none";
     sessionStorage.setItem("unified_auth", "1");
-    sessionStorage.setItem("unified_auth_pw", pw);
-    loadAndInit(pw);
+    sessionStorage.setItem("unified_auth_pw", dataPassword);
+    loadAndInit(dataPassword);
   } else {
     document.getElementById("pw-error").textContent = "密碼錯誤，請再試";
     document.getElementById("pw-input").value = "";
@@ -414,19 +405,18 @@ async function checkPassword() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
   document.getElementById("pw-input").addEventListener("keydown", e => {
     if (e.key === "Enter") checkPassword();
     document.getElementById("pw-error").textContent = "";
   });
-  const pw = sessionStorage.getItem("unified_auth_pw") || "";
-  if (sessionStorage.getItem("unified_auth") === "1" && pw) {
+  // sessionStorage 只限本分頁;由書籤/新分頁進來時靠 cookie 回復登入
+  const pw = sessionStorage.getItem("unified_auth_pw") || await MemberAuth.resume() || "";
+  if (pw) {
     document.getElementById("pw-overlay").style.display = "none";
     loadAndInit(pw);
-  } else if (sessionStorage.getItem("unified_auth") === "1" && !pw) {
-    sessionStorage.removeItem("unified_auth");
-    document.getElementById("pw-input").focus();
   } else {
+    sessionStorage.removeItem("unified_auth");
     document.getElementById("pw-input").focus();
   }
 });
@@ -436,6 +426,7 @@ async function loadAndInit(pw) {
   _pw = pw;
   try {
     const r = await fetch("us_transcript_index.enc?" + Date.now());
+    if (r.status === 401) return MemberAuth.handleUnauthorized();
     if (!r.ok) throw new Error("HTTP " + r.status);
     ALL = await _decryptEnc(await r.text(), pw);
     buildSectorOptions();
@@ -676,6 +667,7 @@ async function openStock(symbol, name, sector, quarter) {
   if (!detailCache[symbol]) {
     try {
       const r = await fetch(`us_transcript_data/${symbol}.enc`);
+      if (r.status === 401) return MemberAuth.handleUnauthorized();
       if (!r.ok) throw new Error("HTTP " + r.status);
       detailCache[symbol] = await _decryptEnc(await r.text(), _pw);
     } catch(e) {

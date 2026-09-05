@@ -208,21 +208,21 @@ a:hover{text-decoration:underline}
   </div>
 </div>
 
+<script src="js/member-auth.js"></script>
 <script>
-const _PW_HASH = "d1bf68d365e3d8caa4968fc2b53d5f788534b511c6d2b59c67937d36abd3d591";
+// 密碼雜湊、SHA-256 與 AES-GCM 解密集中於 js/member-auth.js,
+// 避免同一段密碼學程式碼散落在十幾個頁面各自維護。
+const _PW_HASH = MemberAuth.PW_HASH;
 
-async function _sha256(s) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
-}
+const _sha256 = MemberAuth.sha256;
 
 async function checkPassword() {
   const val = document.getElementById("pw-input").value;
   if (!val) return;
-  const h = await _sha256(val);
-  if (h === _PW_HASH) {
+  const dataPassword = await MemberAuth.login(val);
+  if (dataPassword) {
     sessionStorage.setItem("unified_auth", "1");
-    sessionStorage.setItem("unified_auth_pw", val);
+    sessionStorage.setItem("unified_auth_pw", dataPassword);
     showDashboard();
   } else {
     document.getElementById("pw-error").textContent = "密碼錯誤，請再試";
@@ -240,6 +240,7 @@ function showDashboard() {
 }
 
 function logout() {
+  MemberAuth.logoutRemote();
   sessionStorage.removeItem("unified_auth");
   sessionStorage.removeItem("unified_auth_pw");
   location.reload();
@@ -255,6 +256,8 @@ if (sessionStorage.getItem("unified_auth") === "1") {
   showDashboard();
 } else {
   document.getElementById("pw-input").focus();
+  // cookie 仍然有效(12 小時內)就直接入,唔使再打密碼
+  MemberAuth.resume().then(pw => { if (pw) showDashboard(); });
 }
 </script>
 </body>

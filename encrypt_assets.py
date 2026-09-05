@@ -1,44 +1,43 @@
-"""
-Encrypt JSON data files with AES-256-GCM (PBKDF2, 100k iterations).
-Output: same filename with .enc extension.
-"""
-import base64, json, os, sys
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+"""把明文 JSON 資料加密成 .enc(AES-256-GCM + PBKDF2 100k)。
 
-def encrypt_file(path, password):
-    with open(path, "rb") as f:
-        plaintext = f.read()
-    salt = os.urandom(16)
-    nonce = os.urandom(12)
-    kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt, iterations=100_000)
-    key = kdf.derive(password.encode())
-    ct = AESGCM(key).encrypt(nonce, plaintext, None)
-    enc = base64.b64encode(salt + nonce + ct).decode()
-    out = path.replace(".json", ".enc")
-    with open(out, "w") as f:
-        f.write(enc)
-    orig_kb = len(plaintext) / 1024
-    enc_kb = len(enc) / 1024
-    print(f"  {os.path.basename(path)} ({orig_kb:.0f}KB) → {os.path.basename(out)} ({enc_kb:.0f}KB)")
+密碼由環境變數 MEMBER_DATA_PASSWORD 提供(見 .env.example),
+絕不可寫死在檔案中 —— 本 repo 為 public。
 
+用法:
+    export MEMBER_DATA_PASSWORD='...'
+    python encrypt_assets.py
+"""
+import os
+
+import enc_utils
+
+# 會員資料:登入後 login.html 會把原始密碼存進 sessionStorage,
+# 各子頁再讀出來解密這些檔案。
 FILES = [
-    # Unified member password — see login.html. After member logs in, the
-    # raw password is stored in sessionStorage and read by every sub-page.
-    ("hk_keywords_export.json",  "Inv-2604-H8rW"),
-    ("hk_corr_clusters.json",    "Inv-2604-H8rW"),
-    ("us_keywords_export.json",  "Inv-2604-H8rW"),
-    ("us_corr_clusters_v2.json", "Inv-2604-H8rW"),
-    ("cn_keywords_export.json",  "Inv-2604-H8rW"),
-    ("cn_corr_clusters.json",    "Inv-2604-H8rW"),
-    ("us_rs_latest.json",        "Inv-2604-H8rW"),
-    ("hk_rs_latest.json",        "Inv-2604-H8rW"),
-    ("cn_rs_latest.json",        "Inv-2604-H8rW"),
+    "hk_keywords_export.json",
+    "hk_corr_clusters.json",
+    "us_keywords_export.json",
+    "us_corr_clusters_v2.json",
+    "cn_keywords_export.json",
+    "cn_corr_clusters.json",
+    "us_rs_latest.json",
+    "hk_rs_latest.json",
+    "cn_rs_latest.json",
 ]
 
-base = os.path.dirname(os.path.abspath(__file__))
-print("Encrypting assets...")
-for fname, pw in FILES:
-    encrypt_file(os.path.join(base, fname), pw)
-print("Done.")
+
+def main():
+    password = enc_utils.get_password()
+    base = os.path.dirname(os.path.abspath(__file__))
+    print("Encrypting assets...")
+    for fname in FILES:
+        src = os.path.join(base, fname)
+        dst = src.replace(".json", ".enc")
+        enc_utils.encrypt_file(src, dst, password)
+        print(f"  {fname} ({os.path.getsize(src)/1024:.0f}KB)"
+              f" → {os.path.basename(dst)} ({os.path.getsize(dst)/1024:.0f}KB)")
+    print("Done.")
+
+
+if __name__ == "__main__":
+    main()
