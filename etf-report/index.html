@@ -9,6 +9,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
        background: #f8fafc; color: #1e293b; font-size: 13px; }
 .header { background: linear-gradient(135deg, #1e3a5f, #1e40af); color: #fff; padding: 20px 32px; }
 .header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.header-nav { margin-top: 10px; }
+.header-nav a { display: inline-block; margin-right: 8px; color: #fff; font-size: 12px;
+                text-decoration: none; border: 1px solid rgba(255,255,255,.55);
+                padding: 5px 12px; border-radius: 4px; }
+.header-nav a:hover { background: rgba(255,255,255,.15); }
 .header p  { opacity: 0.8; font-size: 12px; }
 .method-box { background: #fff; border-left: 4px solid #3b82f6;
               margin: 16px 24px; padding: 12px 16px; border-radius: 4px;
@@ -113,6 +118,10 @@ td.aum  { color: #94a3b8; font-size: 11px; }
 <div class="header">
     <h1>ETF 一致性基準比較報告</h1>
     <p>生成時間：2026-04-20 04:55 &nbsp;|&nbsp; 資料來源：ClickHouse quant.daily_ohlcv</p>
+    <p class="header-nav">
+        <a href="/">&#8592; 返回首頁</a>
+        <a href="/login.html">&#8592; 返回資料庫首頁</a>
+    </p>
 </div>
 <div class="method-box">
     <strong>方法論：月份一致性評分（避免單月爆升扭曲結果）</strong><br>
