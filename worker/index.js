@@ -124,31 +124,31 @@ function missingConfig(env) {
   return !env.MEMBER_PASSWORD || !env.SESSION_SECRET;
 }
 
-// /api/login 節流:同一 IP 每分鐘最多 10 次請求,24 小時內累計 100 次
-// 密碼錯誤就暫時鎖住。冇綁 LOGIN_RATE_LIMIT(KV)時整段跳過,行為等同未加此功能前。
-//
-// 一個 IP 只用一條 KV 記錄 {win,n,f},所以每次登入只需要一次 KV 讀取;
-// 寫入交畀 ctx.waitUntil() 喺回應之後喺背景做 —— KV 寫入要 0.6 秒以上,
-// 擺喺關鍵路徑上會令每次登入都慢成倍。
-const LOGIN_WINDOW_LIMIT = 10;
+// /api/login 節流,分兩層:
+//   1. 每分鐘 10 次 —— 用 Cloudflare 原生節流器(env.LOGIN_LIMITER),喺邊緣
+//      即時判斷。之前用 KV 做:阻塞寫入會令每次登入慢 0.6 秒以上,改成背景
+//      寫入又會因為 KV 最終一致而擋唔到連發,兩邊都唔work。
+//   2. 24 小時累計 100 次密碼錯誤就鎖住 —— 用 KV(env.LOGIN_RATE_LIMIT),
+//      只喺登入時讀一次,而且淨係密碼錯先寫,寫入交畀 ctx.waitUntil()。
+//      登入成功嘅路徑完全冇 KV 寫入。
+// 兩個 binding 都係冇綁就跳過,行為等同未加此功能前。
 const LOGIN_FAIL_LIMIT = 100;
 const LOGIN_STATE_TTL_SECONDS = 24 * 60 * 60;
 
 const rateKey = (ip) => `rl:${ip}`;
 
-/** 讀取節流狀態:win=第幾分鐘、n=該分鐘內次數、f=24 小時內錯誤次數。 */
+/** 讀取該 IP 24 小時內的密碼錯誤次數。 */
 async function readRateState(kv, ip) {
   const raw = await kv.get(rateKey(ip));
-  if (!raw) return { win: 0, n: 0, f: 0 };
+  if (!raw) return { f: 0 };
   try {
-    const v = JSON.parse(raw);
-    return { win: v.win | 0, n: v.n | 0, f: v.f | 0 };
+    return { f: JSON.parse(raw).f | 0 };
   } catch {
-    return { win: 0, n: 0, f: 0 };
+    return { f: 0 };
   }
 }
 
-/** 寫回節流狀態。有 ctx 就唔阻塞回應,冇(測試環境)就直接等佢完成。 */
+/** 寫回錯誤次數。有 ctx 就唔阻塞回應,冇(測試環境)就直接等佢完成。 */
 function saveRateState(ctx, kv, ip, state) {
   const writing = kv.put(rateKey(ip), JSON.stringify(state), {
     expirationTtl: LOGIN_STATE_TTL_SECONDS,
@@ -168,19 +168,18 @@ export default {
       if (request.method !== "POST") return json({ error: "method not allowed" }, 405);
       if (missingConfig(env)) return json({ error: "server not configured" }, 500);
       const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+      // 每分鐘上限:原生節流器喺邊緣即時判斷,唔使等 KV。
+      if (env.LOGIN_LIMITER) {
+        const { success } = await env.LOGIN_LIMITER.limit({ key: ip });
+        if (!success) return json({ error: "請求太頻密,請稍後再試" }, 429);
+      }
       const kv = env.LOGIN_RATE_LIMIT;
       let state = null;
       if (kv) {
-        const minute = Math.floor(Date.now() / 60000);
         state = await readRateState(kv, ip);
-        if (state.win !== minute) { state.win = minute; state.n = 0; }
-        if (state.n >= LOGIN_WINDOW_LIMIT) {
-          return json({ error: "請求太頻密,請稍後再試" }, 429);
-        }
         if (state.f >= LOGIN_FAIL_LIMIT) {
           return json({ error: "錯誤次數過多,已暫時鎖定,請稍後再試" }, 429);
         }
-        state.n += 1;
       }
       let body;
       try {
@@ -195,10 +194,6 @@ export default {
           if (pending) await pending;
         }
         return json({ error: "密碼錯誤" }, 401);
-      }
-      if (kv) {
-        const pending = saveRateState(ctx, kv, ip, state);
-        if (pending) await pending;
       }
       const token = await issueToken(env.SESSION_SECRET);
       return json(

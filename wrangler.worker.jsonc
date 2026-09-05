@@ -27,5 +27,14 @@
   },
   "kv_namespaces": [
     { "binding": "LOGIN_RATE_LIMIT", "id": "b77c3a35755e4384828205d3300d71ff" }
+  ],
+  // 每分鐘上限用 Cloudflare 原生節流(喺邊緣強制執行,幾乎零延遲)。
+  // 用 KV 做呢件事會慢 0.6 秒以上,改成背景寫入又會因為最終一致而擋唔到連發。
+  "ratelimits": [
+    {
+      "name": "LOGIN_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 10, "period": 60 }
+    }
   ]
 }
