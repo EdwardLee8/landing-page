@@ -22,7 +22,8 @@
   "observability": { "enabled": true },
   "assets": {
     "directory": ".",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    "run_worker_first": true
   },
   "r2_buckets": [
     { "binding": "DATA_BUCKET", "bucket_name": "landing-page-member-data" }
