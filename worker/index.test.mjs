@@ -52,7 +52,14 @@ r = await worker.fetch(new Request(`${B}/us_rs_latest.enc`, authed), env);
 check('登入後可取 .enc', r.status === 200 && (await r.text()) === 'ASSET');
 
 r = await worker.fetch(new Request(`${B}/api/session`, authed), env);
-check('session 端點回報已登入', (await r.json()).authenticated === true);
+const sess = await r.json();
+check('session 端點回報已登入', sess.authenticated === true);
+check('session 端點回傳解密密碼(新分頁免再輸入)', sess.dataPassword === 'aes-pw-xyz');
+
+r = await worker.fetch(new Request(`${B}/api/session`), env);
+const anonSess = await r.json();
+check('未登入的 session 端點唔會漏解密密碼',
+  anonSess.authenticated === false && anonSess.dataPassword === undefined);
 
 // 竄改簽章
 const tampered = { headers: { Cookie: `member_session=${token.slice(0, -3)}xyz` } };

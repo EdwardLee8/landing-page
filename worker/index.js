@@ -191,7 +191,13 @@ export default {
     if (url.pathname === "/api/session") {
       if (missingConfig(env)) return json({ authenticated: false }, 200);
       const ok = await verifyToken(readCookie(request, SESSION_COOKIE), env.SESSION_SECRET);
-      return json({ authenticated: ok });
+      // 已持有有效 cookie 的人本來就可以直接下載 .enc,所以一併給回解密
+      // 密碼 —— 新分頁/書籤直接開內頁時就唔使再叫一次密碼。
+      if (!ok) return json({ authenticated: false });
+      return json({
+        authenticated: true,
+        dataPassword: env.MEMBER_DATA_PASSWORD || env.MEMBER_PASSWORD,
+      });
     }
 
     if (isProtected(url.pathname)) {

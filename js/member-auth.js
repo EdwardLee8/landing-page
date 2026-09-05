@@ -62,6 +62,25 @@
     }
   }
 
+  /**
+   * 用瀏覽器已有的 session cookie 回復登入狀態(唔使再輸入密碼)。
+   * sessionStorage 只活喺同一個分頁,所以由書籤/新分頁直接開內頁時
+   * 係空的;cookie 仍然有效就喺呢度取回解密密碼並寫返 sessionStorage。
+   * 回傳解密密碼,未登入回傳 null。
+   */
+  async function resume(sessionKey) {
+    try {
+      var resp = await fetch("/api/session", { credentials: "same-origin" });
+      if (!resp.ok) return null;
+      var body = await resp.json();
+      if (!body.authenticated || !body.dataPassword) return null;
+      store(body.dataPassword, sessionKey);
+      return body.dataPassword;
+    } catch (e) {
+      return null;
+    }
+  }
+
   /** 清除伺服器 session cookie。 */
   async function logoutRemote() {
     try {
@@ -189,6 +208,7 @@
     sha256: sha256,
     verify: verify,
     login: login,
+    resume: resume,
     logoutRemote: logoutRemote,
     handleUnauthorized: handleUnauthorized,
     password: password,

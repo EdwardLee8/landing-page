@@ -213,19 +213,18 @@ async function checkPassword() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-  const pw = sessionStorage.getItem("unified_auth_pw") || "";
-  if (sessionStorage.getItem("unified_auth") === "1" && pw) {
+document.addEventListener("DOMContentLoaded", async function() {
+  document.getElementById("pw-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") checkPassword();
+  });
+  // sessionStorage 只限本分頁;由書籤/新分頁進來時靠 cookie 回復登入
+  const pw = sessionStorage.getItem("unified_auth_pw") || await MemberAuth.resume() || "";
+  if (pw) {
     document.getElementById("pw-overlay").style.display = "none";
     loadAndInit(pw);
-  } else if (sessionStorage.getItem("unified_auth") === "1" && !pw) {
+  } else {
     sessionStorage.removeItem("unified_auth");
     document.getElementById("pw-input").focus();
-  } else {
-    document.getElementById("pw-input").focus();
-    document.getElementById("pw-input").addEventListener("keydown", e => {
-      if (e.key === "Enter") checkPassword();
-    });
   }
 });
 

@@ -256,6 +256,8 @@ if (sessionStorage.getItem("unified_auth") === "1") {
   showDashboard();
 } else {
   document.getElementById("pw-input").focus();
+  // cookie 仍然有效(12 小時內)就直接入,唔使再打密碼
+  MemberAuth.resume().then(pw => { if (pw) showDashboard(); });
 }
 </script>
 </body>

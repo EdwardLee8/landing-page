@@ -45,13 +45,17 @@ document.getElementById("pw-input").addEventListener("keydown", e => {
   if (e.key === "Enter") checkPassword();
   document.getElementById("pw-error").textContent = "";
 });
-if (sessionStorage.getItem(SESSION_KEY) === "1" && _pw) {
-  document.getElementById("pw-overlay").style.display = "none";
-  document.getElementById("app").style.display = "block";
-  initApp();
-} else if (sessionStorage.getItem(SESSION_KEY) === "1" && !_pw) {
-  sessionStorage.removeItem(SESSION_KEY);
-}
+// sessionStorage 只限本分頁;由書籤/新分頁進來時靠 cookie 回復登入
+(async () => {
+  if (!_pw) _pw = await MemberAuth.resume(SESSION_KEY) || "";
+  if (_pw) {
+    document.getElementById("pw-overlay").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    initApp();
+  } else {
+    sessionStorage.removeItem(SESSION_KEY);
+  }
+})();
 
 // ── State ─────────────────────────────────────────────────
 let DB = [], KW_INDEX = {}, KW_ZH_INDEX = {}, KW_TO_ZH = {}, SYM_TO_SUM = {}, SYM_TO_NZ = {}, SYM_TO_MCAP = {};
