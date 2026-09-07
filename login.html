@@ -8,11 +8,12 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>庫</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/shell.css">
+<link rel="stylesheet" href="css/components.css">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
 body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
-a{color:#d4a647;text-decoration:none}
-a:hover{text-decoration:underline}
 
 /* Password overlay */
 #pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
@@ -21,9 +22,7 @@ a:hover{text-decoration:underline}
 .pw-box h2{font-size:20px;font-weight:700;color:#fff;margin-bottom:6px}
 .pw-box p{font-size:13px;color:#666;margin-bottom:24px}
 .pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:12px 16px;border-radius:6px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.2em;margin-bottom:12px;transition:border-color .2s}
-.pw-box input:focus{border-color:#d4a647}
 .pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:12px;border-radius:6px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
-.pw-box button:hover{background:#e8bc5a}
 .pw-error{color:#ef5350;font-size:12px;margin-top:10px;min-height:18px}
 
 /* Dashboard */

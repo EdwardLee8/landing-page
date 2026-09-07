@@ -1,0 +1,86 @@
+/**
+ * 共用元件:表格、篩選器、按鈕、分頁、徽章。
+ * 原本每個資料頁都自己寫一份幾乎相同的定義。
+ */
+
+/* ── 資料表 ──────────────────────────────────────── */
+thead tr { background: var(--bg-panel); border-bottom: 2px solid var(--gold-rule); }
+th {
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+th:hover { color: var(--gold-light); }
+td { padding: 9px 12px; vertical-align: middle; white-space: nowrap; }
+td.num { text-align: center !important; font-size: var(--fs-base); }
+tbody tr { border-bottom: 1px solid var(--bg-raised); transition: background .15s; }
+tbody tr:hover { background: var(--bg-raised); }
+
+/* 排序指示 */
+th.sort-asc  .sort-icon::after { content: " ▲"; }
+th.sort-desc .sort-icon::after { content: " ▼"; }
+th:not(.sort-asc):not(.sort-desc) .sort-icon::after { content: " ⇅"; opacity: .4; }
+
+/* ── 篩選器 ──────────────────────────────────────── */
+.filter-group { display: flex; flex-direction: column; gap: 4px; }
+.filter-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.filter-actions { display: flex; gap: 8px; align-items: flex-end; margin-left: auto; }
+input[type=text] { min-width: 180px; }
+
+/* ── 按鈕 ────────────────────────────────────────── */
+.btn {
+  padding: 7px 16px;
+  border-radius: var(--radius);
+  font-size: var(--fs-sm);
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  transition: all .2s;
+  font-weight: 600;
+}
+.btn-primary { background: var(--gold); color: var(--bg); }
+.btn-primary:hover { background: var(--gold-light); }
+.btn-ghost { background: transparent; border: 1px solid #444; color: #aaa; }
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── 分頁 ────────────────────────────────────────── */
+.pagination {
+  display: flex; justify-content: center; align-items: center;
+  gap: 6px; padding: 20px var(--pad-page); flex-wrap: wrap;
+}
+.page-btn {
+  background: var(--bg-raised);
+  border: 1px solid var(--line-strong);
+  color: #aaa;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  transition: all .2s;
+}
+.page-btn:hover, .page-btn.active {
+  background: var(--gold-ghost); border-color: var(--gold); color: var(--gold);
+}
+.page-btn:disabled { opacity: .3; cursor: not-allowed; }
+.page-info { color: var(--text-dim); font-size: var(--fs-sm); padding: 0 8px; }
+
+/* ── 統計列 ──────────────────────────────────────── */
+.stats-bar b { color: var(--gold); }
+
+/* ── 市場徽章 ────────────────────────────────────── */
+.tag-hk, .badge.hk  { background: #1e2a1e; color: var(--hk);  border: 1px solid #4caf5033; }
+.tag-cn, .badge.cn  { background: #2a1e1e; color: var(--cn);  border: 1px solid #ef535033; }
+.tag-us, .badge.us  { background: #1e1e2a; color: var(--us);  border: 1px solid #5c9bdd33; }
+.tag-etf, .badge.etf { background: #2a2a1e; color: var(--etf); border: 1px solid #ffca2833; }

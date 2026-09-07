@@ -1,0 +1,21 @@
+/**
+ * 基礎樣式:reset、body、連結、表格與捲動容器的通用行為。
+ * 依賴 tokens.css,必須排在它後面載入。
+ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-base);
+  min-height: 100vh;
+}
+
+a { color: var(--gold); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.empty { text-align: center; padding: 60px 20px; color: var(--text-faint); }
+
+/* 寬表格自己捲,頁面本身永遠不橫向捲 */
+.table-wrap { overflow-x: auto; padding: 0 0 40px; }

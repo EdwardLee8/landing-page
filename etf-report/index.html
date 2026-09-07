@@ -3,8 +3,11 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex, noai, noimageai">
 <title>ETF 基準比較報告</title>
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/shell.css">
+<link rel="stylesheet" href="../css/components.css">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
        background: #f8fafc; color: #1e293b; font-size: 13px; }
 .header { background: linear-gradient(135deg, #1e3a5f, #1e40af); color: #fff; padding: 20px 32px; }
@@ -90,16 +93,10 @@ td.aum  { color: #94a3b8; font-size: 11px; }
               border-radius: 8px; font-size: 12px; line-height: 1.7;
               box-shadow: 0 8px 24px rgba(0,0,0,0.3); pointer-events: none; }
 #desc-popup.show { display: block; }
-
-#pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
-.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
-.pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
 .pw-box p{font-size:13px;color:#888;margin-bottom:16px}
-.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:10px 14px;border-radius:4px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;transition:border-color .2s}
 .pw-box input:focus{border-color:#1e40af}
 .pw-box button{width:100%;background:#1e40af;color:#fff;border:none;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
 .pw-box button:hover{background:#2563eb}
-.pw-error{color:#ef5350;font-size:12px;margin-top:8px;min-height:18px}
 #etf-app{display:none}
 </style></head>
 <body>
