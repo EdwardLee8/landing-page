@@ -3,44 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>美股業績電話會議資料庫</title>
+<title>美股業績電話會議資料庫｜Edward LEE 發掘十倍股</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/shell.css">
+<link rel="stylesheet" href="/css/components.css">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
 body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
-a{color:#d4a647;text-decoration:none}
-a:hover{text-decoration:underline}
 
 /* Password overlay */
 #pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
-.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
-.pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
 .pw-box p{font-size:13px;color:#888;margin-bottom:24px}
-.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:10px 14px;border-radius:4px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;transition:border-color .2s}
-.pw-box input:focus{border-color:#d4a647}
-.pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
-.pw-box button:hover{background:#e8bc5a}
-.pw-error{color:#ef5350;font-size:12px;margin-top:8px;min-height:18px}
 
 /* Layout */
 .page-header{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px;transition:background .2s;white-space:nowrap}
-.back-btn:hover{background:#d4a64720;text-decoration:none}
-.page-title{font-size:20px;font-weight:700;color:#fff}
-.page-subtitle{font-size:12px;color:#888;margin-top:2px}
 
 /* Filter bar */
 .filter-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:14px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
-.filter-group{display:flex;flex-direction:column;gap:4px}
-.filter-label{font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
 input[type=text]{background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:7px 10px;border-radius:4px;font-size:13px;font-family:inherit;min-width:200px;outline:none;transition:border-color .2s}
 input[type=text]:focus{border-color:#d4a647}
-.filter-actions{display:flex;gap:8px;align-items:flex-end;margin-left:auto}
 .btn{padding:7px 14px;border-radius:4px;font-size:13px;font-family:inherit;cursor:pointer;border:none;transition:all .2s;font-weight:600}
-.btn-ghost{background:transparent;border:1px solid #444;color:#aaa}
-.btn-ghost:hover{border-color:#d4a647;color:#d4a647}
 .btn-toggle{background:#1a1a2e;border:1px solid #2a2a3e;color:#888;padding:6px 12px;border-radius:4px;font-size:12px;font-family:inherit;cursor:pointer;transition:all .2s;font-weight:600}
 .btn-toggle.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
 
@@ -60,14 +45,11 @@ input[type=text]:focus{border-color:#d4a647}
 
 /* Stats bar */
 .stats-bar{padding:10px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:12px;color:#888;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
-.stats-bar b{color:#d4a647}
 
 /* Table */
 .table-wrap{overflow-x:auto;padding:0 0 40px}
 table{width:100%;border-collapse:collapse;min-width:900px}
-thead tr{background:#0d0d14;border-bottom:2px solid #d4a64744}
 th{padding:10px 12px;text-align:left;font-size:12px;font-weight:700;color:#d4a647;white-space:nowrap;cursor:pointer;user-select:none}
-th:hover{color:#e8bc5a}
 th.sort-asc .si::after{content:" ▲"}
 th.sort-desc .si::after{content:" ▼"}
 th:not(.sort-asc):not(.sort-desc) .si::after{content:" ⇅";opacity:.4}
@@ -113,11 +95,7 @@ tbody tr.row-neutral{border-left:3px solid #444}
 
 /* Pagination */
 .pagination{display:flex;justify-content:center;align-items:center;gap:6px;padding:20px 24px;flex-wrap:wrap}
-.page-btn{background:#1a1a2e;border:1px solid #2a2a3e;color:#aaa;padding:6px 12px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s}
 .page-btn:hover,.page-btn.active{background:#d4a64720;border-color:#d4a647;color:#d4a647}
-.page-btn:disabled{opacity:.3;cursor:not-allowed}
-.page-info{color:#666;font-size:13px;padding:0 8px}
-.empty{text-align:center;padding:60px 20px;color:#555}
 
 /* Modal */
 #modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto}
@@ -230,7 +208,8 @@ tbody tr.row-neutral{border-left:3px solid #444}
   <li>Search 關鍵字 → 揾邊啲公司提到（例：搜「AI infrastructure」）</li>
 </ul>
 </div>
-<script src="js/member-auth.js"></script>
+<script src="/js/member-auth.js"></script>
+<script src="/js/member-shell.js"></script>
 <script>
 (function(){
   const KEY = "_help_seen_us-transcript";
@@ -258,7 +237,7 @@ tbody tr.row-neutral{border-left:3px solid #444}
 
 <div class="page-header">
   <a href="/" class="back-btn">&#8592; 返回首頁</a>
-  <a href="/login.html" class="back-btn">&#8592; 返回資料庫首頁</a>
+  <a href="/member/" class="back-btn">&#8592; 返回資料庫首頁</a>
   <div>
     <div class="page-title">美股業績電話會議資料庫</div>
     <div class="page-subtitle" id="page-subtitle">載入中…</div>
@@ -425,7 +404,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 async function loadAndInit(pw) {
   _pw = pw;
   try {
-    const r = await fetch("us_transcript_index.enc?" + Date.now());
+    const r = await fetch("/us_transcript_index.enc?" + Date.now());
     if (r.status === 401) return MemberAuth.handleUnauthorized();
     if (!r.ok) throw new Error("HTTP " + r.status);
     ALL = await _decryptEnc(await r.text(), pw);
@@ -666,7 +645,7 @@ async function openStock(symbol, name, sector, quarter) {
   // Load detail (lazy, cached)
   if (!detailCache[symbol]) {
     try {
-      const r = await fetch(`us_transcript_data/${symbol}.enc`);
+      const r = await fetch(`/us_transcript_data/${symbol}.enc`);
       if (r.status === 401) return MemberAuth.handleUnauthorized();
       if (!r.ok) throw new Error("HTTP " + r.status);
       detailCache[symbol] = await _decryptEnc(await r.text(), _pw);
@@ -835,5 +814,6 @@ function escHtml(s) {
   return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 }
 </script>
+<script>MemberShell.init({});</script>
 </body>
 </html>

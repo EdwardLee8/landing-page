@@ -1,0 +1,160 @@
+/**
+ * 頁面外殼:會員區頁首、密碼遮罩、說明面板。
+ * 這三塊原本在 10–15 個頁面各自內嵌一份完全相同的定義。
+ */
+
+/* ── 會員區頁首 ──────────────────────────────────── */
+.page-header {
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--line);
+  padding: 20px var(--pad-page);
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  flex-wrap: wrap;
+}
+.page-title    { font-size: var(--fs-title); font-weight: 700; color: var(--text-strong); }
+.page-subtitle { font-size: var(--fs-xs); color: var(--text-muted); margin-top: 2px; }
+
+/* 品牌標記,讓會員頁一眼看得出仍在同一個網站 */
+.shell-brand {
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.shell-brand a { color: var(--text-dim); }
+.shell-brand a:hover { color: var(--gold); text-decoration: none; }
+
+/* 頁首右側的動作區(返回、市場切換、登出) */
+.shell-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.back-btn {
+  color: var(--gold);
+  font-size: var(--fs-sm);
+  border: 1px solid var(--gold-dim);
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  transition: background .2s;
+  white-space: nowrap;
+}
+.back-btn:hover { background: var(--gold-ghost); text-decoration: none; }
+
+/* 市場切換(港/美/A 股共用同一頁時) */
+.market-switch { display: flex; gap: 4px; }
+.market-switch a {
+  font-size: var(--fs-sm);
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: all .2s;
+}
+.market-switch a:hover { border-color: var(--gold-dim); color: var(--gold); text-decoration: none; }
+.market-switch a.active { background: var(--gold-ghost); border-color: var(--gold); color: var(--gold); font-weight: 700; }
+
+/* ── 密碼遮罩 ────────────────────────────────────── */
+#pw-overlay {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+}
+.pw-box {
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 40px 36px;
+  text-align: center;
+  width: 100%;
+  max-width: 360px;
+}
+.pw-box h2 { font-size: 18px; font-weight: 700; color: var(--text-strong); margin-bottom: 6px; }
+.pw-box p  { font-size: var(--fs-sm); color: var(--text-muted); margin-bottom: 8px; }
+.pw-hint   { font-size: var(--fs-sm); color: var(--gold); margin-bottom: 16px; }
+.pw-box input {
+  width: 100%;
+  background: var(--bg-raised);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: var(--fs-base);
+  font-family: inherit;
+  outline: none;
+  text-align: center;
+  letter-spacing: .15em;
+  margin-bottom: 12px;
+  transition: border-color .2s;
+}
+.pw-box input:focus { border-color: var(--gold); }
+.pw-box button {
+  width: 100%;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  padding: 11px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .2s;
+}
+.pw-box button:hover { background: var(--gold-light); }
+.pw-error { color: var(--down); font-size: var(--fs-xs); margin-top: 8px; min-height: 18px; }
+
+/* ── 說明面板(ⓘ 點解讀) ─────────────────────────── */
+.help-btn {
+  position: fixed; top: 16px; right: 16px; z-index: 50;
+  background: var(--bg-panel);
+  border: 1px solid var(--gold-dim);
+  color: var(--gold);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all .15s;
+}
+.help-btn:hover { background: var(--gold-ghost); border-color: var(--gold); }
+.help-panel {
+  display: none;
+  background: var(--bg-panel);
+  border-bottom: 2px solid #d4a64766;
+  padding: 18px var(--pad-page) 22px;
+  max-width: 1280px;
+  margin: 0 auto;
+  font-size: 14px;
+  color: #ccc;
+  line-height: 1.7;
+}
+.help-panel.open { display: block; }
+.help-panel h3 {
+  font-size: 16px; font-weight: 700; color: var(--gold); margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.help-panel h3 .help-close {
+  background: transparent;
+  border: 1px solid #444;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: var(--fs-xs);
+  padding: 4px 12px;
+  border-radius: 14px;
+  cursor: pointer;
+}
+.help-panel h3 .help-close:hover { border-color: var(--gold); color: var(--gold); }
+.help-panel h4 { font-size: 14px; font-weight: 700; color: var(--text); margin: 14px 0 6px; }
+.help-panel p  { margin: 6px 0; }
+.help-panel ul { margin: 6px 0 6px 20px; }
+.help-panel li { margin: 3px 0; }
+.help-panel b  { color: var(--text); }

@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>港股關鍵字資料庫 (完整版)</title>
+<title>港股關鍵字資料庫｜Edward LEE 發掘十倍股</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>港</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/keywords-hk.css">
+<link rel="stylesheet" href="/css/keywords-hk.css">
 </head>
 <body>
 
@@ -42,7 +42,7 @@
 <div id="app">
   <div class="page-header">
     <a href="/" class="back-btn">&#8592; 返回首頁</a>
-    <a href="/login.html" class="back-btn">&#8592; 返回資料庫首頁</a>
+    <a href="/member/" class="back-btn">&#8592; 返回資料庫首頁</a>
     <div>
       <div class="page-title">港股關鍵字資料庫 <span style="color:#d4a647;font-size:14px;font-weight:400">(完整版)</span></div>
       <div class="page-subtitle">HK Stocks Business Keywords &amp; Correlation Clusters</div>
@@ -114,7 +114,9 @@ const KW_CONFIG = {
   corrUrl:    "hk_corr_clusters.enc"
 };
 </script>
-<script src="js/member-auth.js"></script>
-<script src="js/keywords-hk.js"></script>
+<script src="/js/member-auth.js"></script>
+<script src="/js/member-shell.js"></script>
+<script src="/js/keywords-hk.js"></script>
+<script>MemberShell.init({ group: "keywords", market: "hk" });</script>
 </body>
 </html>

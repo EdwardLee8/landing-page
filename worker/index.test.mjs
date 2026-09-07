@@ -196,5 +196,37 @@ r = await worker.fetch(loginReq('correct-horse', '8.8.8.9'),
 check('成功登入完全冇 KV 寫入', r.status === 200 && waited === 0,
   `status=${r.status} waitUntil=${waited}`);
 
+// ── 乾淨網址與舊網址轉址 ──────────────────────────────────────────
+// 舊的 .html 網址要 301 到新網址,書籤不會斷
+r = await worker.fetch(new Request(`${B}/hk-rs-rating.html`, { redirect: 'manual' }), env);
+check('舊 .html 網址 301 轉址', r.status === 301, `status=${r.status}`);
+check('轉到對應的新網址',
+  (r.headers.get('location') || '').endsWith('/member/rs/hk'),
+  r.headers.get('location'));
+
+r = await worker.fetch(new Request(`${B}/free-tools.html`, { redirect: 'manual' }), env);
+check('免費頁舊網址也轉址',
+  r.status === 301 && (r.headers.get('location') || '').endsWith('/free/'),
+  `${r.status} ${r.headers.get('location')}`);
+
+// 轉址要保留 query string
+r = await worker.fetch(new Request(`${B}/movers.html?tab=us`, { redirect: 'manual' }), env);
+check('轉址保留 query string',
+  (r.headers.get('location') || '').endsWith('/member/movers?tab=us'),
+  r.headers.get('location'));
+
+// 乾淨網址直接送出頁面(不是再轉一次)
+r = await worker.fetch(new Request(`${B}/member/rs/hk`), env);
+check('乾淨網址直接回內容', r.status === 200 && (await r.text()) === 'ASSET', `status=${r.status}`);
+
+r = await worker.fetch(new Request(`${B}/member/`), env);
+check('/member/ 回會員入口', r.status === 200);
+r = await worker.fetch(new Request(`${B}/member`), env);
+check('/member(無結尾斜線)也可以', r.status === 200, `status=${r.status}`);
+
+// 乾淨網址不應該干擾 API 與一般靜態檔
+r = await worker.fetch(new Request(`${B}/index.html`), env);
+check('首頁不受轉址影響', r.status === 200);
+
 console.log(`\n${pass} 通過, ${fail} 失敗`);
 process.exit(fail ? 1 : 0);

@@ -111,7 +111,7 @@ function closeArticle() {
 }
 
 async function init() {
-  const data = await (await fetch("data/companies.json", { cache: "no-store" })).json();
+  const data = await (await fetch("/hk-top100-reports/data/companies.json", { cache: "no-store" })).json();
   state.companies = data.companies;
   els.stats.textContent = `${data.count} 間公司 · 報告日 2026-09`;
   document.getElementById("brandHome").onclick = closeArticle;

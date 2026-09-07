@@ -3,37 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A股關鍵字資料庫</title>
+<title>A股關鍵字資料庫｜Edward LEE 發掘十倍股</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>港</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/shell.css">
+<link rel="stylesheet" href="/css/components.css">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
 body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
-a{color:#d4a647;text-decoration:none}
-a:hover{text-decoration:underline}
 
 /* ── Password ── */
 #pw-overlay{position:fixed;inset:0;background:#080808;z-index:9999;display:flex;align-items:center;justify-content:center}
-.pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:360px}
-.pw-box h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
 .pw-box p{font-size:13px;color:#888;margin-bottom:16px}
-.pw-box input{width:100%;background:#1a1a2e;border:1px solid #2a2a3e;color:#e8e0d0;padding:10px 14px;border-radius:4px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.15em;margin-bottom:12px;transition:border-color .2s}
-.pw-box input:focus{border-color:#d4a647}
-.pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:11px;border-radius:4px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
-.pw-box button:hover{background:#e8bc5a}
-.pw-error{color:#ef5350;font-size:12px;margin-top:8px;min-height:18px}
 
 /* ── Layout ── */
 #app{display:none}
 .page-header{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px;transition:background .2s;white-space:nowrap}
-.back-btn:hover{background:#d4a64720;text-decoration:none}
-.page-title{font-size:20px;font-weight:700;color:#fff}
-.page-subtitle{font-size:12px;color:#888;margin-top:2px}
 .stats-bar{padding:8px 24px;background:#0a0a12;border-bottom:1px solid #1e1e2e;font-size:12px;color:#666;display:flex;gap:16px;flex-wrap:wrap}
-.stats-bar b{color:#d4a647}
 
 /* ── Tabs ── */
 .tab-bar{background:#0d0d14;border-bottom:1px solid #1e1e2e;padding:0 24px;display:flex;overflow-x:auto}
@@ -216,7 +205,8 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
   <li>用關鍵字 filter 倒過嚟睇邊啲公司有呢類業務</li>
 </ul>
 </div>
-<script src="js/member-auth.js"></script>
+<script src="/js/member-auth.js"></script>
+<script src="/js/member-shell.js"></script>
 <script>
 (function(){
   const KEY = "_help_seen_kw-cn";
@@ -247,7 +237,7 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 <div id="app">
   <div class="page-header">
     <a href="/" class="back-btn">&#8592; 返回首頁</a>
-    <a href="/login.html" class="back-btn">&#8592; 返回資料庫首頁</a>
+    <a href="/member/" class="back-btn">&#8592; 返回資料庫首頁</a>
     <div>
       <div class="page-title">A股關鍵字資料庫</div>
       <div class="page-subtitle">CN A-Share Business Keywords &amp; Correlation Clusters</div>
@@ -507,7 +497,7 @@ function setZhMode(m) {
 async function initApp() {
   loadOpenCC().catch(() => {});   // 與資料下載平行,不阻塞
   try {
-    const r = await fetch("cn_keywords_export.enc");
+    const r = await fetch("/cn_keywords_export.enc");
     if (r.status === 401) return MemberAuth.handleUnauthorized();
     DB_CN = await _decryptEnc(await r.text(), _pw);
   } catch(e) {
@@ -552,7 +542,7 @@ function switchTab(tab) {
 // ── Load correlation clusters ────────────────────────────
 async function loadCorrData() {
   try {
-    const r = await fetch("cn_corr_clusters.enc");
+    const r = await fetch("/cn_corr_clusters.enc");
     if (r.status === 401) return MemberAuth.handleUnauthorized();
     CORR_CN = await _decryptEnc(await r.text(), _pw);
     try {
@@ -1072,7 +1062,7 @@ function setSortKey(k) {
 let THEMES_DATA = null, themesLoaded = false;
 async function loadThemesData() {
   try {
-    const r = await fetch("cn_themes.enc");
+    const r = await fetch("/cn_themes.enc");
     if (r.status === 401) return MemberAuth.handleUnauthorized();
     THEMES_DATA = await _decryptEnc(await r.text(), _pw);
     themesLoaded = true;
@@ -1154,5 +1144,6 @@ function escHtml(s) {
 }
 function kwColor(w) { return w>=0.8?"kw-high":w>=0.6?"kw-mid":"kw-low"; }
 </script>
+<script>MemberShell.init({ group: "keywords", market: "cn" });</script>
 </body>
 </html>
