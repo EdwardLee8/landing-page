@@ -1,21 +1,198 @@
 <!DOCTYPE html>
 <html lang="zh-Hant-HK">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Edward LEE 發掘十倍股 免費內容中心：港股業績資料庫、港股關鍵字、主題強弱監測、2026中期業績歷史快照、S&P 500研究報告、免費文章及Discord。"><meta name="robots" content="index,follow"><title>免費內容中心｜Edward LEE 發掘十倍股</title>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>免費內容中心｜Edward LEE 發掘十倍股</title>
+<meta name="description" content="Edward LEE 發掘十倍股 免費內容中心：港股 Top 100 深度報告、港股業績資料庫、關鍵字資料庫、主題強弱監測、S&P 500 研究報告，全部免密碼。">
+<link rel="canonical" href="https://ai10xpro.com/free/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edward LEE｜發掘十倍股">
+<meta property="og:locale" content="zh_HK">
+<meta property="og:title" content="免費內容中心｜Edward LEE 發掘十倍股">
+<meta property="og:description" content="港股 Top 100 深度報告、業績資料庫、關鍵字工具、主題強弱監測、S&P 500 研究報告，全部免密碼。">
+<meta property="og:image" content="https://ai10xpro.com/assets/hero-bg.jpg">
+<meta property="og:url" content="https://ai10xpro.com/free/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>免</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
 <style>
-:root{--bg:#080808;--panel:#0d0d14;--line:#1e1e2e;--text:#e8e0d0;--muted:#888888;--gold:#d4a647;--blue:#d4a647}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#1c1608 0,transparent 38%),var(--bg);color:var(--text);font-family:"Noto Sans TC","PingFang TC",system-ui,sans-serif;min-height:100vh}a{text-decoration:none;color:inherit}.top{border-bottom:1px solid var(--line);background:#080808e8;backdrop-filter:blur(12px);position:sticky;top:0;z-index:5}.nav{max-width:1280px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}.nav a{padding:9px 13px;border:1px solid var(--line);border-radius:10px;color:#e8e0d0;font-weight:700;font-size:13px}.nav a:hover{border-color:var(--gold);color:#e8bc5a}.nav a.member{border-color:#d4a64766;background:#d4a64714;color:#e8bc5a}.hero{max-width:1280px;margin:auto;padding:54px 20px 26px;text-align:center}.eyebrow{font-size:12px;letter-spacing:.17em;color:var(--gold);font-weight:900}.hero h1{font-size:clamp(29px,5vw,52px);margin:10px 0}.hero p{max-width:850px;margin:auto;color:var(--muted);line-height:1.75}.section{max-width:1280px;margin:auto;padding:15px 20px 42px}.sectionTitle{margin:12px 0 16px;font-size:20px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}.card{background:linear-gradient(145deg,#1a1a2e,#0a0a12);border:1px solid var(--line);border-radius:18px;padding:21px;display:flex;flex-direction:column;min-height:230px;transition:.2s}.card:hover{transform:translateY(-3px);border-color:#d4a64788;box-shadow:0 14px 35px #0007}.cardTop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.icon{font-size:30px}.tag{border-radius:999px;padding:5px 9px;background:#d4a64714;border:1px solid #d4a64744;color:#d4a647;font-size:11px;font-weight:800}.card h2{font-size:19px;margin:13px 0 8px}.card p{color:#aaaaaa;line-height:1.65;margin:0}.meta{display:flex;flex-wrap:wrap;gap:6px;margin:13px 0}.meta span{border:1px solid #2a2a3e;border-radius:999px;color:#888888;font-size:11px;padding:4px 8px}.open{margin-top:auto;padding-top:15px;color:#e8bc5a;font-weight:900}.subgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:13px}.mini{padding:17px;border:1px solid var(--line);border-radius:14px;background:#0d0d14}.mini h3{margin:0 0 7px;font-size:16px}.mini p{margin:0;color:var(--muted);line-height:1.55}.mini a{display:inline-block;margin-top:11px;color:#e8bc5a;font-weight:800}.note{max-width:1280px;margin:0 auto 36px;padding:0 20px}.note div{border:1px solid #d4a64744;background:#d4a6470d;border-radius:13px;padding:13px 15px;color:#d4a647;font-size:13px}.footer{border-top:1px solid var(--line);text-align:center;padding:23px;color:#666666;font-size:12px}@media(max-width:760px){.grid,.subgrid{grid-template-columns:1fr}.hero{padding-top:38px}.card{min-height:0}.nav{align-items:flex-start}}
-</style></head>
+/* 免費內容中心。色票、字級全部來自 css/tokens.css,不再自訂一套 —— 原本
+   這頁是獨立的藍色系,跟首頁與會員區對不上,像另一個網站。 */
+body { font-family: "Noto Sans TC", system-ui, sans-serif; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 26px; }
+
+/* ── 頂欄 ── */
+.top { border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5;
+       background: rgba(8,8,8,.92); backdrop-filter: blur(10px); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding-block: 13px; }
+.brand { display: flex; align-items: baseline; gap: 9px; }
+.brand b { font-family: Manrope, sans-serif; font-size: 15px; font-weight: 800; color: var(--text-strong); letter-spacing: -.01em; }
+.brand span { font-size: 11px; color: var(--text-dim); }
+.brand:hover { text-decoration: none; }
+.top-actions { display: flex; gap: 8px; }
+.top-actions a { font-size: 13px; padding: 7px 14px; border-radius: var(--radius); border: 1px solid var(--line-strong); color: var(--text-muted); white-space: nowrap; }
+.top-actions a:hover { border-color: var(--gold-dim); color: var(--gold); text-decoration: none; }
+.top-actions a.primary { background: var(--gold-ghost); border-color: var(--gold-dim); color: var(--gold); font-weight: 700; }
+
+/* ── Hero ── */
+.hero { padding: 46px 0 34px; }
+.hero .eyebrow { font-family: Manrope, sans-serif; font-size: 11px; font-weight: 700;
+                 letter-spacing: .19em; color: var(--gold); text-transform: uppercase; }
+.hero h1 { font-size: clamp(1.9rem, 3.4vw, 2.6rem); font-weight: 700; color: var(--text-strong);
+           letter-spacing: -.03em; margin: 12px 0 12px; }
+.hero p { max-width: 640px; font-size: 14px; line-height: 1.85; color: var(--text-muted); }
+
+/* ── 區塊 ── */
+.sec { padding-bottom: 34px; }
+.sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 15px; }
+.sec-head h2 { font-size: 15px; font-weight: 700; color: var(--text-strong); }
+.sec-head .rule { flex-grow: 1; height: 1px; background: linear-gradient(90deg, var(--gold-dim), transparent); }
+.sec-head .count { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+
+/* ── 卡片格 ── */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 14px; }
+.card { background: var(--bg-panel); border: 1px solid var(--line); border-radius: 12px;
+        padding: 20px 21px 18px; display: flex; flex-direction: column; gap: 10px; transition: all .18s; }
+.card:hover { border-color: var(--gold-dim); background: var(--bg-hover); text-decoration: none; transform: translateY(-2px); }
+.card .tag { align-self: flex-start; font-size: 10.5px; font-weight: 700; letter-spacing: .04em;
+             padding: 3px 9px; border-radius: 20px; background: var(--gold-ghost);
+             border: 1px solid var(--gold-dim); color: var(--gold); }
+.card h3 { font-size: 16px; font-weight: 700; color: var(--text-strong); letter-spacing: -.01em; }
+.card p { font-size: 12.5px; line-height: 1.72; color: var(--text-muted); }
+.card .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.card .meta span { font-size: 10.5px; color: var(--text-dim); padding: 3px 8px;
+                   border: 1px solid var(--line-strong); border-radius: 5px; }
+.card .open { margin-top: auto; padding-top: 4px; font-size: 12.5px; font-weight: 600; color: var(--gold); }
+
+/* ── 文章與社群(較小的兩張) ── */
+.subgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.mini { background: var(--bg-panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+.mini h3 { font-size: 14px; font-weight: 700; color: var(--text-strong); margin-bottom: 7px; }
+.mini p { font-size: 12.5px; line-height: 1.7; color: var(--text-muted); margin-bottom: 10px; }
+.mini a { font-size: 12.5px; font-weight: 600; color: var(--gold); }
+
+/* ── 附註與頁尾 ── */
+.note { border: 1px solid var(--gold-dim); background: rgba(212,166,71,.05); border-radius: 10px;
+        padding: 13px 18px; font-size: 12px; line-height: 1.7; color: var(--text-muted); }
+.footer { margin-top: 30px; border-top: 1px solid var(--line); padding: 20px 0 34px;
+          font-size: 11.5px; color: var(--text-dim); text-align: center; }
+
+@media (max-width: 620px) {
+  .wrap { padding: 0 18px; }
+  .hero { padding: 30px 0 24px; }
+  .top .wrap { flex-wrap: wrap; }
+}
+</style>
+</head>
 <body>
-<div class="top"><nav class="nav"><a href="/">← 網站首頁</a><a class="member" href="/member/">🔐 會員密碼入口</a></nav></div>
-<header class="hero"><div class="eyebrow">EDWARD LEE 發掘十倍股 · 免費研究</div><h1>免費內容中心</h1><p>所有免密碼資料庫、監測工具、免費文章及社群入口集中喺呢一頁。毋須登入；想查看最新完整研究資料，可使用右上角會員入口。</p></header>
-<main class="section"><h2 class="sectionTitle">免費資料庫與監測工具</h2><div class="grid">
-<a class="card" href="hk-top100-reports/"><div class="cardTop"><span class="icon">🏆</span><span class="tag">深度報告</span></div><h2>港股 Top 100 深度報告</h2><p>港股市值最大 100 間上市公司深度分析報告（2026年9月版）。可按公司中文名、股份代號或行業搜尋，免密碼閱讀全文。</p><div class="meta"><span>100 間公司</span><span>100 份報告</span><span>行業篩選</span></div><div class="open">開啟報告中心 →</div></a>
-<a class="card" href="/free/outlook-2026-archive"><div class="cardTop"><span class="icon">📜</span><span class="tag">歷史快照</span></div><h2>港股2026中期業績前景庫</h2><p>2026年8月20日公開版本；按公司整合所有原始業績期，提供評分、財務主線、催化劑、風險及6–18個月展望。</p><div class="meta"><span>303間公司</span><span>307份記錄</span><span>29個欄位</span></div><div class="open">開啟歷史快照 →</div></a>
-<a class="card" href="/free/stocks/hk"><div class="cardTop"><span class="icon">📊</span><span class="tag">H2 2025</span></div><h2>港股業績資料庫</h2><p>2025年12月年結港股資料庫，整合行業分類、市值類型、收入／毛利增長及相對恒指表現。</p><div class="meta"><span>2,012隻港股</span><span>業績與走勢</span><span>免密碼</span></div><div class="open">開啟資料庫 →</div></a>
-<a class="card" href="/free/keywords/hk"><div class="cardTop"><span class="icon">🔍</span><span class="tag">公司業務</span></div><h2>港股關鍵字資料庫</h2><p>用業務關鍵字尋找相關公司，或者由公司反查核心產品、服務及業務主題。</p><div class="meta"><span>關鍵字選股</span><span>公司反查</span><span>相關股票群組</span></div><div class="open">開啟關鍵字工具 →</div></a>
-<a class="card" href="/free/themes"><div class="cardTop"><span class="icon">📈</span><span class="tag">市場監測</span></div><h2>主題強弱監測 Dashboard</h2><p>按相對強弱中位數觀察市場主題，快速查看最強／最弱主題，以及主題內領先或落後公司。</p><div class="meta"><span>主題排名</span><span>相對強弱</span><span>公司明細</span></div><div class="open">開啟監測板 →</div></a>
-<a class="card" href="/free/sp500-top20"><div class="cardTop"><span class="icon">🇺🇸</span><span class="tag">美股深度報告</span></div><h2>S&P 500 市值最大 18 間公司研究報告</h2><p>NVDA、GOOGL、AAPL、AMZN 等 S&P 500 權重公司，逐份整理公司背景、最新業績、六個月催化劑、主要風險與買入判斷。</p><div class="meta"><span>18 間公司</span><span>18 份報告</span><span>免密碼</span></div><div class="open">開啟報告 →</div></a>
+
+<div class="top">
+  <div class="wrap">
+    <a class="brand" href="/"><b>Edward LEE</b><span>發掘十倍股</span></a>
+    <div class="top-actions">
+      <a href="/">網站首頁</a>
+      <a class="primary" href="/member/">會員入口</a>
+    </div>
+  </div>
 </div>
-<h2 class="sectionTitle" style="margin-top:34px">免費文章與社群</h2><div class="subgrid"><div class="mini"><h3>📰 免費投資文章</h3><p>閱讀網站公開嘅港股／美股研究、財報解讀及市場觀察。</p><a href="/#articles">查看免費文章 →</a></div><div class="mini"><h3>💬 免費 Discord</h3><p>加入免費社群，接收公開市場資訊及內容更新。</p><a href="/#discord-free">查看免費Discord →</a></div></div></main>
-<div class="note"><div>歷史快照只反映當時資料，不代表目前最新業績。會員版現時包含801間港股完整前景庫及12個行業各首三高分選擇。</div></div>
-<footer class="footer">Edward LEE 發掘十倍股 免費內容中心 · 資料只供研究用途，唔構成任何投資建議。</footer>
-</body></html>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Free Research</div>
+    <h1>免費內容中心</h1>
+    <p>所有免密碼資料庫、監測工具、免費文章及社群入口都集中喺呢一頁,毋須登入。想睇最新完整研究資料,可以用右上角會員入口。</p>
+  </header>
+
+  <section class="sec">
+    <div class="sec-head">
+      <h2>免費資料庫與監測工具</h2>
+      <div class="rule"></div>
+      <div class="count">6 個工具</div>
+    </div>
+    <div class="grid">
+
+      <a class="card" href="/hk-top100-reports/">
+        <span class="tag">深度報告</span>
+        <h3>港股 Top 100 深度報告</h3>
+        <p>港股市值最大 100 間上市公司深度分析報告(2026 年 9 月版)。可按公司中文名、股份代號或行業搜尋,免密碼閱讀全文。</p>
+        <div class="meta"><span>100 間公司</span><span>100 份報告</span><span>行業篩選</span></div>
+        <div class="open">開啟報告中心 →</div>
+      </a>
+
+      <a class="card" href="/free/outlook-2026-archive">
+        <span class="tag">歷史快照</span>
+        <h3>港股 2026 中期業績前景庫</h3>
+        <p>2026 年 8 月 20 日公開版本;按公司整合所有原始業績期,提供評分、財務主線、催化劑、風險及 6–18 個月展望。</p>
+        <div class="meta"><span>303 間公司</span><span>307 份記錄</span><span>29 個欄位</span></div>
+        <div class="open">開啟歷史快照 →</div>
+      </a>
+
+      <a class="card" href="/free/stocks/hk">
+        <span class="tag">H2 2025</span>
+        <h3>港股業績資料庫</h3>
+        <p>2025 年 12 月年結港股資料庫,整合行業分類、市值類型、收入／毛利增長及相對恒指表現。</p>
+        <div class="meta"><span>2,012 隻港股</span><span>業績與走勢</span><span>免密碼</span></div>
+        <div class="open">開啟資料庫 →</div>
+      </a>
+
+      <a class="card" href="/free/keywords/hk">
+        <span class="tag">公司業務</span>
+        <h3>港股關鍵字資料庫</h3>
+        <p>用業務關鍵字尋找相關公司,或者由公司反查核心產品、服務及業務主題。</p>
+        <div class="meta"><span>關鍵字選股</span><span>公司反查</span><span>相關股票群組</span></div>
+        <div class="open">開啟關鍵字工具 →</div>
+      </a>
+
+      <a class="card" href="/free/themes">
+        <span class="tag">市場監測</span>
+        <h3>主題強弱監測 Dashboard</h3>
+        <p>按相對強弱中位數觀察市場主題,快速查看最強／最弱主題,以及主題內領先或落後的公司。</p>
+        <div class="meta"><span>主題排名</span><span>相對強弱</span><span>公司明細</span></div>
+        <div class="open">開啟監測板 →</div>
+      </a>
+
+      <a class="card" href="/free/sp500-top20">
+        <span class="tag">美股深度報告</span>
+        <h3>S&amp;P 500 市值最大 18 間公司研究報告</h3>
+        <p>NVDA、GOOGL、AAPL、AMZN 等 S&amp;P 500 權重公司,逐份整理公司背景、最新業績、六個月催化劑、主要風險與買入判斷。</p>
+        <div class="meta"><span>18 間公司</span><span>18 份報告</span><span>免密碼</span></div>
+        <div class="open">開啟報告 →</div>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <h2>免費文章與社群</h2>
+      <div class="rule"></div>
+    </div>
+    <div class="subgrid">
+      <div class="mini">
+        <h3>免費投資文章</h3>
+        <p>閱讀網站公開嘅港股／美股研究、財報解讀及市場觀察。</p>
+        <a href="/#articles">查看免費文章 →</a>
+      </div>
+      <div class="mini">
+        <h3>免費 Discord</h3>
+        <p>加入免費社群,接收公開市場資訊及內容更新。</p>
+        <a href="/#discord-free">查看免費 Discord →</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="note">
+    歷史快照只反映當時資料,不代表目前最新業績。會員版現時包含 801 間港股完整前景庫,以及 12 個行業各首三高分選擇。
+  </div>
+
+  <div class="footer">Edward LEE 發掘十倍股 免費內容中心 · 資料只供研究用途,唔構成任何投資建議。</div>
+
+</div>
+
+</body>
+</html>
