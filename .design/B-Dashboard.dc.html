@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #d4a647; text-decoration: none; }
+    a:hover { color: #ffd76a; }
+    .m { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #050506; color: #c8c3b8; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden;">
+
+  <!-- 終端頂欄 -->
+  <div style="display: flex; align-items: center; gap: 0; background: #0b0b0e; border-bottom: 1px solid #d4a64755; height: 34px; flex-shrink: 0;">
+    <div class="m" style="padding: 0 16px; font-size: 12px; font-weight: 700; color: #d4a647; letter-spacing: 0.06em; border-right: 1px solid #1c1c22; line-height: 34px;">EDWARD LEE · 發掘十倍股</div>
+    <div class="m" style="padding: 0 14px; font-size: 11px; background: #d4a647; color: #050506; font-weight: 700; line-height: 34px;">HOME</div>
+    <a href="#" class="m" style="padding: 0 14px; font-size: 11px; color: #8a857a; line-height: 34px;">RS</a>
+    <a href="#" class="m" style="padding: 0 14px; font-size: 11px; color: #8a857a; line-height: 34px;">MOVERS</a>
+    <a href="#" class="m" style="padding: 0 14px; font-size: 11px; color: #8a857a; line-height: 34px;">KEYWORDS</a>
+    <a href="#" class="m" style="padding: 0 14px; font-size: 11px; color: #8a857a; line-height: 34px;">TRANSCRIPTS</a>
+    <div style="margin-left: auto; display: flex; align-items: center; gap: 0;">
+      <div class="m" style="padding: 0 14px; font-size: 11px; color: #66bb6a; line-height: 34px;">● LIVE 2026-09-04</div>
+      <a href="#" class="m" style="padding: 0 16px; font-size: 11px; color: #8a857a; border-left: 1px solid #1c1c22; line-height: 34px;">LOGOUT</a>
+    </div>
+  </div>
+
+  <!-- 三市場摘要條 -->
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: #16161b; flex-shrink: 0;">
+    <sc-for list="{{markets}}" as="mk" hint-placeholder-count="3">
+      <div style="background: #0b0b0e; padding: 11px 16px; display: flex; align-items: center; gap: 14px;">
+        <div class="m" style="font-size: 12px; font-weight: 700; color: {{mk.color}}; letter-spacing: 0.08em; width: 34px;">{{mk.code}}</div>
+        <div class="m" style="font-size: 11px; color: #6b665d;">{{mk.count}} 隻</div>
+        <div style="margin-left: auto; display: flex; align-items: baseline; gap: 5px;">
+          <span class="m" style="font-size: 10px; color: #6b665d;">≥81</span>
+          <span class="m" style="font-size: 15px; font-weight: 700; color: #66bb6a;">{{mk.strong}}</span>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 5px;">
+          <span class="m" style="font-size: 10px; color: #6b665d;">MAX Δ</span>
+          <span class="m" style="font-size: 15px; font-weight: 700; color: #d4a647;">{{mk.delta}}</span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <!-- 資料庫目錄:終端式表列 -->
+  <div style="flex-grow: 1; overflow: hidden; padding: 0 0 0;">
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="background: #0b0b0e; border-bottom: 1px solid #d4a64744;">
+          <th class="m" style="text-align: left; padding: 9px 16px; font-size: 10px; letter-spacing: 0.1em; color: #6b665d; font-weight: 500;">MKT</th>
+          <th class="m" style="text-align: left; padding: 9px 10px; font-size: 10px; letter-spacing: 0.1em; color: #6b665d; font-weight: 500;">CODE</th>
+          <th style="text-align: left; padding: 9px 10px; font-size: 10px; letter-spacing: 0.1em; color: #6b665d; font-weight: 500;">資料庫</th>
+          <th style="text-align: left; padding: 9px 10px; font-size: 10px; letter-spacing: 0.1em; color: #6b665d; font-weight: 500;">內容</th>
+          <th class="m" style="text-align: right; padding: 9px 10px; font-size: 10px; letter-spacing: 0.1em; color: #6b665d; font-weight: 500;">ROWS</th>
+          <th class="m" style="text-align: right; padding: 9px 16px; font-size: 10px; letter-spacing: 0.1em; color: #6b665d; font-weight: 500;">UPDATED</th>
+        </tr>
+      </thead>
+      <tbody>
+        <sc-for list="{{dbs}}" as="d" hint-placeholder-count="14">
+          <tr style="border-bottom: 1px solid #101014;">
+            <td class="m" style="padding: 8px 16px; font-size: 11px; font-weight: 700; color: {{d.color}};">{{d.mkt}}</td>
+            <td class="m" style="padding: 8px 10px; font-size: 11px; color: #d4a647;">{{d.code}}</td>
+            <td style="padding: 8px 10px; font-size: 13px; color: #e6e1d6; font-weight: 500;">{{d.name}}</td>
+            <td style="padding: 8px 10px; font-size: 11px; color: #6b665d;">{{d.desc}}</td>
+            <td class="m" style="padding: 8px 10px; font-size: 12px; color: #c8c3b8; text-align: right;">{{d.rows}}</td>
+            <td class="m" style="padding: 8px 16px; font-size: 11px; color: #6b665d; text-align: right;">{{d.updated}}</td>
+          </tr>
+        </sc-for>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 狀態列 -->
+  <div class="m" style="display: flex; align-items: center; gap: 20px; background: #0b0b0e; border-top: 1px solid #1c1c22; padding: 0 16px; height: 26px; flex-shrink: 0; font-size: 10px; color: #6b665d;">
+    <span>15 個資料庫</span>
+    <span>·</span>
+    <span>覆蓋 8,343 隻股票</span>
+    <span>·</span>
+    <span>最後同步 2026-09-04 16:32 HKT</span>
+    <span style="margin-left: auto; color: #4a463f;">按 <span style="color: #d4a647;">/</span> 搜尋　<span style="color: #d4a647;">1-9</span> 跳轉資料庫</span>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const C = { HK: '#66bb6a', US: '#5c9bdd', CN: '#ef5350', ALL: '#d4a647' };
+    return {
+      markets: [
+        { code: 'HK', color: C.HK, count: '1,208', strong: '247', delta: '+23' },
+        { code: 'US', color: C.US, count: '1,968', strong: '412', delta: '+31' },
+        { code: 'CN', color: C.CN, count: '5,171', strong: '883', delta: '+28' },
+      ],
+      dbs: [
+        ['HK', 'RS',    '相對強度評分',        '8 timeframe + Composite · vs 2800.HK',   '1,208',  '2026-09-04'],
+        ['HK', 'OUTLK', '2026 中期業績前景庫', '市場／行業排名 · 評分拆解 · 6–18M 展望',  '801',    '2026-09-02'],
+        ['HK', 'TOP3',  '行業首三高分選擇',    '12 大行業各首三名 · 附前景短評',          '36',     '2026-09-05'],
+        ['HK', 'STOCK', '2025 下半年資料庫',   '財務數據 · 相對強弱 · 市值篩選',          '2,012',  '2026-04-02'],
+        ['HK', 'KWD',   '關鍵字資料庫',        '業務關鍵字 · 相關性分組',                '1,300+', '2026-08-28'],
+        ['US', 'RS',    '相對強度評分',        '8 timeframe + Composite · vs SPY',       '1,968',  '2026-09-04'],
+        ['US', 'STOCK', '美股資料庫',          '財務數據 · 相對強弱 · 市值篩選',          '2,643',  '2026-09-05'],
+        ['US', 'TRANS', '業績電話會議',        'Bull／bear thesis · 關鍵字回報信號',      '583',    '2026-09-01'],
+        ['US', 'RSRCH', '業務最新記錄',        '背景 + 業績 + 催化劑 + 風險',            'Tier 1', '2026-06-07'],
+        ['US', 'KWD',   '關鍵字資料庫',        '業務關鍵字 · 相關性分組',                '3,000+', '2026-08-28'],
+        ['CN', 'RS',    '相對強度評分',        '8 timeframe + Composite · vs 中證全指',   '5,171',  '2026-09-04'],
+        ['CN', 'IRM',   '深交所調研紀要',      '投資者關係活動記錄',                     '1,000+', '2026-08-30'],
+        ['CN', 'KWD',   '關鍵字資料庫',        '業務關鍵字 · 相關性分組',                '5,000+', '2026-08-28'],
+        ['ALL','MOVER', 'RS 排名上升榜',       '三市場 Composite 日對日上升 Top 100',     '300',    '2026-09-04'],
+        ['ALL','ETF',   'ETF 基準比較報告',    '港美 ETF 分類 · 回報 · 資產規模',         '359',    '2026-08-15'],
+      ].map((r) => ({
+        mkt: r[0], color: C[r[0]], code: r[1], name: r[2], desc: r[3], rows: r[4], updated: r[5],
+      })),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #d4a647; text-decoration: none; }
+    a:hover { color: #ffd76a; }
+    .m { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #050506; color: #c8c3b8; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; background: #0b0b0e; border-bottom: 1px solid #d4a64755; height: 34px; flex-shrink: 0;">
+    <div class="m" style="padding: 0 16px; font-size: 12px; font-weight: 700; color: #d4a647; letter-spacing: 0.06em; border-right: 1px solid #1c1c22; line-height: 34px;">EDWARD LEE · 發掘十倍股</div>
+    <a href="#" class="m" style="padding: 0 14px; font-size: 11px; color: #8a857a; line-height: 34px;">HOME</a>
+    <div class="m" style="padding: 0 14px; font-size: 11px; background: #d4a647; color: #050506; font-weight: 700; line-height: 34px;">RS</div>
+    <a href="#" class="m" style="padding: 0 14px; font-size: 11px; color: #8a857a; line-height: 34px;">MOVERS</a>
+    <a href="#" class="m" style="padding: 0 14px; font-size: 11px; color: #8a857a; line-height: 34px;">KEYWORDS</a>
+    <div style="margin-left: auto; display: flex; align-items: center;">
+      <a href="#" class="m" style="padding: 0 16px; font-size: 11px; color: #8a857a; border-left: 1px solid #1c1c22; line-height: 34px;">LOGOUT</a>
+    </div>
+  </div>
+
+  <!-- 指令列 -->
+  <div style="display: flex; align-items: center; gap: 0; background: #08080a; border-bottom: 1px solid #16161b; height: 36px; flex-shrink: 0;">
+    <div class="m" style="padding: 0 16px; font-size: 12px; font-weight: 700; color: #d4a647; line-height: 36px; border-right: 1px solid #16161b;">HK RS</div>
+    <div class="m" style="padding: 0 12px; font-size: 11px; color: #6b665d; line-height: 36px;">1,208 隻 · vs 2800.HK · 2026-09-04</div>
+    <div style="display: flex; margin-left: 22px; height: 36px;">
+      <div class="m" style="padding: 0 13px; font-size: 11px; color: #050506; background: #d4a647; font-weight: 700; line-height: 36px;">HK</div>
+      <a href="#" class="m" style="padding: 0 13px; font-size: 11px; color: #8a857a; line-height: 36px;">US</a>
+      <a href="#" class="m" style="padding: 0 13px; font-size: 11px; color: #8a857a; line-height: 36px;">CN</a>
+    </div>
+    <div class="m" style="margin-left: 22px; padding: 0 12px; font-size: 11px; color: #4a463f; border: 1px solid #1c1c22; line-height: 24px;">/ 搜尋代碼或公司名</div>
+    <div class="m" style="margin-left: auto; padding: 0 16px; font-size: 11px; color: #6b665d;">FILTER: <span style="color: #d4a647;">COMP≥61</span> · 符合 <span style="color: #e6e1d6; font-weight: 700;">419</span></div>
+  </div>
+
+  <!-- 密集表格 -->
+  <div style="flex-grow: 1; overflow: hidden;">
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="background: #0b0b0e; border-bottom: 1px solid #d4a64744;">
+          <th class="m" style="text-align: right; padding: 7px 8px 7px 16px; font-size: 10px; color: #6b665d; font-weight: 500;">#</th>
+          <th class="m" style="text-align: left; padding: 7px 8px; font-size: 10px; color: #6b665d; font-weight: 500;">TICKER</th>
+          <th style="text-align: left; padding: 7px 8px; font-size: 10px; color: #6b665d; font-weight: 500;">NAME</th>
+          <th style="text-align: left; padding: 7px 8px; font-size: 10px; color: #6b665d; font-weight: 500;">SECTOR</th>
+          <th class="m" style="text-align: right; padding: 7px 8px; font-size: 10px; color: #6b665d; font-weight: 500;">MKT CAP</th>
+          <th class="m" style="text-align: center; padding: 7px 8px; font-size: 10px; color: #d4a647; font-weight: 700;">COMP</th>
+          <th class="m" style="text-align: center; padding: 7px 6px; font-size: 10px; color: #6b665d; font-weight: 500;">5D</th>
+          <th class="m" style="text-align: center; padding: 7px 6px; font-size: 10px; color: #6b665d; font-weight: 500;">10D</th>
+          <th class="m" style="text-align: center; padding: 7px 6px; font-size: 10px; color: #6b665d; font-weight: 500;">20D</th>
+          <th class="m" style="text-align: center; padding: 7px 6px; font-size: 10px; color: #6b665d; font-weight: 500;">50D</th>
+          <th class="m" style="text-align: center; padding: 7px 6px; font-size: 10px; color: #6b665d; font-weight: 500;">100D</th>
+          <th class="m" style="text-align: center; padding: 7px 6px; font-size: 10px; color: #6b665d; font-weight: 500;">200D</th>
+          <th class="m" style="text-align: center; padding: 7px 6px; font-size: 10px; color: #6b665d; font-weight: 500;">365D</th>
+          <th class="m" style="text-align: center; padding: 7px 8px; font-size: 10px; color: #6b665d; font-weight: 500;">STG</th>
+          <th class="m" style="text-align: right; padding: 7px 16px 7px 8px; font-size: 10px; color: #6b665d; font-weight: 500;">TURNOVER</th>
+        </tr>
+      </thead>
+      <tbody>
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="19">
+          <tr style="border-bottom: 1px solid #0d0d10; background: {{r.zebra}};">
+            <td class="m" style="padding: 5px 8px 5px 16px; font-size: 11px; color: #4a463f; text-align: right;">{{r.n}}</td>
+            <td class="m" style="padding: 5px 8px; font-size: 12px; color: #d4a647;">{{r.code}}</td>
+            <td style="padding: 5px 8px; font-size: 12px; color: #e6e1d6;">{{r.name}}</td>
+            <td style="padding: 5px 8px; font-size: 11px; color: #5f5a52;">{{r.sector}}</td>
+            <td class="m" style="padding: 5px 8px; font-size: 11px; color: #a9a396; text-align: right;">{{r.cap}}</td>
+            <td class="m" style="padding: 3px 4px; font-size: 12px; font-weight: 700; text-align: center; color: {{r.c.fg}}; background: {{r.c.bg}};">{{r.comp}}</td>
+            <td class="m" style="padding: 3px 3px; font-size: 11px; text-align: center; color: {{r.s5.fg}}; background: {{r.s5.bg}};">{{r.d5}}</td>
+            <td class="m" style="padding: 3px 3px; font-size: 11px; text-align: center; color: {{r.s10.fg}}; background: {{r.s10.bg}};">{{r.d10}}</td>
+            <td class="m" style="padding: 3px 3px; font-size: 11px; text-align: center; color: {{r.s20.fg}}; background: {{r.s20.bg}};">{{r.d20}}</td>
+            <td class="m" style="padding: 3px 3px; font-size: 11px; text-align: center; color: {{r.s50.fg}}; background: {{r.s50.bg}};">{{r.d50}}</td>
+            <td class="m" style="padding: 3px 3px; font-size: 11px; text-align: center; color: {{r.s100.fg}}; background: {{r.s100.bg}};">{{r.d100}}</td>
+            <td class="m" style="padding: 3px 3px; font-size: 11px; text-align: center; color: {{r.s200.fg}}; background: {{r.s200.bg}};">{{r.d200}}</td>
+            <td class="m" style="padding: 3px 3px; font-size: 11px; text-align: center; color: {{r.s365.fg}}; background: {{r.s365.bg}};">{{r.d365}}</td>
+            <td class="m" style="padding: 5px 8px; font-size: 10px; text-align: center; color: {{r.stageColor}};">{{r.stage}}</td>
+            <td class="m" style="padding: 5px 16px 5px 8px; font-size: 11px; color: #a9a396; text-align: right;">{{r.turn}}</td>
+          </tr>
+        </sc-for>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="m" style="display: flex; align-items: center; gap: 18px; background: #0b0b0e; border-top: 1px solid #1c1c22; padding: 0 16px; height: 26px; flex-shrink: 0; font-size: 10px; color: #6b665d;">
+    <span>ROWS 1–19 / 419</span>
+    <span style="color: #4a463f;">|</span>
+    <span>SORT <span style="color: #d4a647;">COMP DESC</span></span>
+    <span style="color: #4a463f;">|</span>
+    <span>熱圖 <span style="color: #ef5350;">■</span> 1–40 <span style="color: #b9853f;">■</span> 41–60 <span style="color: #d4a647;">■</span> 61–80 <span style="color: #66bb6a;">■</span> 81–99</span>
+    <span style="margin-left: auto; color: #4a463f;">↑↓ 移動　ENTER 開啟明細　E 匯出 CSV</span>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    // 熱圖:分數越高越綠,越低越紅 —— 一眼掃出強弱分佈
+    const heat = (v) => {
+      if (v >= 81) return { fg: '#8ee095', bg: 'rgba(102,187,106,0.16)' };
+      if (v >= 61) return { fg: '#e3c169', bg: 'rgba(212,166,71,0.13)' };
+      if (v >= 41) return { fg: '#c9945a', bg: 'rgba(185,133,63,0.10)' };
+      return { fg: '#ef7b78', bg: 'rgba(239,83,80,0.12)' };
+    };
+    const raw = [
+      [1,'0259.HK','億都(國際控股)','Technology','28.1億',81,98,97,95,87,80,74,66,'S2','13.8M'],
+      [2,'8299.HK','大唐黃金','Basic Materials','48.3億',75,92,71,35,46,52,61,58,'S2','23.0M'],
+      [3,'0580.HK','賽晶科技','Technology','26.2億',74,98,96,94,67,63,58,49,'S2','135.4M'],
+      [4,'2425.HK','澳亞集團','Consumer Defensive','22.6億',62,11,14,17,24,29,33,37,'S3','0'],
+      [5,'3900.HK','綠城中國','Real Estate','212億',60,95,95,95,61,52,44,40,'S2','238.5M'],
+      [6,'3700.HK','映宇宙','Communication Svc','13.4億',46,97,95,93,72,55,39,31,'S1B','7.9M'],
+      [7,'1357.HK','美圖公司','Communication Svc','198億',45,98,95,92,21,25,28,34,'S1B','1.7B'],
+      [8,'6660.HK','艾美疫苗','Healthcare','36.8億',36,99,82,64,55,38,22,18,'S1B','11.2M'],
+      [9,'0861.HK','神州控股','Industrials','30.4億',33,95,93,91,31,24,19,15,'S1','4.3M'],
+      [10,'1024.HK','快手-W','Communication Svc','1,971億',29,97,94,91,13,15,17,21,'S1','9.3B'],
+      [11,'2490.HK','樂艙物流','Industrials','24.7億',24,72,80,89,14,13,12,11,'S1','2.7M'],
+      [12,'6683.HK','巨星傳奇','Consumer Defensive','57.5億',36,80,61,42,60,55,48,44,'S1B','228.2M'],
+      [13,'0700.HK','騰訊控股','Communication Svc','38,420億',88,91,89,86,84,82,79,76,'S2','12.4B'],
+      [14,'9988.HK','阿里巴巴-W','Consumer Cyclical','21,870億',79,84,81,77,74,71,68,62,'S2','8.9B'],
+      [15,'0388.HK','香港交易所','Financial Svc','4,510億',72,77,75,73,70,68,65,61,'S2','3.2B'],
+      [16,'1810.HK','小米集團-W','Technology','6,240億',68,73,71,69,66,62,58,54,'S2','5.7B'],
+      [17,'3690.HK','美團-W','Consumer Cyclical','7,120億',54,62,59,56,51,47,44,41,'S3','4.1B'],
+      [18,'0941.HK','中國移動','Communication Svc','16,880億',49,44,46,48,52,55,58,60,'S3','1.9B'],
+      [19,'1299.HK','友邦保險','Financial Svc','7,340億',41,38,40,42,45,48,51,53,'S3','2.6B'],
+    ];
+    const stageColor = (s) => (s === 'S2' ? '#66bb6a' : s === 'S3' ? '#e8bc5a' : s === 'S1B' ? '#8fa8c8' : '#7a7266');
+    return {
+      rows: raw.map((r, i) => ({
+        n: r[0], code: r[1], name: r[2], sector: r[3], cap: r[4],
+        comp: r[5], d5: r[6], d10: r[7], d20: r[8], d50: r[9], d100: r[10], d200: r[11], d365: r[12],
+        stage: r[13], turn: r[14],
+        c: heat(r[5]), s5: heat(r[6]), s10: heat(r[7]), s20: heat(r[8]),
+        s50: heat(r[9]), s100: heat(r[10]), s200: heat(r[11]), s365: heat(r[12]),
+        stageColor: stageColor(r[13]),
+        zebra: i % 2 === 0 ? '#050506' : '#07070a',
+      })),
+    };
+  }
+}
+</script>
+</body>
+</html>

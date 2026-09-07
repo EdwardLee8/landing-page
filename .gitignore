@@ -64,3 +64,8 @@ us_themes_industry.json
 # 回測輸出(內部分析用,非網站內容)
 backtest_finetune/
 backtest_walkforward/
+
+# 設計稿:原始檔(.dc.html / canvas.json)要留,
+# 但 seed 出來的畫布檔每個 2.5MB 且每次改稿重新產生,屬建置產物。
+.design/*.html
+!.design/*.dc.html

@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #d4a647; text-decoration: none; }
+    a:hover { color: #e8bc5a; }
+    .num { font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #08080a; color: #e8e0d0; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden;">
+
+  <!-- 頁首 -->
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; padding: 26px 48px 18px; border-bottom: 1px solid #d4a64744;">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div style="display: flex; align-items: center; gap: 9px; font-size: 11px; letter-spacing: 0.18em; color: #7a7266; text-transform: uppercase;">
+        <span>Edward Lee · 發掘十倍股</span>
+        <span style="color: #3a3a44;">/</span>
+        <a href="#" style="color: #7a7266;">研究資料庫</a>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 16px;">
+        <div style="font-family: 'Noto Serif TC', serif; font-size: 28px; font-weight: 700; color: #f4efe4;">港股相對強度評分</div>
+        <div class="num" style="font-size: 13px; color: #7a7266;">2026-09-04 · 1,208 隻 · vs 2800.HK</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="display: flex; border: 1px solid #2a2a33;">
+        <a href="#" style="font-size: 13px; padding: 7px 17px; color: #08080a; background: #d4a647; font-weight: 700;">港股</a>
+        <a href="#" style="font-size: 13px; padding: 7px 17px; color: #8b8478; border-left: 1px solid #2a2a33;">美股</a>
+        <a href="#" style="font-size: 13px; padding: 7px 17px; color: #8b8478; border-left: 1px solid #2a2a33;">A 股</a>
+      </div>
+      <a href="#" style="font-size: 13px; color: #8b8478; padding: 7px 15px; border: 1px solid #2a2a33;">登出</a>
+    </div>
+  </div>
+
+  <!-- 篩選列 -->
+  <div style="display: flex; align-items: flex-end; gap: 26px; padding: 16px 48px; border-bottom: 1px solid #16161c;">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div style="font-size: 10px; letter-spacing: 0.14em; color: #6d675d; text-transform: uppercase;">搜尋</div>
+      <div style="width: 210px; border-bottom: 1px solid #2a2a33; padding-bottom: 6px; font-size: 13px; color: #55504a;">代碼 / 公司名</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div style="font-size: 10px; letter-spacing: 0.14em; color: #6d675d; text-transform: uppercase;">Composite</div>
+      <div style="display: flex; gap: 7px;">
+        <div style="font-size: 12px; padding: 5px 12px; border: 1px solid #d4a647; color: #d4a647;">≥ 81</div>
+        <div style="font-size: 12px; padding: 5px 12px; border: 1px solid #2a2a33; color: #8b8478;">≥ 61</div>
+        <div style="font-size: 12px; padding: 5px 12px; border: 1px solid #2a2a33; color: #8b8478;">全部</div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div style="font-size: 10px; letter-spacing: 0.14em; color: #6d675d; text-transform: uppercase;">市值 (HKD)</div>
+      <div style="font-size: 12px; padding: 5px 12px; border: 1px solid #2a2a33; color: #8b8478;">不限 ▾</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div style="font-size: 10px; letter-spacing: 0.14em; color: #6d675d; text-transform: uppercase;">Weinstein Stage</div>
+      <div style="font-size: 12px; padding: 5px 12px; border: 1px solid #2a2a33; color: #8b8478;">不限 ▾</div>
+    </div>
+    <div class="num" style="margin-left: auto; font-size: 12px; color: #6d675d;">符合 <span style="color: #d4a647; font-weight: 700;">247</span> 隻</div>
+  </div>
+
+  <!-- 表格 -->
+  <div style="flex-grow: 1; padding: 0 48px; overflow: hidden;">
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="border-bottom: 1px solid #d4a64744;">
+          <th style="text-align: left; padding: 13px 10px 11px 0; font-size: 10px; letter-spacing: 0.14em; color: #6d675d; font-weight: 500; text-transform: uppercase;">#</th>
+          <th style="text-align: left; padding: 13px 10px 11px; font-size: 10px; letter-spacing: 0.14em; color: #6d675d; font-weight: 500; text-transform: uppercase;">代碼</th>
+          <th style="text-align: left; padding: 13px 10px 11px; font-size: 10px; letter-spacing: 0.14em; color: #6d675d; font-weight: 500; text-transform: uppercase;">公司名稱</th>
+          <th style="text-align: left; padding: 13px 10px 11px; font-size: 10px; letter-spacing: 0.14em; color: #6d675d; font-weight: 500; text-transform: uppercase;">行業</th>
+          <th style="text-align: right; padding: 13px 10px 11px; font-size: 10px; letter-spacing: 0.14em; color: #6d675d; font-weight: 500; text-transform: uppercase;">市值</th>
+          <th style="text-align: right; padding: 13px 18px 11px 10px; font-size: 10px; letter-spacing: 0.14em; color: #d4a647; font-weight: 700; text-transform: uppercase;">Composite</th>
+          <th style="text-align: right; padding: 13px 10px 11px; font-size: 10px; letter-spacing: 0.14em; color: #6d675d; font-weight: 500;">5D</th>
+          <th style="text-align: right; padding: 13px 10px 11px; font-size: 10px; letter-spacing: 0.14em; color: #6d675d; font-weight: 500;">20D</th>
+          <th style="text-align: right; padding: 13px 10px 11px; font-size: 10px; letter-spacing: 0.14em; color: #6d675d; font-weight: 500;">50D</th>
+          <th style="text-align: right; padding: 13px 10px 11px; font-size: 10px; letter-spacing: 0.14em; color: #6d675d; font-weight: 500;">200D</th>
+          <th style="text-align: left; padding: 13px 0 11px 22px; font-size: 10px; letter-spacing: 0.14em; color: #6d675d; font-weight: 500; text-transform: uppercase;">Stage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="11">
+          <tr style="border-bottom: 1px solid #14141a;">
+            <td class="num" style="padding: 12px 10px 12px 0; font-size: 12px; color: #55504a;">{{r.n}}</td>
+            <td class="num" style="padding: 12px 10px; font-size: 13px; color: #d4a647; font-weight: 500;">{{r.code}}</td>
+            <td style="padding: 12px 10px; font-size: 14px; color: #f4efe4;">{{r.name}}</td>
+            <td style="padding: 12px 10px; font-size: 12px; color: #7a7266;">{{r.sector}}</td>
+            <td class="num" style="padding: 12px 10px; font-size: 13px; color: #b9b1a3; text-align: right;">{{r.cap}}</td>
+            <td style="padding: 12px 18px 12px 10px; text-align: right;">
+              <div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px;">
+                <div style="width: 62px; height: 3px; background: #1a1a20;">
+                  <div style="height: 3px; background: {{r.barColor}}; width: {{r.barWidth}};"></div>
+                </div>
+                <span class="num" style="font-size: 16px; font-weight: 700; color: {{r.barColor}}; min-width: 22px; display: inline-block;">{{r.comp}}</span>
+              </div>
+            </td>
+            <td class="num" style="padding: 12px 10px; font-size: 13px; text-align: right; color: #b9b1a3;">{{r.d5}}</td>
+            <td class="num" style="padding: 12px 10px; font-size: 13px; text-align: right; color: #b9b1a3;">{{r.d20}}</td>
+            <td class="num" style="padding: 12px 10px; font-size: 13px; text-align: right; color: #b9b1a3;">{{r.d50}}</td>
+            <td class="num" style="padding: 12px 10px; font-size: 13px; text-align: right; color: #b9b1a3;">{{r.d200}}</td>
+            <td style="padding: 12px 0 12px 22px;">
+              <span style="font-size: 11px; letter-spacing: 0.04em; color: {{r.stageColor}};">{{r.stage}}</span>
+            </td>
+          </tr>
+        </sc-for>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px 48px 20px; border-top: 1px solid #16161c;">
+    <div class="num" style="font-size: 12px; color: #6d675d;">顯示 1–11 / 247</div>
+    <div style="display: flex; gap: 6px;">
+      <div class="num" style="font-size: 12px; padding: 6px 13px; border: 1px solid #d4a647; color: #d4a647;">1</div>
+      <div class="num" style="font-size: 12px; padding: 6px 13px; border: 1px solid #2a2a33; color: #8b8478;">2</div>
+      <div class="num" style="font-size: 12px; padding: 6px 13px; border: 1px solid #2a2a33; color: #8b8478;">3</div>
+      <div class="num" style="font-size: 12px; padding: 6px 13px; border: 1px solid #2a2a33; color: #8b8478;">›</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const raw = [
+      [1, '0259.HK', '億都(國際控股)', 'Technology', '28.1 億', 81, 98, 95, 87, 74, 'Stage 2 上升'],
+      [2, '8299.HK', '大唐黃金', 'Basic Materials', '48.3 億', 75, 92, 35, 46, 61, 'Stage 2 上升'],
+      [3, '0580.HK', '賽晶科技', 'Technology', '26.2 億', 74, 98, 94, 67, 58, 'Stage 2 上升'],
+      [4, '2425.HK', '澳亞集團', 'Consumer Defensive', '22.6 億', 62, 11, 17, 24, 33, 'Stage 3 頂部'],
+      [5, '3900.HK', '綠城中國', 'Real Estate', '212 億', 60, 95, 95, 61, 44, 'Stage 2 上升'],
+      [6, '3700.HK', '映宇宙', 'Communication Services', '13.4 億', 46, 97, 93, 72, 39, 'Stage 1B 準備'],
+      [7, '1357.HK', '美圖公司', 'Communication Services', '198 億', 45, 98, 92, 21, 28, 'Stage 1B 準備'],
+      [8, '6660.HK', '艾美疫苗', 'Healthcare', '36.8 億', 36, 99, 64, 55, 22, 'Stage 1B 準備'],
+      [9, '0861.HK', '神州控股', 'Industrials', '30.4 億', 33, 95, 91, 31, 19, 'Stage 1 底部'],
+      [10, '2490.HK', '樂艙物流', 'Industrials', '24.7 億', 24, 72, 89, 14, 12, 'Stage 1 底部'],
+      [11, '1024.HK', '快手-W', 'Communication Services', '1,971 億', 29, 97, 91, 13, 17, 'Stage 1 底部'],
+    ];
+    const color = (c) => (c >= 81 ? '#66bb6a' : c >= 61 ? '#d4a647' : c >= 41 ? '#b9853f' : '#ef5350');
+    const stageColor = (s) =>
+      s.indexOf('Stage 2') === 0 ? '#66bb6a'
+        : s.indexOf('Stage 3') === 0 ? '#e8bc5a'
+        : s.indexOf('Stage 1B') === 0 ? '#8fa8c8'
+        : '#7a7266';
+    return {
+      rows: raw.map((r) => ({
+        n: r[0], code: r[1], name: r[2], sector: r[3], cap: r[4],
+        comp: r[5], d5: r[6], d20: r[7], d50: r[8], d200: r[9], stage: r[10],
+        barColor: color(r[5]),
+        barWidth: r[5] + '%',
+        stageColor: stageColor(r[10]),
+      })),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -51,3 +51,4 @@ worker/
 docs/
 *.mjs
 wrangler*.jsonc
+.design/

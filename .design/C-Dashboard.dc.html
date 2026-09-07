@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #d4a647; text-decoration: none; }
+    a:hover { color: #e8bc5a; }
+    .num { font-family: Manrope, 'Noto Sans TC', system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #0a0a0f; color: #e8e0d0; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; overflow: hidden;">
+
+  <!-- 側邊導覽 -->
+  <div style="width: 218px; flex-shrink: 0; background: #0d0d14; border-right: 1px solid #1c1c26; display: flex; flex-direction: column; padding: 24px 0;">
+    <div style="padding: 0 22px 22px;">
+      <div class="num" style="font-size: 15px; font-weight: 800; color: #f0ebe0; letter-spacing: -0.01em;">Edward LEE</div>
+      <div style="font-size: 11px; color: #6f6a60; margin-top: 3px;">發掘十倍股</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 2px; padding: 0 12px;">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="6">
+        <a href="#" style="display: flex; align-items: center; gap: 11px; padding: 9px 12px; border-radius: 7px; background: {{n.bg}};">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: {{n.dot}};"></span>
+          <span style="font-size: 13px; color: {{n.fg}}; font-weight: {{n.weight}};">{{n.label}}</span>
+          <span class="num" style="margin-left: auto; font-size: 11px; color: #58544c;">{{n.count}}</span>
+        </a>
+      </sc-for>
+    </div>
+    <div style="margin-top: auto; padding: 0 22px;">
+      <div style="border-top: 1px solid #1c1c26; padding-top: 16px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="font-size: 11px; color: #58544c;">會員</div>
+        <a href="#" style="font-size: 12px; color: #8b8478;">登出</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主內容 -->
+  <div style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
+    <div style="padding: 26px 32px 20px; display: flex; align-items: flex-end; justify-content: space-between;">
+      <div>
+        <div class="num" style="font-size: 24px; font-weight: 800; color: #f0ebe0; letter-spacing: -0.015em;">研究資料庫</div>
+        <div style="font-size: 13px; color: #6f6a60; margin-top: 5px;">15 個資料庫 · 覆蓋 8,343 隻股票 · 更新於 2026-09-04</div>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <sc-for list="{{stats}}" as="s" hint-placeholder-count="3">
+          <div style="background: #12121a; border: 1px solid #1c1c26; border-radius: 10px; padding: 10px 16px; min-width: 104px;">
+            <div style="font-size: 10px; color: #6f6a60; letter-spacing: 0.06em;">{{s.label}}</div>
+            <div class="num" style="font-size: 19px; font-weight: 700; color: {{s.color}}; margin-top: 3px;">{{s.value}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="flex-grow: 1; padding: 0 32px 26px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px;">
+        <sc-for list="{{cards}}" as="c" hint-placeholder-count="6">
+          <a href="#" style="background: #12121a; border: 1px solid #1c1c26; border-radius: 12px; padding: 17px 18px 15px; display: flex; flex-direction: column; gap: 12px; min-height: 172px;">
+            <div style="display: flex; align-items: flex-start; gap: 10px;">
+              <div style="display: flex; flex-direction: column; gap: 4px; flex-grow: 1;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 10px; font-weight: 700; color: {{c.mktColor}}; letter-spacing: 0.08em;">{{c.mkt}}</span>
+                  <span class="num" style="font-size: 10px; color: #58544c;">{{c.rows}}</span>
+                </div>
+                <div style="font-size: 14px; font-weight: 700; color: #f0ebe0;">{{c.name}}</div>
+              </div>
+              <div style="color: #3d3a34;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+              </div>
+            </div>
+
+            <div style="font-size: 11.5px; line-height: 1.6; color: #6f6a60;">{{c.desc}}</div>
+
+            <!-- 資料預覽:走勢縮圖 + 領先個股 -->
+            <div style="margin-top: auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;">
+              <div style="display: flex; flex-direction: column; gap: 3px;">
+                <div style="font-size: 10px; color: #58544c;">{{c.leadLabel}}</div>
+                <div style="display: flex; align-items: baseline; gap: 6px;">
+                  <span class="num" style="font-size: 12px; color: #d4a647; font-weight: 600;">{{c.leadCode}}</span>
+                  <span class="num" style="font-size: 15px; font-weight: 700; color: {{c.leadColor}};">{{c.leadValue}}</span>
+                </div>
+              </div>
+              <svg width="96" height="30" viewBox="0 0 96 30" fill="none" preserveAspectRatio="none">
+                <polyline points="{{c.spark}}" stroke="{{c.leadColor}}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="0.85"/>
+              </svg>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const M = { HK: '#66bb6a', US: '#5c9bdd', CN: '#ef5350', ALL: '#d4a647' };
+    const spark = (pts) => pts.map((v, i) => (i * (96 / (pts.length - 1))).toFixed(1) + ',' + (30 - v * 0.28).toFixed(1)).join(' ');
+    return {
+      nav: [
+        ['總覽', '15', true], ['港股', '5', false], ['美股', '5', false],
+        ['A 股', '3', false], ['每日追蹤', '1', false], ['ETF', '1', false],
+      ].map(([label, count, active]) => ({
+        label, count,
+        bg: active ? 'rgba(212,166,71,0.12)' : 'transparent',
+        fg: active ? '#d4a647' : '#8b8478',
+        weight: active ? '700' : '400',
+        dot: active ? '#d4a647' : '#2e2b26',
+      })),
+      stats: [
+        { label: '強勢股 ≥81', value: '1,542', color: '#66bb6a' },
+        { label: '今日最大 Δ', value: '+31', color: '#d4a647' },
+        { label: '覆蓋股票', value: '8,343', color: '#e8e0d0' },
+      ],
+      cards: [
+        { mkt: 'HK', rows: '1,208 隻', name: '港股相對強度評分',
+          desc: '8 個 timeframe RS Rating 加 Composite 綜合評分,基準 2800.HK',
+          leadLabel: '本日最強', leadCode: '0700.HK', leadValue: '88', pts: [62, 68, 71, 75, 79, 84, 88] },
+        { mkt: 'HK', rows: '801 間', name: '2026 中期業績前景庫',
+          desc: '市場與行業排名、評分拆解、財務增長,附 6–18 個月展望',
+          leadLabel: '最高評分', leadCode: '0700.HK', leadValue: '9.2', pts: [70, 72, 74, 79, 83, 88, 92] },
+        { mkt: 'US', rows: '1,968 隻', name: '美股相對強度評分',
+          desc: '8 個 timeframe RS Rating 加 Composite 綜合評分,基準 SPY',
+          leadLabel: '本日最強', leadCode: 'NVDA', leadValue: '96', pts: [74, 78, 82, 85, 89, 93, 96] },
+        { mkt: 'US', rows: '583 隻', name: '業績電話會議資料庫',
+          desc: 'Bull／bear thesis、關鍵字回報信號、同業比較',
+          leadLabel: '最新更新', leadCode: 'GOOGL', leadValue: '06-07', pts: [40, 52, 48, 61, 58, 70, 66] },
+        { mkt: 'CN', rows: '5,171 隻', name: 'A 股相對強度評分',
+          desc: '8 個 timeframe RS Rating 加 Composite,基準中證全指',
+          leadLabel: '本日最強', leadCode: '300750', leadValue: '91', pts: [55, 61, 58, 68, 74, 86, 91] },
+        { mkt: 'ALL', rows: '300 隻', name: 'RS 排名上升榜',
+          desc: '三個市場 Composite 日對日上升 Top 100,保留近一個月',
+          leadLabel: '最大 Delta', leadCode: '6660.HK', leadValue: '+23', pts: [13, 18, 22, 20, 27, 31, 36] },
+      ].map((c) => ({
+        ...c,
+        mktColor: M[c.mkt],
+        leadColor: c.mkt === 'CN' ? '#ef5350' : '#66bb6a',
+        spark: spark(c.pts),
+      })),
+    };
+  }
+}
+</script>
+</body>
+</html>

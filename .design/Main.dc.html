@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #d4a647; text-decoration: none; }
+    a:hover { color: #e8bc5a; }
+    .num { font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #08080a; color: #e8e0d0; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden;">
+
+  <!-- 頁首 -->
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; padding: 30px 56px 22px; border-bottom: 1px solid #d4a64744;">
+    <div style="display: flex; flex-direction: column; gap: 7px;">
+      <div style="font-size: 11px; letter-spacing: 0.22em; color: #7a7266; text-transform: uppercase;">Edward Lee&nbsp;&nbsp;·&nbsp;&nbsp;發掘十倍股</div>
+      <div style="font-family: 'Noto Serif TC', serif; font-size: 32px; font-weight: 700; color: #f4efe4; letter-spacing: 0.01em;">研究資料庫</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 26px;">
+      <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+        <div style="font-size: 11px; letter-spacing: 0.14em; color: #6d675d; text-transform: uppercase;">資料更新</div>
+        <div class="num" style="font-size: 14px; color: #d4a647; font-weight: 500;">2026-09-04</div>
+      </div>
+      <div style="width: 1px; height: 34px; background: #23232c;"></div>
+      <a href="#" style="font-size: 13px; color: #8b8478; border-bottom: 1px solid #2a2a33; padding-bottom: 2px;">登出</a>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1; padding: 34px 56px 0; display: flex; flex-direction: column; gap: 30px; overflow: hidden;">
+
+    <!-- 港股 -->
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; align-items: baseline; gap: 14px;">
+        <div style="font-family: 'Noto Serif TC', serif; font-size: 17px; font-weight: 700; color: #f4efe4;">港股</div>
+        <div style="flex-grow: 1; height: 1px; background: linear-gradient(90deg, #d4a64766, #1a1a20);"></div>
+        <div class="num" style="font-size: 11px; letter-spacing: 0.14em; color: #6d675d;">5 個資料庫</div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; background: #1a1a20;">
+        <a href="#" style="background: #08080a; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">關鍵字資料庫</div>
+          <div style="font-size: 12px; line-height: 1.65; color: #7a7266;">業務關鍵字、相關性分組,可按主題篩選</div>
+          <div class="num" style="font-size: 11px; color: #d4a647; letter-spacing: 0.06em; margin-top: auto;">1,300+ 間</div>
+        </a>
+        <a href="#" style="background: #08080a; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">2026 中期業績前景庫</div>
+          <div style="font-size: 12px; line-height: 1.65; color: #7a7266;">市場／行業排名、評分拆解、6–18 個月展望</div>
+          <div class="num" style="font-size: 11px; color: #d4a647; letter-spacing: 0.06em; margin-top: auto;">801 間</div>
+        </a>
+        <a href="#" style="background: #08080a; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">行業首三高分</div>
+          <div style="font-size: 12px; line-height: 1.65; color: #7a7266;">12 個大行業各首三名,附繁中前景短評</div>
+          <div class="num" style="font-size: 11px; color: #d4a647; letter-spacing: 0.06em; margin-top: auto;">36 間</div>
+        </a>
+        <a href="#" style="background: #08080a; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">2025 下半年資料庫</div>
+          <div style="font-size: 12px; line-height: 1.65; color: #7a7266;">財務數據、相對強弱、市值分類篩選</div>
+          <div class="num" style="font-size: 11px; color: #d4a647; letter-spacing: 0.06em; margin-top: auto;">2,012 隻</div>
+        </a>
+        <a href="#" style="background: #0d0d12; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; box-shadow: inset 2px 0 0 #d4a647;">
+          <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">相對強度評分</div>
+          <div style="font-size: 12px; line-height: 1.65; color: #7a7266;">8 個 timeframe RS Rating + Composite(vs 2800.HK)</div>
+          <div class="num" style="font-size: 11px; color: #d4a647; letter-spacing: 0.06em; margin-top: auto;">1,208 隻</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 美股 -->
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; align-items: baseline; gap: 14px;">
+        <div style="font-family: 'Noto Serif TC', serif; font-size: 17px; font-weight: 700; color: #f4efe4;">美股</div>
+        <div style="flex-grow: 1; height: 1px; background: linear-gradient(90deg, #d4a64766, #1a1a20);"></div>
+        <div class="num" style="font-size: 11px; letter-spacing: 0.14em; color: #6d675d;">5 個資料庫</div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; background: #1a1a20;">
+        <a href="#" style="background: #08080a; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">關鍵字資料庫</div>
+          <div style="font-size: 12px; line-height: 1.65; color: #7a7266;">業務關鍵字、相關性分組</div>
+          <div class="num" style="font-size: 11px; color: #d4a647; letter-spacing: 0.06em; margin-top: auto;">3,000+ 間</div>
+        </a>
+        <a href="#" style="background: #08080a; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">美股資料庫</div>
+          <div style="font-size: 12px; line-height: 1.65; color: #7a7266;">財務數據、相對強弱、市值分類篩選</div>
+          <div class="num" style="font-size: 11px; color: #d4a647; letter-spacing: 0.06em; margin-top: auto;">2,643 隻</div>
+        </a>
+        <a href="#" style="background: #08080a; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">相對強度評分</div>
+          <div style="font-size: 12px; line-height: 1.65; color: #7a7266;">8 個 timeframe + Composite(vs SPY)</div>
+          <div class="num" style="font-size: 11px; color: #d4a647; letter-spacing: 0.06em; margin-top: auto;">1,968 隻</div>
+        </a>
+        <a href="#" style="background: #08080a; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">業績電話會議</div>
+          <div style="font-size: 12px; line-height: 1.65; color: #7a7266;">Bull／bear thesis、關鍵字回報信號、同業比較</div>
+          <div class="num" style="font-size: 11px; color: #d4a647; letter-spacing: 0.06em; margin-top: auto;">583 隻</div>
+        </a>
+        <a href="#" style="background: #08080a; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">業務最新記錄</div>
+          <div style="font-size: 12px; line-height: 1.65; color: #7a7266;">背景 + 業績 + 催化劑 + 風險</div>
+          <div class="num" style="font-size: 11px; color: #d4a647; letter-spacing: 0.06em; margin-top: auto;">Tier 1</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- A 股 + 每日 -->
+    <div style="display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 44px;">
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; align-items: baseline; gap: 14px;">
+          <div style="font-family: 'Noto Serif TC', serif; font-size: 17px; font-weight: 700; color: #f4efe4;">A 股</div>
+          <div style="flex-grow: 1; height: 1px; background: linear-gradient(90deg, #d4a64766, #1a1a20);"></div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: #1a1a20;">
+          <a href="#" style="background: #08080a; padding: 15px 18px 16px; display: flex; flex-direction: column; gap: 7px;">
+            <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">關鍵字資料庫</div>
+            <div class="num" style="font-size: 11px; color: #d4a647;">5,000+ 間</div>
+          </a>
+          <a href="#" style="background: #08080a; padding: 15px 18px 16px; display: flex; flex-direction: column; gap: 7px;">
+            <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">深交所調研紀要</div>
+            <div class="num" style="font-size: 11px; color: #d4a647;">1,000+ 間</div>
+          </a>
+          <a href="#" style="background: #08080a; padding: 15px 18px 16px; display: flex; flex-direction: column; gap: 7px;">
+            <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">相對強度評分</div>
+            <div class="num" style="font-size: 11px; color: #d4a647;">5,171 隻</div>
+          </a>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; align-items: baseline; gap: 14px;">
+          <div style="font-family: 'Noto Serif TC', serif; font-size: 17px; font-weight: 700; color: #f4efe4;">每日追蹤</div>
+          <div style="flex-grow: 1; height: 1px; background: linear-gradient(90deg, #d4a64766, #1a1a20);"></div>
+        </div>
+        <a href="#" style="background: #0d0d12; border: 1px solid #d4a64733; padding: 15px 20px 16px; display: flex; align-items: center; gap: 18px;">
+          <div style="display: flex; flex-direction: column; gap: 6px; flex-grow: 1;">
+            <div style="font-size: 14px; font-weight: 700; color: #f4efe4;">RS 排名上升榜</div>
+            <div style="font-size: 12px; color: #7a7266;">三個市場 Composite 日對日上升 Top 100</div>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 3px;">
+            <div class="num" style="font-size: 22px; font-weight: 700; color: #66bb6a; line-height: 1;">+23</div>
+            <div style="font-size: 10px; letter-spacing: 0.1em; color: #6d675d;">最大 DELTA</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
