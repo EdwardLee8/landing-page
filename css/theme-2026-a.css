@@ -94,7 +94,8 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 .story-pillars{max-width:none;grid-template-columns:1.35fr 1fr 1fr;border:0;gap:14px}
 .story-pillar{min-height:190px;padding:32px;border:1px solid var(--border)!important;border-radius:18px;background:#0a0c0f;transition:transform var(--transition),border-color var(--transition),background var(--transition)}
 .story-pillar:hover{transform:translateY(-5px);border-color:rgba(216,174,91,.35)!important;background:#0e1115}
-.story-pillar:first-child{background:#d8ae5b}.story-pillar:first-child .story-pillar-label,.story-pillar:first-child .story-pillar-desc{color:#111215}
+.story-pillar:first-child{background:#d8ae5b}.story-pillar:first-child .story-pillar-label,.story-pillar:first-child .story-pillar-desc{color:#111215}.story-pillar:first-child .story-pillar-icon{background:rgba(9,10,11,.1);color:#111215}
+.story-pillar-icon{width:38px;height:38px;margin-bottom:16px;border-radius:10px;background:rgba(216,174,91,.14);color:var(--gold);display:grid;place-items:center}.story-pillar-icon svg{width:20px;height:20px}
 .story-pillar-label{font-size:1.2rem;letter-spacing:0;margin-bottom:10px}.story-pillar-desc{font-size:.95rem;line-height:1.75;color:#9b9da0}
 .story-aside{color:#8b8d90}
 
@@ -110,7 +111,9 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 .article-card:nth-child(1){grid-column:span 7;min-height:330px;background:linear-gradient(145deg,rgba(216,174,91,.16),#0c0f12 58%)}.article-card:nth-child(2){grid-column:span 5}.article-card:nth-child(n+3):nth-child(-n+5){grid-column:span 4}.article-card:nth-child(n+6){grid-column:span 6}
 .article-card:hover{transform:translateY(-5px);border-color:rgba(216,174,91,.36);background:#11151a}.article-title{font-size:clamp(1.05rem,1.5vw,1.32rem)}
 
-#community{background:#0b0d10}.channel-list{border:0;gap:12px}.channel-item{border:1px solid var(--border);border-radius:15px;background:#101318}.channel-item:hover{background:#14181e}.content-desc{color:#999b9e}
+#community{background:#0b0d10}.channel-list{border:0;gap:12px}.channel-item{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--border);border-radius:15px;background:#101318}.channel-item:hover{background:#14181e}.content-desc{color:#999b9e}
+.channel-icon{flex:0 0 auto;width:34px;height:34px;border-radius:9px;background:rgba(216,174,91,.13);color:var(--gold);display:grid;place-items:center}.channel-icon svg{width:18px;height:18px}
+.channel-body{min-width:0}
 .btn-primary{border-radius:999px;background:transparent;border-color:var(--gold);color:var(--gold)}.btn-primary:hover{background:var(--gold);color:#090a0b}
 #archive{background:#050608}.archive-search{border-radius:12px;background:#0c0f12}.archive-card{border-radius:14px;background:#0b0e11}.archive-card:hover{background:#101419}.archive-stock-tag{background:rgba(255,255,255,.055)}
 
@@ -156,6 +159,49 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 #tiers{background:#080a0d}#tiers-wrap{gap:14px;border:0}.tier-card{border:1px solid var(--border);border-radius:20px;background:#0d1014}.tier-card:hover{background:#11151a}.tier-highlight{border-color:rgba(216,174,91,.42);background:linear-gradient(180deg,rgba(216,174,91,.105),#0d1014 45%)}.tier-cta{border-radius:999px}.tier-cta-highlight{background:var(--gold);color:#090a0b}
 #social{background:#050608}#social-wrap{max-width:none;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;border:0}.social-pill{min-height:112px;padding:22px;border:1px solid var(--border);border-radius:16px;background:#0a0c0f;align-items:flex-end}.social-pill:hover{border-color:rgba(216,174,91,.35);transform:translateY(-4px)}
 footer{background:#050608}
+
+/* ── 環境裝飾層(格線 + 光暈)──────────────────────────────
+   hero 一早就用緊呢種手法(.a26-grid + .a26-glow)營造深度,但底下
+   純色塊區塊(method/tools/compare/community/journey/tiers)完全冇,
+   睇落淨係文字疊喺一塊塊實色 —— 呢度將 hero 嗰組視覺語言抽出嚟做
+   成可重用嘅 ::before(格線)/::after(金色光暈)偽元素,唔使開新
+   DOM 節點,亦唔使靠相片先有層次感。每個區塊用 --glow-x/--glow-y
+   決定光暈同格線淡出嘅落點,做出唔重複嘅節奏。 */
+#method,#tools,#compare,#community,#journey,#tiers{position:relative;isolation:isolate;overflow:hidden}
+#method::before,#tools::before,#compare::before,#community::before,#journey::before,#tiers::before{
+  content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(ellipse 60% 55% at var(--glow-x,20%) var(--glow-y,15%),#000,transparent 78%);
+  mask-image:radial-gradient(ellipse 60% 55% at var(--glow-x,20%) var(--glow-y,15%),#000,transparent 78%);
+}
+#method::after,#tools::after,#compare::after,#community::after,#journey::after,#tiers::after{
+  content:"";position:absolute;z-index:-1;pointer-events:none;width:460px;height:460px;border-radius:50%;
+  left:var(--glow-x,20%);top:var(--glow-y,15%);transform:translate(-50%,-50%);
+  background:rgba(216,174,91,.085);filter:blur(120px);
+}
+#method{--glow-x:12%;--glow-y:8%}
+#tools{--glow-x:88%;--glow-y:12%}
+#compare{--glow-x:12%;--glow-y:18%}
+#community{--glow-x:88%;--glow-y:10%}
+#journey{--glow-x:14%;--glow-y:12%}
+#tiers{--glow-x:86%;--glow-y:16%}
+
+/* #about 底色本身已經係暖金色,唔再加光暈(會糊成一片),只加幼格線
+   同一個放大到出血嘅淡色「10×」浮水印,呼應 hero 嗰個手法,唔重複相片。 */
+#about{position:relative;isolation:isolate;overflow:hidden}
+#about::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(rgba(9,10,11,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(9,10,11,.055) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(ellipse 65% 70% at 82% 20%,#000,transparent 80%);
+  mask-image:radial-gradient(ellipse 65% 70% at 82% 20%,#000,transparent 80%);
+}
+#about::after{
+  content:"10×";position:absolute;z-index:-1;right:-.04em;bottom:-.28em;pointer-events:none;
+  font-family:"Manrope",sans-serif;font-weight:700;font-size:clamp(8rem,20vw,17rem);line-height:.75;letter-spacing:-.06em;
+  color:transparent;-webkit-text-stroke:1px rgba(9,10,11,.09);
+}
 
 @media(max-width:1050px){
   .nav-link{padding-inline:8px;font-size:.85rem}.a26-shell{grid-template-columns:1fr .72fr;gap:30px}.a26-title{font-size:clamp(4.4rem,10vw,7rem)}

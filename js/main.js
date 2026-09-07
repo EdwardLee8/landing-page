@@ -55,6 +55,46 @@ const PLATFORM_ICONS = {
   </svg>`,
 };
 
+// ── Line-style SVG icons(取代 emoji)───────────────────────
+// 三支柱、Discord 頻道原本用 emoji 當圖示(📊📰📈🌏💬📚📢💹🗣️📖),
+// 唔同系統/字型渲染出嚟粗幼、風格完全唔一致,同埋金色線條設計語言
+// 對唔上。呢批係手寫嘅線條圖示(stroke, 唔係 fill),風格統一。
+const LINE_ICONS = {
+  bars: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M5 19V11M12 19V5M19 19v-6"/>
+  </svg>`,
+  trend: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M4 16l5.5-5.5 3.5 3.5L20 6.5"/><path d="M14.5 6h5.5v5.5"/>
+  </svg>`,
+  pulse2: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M4 18a8 8 0 0116 0"/><path d="M12 18V9"/><circle cx="12" cy="18" r="1.2" fill="currentColor" stroke="none"/>
+  </svg>`,
+  chart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M4 19h16"/><path d="M7 19v-5M12 19V8M17 19v-9"/>
+  </svg>`,
+  news: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect x="4" y="5" width="13" height="15" rx="1.5"/><path d="M17 9h3v9a2 2 0 01-2 2h-1"/><path d="M7.5 9h6M7.5 12.5h6M7.5 16h4"/>
+  </svg>`,
+  globe: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.4 2.3 3.6 5 3.6 8s-1.2 5.7-3.6 8c-2.4-2.3-3.6-5-3.6-8s1.2-5.7 3.6-8z"/>
+  </svg>`,
+  chat: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M4 5.5h16v11H9l-4 3.5v-3.5H4z"/>
+  </svg>`,
+  book: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M4 5.2c2-.9 4.3-.9 8 .3v13c-3.7-1.2-6-1.2-8-.3z"/><path d="M20 5.2c-2-.9-4.3-.9-8 .3v13c3.7-1.2 6-1.2 8-.3z"/>
+  </svg>`,
+  megaphone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M4 10v4h3l7 4V6l-7 4H4z"/><path d="M17 9.5a3 3 0 010 5"/>
+  </svg>`,
+  pulse: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12h4l2-6 4 12 2-6h6"/>
+  </svg>`,
+  doc: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M6 3.5h8l4 4V20a1 1 0 01-1 1H6a1 1 0 01-1-1V4.5a1 1 0 011-1z"/><path d="M14 3.5V8h4"/><path d="M8 12.5h8M8 16h5"/>
+  </svg>`,
+};
+
 // ── DOM Builder Helpers ───────────────────────────────────
 function el(tag, attrs, ...children) {
   const node = document.createElement(tag);
@@ -72,6 +112,14 @@ function el(tag, attrs, ...children) {
 
 function link(url, attrs, ...children) {
   return el("a", { href: safeUrl(url), target: "_blank", rel: "noopener noreferrer", ...attrs }, ...children);
+}
+
+// 圖示徽章:小圓角方塊包住一個 LINE_ICONS 的 SVG,三支柱同 Discord
+// 頻道共用呢個樣式,先唔使兩處各寫一份。
+function iconBadge(key, cls) {
+  const badge = el("div", { class: cls || "icon-badge" });
+  if (LINE_ICONS[key]) badge.innerHTML = LINE_ICONS[key]; // static SVG
+  return badge;
 }
 
 // ── Render All Sections ───────────────────────────────────
@@ -140,6 +188,7 @@ function renderMethod(story) {
     (story.pillars.items || []).forEach(item => {
       grid.appendChild(
         el("div", { class: "story-pillar" },
+          iconBadge(item.icon, "story-pillar-icon"),
           el("div", { class: "story-pillar-label", text: item.label }),
           el("p", { class: "story-pillar-desc", text: item.desc })
         )
@@ -316,8 +365,11 @@ function renderCommunityCol(container, data, modifier, label) {
     const item = el("div", { class: "channel-item reveal" });
     item.style.transitionDelay = `${0.05 + i * 0.06}s`;
     item.append(
-      el("div", { class: "channel-name", text: ch.name }),
-      el("p", { class: "channel-desc", text: ch.desc })
+      iconBadge(ch.icon, "channel-icon"),
+      el("div", { class: "channel-body" },
+        el("div", { class: "channel-name", text: ch.name }),
+        el("p", { class: "channel-desc", text: ch.desc })
+      )
     );
     channelList.appendChild(item);
   });

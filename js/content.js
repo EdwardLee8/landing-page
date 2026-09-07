@@ -34,9 +34,9 @@ const SITE_CONTENT = {
     pillars: {
       intro: "真正影響投資回報的是：",
       items: [
-        { label: "業績變化", desc: "從財務數據識別高增長潛力，捕捉市場尚未消化的訊號" },
-        { label: "行業趨勢", desc: "結構性變革帶來的長期機會，而非短線題材" },
-        { label: "資金與情緒", desc: "市場所處的階段，以及大多數人還未察覺的變化" },
+        { icon: "bars",  label: "業績變化", desc: "從財務數據識別高增長潛力，捕捉市場尚未消化的訊號" },
+        { icon: "trend", label: "行業趨勢", desc: "結構性變革帶來的長期機會，而非短線題材" },
+        { icon: "pulse2", label: "資金與情緒", desc: "市場所處的階段，以及大多數人還未察覺的變化" },
       ],
     },
 
@@ -97,12 +97,12 @@ const SITE_CONTENT = {
   discordPaid: {
     description: "與一群認真對待投資的人即時交流。市場訊號、操作思路、倉位更新第一時間同步，不用再獨自摸索。",
     channels: [
-      { name: "📊 選股分析", desc: "個股深度分析與入場訊號討論" },
-      { name: "📰 即時新聞解讀", desc: "重要消息第一時間分析實際影響" },
-      { name: "📈 組合更新", desc: "個人持倉變動即時通知，附操作理由" },
-      { name: "🌏 宏觀討論", desc: "美聯儲、利率、地緣政治對市場的傳導分析" },
-      { name: "💬 問答頻道", desc: "直接提問，每週定期回覆" },
-      { name: "📚 學習資源", desc: "投資書籍推薦、選股框架建立" },
+      { icon: "chart",   name: "選股分析",   desc: "個股深度分析與入場訊號討論" },
+      { icon: "news",    name: "即時新聞解讀", desc: "重要消息第一時間分析實際影響" },
+      { icon: "trend",   name: "組合更新",   desc: "個人持倉變動即時通知，附操作理由" },
+      { icon: "globe",   name: "宏觀討論",   desc: "美聯儲、利率、地緣政治對市場的傳導分析" },
+      { icon: "chat",    name: "問答頻道",   desc: "直接提問，每週定期回覆" },
+      { icon: "book",    name: "學習資源",   desc: "投資書籍推薦、選股框架建立" },
     ],
     cta: { text: "立即加入 Discord →", url: "https://www.patreon.com/edward10" },
   },
@@ -111,10 +111,10 @@ const SITE_CONTENT = {
   discordFree: {
     description: "先免費試用。加入後你會看到市場分析的角度有多不同：用數據說話，而不是用感覺說話。",
     channels: [
-      { name: "📢 公告", desc: "最新文章及重要更新通知" },
-      { name: "💹 市場動態", desc: "每日市場開收市簡報" },
-      { name: "🗣️ 自由討論", desc: "港股美股自由討論區" },
-      { name: "📖 免費文章", desc: "公開分析文章分享" },
+      { icon: "megaphone", name: "公告",     desc: "最新文章及重要更新通知" },
+      { icon: "pulse",     name: "市場動態",   desc: "每日市場開收市簡報" },
+      { icon: "chat",      name: "自由討論",   desc: "港股美股自由討論區" },
+      { icon: "doc",       name: "免費文章",   desc: "公開分析文章分享" },
     ],
     cta: { text: "免費加入 Discord →", url: "https://discord.gg/Y8wk7DCWPR" },
   },
