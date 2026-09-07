@@ -7,10 +7,10 @@
 <title>每日 RS 排名上升榜｜Edward LEE 發掘十倍股</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tokens.css">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/shell.css">
-<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/shell.css">
+<link rel="stylesheet" href="/css/components.css">
 <style>
 body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
 .pw-box{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:40px 36px;text-align:center;width:100%;max-width:380px}
@@ -92,8 +92,8 @@ td.amount{text-align:right;color:#aaa;font-size:12px}
 <p><b>注意：</b>呢個係短期 momentum signal，唔代表長期一定好。
 配合基本面 + 公司業績會議再 confirm。</p>
 </div>
-<script src="js/member-auth.js"></script>
-<script src="js/member-shell.js"></script>
+<script src="/js/member-auth.js"></script>
+<script src="/js/member-shell.js"></script>
 <script>
 (function(){
   const KEY = "_help_seen_movers";
@@ -122,7 +122,7 @@ td.amount{text-align:right;color:#aaa;font-size:12px}
 
 <div class="page-header">
   <a href="/" class="back-btn">&#8592; 返回首頁</a>
-  <a href="/login.html" class="back-btn">&#8592; 返回資料庫首頁</a>
+  <a href="/member/" class="back-btn">&#8592; 返回資料庫首頁</a>
   <div>
     <div class="page-title">每日 RS 排名上升榜</div>
     <div class="page-subtitle" id="header-meta">三個市場 Composite 評分日對日上升 Top 100 · 保留近一個月</div>
@@ -155,9 +155,9 @@ const _PW_HASH = MemberAuth.PW_HASH;
 function _getEncPass(){ return sessionStorage.getItem("unified_auth_pw") || ""; }
 
 const MARKETS = [
-  { key: 'hk', name: '港股 (HK)', file: 'hk_rs_movers.enc', currency: 'HKD' },
-  { key: 'cn', name: 'A 股 (CN)',  file: 'cn_rs_movers.enc', currency: 'CNY' },
-  { key: 'us', name: '美股 (US)', file: 'us_rs_movers.enc', currency: 'USD' },
+  { key: 'hk', name: '港股 (HK)', file: '/hk_rs_movers.enc', currency: 'HKD' },
+  { key: 'cn', name: 'A 股 (CN)',  file: '/cn_rs_movers.enc', currency: 'CNY' },
+  { key: 'us', name: '美股 (US)', file: '/us_rs_movers.enc', currency: 'USD' },
 ];
 
 const state = {

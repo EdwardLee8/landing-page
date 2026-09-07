@@ -24,24 +24,24 @@
     rs: {
       label: "相對強度評分",
       markets: [
-        { id: "hk", name: "港股", href: "/hk-rs-rating.html" },
-        { id: "us", name: "美股", href: "/us-rs-rating.html" },
-        { id: "cn", name: "A股",  href: "/cn-rs-rating.html" },
+        { id: "hk", name: "港股", href: "/member/rs/hk" },
+        { id: "us", name: "美股", href: "/member/rs/us" },
+        { id: "cn", name: "A股",  href: "/member/rs/cn" },
       ],
     },
     keywords: {
       label: "關鍵字資料庫",
       markets: [
-        { id: "hk", name: "港股", href: "/hk-keywords-pro.html" },
-        { id: "us", name: "美股", href: "/us-keywords.html" },
-        { id: "cn", name: "A股",  href: "/cn-keywords.html" },
+        { id: "hk", name: "港股", href: "/member/keywords/hk" },
+        { id: "us", name: "美股", href: "/member/keywords/us" },
+        { id: "cn", name: "A股",  href: "/member/keywords/cn" },
       ],
     },
     stocks: {
       label: "股票資料庫",
       markets: [
-        { id: "hk", name: "港股", href: "/hk-stocks-pro.html" },
-        { id: "us", name: "美股", href: "/us-stocks-db.html" },
+        { id: "hk", name: "港股", href: "/member/stocks/hk" },
+        { id: "us", name: "美股", href: "/member/stocks/us" },
       ],
     },
   };
@@ -86,7 +86,7 @@
           if (MemberAuth.clear) MemberAuth.clear();
         }
         try { sessionStorage.clear(); } catch (err) {}
-        location.href = "/login.html";
+        location.href = "/member/";
       });
       actions.appendChild(out);
     }

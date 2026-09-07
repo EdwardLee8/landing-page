@@ -60,7 +60,7 @@ document.getElementById("rs-app").innerHTML = `<button class="help-btn" onclick=
 
 <div class="page-header">
   <a href="/" class="back-btn">&#8592; 返回首頁</a>
-  <a href="/login.html" class="back-btn">&#8592; 返回資料庫首頁</a>
+  <a href="/member/" class="back-btn">&#8592; 返回資料庫首頁</a>
   <div>
     <div class="page-title">${C.pageName}</div>
     <div class="page-subtitle" id="data-date">載入中&#8230;</div>

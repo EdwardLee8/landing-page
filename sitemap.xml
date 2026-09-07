@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 只收錄公開頁面。會員頁一律標記 noindex,不列入此處。 -->
+<!-- 只收錄公開頁面。會員頁一律 noindex,不列入此處。
+     網址為 worker/index.js 的 CLEAN_URLS 對外網址,不是實體檔名。 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://ai10xpro.com/</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://ai10xpro.com/free-tools.html</loc>
-    <lastmod>2026-09-04</lastmod>
+    <loc>https://ai10xpro.com/free/</loc>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -20,32 +21,32 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ai10xpro.com/sp500-top20-reports.html</loc>
+    <loc>https://ai10xpro.com/free/sp500-top20</loc>
     <lastmod>2026-09-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ai10xpro.com/theme-strength-dashboard.html</loc>
-    <lastmod>2026-09-02</lastmod>
+    <loc>https://ai10xpro.com/free/themes</loc>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ai10xpro.com/hk-stocks-db.html</loc>
-    <lastmod>2026-09-04</lastmod>
+    <loc>https://ai10xpro.com/free/stocks/hk</loc>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ai10xpro.com/hk-keywords-free.html</loc>
-    <lastmod>2026-09-02</lastmod>
+    <loc>https://ai10xpro.com/free/keywords/hk</loc>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ai10xpro.com/hk-h1-2026-archive-20260820.html</loc>
-    <lastmod>2026-09-02</lastmod>
+    <loc>https://ai10xpro.com/free/outlook-2026-archive</loc>
+    <lastmod>2026-09-05</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>

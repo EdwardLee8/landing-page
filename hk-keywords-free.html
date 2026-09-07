@@ -8,10 +8,10 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>港</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tokens.css">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/shell.css">
-<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/shell.css">
+<link rel="stylesheet" href="/css/components.css">
 <style>
 body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
 
@@ -146,7 +146,7 @@ mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 <!-- ── App ── -->
 <div id="app">
   <div class="page-header">
-    <a href="/free-tools.html" class="back-btn">← 免費內容中心</a>
+    <a href="/free/" class="back-btn">← 免費內容中心</a>
     <div>
       <div class="page-title">港股關鍵字資料庫 <span style="color:#d4a647;font-size:14px;font-weight:400">(免密碼)</span></div>
       <div class="page-subtitle">HK Stocks Business Keywords &amp; Correlation Clusters</div>
@@ -250,7 +250,7 @@ function setMinSize(m) {
 // ── Init ──────────────────────────────────────────────────
 async function initApp() {
   try {
-    const r = await fetch("hk_keywords_export.json");
+    const r = await fetch("/hk_keywords_export.json");
     DB = await r.json();
   } catch(e) {
     document.getElementById("stats-bar").innerHTML = `<span style="color:#ef5350">載入失敗: ${e.message}</span>`;
@@ -305,7 +305,7 @@ function switchTab(tab) {
 // ── Load correlation clusters ────────────────────────────
 async function loadCorrData() {
   try {
-    const r = await fetch("hk_corr_clusters_free.json");
+    const r = await fetch("/hk_corr_clusters_free.json");
     CORR_DATA = await r.json();
     corrLoaded = true;
     updateThreshInfo();

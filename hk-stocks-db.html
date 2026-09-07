@@ -6,10 +6,10 @@
 <title>港股2025下半年資料庫</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tokens.css">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/shell.css">
-<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/shell.css">
+<link rel="stylesheet" href="/css/components.css">
 <style>
 body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:20px;min-height:100vh}
 .back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px;transition:background .2s}
@@ -57,7 +57,7 @@ td.num.na{color:#555}
 
 
 <div class="page-header">
-  <a href="/free-tools.html" class="back-btn">← 免費內容中心</a>
+  <a href="/free/" class="back-btn">← 免費內容中心</a>
   <div>
     <div class="page-title">港股2025下半年資料庫</div>
     <div class="page-subtitle">2025年12月年結的港股 &middot; 共2,012隻 &middot; 數據截至2026年4月2日</div>
@@ -120,7 +120,7 @@ td.num.na{color:#555}
 
 <div class="pagination" id="pagination"></div>
 
-<script src="js/member-auth.js"></script>
+<script src="/js/member-auth.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   loadAndInit('hkdb-free-2604');
@@ -134,7 +134,7 @@ let RAW_DATA = [];
 
 async function loadAndInit(pw) {
   try {
-    const r = await fetch("hk_stocks_data_orig.enc");
+    const r = await fetch("/hk_stocks_data_orig.enc");
     RAW_DATA = await _decryptEnc(await r.text(), pw);
     initApp();
   } catch(e) {

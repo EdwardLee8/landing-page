@@ -7,10 +7,10 @@
 <title>美股資料庫｜Edward LEE 發掘十倍股</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tokens.css">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/shell.css">
-<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/shell.css">
+<link rel="stylesheet" href="/css/components.css">
 <style>
 body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:20px;min-height:100vh}
 .back-btn{color:#d4a647;font-size:13px;border:1px solid #d4a64766;padding:6px 14px;border-radius:4px;transition:background .2s}
@@ -106,8 +106,8 @@ td.num.na{color:#555}
   <li>避開困境股；投機股小心 momentum 散場</li>
 </ul>
 </div>
-<script src="js/member-auth.js"></script>
-<script src="js/member-shell.js"></script>
+<script src="/js/member-auth.js"></script>
+<script src="/js/member-shell.js"></script>
 <script>
 (function(){
   const KEY = "_help_seen_us-stocks";
@@ -136,7 +136,7 @@ td.num.na{color:#555}
 
 <div class="page-header">
   <a href="/" class="back-btn">&#8592; 返回首頁</a>
-  <a href="/login.html" class="back-btn">&#8592; 返回資料庫首頁</a>
+  <a href="/member/" class="back-btn">&#8592; 返回資料庫首頁</a>
   <div>
     <div class="page-title">美股2025Q4資料庫</div>
     <div class="page-subtitle">S&P500及主要美股 &middot; 共2,643隻 &middot; 數據截至2026年4月1日</div>
@@ -250,7 +250,7 @@ async function loadAndInit() {
   const pw = sessionStorage.getItem('unified_auth_pw') || '';
   if (!pw) { console.error('US-stocks-db: no auth password in sessionStorage'); return; }
   try {
-    const resp = await fetch('us_stocks_data.enc');
+    const resp = await fetch('/us_stocks_data.enc');
     if (resp.status === 401) return MemberAuth.handleUnauthorized();
     const b64  = (await resp.text()).trim();
     // 解密實作集中於 js/member-auth.js

@@ -7,10 +7,10 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tokens.css">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/shell.css">
-<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/shell.css">
+<link rel="stylesheet" href="/css/components.css">
 <style>
 body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
 
@@ -113,7 +113,7 @@ td.mcap{color:#ccc;white-space:nowrap}
 
 <div class="page-header">
   <a href="/" class="back-btn">&#8592; 返回首頁</a>
-  <a href="/login.html" class="back-btn">&#8592; 返回資料庫首頁</a>
+  <a href="/member/" class="back-btn">&#8592; 返回資料庫首頁</a>
   <div>
     <div class="page-title">美股業務最新記錄資料庫</div>
     <div class="page-subtitle" id="page-subtitle">載入中…</div>
@@ -187,8 +187,8 @@ td.mcap{color:#ccc;white-space:nowrap}
   </div>
 </div>
 
-<script src="js/member-auth.js"></script>
-<script src="js/member-shell.js"></script>
+<script src="/js/member-auth.js"></script>
+<script src="/js/member-shell.js"></script>
 <script>
 // SHA-256 of the unified member password
 // 密碼雜湊、SHA-256 與 AES-GCM 解密集中於 js/member-auth.js,
@@ -254,7 +254,7 @@ async function loadAndInit(pw) {
   const sub = document.getElementById("page-subtitle");
   try {
     sub.textContent = "載入 index…";
-    const r = await fetch("us_research_index.enc?" + Date.now(), {cache: "no-store"});
+    const r = await fetch("/us_research_index.enc?" + Date.now(), {cache: "no-store"});
     if (r.status === 401) return MemberAuth.handleUnauthorized();
     if (!r.ok) throw new Error("HTTP " + r.status);
     const encRaw = await r.text();
@@ -483,7 +483,7 @@ async function openStock(symbol) {
 
   if (!detailCache[symbol]) {
     try {
-      const r = await fetch(`us_research_data/${symbol}.enc?` + Date.now());
+      const r = await fetch(`/us_research_data/${symbol}.enc?` + Date.now());
       if (r.status === 401) return MemberAuth.handleUnauthorized();
       if (!r.ok) throw new Error("HTTP " + r.status);
       detailCache[symbol] = await _decryptEnc(await r.text(), _pw);

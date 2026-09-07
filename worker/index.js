@@ -161,9 +161,70 @@ function saveRateState(ctx, kv, ip, state) {
   return writing;
 }
 
+// ── 乾淨網址 ────────────────────────────────────────────────────────
+// 網站原本是 24 個 .html 平鋪在根目錄,網址像 /hk-rs-rating.html,而且
+// 命名沒有規則(-db 後綴有的免費有的付費、日期寫死在檔名裡)。這裡把對外
+// 網址整理成有層次的形式,實體檔案位置不動 —— 檔案搬家會弄斷資料的相對
+// 路徑與各處內部連結,風險遠大於收益。
+//
+// assets 設定了 run_worker_first,所有請求都會先到這裡,所以 _redirects
+// 不一定生效,轉址一律在這裡處理。
+const CLEAN_URLS = {
+  "/member/":                   "/login.html",
+  "/member/rs/hk":              "/hk-rs-rating.html",
+  "/member/rs/us":              "/us-rs-rating.html",
+  "/member/rs/cn":              "/cn-rs-rating.html",
+  "/member/movers":             "/movers.html",
+  "/member/keywords/hk":        "/hk-keywords-pro.html",
+  "/member/keywords/hk-full":   "/hk-keywords.html",
+  "/member/keywords/us":        "/us-keywords.html",
+  "/member/keywords/cn":        "/cn-keywords.html",
+  "/member/stocks/hk":          "/hk-stocks-pro.html",
+  "/member/stocks/us":          "/us-stocks-db.html",
+  "/member/outlook-2026":       "/hk-h1-2026-db.html",
+  "/member/outlook-2026/top3":  "/hk-h1-2026-industry-top3.html",
+  "/member/transcripts":        "/us-transcript-db.html",
+  "/member/research":           "/us-research-reports-db.html",
+  "/member/irm":                "/cn-irm-db.html",
+  "/free/":                     "/free-tools.html",
+  "/free/stocks/hk":            "/hk-stocks-db.html",
+  "/free/keywords/hk":          "/hk-keywords-free.html",
+  "/free/themes":               "/theme-strength-dashboard.html",
+  "/free/outlook-2026-archive": "/hk-h1-2026-archive-20260820.html",
+  "/free/sp500-top20":          "/sp500-top20-reports.html",
+};
+
+// 反向表:舊的 .html 網址 301 轉到新網址,書籤與外部連結不會斷。
+const LEGACY_REDIRECTS = Object.fromEntries(
+  Object.entries(CLEAN_URLS).map(([clean, file]) => [file, clean]),
+);
+
+/** 把乾淨網址正規化:去掉結尾斜線以外的差異。 */
+function lookupClean(pathname) {
+  if (CLEAN_URLS[pathname]) return CLEAN_URLS[pathname];
+  // /member 與 /member/ 視為同一個
+  const withSlash = pathname.endsWith("/") ? pathname : pathname + "/";
+  if (CLEAN_URLS[withSlash]) return CLEAN_URLS[withSlash];
+  const withoutSlash = pathname.replace(/\/$/, "");
+  return CLEAN_URLS[withoutSlash] || null;
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    // 舊的 .html 網址 → 301 到新網址
+    const redirectTo = LEGACY_REDIRECTS[url.pathname];
+    if (redirectTo) {
+      return Response.redirect(new URL(redirectTo + url.search, url).toString(), 301);
+    }
+
+    // 乾淨網址 → 內部改抓實體檔案(網址列維持乾淨的那個)
+    const target = lookupClean(url.pathname);
+    if (target) {
+      const rewritten = new Request(new URL(target + url.search, url).toString(), request);
+      return env.ASSETS.fetch(rewritten);
+    }
 
     if (url.pathname === "/api/login") {
       if (request.method !== "POST") return json({ error: "method not allowed" }, 405);

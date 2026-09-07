@@ -437,7 +437,7 @@ function renderArchive() {
 
   gridEl.appendChild(el("div", { class: "archive-loading", text: "載入中…" }));
 
-  fetch("web_data.json")
+  fetch("/web_data.json")
     .then(r => r.json())
     .then(data => {
       allPosts  = data.posts || [];

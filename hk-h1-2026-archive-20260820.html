@@ -11,12 +11,12 @@
 </style>
 </head>
 <body>
-<div class="top"><div class="nav"><a class="btn" href="free-tools.html">← 免費內容中心</a><div class="navlinks"><a class="btn" href="/">首頁</a><a class="btn gold" href="login.html">🔐 最新會員版</a></div></div></div>
+<div class="top"><div class="nav"><a class="btn" href="/free/">← 免費內容中心</a><div class="navlinks"><a class="btn" href="/">首頁</a><a class="btn gold" href="/member/">🔐 最新會員版</a></div></div></div>
 <header class="hero"><div class="eyebrow">FREE HISTORICAL SNAPSHOT · 免費歷史快照</div><h1>港股2026中期業績前景庫</h1><p>2026年8月20日歷史公開版本。公司層面整合為303間，保留307份原始業績記錄及29個研究欄位；三間公司有多於一個業績期，可在詳情內逐份查閱。</p><div class="notice">⚠️ 此頁係2026-08-20歷史快照，唔會隨最新業績更新。最新801間完整資料及行業首三選擇請由會員入口查看。</div></header>
 <main class="wrap"><section class="stats"><div class="stat"><small>公司數目</small><b id="sCompanies">—</b></div><div class="stat"><small>業績記錄</small><b id="sRecords">—</b></div><div class="stat"><small>最高評分</small><b id="sTop">—</b></div><div class="stat"><small>平均評分</small><b id="sAvg">—</b></div></section><section class="filters"><input id="q" placeholder="搜尋代號、公司、行業、核心判斷…"><select id="industry"><option value="">全部行業／模式</option></select><select id="category"><option value="">全部分類</option></select><select id="sort"><option value="score_desc">評分：高至低</option><option value="score_asc">評分：低至高</option><option value="code">股票代號</option><option value="name">公司名稱</option></select></section><div class="summary"><span id="resultText">載入中…</span><span>點擊任何公司查看完整詳情</span></div><div id="content" class="tablebox"><div class="loading">正在載入303間公司歷史資料…</div></div><div id="pager" class="pager"></div></main>
 <div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="dialog"><div class="dialogHead"><div><h2 id="modalTitle"></h2><div id="modalSub" class="muted"></div></div><button class="close" onclick="closeModal()">✕</button></div><div id="modalBody" class="dialogBody"></div></div></div>
 <script>
-const DATA_URL='hk_h1_2026_archive_20260820.json?v=20260902';let META={},ALL=[],VIEW=[],page=1;const PAGE=30;
+const DATA_URL='/hk_h1_2026_archive_20260820.json?v=20260902';let META={},ALL=[],VIEW=[],page=1;const PAGE=30;
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const text=(v,fallback='—')=>v===null||v===undefined||String(v).trim()===''?fallback:String(v);
 const primary=c=>c.records[0]||{};

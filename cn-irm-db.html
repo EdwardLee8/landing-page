@@ -7,10 +7,10 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tokens.css">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/shell.css">
-<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/shell.css">
+<link rel="stylesheet" href="/css/components.css">
 <style>
 body{background:#080808;color:#e8e0d0;font-family:"Noto Sans SC","Noto Sans TC",sans-serif;font-size:15px;min-height:100vh}
 .pw-box p{font-size:13px;color:#888;margin-bottom:24px}
@@ -84,8 +84,8 @@ td.date{color:#aaa;font-size:13px;white-space:nowrap}
   <li>第一手公司管理層觀點，比新聞早一步</li>
 </ul>
 </div>
-<script src="js/member-auth.js"></script>
-<script src="js/member-shell.js"></script>
+<script src="/js/member-auth.js"></script>
+<script src="/js/member-shell.js"></script>
 <script>
 (function(){
   const KEY = "_help_seen_cn-irm";
@@ -114,7 +114,7 @@ td.date{color:#aaa;font-size:13px;white-space:nowrap}
 
 <div class="page-header">
   <a href="/" class="back-btn">&#8592; 返回首頁</a>
-  <a href="/login.html" class="back-btn">&#8592; 返回資料庫首頁</a>
+  <a href="/member/" class="back-btn">&#8592; 返回資料庫首頁</a>
   <div>
     <div class="page-title">A股(深圳)最新業務資料庫</div>
     <div class="page-subtitle" id="page-subtitle">載入中…</div>
@@ -215,7 +215,7 @@ let _pw = "";
 async function loadAndInit(pw) {
   _pw = pw;
   try {
-    const r = await fetch("cn_irm_index.enc");
+    const r = await fetch("/cn_irm_index.enc");
     if (r.status === 401) return MemberAuth.handleUnauthorized();
     const enc = await r.text();
     ALL = await _decryptEnc(enc, pw);
@@ -355,7 +355,7 @@ async function openStock(code, name) {
   document.getElementById("modal-overlay").classList.add("open");
   document.body.style.overflow = "hidden";
   try {
-    const r = await fetch(`cn_irm_data/${code}.enc`);
+    const r = await fetch(`/cn_irm_data/${code}.enc`);
     if (r.status === 401) return MemberAuth.handleUnauthorized();
     if (!r.ok) throw new Error("找不到檔案 (" + r.status + ")");
     const enc = await r.text();
