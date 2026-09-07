@@ -492,15 +492,15 @@ section + section {
   50%       { transform: translateY(8px); }
 }
 
-/* ── Story ────────────────────────────────────────────────── */
-#story {
+/* ── Story(拆成 method 短版 + journey 長版,共用呢組樣式) ──────── */
+#method, #journey {
   background: var(--bg);
   padding-top: 120px;
   padding-bottom: 120px;
 }
 
-/* No divider between hero and story — seamless flow */
-#hero + #story { border-top: none; }
+/* No divider between hero and method — seamless flow */
+#hero + #method { border-top: none; }
 
 .story-hook {
   font-size: clamp(1.25rem, 2.5vw, 1.75rem);
@@ -624,7 +624,7 @@ section + section {
 }
 
 @media (max-width: 768px) {
-  #story { padding-top: 80px; padding-bottom: 80px; }
+  #method, #journey { padding-top: 80px; padding-bottom: 80px; }
   .story-hook { font-size: clamp(1.1rem, 5vw, 1.4rem); margin-bottom: 56px; }
   .story-pillars { grid-template-columns: 1fr; }
   .story-turning-point,
@@ -739,9 +739,8 @@ section + section {
 }
 
 /* ── Patreon / Discord Shared ────────────────────────────── */
-#patreon      { background: var(--bg); }
-#discord-paid { background: var(--bg-section); }
-#discord-free { background: var(--bg); }
+#patreon   { background: var(--bg); }
+#community { background: var(--bg-section); }
 
 .content-desc {
   font-size: 0.95rem;

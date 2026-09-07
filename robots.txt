@@ -35,7 +35,7 @@ Disallow: /
 User-agent: meta-externalagent
 Disallow: /
 
-# Allow normal search indexing (homepage only)
+# Allow normal search indexing (all public pages except the paths below)
 User-agent: Googlebot
 Allow: /
 Disallow: /etf-report/
@@ -49,3 +49,4 @@ Disallow: /*.json
 Disallow: /*.enc
 
 Sitemap: https://ai10xpro.com/sitemap.xml
+Sitemap: https://ai10xpro.com/sitemap-archive.xml

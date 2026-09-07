@@ -228,5 +228,30 @@ check('/member(無結尾斜線)也可以', r.status === 200, `status=${r.status}
 r = await worker.fetch(new Request(`${B}/index.html`), env);
 check('首頁不受轉址影響', r.status === 200);
 
+// ── /api/subscribe(電郵訂閱) ──────────────────────────────────────
+const subReq = (email, ip) => new Request(`${B}/api/subscribe`, {
+  method: 'POST', body: JSON.stringify({ email }),
+  headers: { 'CF-Connecting-IP': ip },
+});
+
+const subKv = fakeKv();
+const envSub = { ...env, LOGIN_RATE_LIMIT: subKv, LOGIN_LIMITER: fakeLimiter(10) };
+r = await worker.fetch(subReq('reader@example.com', '5.5.5.5'), envSub);
+check('合法電郵訂閱成功', r.status === 200, `status=${r.status}`);
+check('訂閱寫入 KV', await subKv.get('sub:reader@example.com') !== null);
+
+r = await worker.fetch(subReq('not-an-email', '5.5.5.6'), envSub);
+check('格式錯誤的電郵被拒', r.status === 400, `status=${r.status}`);
+
+r = await worker.fetch(new Request(`${B}/api/subscribe`), envSub);
+check('GET /api/subscribe 不允許', r.status === 405, `status=${r.status}`);
+
+for (let i = 0; i < 10; i++) {
+  r = await worker.fetch(subReq(`user${i}@example.com`, '5.5.5.7'), envSub);
+}
+check('訂閱節流每分鐘上限之內仍正常', r.status === 200, `status=${r.status}`);
+r = await worker.fetch(subReq('overflow@example.com', '5.5.5.7'), envSub);
+check('訂閱超過每分鐘上限回 429', r.status === 429, `status=${r.status}`);
+
 console.log(`\n${pass} 通過, ${fail} 失敗`);
 process.exit(fail ? 1 : 0);

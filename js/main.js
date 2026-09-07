@@ -78,14 +78,16 @@ function link(url, attrs, ...children) {
 function renderAll() {
   const c = SITE_CONTENT;
   renderHero(c.author);
-  renderStory(c.story);
+  renderMethod(c.story);
   renderAbout(c.about);
+  renderResearchTools(c.researchTools);
   renderArticles(c.articles, c.articlesCta);
-  renderDiscordFree(c.discordFree);
-  renderDiscordPaid(c.discordPaid);
+  renderJourney(c.story);
+  renderCompare(c.compare);
   renderTiers(c.tiers);
+  renderCommunity(c.discordFree, c.discordPaid);
   renderSocial(c.social);
-  renderFooter(c.author, c.seo);
+  renderFooter(c.author, c.seo, c.newsletter);
   updateMeta(c.seo, c.author);
 }
 
@@ -98,15 +100,6 @@ function renderHero(author) {
   if (bgImg && (author.bgImage || author.avatar)) {
     bgImg.src = esc(author.bgImage || author.avatar);
   }
-
-  const ctaLink = link(
-    SITE_CONTENT.social.find(s => s.highlight)?.url || "#social",
-    { class: "btn-primary", text: "立即訂閱" }
-  );
-  // Override href to local anchor for smooth scroll
-  ctaLink.href = "#story";
-  ctaLink.removeAttribute("target");
-  ctaLink.removeAttribute("rel");
 
   // Two clear homepage entry points
   const memberEntry = el("a", { href: "/login.html", class: "btn-unified-entry", text: "🔐  會員密碼入口 →" });
@@ -131,40 +124,15 @@ function textWithBreaks(container, text) {
   });
 }
 
-function renderStory(story) {
-  const container = document.getElementById("story-content");
+// 方法論(短):hook + 三支柱。放喺 hero 之後,唔即刻推銷,先講「點睇」。
+function renderMethod(story) {
+  const container = document.getElementById("method-content");
   if (!container || !story) return;
 
-  // Hook — large opening pull-quote
   const hookEl = el("p", { class: "story-hook reveal" });
   textWithBreaks(hookEl, story.hook);
   container.appendChild(hookEl);
 
-  // Journey — grouped in one reveal container
-  const journeyWrap = el("div", { class: "story-journey reveal" });
-  (story.journey || []).forEach(para => {
-    const p = el("p", { class: "story-paragraph" });
-    textWithBreaks(p, para);
-    journeyWrap.appendChild(p);
-  });
-  container.appendChild(journeyWrap);
-
-  // Turning point — emphatic moment
-  if (story.turningPoint) {
-    const tp = el("div", { class: "story-turning-point reveal" });
-    tp.appendChild(el("p", { class: "story-tp-before", text: story.turningPoint.before }));
-    tp.appendChild(el("p", { class: "story-tp-emphasis", text: story.turningPoint.emphasis }));
-    container.appendChild(tp);
-  }
-
-  // Insight
-  if (story.insight) {
-    const insightEl = el("p", { class: "story-insight reveal" });
-    textWithBreaks(insightEl, story.insight);
-    container.appendChild(insightEl);
-  }
-
-  // Three pillars
   if (story.pillars) {
     const pillarsWrap = el("div", { class: "story-pillars-wrap reveal" });
     pillarsWrap.appendChild(el("p", { class: "story-pillars-intro", text: story.pillars.intro }));
@@ -180,15 +148,41 @@ function renderStory(story) {
     pillarsWrap.appendChild(grid);
     container.appendChild(pillarsWrap);
   }
+}
 
-  // AI note — intentionally understated
+// 我的故事(長):背景、轉折、洞察、AI 註、價值主張、收尾 CTA。搬到
+// 研究工具／免費文章之後 —— 訪客先知道呢度有咩,先讀完整自傳。
+function renderJourney(story) {
+  const container = document.getElementById("journey-content");
+  if (!container || !story) return;
+
+  const journeyWrap = el("div", { class: "story-journey reveal" });
+  (story.journey || []).forEach(para => {
+    const p = el("p", { class: "story-paragraph" });
+    textWithBreaks(p, para);
+    journeyWrap.appendChild(p);
+  });
+  container.appendChild(journeyWrap);
+
+  if (story.turningPoint) {
+    const tp = el("div", { class: "story-turning-point reveal" });
+    tp.appendChild(el("p", { class: "story-tp-before", text: story.turningPoint.before }));
+    tp.appendChild(el("p", { class: "story-tp-emphasis", text: story.turningPoint.emphasis }));
+    container.appendChild(tp);
+  }
+
+  if (story.insight) {
+    const insightEl = el("p", { class: "story-insight reveal" });
+    textWithBreaks(insightEl, story.insight);
+    container.appendChild(insightEl);
+  }
+
   if (story.aiNote) {
     const aiEl = el("p", { class: "story-aside reveal" });
     textWithBreaks(aiEl, story.aiNote);
     container.appendChild(aiEl);
   }
 
-  // Value proposition
   const valuePropWrap = el("div", { class: "story-value-prop reveal" });
   (story.valueProp || []).forEach(para => {
     const p = el("p", { class: "story-paragraph" });
@@ -197,7 +191,6 @@ function renderStory(story) {
   });
   container.appendChild(valuePropWrap);
 
-  // Closing hook + CTA
   if (story.closingHook || story.cta) {
     const closing = el("div", { class: "story-closing reveal" });
     if (story.closingHook) {
@@ -231,6 +224,60 @@ function renderAbout(about) {
   if ((about.stats || []).length) container.appendChild(statsEl);
 }
 
+// 研究工具:21 個資料庫/工具的統計卡 + 免費／會員兩個入口。首頁原本
+// 完全無提過呢批工具,全部收埋喺導覽列下拉選單。
+function renderResearchTools(data) {
+  const container = document.getElementById("tools-content");
+  if (!container || !data) return;
+
+  const statsEl = el("div", { class: "tools-stats reveal" });
+  (data.stats || []).forEach(s => {
+    statsEl.appendChild(
+      el("div", { class: "tools-stat" },
+        el("div", { class: "tools-stat-value", text: s.value }),
+        el("div", { class: "tools-stat-label", text: s.label })
+      )
+    );
+  });
+  container.appendChild(statsEl);
+
+  const ctaWrap = el("div", { class: "content-cta content-cta--split reveal" });
+  if (data.ctaFree) {
+    ctaWrap.appendChild(el("a", { href: data.ctaFree.url, class: "btn-primary btn-primary--free", text: data.ctaFree.text }));
+  }
+  if (data.ctaMember) {
+    ctaWrap.appendChild(el("a", { href: data.ctaMember.url, class: "btn-primary", text: data.ctaMember.text }));
+  }
+  container.appendChild(ctaWrap);
+}
+
+// 免費 vs 會員對照表:讓免費內容的分量看得見,同時交代會員版加深加廣
+// 咗幾多 —— 之前呢兩件事各自散落喺唔同區塊,冇並排比較過。
+function renderCompare(data) {
+  const container = document.getElementById("compare-content");
+  if (!container || !data) return;
+
+  const table = el("div", { class: "compare-table reveal" });
+  const head = el("div", { class: "compare-row compare-row--head" },
+    el("div", { class: "compare-cell compare-cell--label" }),
+    el("div", { class: "compare-cell compare-cell--free", text: "免費" }),
+    el("div", { class: "compare-cell compare-cell--member", text: "會員" })
+  );
+  table.appendChild(head);
+
+  (data.rows || []).forEach(row => {
+    table.appendChild(
+      el("div", { class: "compare-row" },
+        el("div", { class: "compare-cell compare-cell--label", text: row.label }),
+        el("div", { class: "compare-cell compare-cell--free", text: row.free }),
+        el("div", { class: "compare-cell compare-cell--member", text: row.member })
+      )
+    );
+  });
+
+  container.appendChild(table);
+}
+
 function renderPatreonPage(data) {
   const container = document.getElementById("patreon-content");
   if (!container || !data) return;
@@ -256,13 +303,15 @@ function renderPatreonPage(data) {
   container.append(desc, grid, ctaWrap);
 }
 
-function renderDiscordPaid(data) {
-  const container = document.getElementById("discord-paid-content");
-  if (!container || !data) return;
+// 社群:免費/收費 Discord 原本係兩個結構完全一樣嘅獨立區塊(說明 +
+// 頻道清單 + 按鈕),讀者要睇兩次幾乎一樣嘅嘢。合併成一個區塊、左右
+// 兩欄並排,順便做到「免費 vs 會員」嘅對照效果。
+function renderCommunityCol(container, data, modifier, label) {
+  const col = el("div", { class: `community-col${modifier ? " community-col--" + modifier : ""}` });
+  col.appendChild(el("p", { class: "community-col-label", text: label }));
+  col.appendChild(el("p", { class: "content-desc reveal", text: data.description }));
 
-  const desc = el("p", { class: "content-desc reveal", text: data.description });
-
-  const channelList = el("div", { class: "channel-list" });
+  const channelList = el("div", { class: `channel-list${modifier ? " channel-list--" + modifier : ""}` });
   (data.channels || []).forEach((ch, i) => {
     const item = el("div", { class: "channel-item reveal" });
     item.style.transitionDelay = `${0.05 + i * 0.06}s`;
@@ -272,38 +321,28 @@ function renderDiscordPaid(data) {
     );
     channelList.appendChild(item);
   });
+  col.appendChild(channelList);
 
-  const ctaWrap = el("div", { class: "content-cta reveal" });
   if (data.cta) {
-    ctaWrap.appendChild(link(data.cta.url, { class: "btn-primary", text: data.cta.text }));
+    const ctaWrap = el("div", { class: "content-cta reveal" });
+    ctaWrap.appendChild(link(data.cta.url, {
+      class: modifier === "free" ? "btn-primary btn-primary--free" : "btn-primary",
+      text: data.cta.text,
+    }));
+    col.appendChild(ctaWrap);
   }
 
-  container.append(desc, channelList, ctaWrap);
+  container.appendChild(col);
 }
 
-function renderDiscordFree(data) {
-  const container = document.getElementById("discord-free-content");
-  if (!container || !data) return;
+function renderCommunity(freeData, paidData) {
+  const container = document.getElementById("community-content");
+  if (!container) return;
 
-  const desc = el("p", { class: "content-desc reveal", text: data.description });
-
-  const channelList = el("div", { class: "channel-list channel-list--free" });
-  (data.channels || []).forEach((ch, i) => {
-    const item = el("div", { class: "channel-item reveal" });
-    item.style.transitionDelay = `${0.05 + i * 0.06}s`;
-    item.append(
-      el("div", { class: "channel-name", text: ch.name }),
-      el("p", { class: "channel-desc", text: ch.desc })
-    );
-    channelList.appendChild(item);
-  });
-
-  const ctaWrap = el("div", { class: "content-cta reveal" });
-  if (data.cta) {
-    ctaWrap.appendChild(link(data.cta.url, { class: "btn-primary btn-primary--free", text: data.cta.text }));
-  }
-
-  container.append(desc, channelList, ctaWrap);
+  const grid = el("div", { class: "community-grid" });
+  if (freeData) renderCommunityCol(grid, freeData, "free", "免費頻道");
+  if (paidData) renderCommunityCol(grid, paidData, "paid", "會員頻道");
+  container.appendChild(grid);
 }
 
 function renderArticles(articles, cta) {
@@ -392,17 +431,72 @@ function renderSocial(social) {
   });
 }
 
-function renderFooter(author, seo) {
+function renderFooter(author, seo, newsletter) {
   const year = new Date().getFullYear();
   const container = document.getElementById("footer-content");
   if (!container) return;
   container.textContent = "";
+
+  if (newsletter) container.appendChild(renderNewsletterForm(newsletter));
+
   container.append(
     el("p", { class: "footer-copy", text: `© ${year} ${author.name}. All rights reserved.` }),
     el("p", { class: "footer-disclaimer",
       text: "本網站所有內容僅供參考及教育用途，並不構成投資建議、推薦或誘使進行任何投資交易。投資有風險，過去表現不保證未來成果。在作出任何投資決定前，讀者應獨立判斷、評估風險並自行承擔相關責任。"
     })
   );
+}
+
+// 電郵訂閱表單:唯一一個唔靠第三方平台(Patreon/Discord/Facebook)嘅
+// 出口 —— 呢啲平台改演算法或者封號,就聯絡唔到人;電郵名單自己擁有。
+function renderNewsletterForm(data) {
+  const wrap = el("div", { class: "newsletter reveal" });
+  wrap.append(
+    el("p", { class: "newsletter-title", text: data.title }),
+    el("p", { class: "newsletter-desc", text: data.desc })
+  );
+
+  const form = el("form", { class: "newsletter-form" });
+  const input = el("input", {
+    type: "email", class: "newsletter-input", placeholder: data.placeholder,
+    required: "required", maxlength: "254", autocomplete: "email",
+  });
+  const btn = el("button", { type: "submit", class: "newsletter-btn", text: data.buttonText });
+  const msg = el("p", { class: "newsletter-msg", "aria-live": "polite" });
+  form.append(input, btn);
+  wrap.append(form, msg);
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = input.value.trim();
+    if (!email) return;
+    btn.disabled = true;
+    msg.className = "newsletter-msg";
+    msg.textContent = "處理中…";
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (res.ok) {
+        msg.className = "newsletter-msg newsletter-msg--ok";
+        msg.textContent = data.successText || "已訂閱。";
+        form.reset();
+      } else {
+        msg.className = "newsletter-msg newsletter-msg--err";
+        msg.textContent = body.error || "訂閱失敗，請稍後再試。";
+      }
+    } catch {
+      msg.className = "newsletter-msg newsletter-msg--err";
+      msg.textContent = "網絡錯誤，請稍後再試。";
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  return wrap;
 }
 
 function updateMeta(seo, author) {
@@ -651,7 +745,7 @@ function initNav() {
   }
 
   // Active section highlight via IntersectionObserver
-  const sections = ["hero", "story", "about", "articles", "discord-free", "archive", "tiers", "discord-paid", "social"]
+  const sections = ["hero", "method", "about", "tools", "articles", "journey", "compare", "archive", "tiers", "community", "social"]
     .map(id => document.getElementById(id))
     .filter(Boolean);
 

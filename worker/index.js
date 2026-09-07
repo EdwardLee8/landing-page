@@ -138,6 +138,14 @@ const LOGIN_STATE_TTL_SECONDS = 24 * 60 * 60;
 
 const rateKey = (ip) => `rl:${ip}`;
 
+// ── 電郵訂閱 ────────────────────────────────────────────────────────
+// 沒有另外開一個 KV namespace,借用現有 LOGIN_RATE_LIMIT(key 前綴
+// "sub:" 跟登入節流的 "rl:" 不會撞)。每個電郵一個 key、值係訂閱時間,
+// 寫入互不影響,唔會有並發覆蓋的問題;要匯出名單用
+// `wrangler kv key list --binding LOGIN_RATE_LIMIT --prefix sub:`。
+const subKey = (email) => `sub:${email.toLowerCase()}`;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 /** 讀取該 IP 24 小時內的密碼錯誤次數。 */
 async function readRateState(kv, ip) {
   const raw = await kv.get(rateKey(ip));
@@ -264,6 +272,32 @@ export default {
         200,
         { "Set-Cookie": cookieHeader(token, SESSION_TTL_SECONDS) },
       );
+    }
+
+    if (url.pathname === "/api/subscribe") {
+      if (request.method !== "POST") return json({ error: "method not allowed" }, 405);
+      const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+      if (env.LOGIN_LIMITER) {
+        const { success } = await env.LOGIN_LIMITER.limit({ key: `sub:${ip}` });
+        if (!success) return json({ error: "請求太頻密,請稍後再試" }, 429);
+      }
+      let body;
+      try {
+        body = await request.json();
+      } catch {
+        return json({ error: "invalid body" }, 400);
+      }
+      const email = String(body?.email ?? "").trim();
+      if (!EMAIL_RE.test(email) || email.length > 254) {
+        return json({ error: "電郵格式不正確" }, 400);
+      }
+      const kv = env.LOGIN_RATE_LIMIT;
+      if (kv) {
+        const writing = kv.put(subKey(email), new Date().toISOString());
+        if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(writing);
+        else await writing;
+      }
+      return json({ ok: true });
     }
 
     if (url.pathname === "/api/logout") {

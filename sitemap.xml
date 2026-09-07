@@ -50,4 +50,12 @@
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
+  <url>
+    <!-- 504 篇個別摘要頁的網址在 sitemap-archive.xml(由
+         scripts/build_archive_pages.py 自動產生),呢度只收錄索引頁。 -->
+    <loc>https://ai10xpro.com/archive/</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>
