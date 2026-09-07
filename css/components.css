@@ -84,3 +84,114 @@ input[type=text] { min-width: 180px; }
 .tag-cn, .badge.cn  { background: #2a1e1e; color: var(--cn);  border: 1px solid #ef535033; }
 .tag-us, .badge.us  { background: #1e1e2a; color: var(--us);  border: 1px solid #5c9bdd33; }
 .tag-etf, .badge.etf { background: #2a2a1e; color: var(--etf); border: 1px solid #ffca2833; }
+
+/* ── 資料庫首頁卡片(方向 C) ─────────────────────────────────
+   原本各卡片用 emoji 當圖示、大量留白;改成扁平分類清單 + hover 提升,
+   拿掉 emoji,用小色塊分類徽章代替。 */
+.dash-section { margin-bottom: 30px; scroll-margin-top: 24px; }
+.dash-section:last-child { margin-bottom: 0; }
+.dash-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.dash-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+.dash-section-rule {
+  flex-grow: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold-dim), transparent);
+}
+.dash-section-count {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.dash-grid {
+  display: grid;
+  /* auto-fit(不是 auto-fill):最後一行不足整排時,多出來的軌道會收窄
+     成 0,不會留下一格被 grid 底色填滿的空白色塊。 */
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.dash-card {
+  background: var(--bg-panel);
+  padding: 16px 18px 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 108px;
+}
+.dash-card:hover { background: var(--bg-hover); text-decoration: none; }
+.dash-card-title { font-size: 14px; font-weight: 700; color: var(--text-strong); }
+.dash-card-desc { font-size: 12px; line-height: 1.65; color: var(--text-muted); }
+.dash-card-meta {
+  margin-top: auto;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.03em;
+}
+
+/* ── Composite 主分數(RS 評分表,方向 C) ───────────────────────
+   原本每個 timeframe 都是同樣大小的小圓角膠囊;Composite 是主要排序欄,
+   放大並加長條,其餘 timeframe 維持原本密集的小膠囊(不改,保留原有
+   欄位資訊量)。 */
+.composite-hero { display: flex; align-items: center; gap: 10px; }
+.composite-hero-num { font-size: 17px; font-weight: 800; min-width: 24px; text-align: right; }
+.composite-hero-bar { width: 56px; height: 4px; border-radius: 2px; background: var(--bg-raised); overflow: hidden; }
+.composite-hero-bar > span { display: block; height: 4px; border-radius: 2px; }
+
+/* ── 分佈條(RS 評分表,方向 C) ─────────────────────────────────
+   把原本純文字的統計列(符號數／評分99／評分1／中位數)疊加一條依真實
+   資料算出的比例色條,一眼看到整體強弱分佈,數字保留、不移除任何資訊。 */
+.dist-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 13px 18px;
+  margin: 0 24px 14px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.dist-panel-label { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+.dist-bar {
+  flex-grow: 1;
+  min-width: 160px;
+  display: flex;
+  height: 22px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.dist-bar > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--bg);
+}
+.dist-legend { display: flex; gap: 13px; flex-wrap: wrap; white-space: nowrap; }
+.dist-legend span { font-size: 10px; color: var(--text-dim); }
+
+/* ── 表格面板(方向 C):圓角外框包住表格,取代原本無邊框的裸表格 ── */
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin: 0 24px 20px;
+  overflow: hidden;
+}
+.panel .table-wrap { padding: 0; }
+.panel table { width: 100%; }
+
+/* ── 資料庫首頁版面容器 ─────────────────────────────────────── */
+.dash-body { padding: 22px 26px 40px; }

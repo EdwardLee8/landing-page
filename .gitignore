@@ -64,3 +64,9 @@ us_themes_industry.json
 # 回測輸出(內部分析用,非網站內容)
 backtest_finetune/
 backtest_walkforward/
+
+
+# 設計稿的「已組裝」輸出檔(內含 ~2MB 編輯器 payload),已發佈成 Artifact,
+# 不需要進 repo —— 只保留 .dc.html 原始檔與 canvas.json 供之後回頭改。
+.design/*.html
+!.design/*.dc.html

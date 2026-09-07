@@ -25,34 +25,13 @@ body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font
 .pw-box button{width:100%;background:#d4a647;color:#080808;border:none;padding:12px;border-radius:6px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .2s}
 .pw-error{color:#ef5350;font-size:12px;margin-top:10px;min-height:18px}
 
-/* Dashboard */
-#dashboard{display:none;padding:32px 24px 60px;max-width:860px;margin:0 auto}
-.dash-header{text-align:center;padding:40px 0 32px}
-.dash-header h1{font-size:26px;font-weight:700;color:#fff;margin-bottom:8px}
-.dash-header p{font-size:13px;color:#666}
-.dash-header .month-badge{display:inline-block;background:#d4a64720;border:1px solid #d4a64740;color:#d4a647;font-size:12px;font-weight:600;padding:4px 12px;border-radius:12px;margin-top:10px}
-.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
-.db-section{margin-top:36px}
-.db-section:first-of-type{margin-top:8px}
-.db-section-title{font-size:13px;font-weight:700;color:#888;letter-spacing:.15em;text-transform:uppercase;padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid #1e1e2e;display:flex;align-items:center;gap:10px}
-.db-section-title .badge{font-size:11px;font-weight:700;padding:2px 10px;border-radius:10px;letter-spacing:0;text-transform:none}
-.db-section-title .badge.hk{background:#1e2a1e;color:#66bb6a;border:1px solid #4caf5033}
-.db-section-title .badge.cn{background:#2a1e1e;color:#ef5350;border:1px solid #ef535033}
-.db-section-title .badge.us{background:#1e1e2a;color:#5c9bdd;border:1px solid #5c9bdd33}
-.db-section-title .badge.etf{background:#2a2a1e;color:#ffca28;border:1px solid #ffca2833}
-.db-card{background:#0d0d14;border:1px solid #1e1e2e;border-radius:8px;padding:22px 20px;cursor:pointer;transition:all .2s;display:block;text-decoration:none}
-.db-card:hover{border-color:#d4a647;background:#0d0d1c;transform:translateY(-1px);text-decoration:none}
-.db-icon{font-size:26px;margin-bottom:12px}
-.db-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px}
-.db-desc{font-size:12px;color:#666;line-height:1.6}
-.db-tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;margin-top:10px}
-.tag-hk{background:#1e2a1e;color:#66bb6a;border:1px solid #4caf5033}
-.tag-us{background:#1e1e2a;color:#5c9bdd;border:1px solid #5c9bdd33}
-.tag-cn{background:#2a1e1e;color:#ef5350;border:1px solid #ef535033}
-.tag-etf{background:#2a2a1e;color:#ffca28;border:1px solid #ffca2833}
-.logout{text-align:center;margin-top:40px}
-.logout button{background:none;border:1px solid #333;color:#555;padding:8px 20px;border-radius:6px;font-size:13px;font-family:inherit;cursor:pointer;transition:all .2s}
-.logout button:hover{border-color:#666;color:#aaa}
+/* Dashboard:區塊分類色點(取代原本每張卡片的 emoji) */
+#dashboard{display:none}
+.mkt-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;vertical-align:middle}
+.mkt-dot.hk{background:#66bb6a}
+.mkt-dot.cn{background:#ef5350}
+.mkt-dot.us{background:#5c9bdd}
+.mkt-dot.etf{background:#ffca28}
 </style>
 </head>
 <body>
@@ -71,139 +50,143 @@ body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font
 
 <!-- Dashboard -->
 <div id="dashboard">
-  <div class="dash-header">
-    <h1>投資分析資料庫</h1>
-    <p>選擇要查閱的資料庫</p>
-    <div class="month-badge" id="month-badge"></div>
-  </div>
-
-  <!-- ─── 港股 ─── -->
-  <div class="db-section">
-    <div class="db-section-title">港股 <span class="badge hk">HK</span></div>
-    <div class="db-grid">
-      <a href="/member/keywords/hk" class="db-card">
-        <div class="db-icon">🇭🇰</div>
-        <div class="db-title">港股關鍵字資料庫</div>
-        <div class="db-desc">港股上市公司業務關鍵字、相關性分組，可按主題篩選</div>
-        <span class="db-tag tag-hk">港股</span>
-      </a>
-      <a href="/member/outlook-2026" class="db-card">
-        <div class="db-icon">📈</div>
-        <div class="db-title">港股 2026 中期業績前景庫</div>
-        <div class="db-desc">801 間港股：市場／行業排名、評分拆解、財務增長、核心摘要及 6–18 個月展望</div>
-        <span class="db-tag tag-hk">港股</span>
-      </a>
-      <a href="/member/outlook-2026/top3" class="db-card">
-        <div class="db-icon">🏆</div>
-        <div class="db-title">港股 2026 中期業績行業首三高分選擇</div>
-        <div class="db-desc">12 個大行業各首三名，共 36 間：評分、資料信心、收入／盈利增長及繁中前景短評</div>
-        <span class="db-tag tag-hk">港股</span>
-      </a>
-      <a href="/member/stocks/hk" class="db-card">
-        <div class="db-icon">📊</div>
-        <div class="db-title">港股 2025 下半年資料庫</div>
-        <div class="db-desc">港股財務數據、相對強弱、市值分類篩選</div>
-        <span class="db-tag tag-hk">港股</span>
-      </a>
-      <a href="/member/rs/hk" class="db-card">
-        <div class="db-icon">⚡</div>
-        <div class="db-title">港股相對強度評分</div>
-        <div class="db-desc">1300+ 隻港股 8 個 timeframe RS Rating + composite 評分（vs 2800.HK）</div>
-        <span class="db-tag tag-hk">港股</span>
-      </a>
+  <div class="page-header">
+    <div>
+      <div class="page-title">研究資料庫</div>
+      <div class="page-subtitle" id="month-badge"></div>
     </div>
   </div>
 
-  <!-- ─── A 股 ─── -->
-  <div class="db-section">
-    <div class="db-section-title">A 股 <span class="badge cn">CN</span></div>
-    <div class="db-grid">
-      <a href="/member/keywords/cn" class="db-card">
-        <div class="db-icon">🇨🇳</div>
-        <div class="db-title">A 股關鍵字資料庫</div>
-        <div class="db-desc">A 股上市公司業務關鍵字、相關性分組，可按主題篩選</div>
-        <span class="db-tag tag-cn">A 股</span>
-      </a>
-      <a href="/member/irm" class="db-card">
-        <div class="db-icon">🏭</div>
-        <div class="db-title">A 股(深圳)最新業務資料庫</div>
-        <div class="db-desc">深交所上市公司投資者關係活動記錄，1,000+ 家公司調研紀要</div>
-        <span class="db-tag tag-cn">A 股</span>
-      </a>
-      <a href="/member/rs/cn" class="db-card">
-        <div class="db-icon">⚡</div>
-        <div class="db-title">A 股相對強度評分</div>
-        <div class="db-desc">5000+ 隻 A 股 8 個 timeframe RS Rating + composite 評分（vs 中證全指）</div>
-        <span class="db-tag tag-cn">A 股</span>
-      </a>
-    </div>
-  </div>
+  <div class="dash-body">
 
-  <!-- ─── 美股 ─── -->
-  <div class="db-section">
-    <div class="db-section-title">美股 <span class="badge us">US</span></div>
-    <div class="db-grid">
-      <a href="/member/keywords/us" class="db-card">
-        <div class="db-icon">🇺🇸</div>
-        <div class="db-title">美股關鍵字資料庫</div>
-        <div class="db-desc">美股上市公司業務關鍵字、相關性分組，可按主題篩選</div>
-        <span class="db-tag tag-us">美股</span>
-      </a>
-      <a href="/member/stocks/us" class="db-card">
-        <div class="db-icon">📈</div>
-        <div class="db-title">美股資料庫</div>
-        <div class="db-desc">美股財務數據、相對強弱、市值分類篩選</div>
-        <span class="db-tag tag-us">美股</span>
-      </a>
-      <a href="/member/rs/us" class="db-card">
-        <div class="db-icon">⚡</div>
-        <div class="db-title">美股相對強度評分</div>
-        <div class="db-desc">3000+ 隻美股 8 個 timeframe RS Rating + composite 評分（vs SPY）</div>
-        <span class="db-tag tag-us">美股</span>
-      </a>
-      <a href="/member/transcripts" class="db-card">
-        <div class="db-icon">🧠</div>
-        <div class="db-title">美股業績電話會議資料庫</div>
-        <div class="db-desc">583 隻美股業績電話情報，bull/bear thesis，關鍵字回報信號，同業比較</div>
-        <span class="db-tag tag-us">美股</span>
-      </a>
-      <a href="/member/research" class="db-card">
-        <div class="db-icon">📋</div>
-        <div class="db-title">美股業務最新記錄資料庫</div>
-        <div class="db-desc">Tier 1 自動研究報告：背景 + 最新業績 + 6-12 個月展望（背景 + 業績 + 催化劑 + 風險）</div>
-        <span class="db-tag tag-us">美股</span>
-      </a>
+    <!-- ─── 港股 ─── -->
+    <div class="dash-section" id="sec-hk">
+      <div class="dash-section-head">
+        <div class="dash-section-title"><span class="mkt-dot hk"></span>港股</div>
+        <div class="dash-section-rule"></div>
+        <div class="dash-section-count">5 個資料庫</div>
+      </div>
+      <div class="dash-grid">
+        <a href="/member/keywords/hk" class="dash-card">
+          <div class="dash-card-title">關鍵字資料庫</div>
+          <div class="dash-card-desc">業務關鍵字、相關性分組，可按主題篩選</div>
+          <div class="dash-card-meta">1,300+ 間</div>
+        </a>
+        <a href="/member/outlook-2026" class="dash-card">
+          <div class="dash-card-title">2026 中期業績前景庫</div>
+          <div class="dash-card-desc">市場／行業排名、評分拆解、財務增長，附 6–18 個月展望</div>
+          <div class="dash-card-meta">801 間</div>
+        </a>
+        <a href="/member/outlook-2026/top3" class="dash-card">
+          <div class="dash-card-title">行業首三高分選擇</div>
+          <div class="dash-card-desc">12 個大行業各首三名，共 36 間，附繁中前景短評</div>
+          <div class="dash-card-meta">36 間</div>
+        </a>
+        <a href="/member/stocks/hk" class="dash-card">
+          <div class="dash-card-title">2025 下半年資料庫</div>
+          <div class="dash-card-desc">財務數據、相對強弱、市值分類篩選</div>
+          <div class="dash-card-meta">2,012 隻</div>
+        </a>
+        <a href="/member/rs/hk" class="dash-card">
+          <div class="dash-card-title">相對強度評分</div>
+          <div class="dash-card-desc">8 個 timeframe RS Rating + Composite 評分（vs 2800.HK）</div>
+          <div class="dash-card-meta">1,300+ 隻</div>
+        </a>
+      </div>
     </div>
-  </div>
 
-  <!-- ─── 每日報告 ─── -->
-  <div class="db-section">
-    <div class="db-section-title">每日報告 <span class="badge etf">DAILY</span></div>
-    <div class="db-grid">
-      <a href="/member/movers" class="db-card">
-        <div class="db-icon">📈</div>
-        <div class="db-title">RS 排名上升榜</div>
-        <div class="db-desc">三個市場每日 Composite 評分上升 Top 100，自動 Telegram 推送</div>
-        <span class="db-tag tag-etf">每日</span>
-      </a>
+    <!-- ─── A 股 ─── -->
+    <div class="dash-section" id="sec-cn">
+      <div class="dash-section-head">
+        <div class="dash-section-title"><span class="mkt-dot cn"></span>A 股</div>
+        <div class="dash-section-rule"></div>
+        <div class="dash-section-count">3 個資料庫</div>
+      </div>
+      <div class="dash-grid">
+        <a href="/member/keywords/cn" class="dash-card">
+          <div class="dash-card-title">關鍵字資料庫</div>
+          <div class="dash-card-desc">業務關鍵字、相關性分組，可按主題篩選</div>
+          <div class="dash-card-meta">5,000+ 間</div>
+        </a>
+        <a href="/member/irm" class="dash-card">
+          <div class="dash-card-title">深交所調研紀要</div>
+          <div class="dash-card-desc">上市公司投資者關係活動記錄</div>
+          <div class="dash-card-meta">1,000+ 家</div>
+        </a>
+        <a href="/member/rs/cn" class="dash-card">
+          <div class="dash-card-title">相對強度評分</div>
+          <div class="dash-card-desc">8 個 timeframe RS Rating + Composite 評分（vs 中證全指）</div>
+          <div class="dash-card-meta">5,000+ 隻</div>
+        </a>
+      </div>
     </div>
-  </div>
 
-  <!-- ─── ETF ─── -->
-  <div class="db-section">
-    <div class="db-section-title">ETF <span class="badge etf">ETF</span></div>
-    <div class="db-grid">
-      <a href="etf-report/" class="db-card">
-        <div class="db-icon">🗂️</div>
-        <div class="db-title">ETF 報告</div>
-        <div class="db-desc">港股、美股 ETF 分類、回報及資產規模概覽</div>
-        <span class="db-tag tag-etf">ETF</span>
-      </a>
+    <!-- ─── 美股 ─── -->
+    <div class="dash-section" id="sec-us">
+      <div class="dash-section-head">
+        <div class="dash-section-title"><span class="mkt-dot us"></span>美股</div>
+        <div class="dash-section-rule"></div>
+        <div class="dash-section-count">5 個資料庫</div>
+      </div>
+      <div class="dash-grid">
+        <a href="/member/keywords/us" class="dash-card">
+          <div class="dash-card-title">關鍵字資料庫</div>
+          <div class="dash-card-desc">業務關鍵字、相關性分組，可按主題篩選</div>
+          <div class="dash-card-meta">3,000+ 間</div>
+        </a>
+        <a href="/member/stocks/us" class="dash-card">
+          <div class="dash-card-title">美股資料庫</div>
+          <div class="dash-card-desc">財務數據、相對強弱、市值分類篩選</div>
+          <div class="dash-card-meta">3,000+ 隻</div>
+        </a>
+        <a href="/member/rs/us" class="dash-card">
+          <div class="dash-card-title">相對強度評分</div>
+          <div class="dash-card-desc">8 個 timeframe RS Rating + Composite 評分（vs SPY）</div>
+          <div class="dash-card-meta">3,000+ 隻</div>
+        </a>
+        <a href="/member/transcripts" class="dash-card">
+          <div class="dash-card-title">業績電話會議資料庫</div>
+          <div class="dash-card-desc">Bull／bear thesis、關鍵字回報信號、同業比較</div>
+          <div class="dash-card-meta">583 隻</div>
+        </a>
+        <a href="/member/research" class="dash-card">
+          <div class="dash-card-title">業務最新記錄資料庫</div>
+          <div class="dash-card-desc">Tier 1 自動研究報告：背景 + 業績 + 催化劑 + 風險</div>
+          <div class="dash-card-meta">Tier 1</div>
+        </a>
+      </div>
     </div>
-  </div>
 
-  <div class="logout">
-    <button onclick="logout()">登出（清除本次 Session）</button>
+    <!-- ─── 每日追蹤 ─── -->
+    <div class="dash-section" id="sec-daily">
+      <div class="dash-section-head">
+        <div class="dash-section-title"><span class="mkt-dot etf"></span>每日追蹤</div>
+        <div class="dash-section-rule"></div>
+      </div>
+      <div class="dash-grid">
+        <a href="/member/movers" class="dash-card">
+          <div class="dash-card-title">RS 排名上升榜</div>
+          <div class="dash-card-desc">三個市場每日 Composite 評分上升 Top 100，自動 Telegram 推送</div>
+          <div class="dash-card-meta">每日更新</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ─── ETF ─── -->
+    <div class="dash-section" id="sec-etf">
+      <div class="dash-section-head">
+        <div class="dash-section-title"><span class="mkt-dot etf"></span>ETF</div>
+        <div class="dash-section-rule"></div>
+      </div>
+      <div class="dash-grid">
+        <a href="etf-report/" class="dash-card">
+          <div class="dash-card-title">ETF 報告</div>
+          <div class="dash-card-desc">港股、美股 ETF 分類、回報及資產規模概覽</div>
+          <div class="dash-card-meta">港股 + 美股</div>
+        </a>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -239,13 +222,6 @@ function showDashboard() {
     now.getFullYear() + " 年 " + (now.getMonth() + 1) + " 月";
 }
 
-function logout() {
-  MemberAuth.logoutRemote();
-  sessionStorage.removeItem("unified_auth");
-  sessionStorage.removeItem("unified_auth_pw");
-  location.reload();
-}
-
 document.getElementById("pw-submit").addEventListener("click", checkPassword);
 document.getElementById("pw-input").addEventListener("keydown", e => {
   if (e.key === "Enter") checkPassword();
@@ -260,6 +236,6 @@ if (sessionStorage.getItem("unified_auth") === "1") {
   MemberAuth.resume().then(pw => { if (pw) showDashboard(); });
 }
 </script>
-<script>MemberShell.init({});</script>
+<script>MemberShell.init({ sidebar: true, section: "home" });</script>
 </body>
 </html>

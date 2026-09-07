@@ -158,3 +158,88 @@
 .help-panel ul { margin: 6px 0 6px 20px; }
 .help-panel li { margin: 3px 0; }
 .help-panel b  { color: var(--text); }
+
+/* ── 側邊欄版面(方向 C:現代產品) ─────────────────────────────
+   目前只用在 login.html 與三個 RS 評分頁,見 js/member-shell.js 的
+   wrapSidebar()。其餘會員頁仍用上面的頂欄模式,尚未逐一驗證前不擴大範圍。 */
+.shell-layout {
+  display: flex;
+  min-height: 100vh;
+}
+.shell-sidebar {
+  width: 216px;
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0;
+}
+.shell-sidebar-brand { padding: 0 22px 22px; }
+.shell-sidebar-brand a { display: block; }
+.shell-sidebar-name {
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-strong);
+  letter-spacing: -0.01em;
+}
+.shell-sidebar-tag {
+  display: block;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+.shell-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 12px;
+}
+.shell-sidebar-nav a {
+  padding: 9px 12px;
+  border-radius: 7px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.shell-sidebar-nav a:hover { background: var(--bg-raised); text-decoration: none; }
+.shell-sidebar-nav a.active {
+  background: var(--gold-ghost);
+  color: var(--gold);
+  font-weight: 700;
+}
+.shell-sidebar-foot {
+  margin-top: auto;
+  padding: 16px 22px 0;
+  border-top: 1px solid var(--line);
+}
+.shell-sidebar-foot a { font-size: 12px; color: var(--text-muted); }
+.shell-sidebar-foot a:hover { color: var(--gold); text-decoration: none; }
+
+.shell-main {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 側邊欄模式下,頁首右側只放「市場切換」,不再有返回/登出(側邊欄已有)。 */
+.shell-header-actions { margin-left: auto; }
+
+@media (max-width: 820px) {
+  .shell-layout { flex-direction: column; }
+  .shell-sidebar {
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    padding: 12px 16px;
+    gap: 16px;
+    overflow-x: auto;
+  }
+  .shell-sidebar-brand { padding: 0; flex-shrink: 0; }
+  .shell-sidebar-nav { flex-direction: row; padding: 0; flex-shrink: 0; }
+  .shell-sidebar-nav a { white-space: nowrap; }
+  .shell-sidebar-foot { margin-top: 0; margin-left: auto; padding: 0; border-top: none; flex-shrink: 0; }
+}

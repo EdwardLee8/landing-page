@@ -67,11 +67,16 @@ document.getElementById("rs-app").innerHTML = `<button class="help-btn" onclick=
   </div>
 </div>
 
-<div class="info-bar" id="info-bar">
-  <span>符號: <b id="count-all">—</b></span>
-  <span>評分99 (最強) : <b id="count-top">—</b></span>
-  <span>評分1 (最弱) : <b id="count-bot">—</b></span>
-  <span>Composite中位數: <b id="median-comp">—</b></span>
+<div class="dist-panel">
+  <div class="dist-panel-label">Composite 分佈（<b id="count-all">—</b> 隻，中位數 <b id="median-comp">—</b>）</div>
+  <div class="dist-bar" id="dist-bar"></div>
+  <div class="dist-legend">
+    <span><i style="color:#b71c1c">■</i> 1–20 <b id="count-b1">—</b></span>
+    <span><i style="color:#ef5350">■</i> 21–40 <b id="count-b2">—</b></span>
+    <span><i style="color:#ffb74d">■</i> 41–60 <b id="count-b3">—</b></span>
+    <span><i style="color:#64b5f6">■</i> 61–80 <b id="count-b4">—</b></span>
+    <span><i style="color:#4caf50">■</i> 81–99 <b id="count-top">—</b></span>
+  </div>
 </div>
 
 <div class="filter-bar">
@@ -185,6 +190,7 @@ ${C.amountTiers.map(t => `        <label><input type="checkbox" name="amount" va
   <div class="legend-item"><div class="legend-dot" style="background:#b71c1c"></div>1-20 弱勢</div>
 </div>
 
+<div class="panel">
 <div class="table-wrap">
 <table>
   <thead>
@@ -212,6 +218,7 @@ ${C.amountTiers.map(t => `        <label><input type="checkbox" name="amount" va
 <div class="empty" id="empty-state" style="display:none">
   <div style="font-size:40px;margin-bottom:12px">&#128269;</div>
   <div>找不到符合條件的股票</div>
+</div>
 </div>
 </div>
 
@@ -283,9 +290,23 @@ async function loadData() {
     const comps = window._raw.map(r => r.rs_rating_composite).filter(c => c != null).sort((a,b)=>a-b);
     const median = comps[Math.floor(comps.length/2)];
     document.getElementById('count-all').textContent = window._raw.length;
-    document.getElementById('count-top').textContent = window._raw.filter(r => r.rs_rating_composite >= 81).length;
-    document.getElementById('count-bot').textContent = window._raw.filter(r => r.rs_rating_composite <= 20).length;
     document.getElementById('median-comp').textContent = median;
+
+    // Composite 分佈條:5 個桶,跟表格內 ratingBadge() 用同一套色階與級距
+    // (1-20 / 21-40 / 41-60 / 61-80 / 81-99),數字皆由目前這批真實資料算出。
+    const buckets = [
+      { id: 'count-b1', color: '#b71c1c', test: c => c <= 20 },
+      { id: 'count-b2', color: '#ef5350', test: c => c >= 21 && c <= 40 },
+      { id: 'count-b3', color: '#ffb74d', test: c => c >= 41 && c <= 60 },
+      { id: 'count-b4', color: '#64b5f6', test: c => c >= 61 && c <= 80 },
+      { id: 'count-top', color: '#4caf50', test: c => c >= 81 },
+    ].map(b => ({ ...b, n: comps.filter(b.test).length }));
+    buckets.forEach(b => { document.getElementById(b.id).textContent = b.n; });
+    const distBar = document.getElementById('dist-bar');
+    distBar.innerHTML = buckets.filter(b => b.n > 0).map(b => {
+      const pct = (b.n / comps.length * 100).toFixed(1);
+      return `<span style="width:${pct}%;background:${b.color}" title="${b.n} 隻">${pct >= 8 ? b.n : ''}</span>`;
+    }).join('');
 
     // Build sector dropdown
     const sectors = [...new Set(window._raw.map(r => r.sector).filter(Boolean))].sort();
@@ -339,6 +360,18 @@ function ratingBadge(v) {
   else if (v >= 21) { cls = 'bg-bad'; }
   else              { cls = 'bg-worst'; }
   return `<span class="rating-badge ${cls}">${v}</span>`;
+}
+
+// Composite 是主要排序欄,用大字 + 長條凸顯,其餘 timeframe 仍用上面的
+// 小膠囊(ratingBadge)—— 不拿掉任何欄位資訊,只是把最重要的那欄放大。
+// 顏色跟 ratingBadge()/legend 用同一套色階,數值即真實 Composite 分數。
+function compositeHero(v) {
+  if (v == null) return '<span class="neutral">—</span>';
+  const color = v >= 81 ? '#4caf50' : v >= 61 ? '#64b5f6' : v >= 41 ? '#ffb74d' : v >= 21 ? '#ef5350' : '#b71c1c';
+  return `<div class="composite-hero">
+    <span class="composite-hero-num" style="color:${color}">${v}</span>
+    <div class="composite-hero-bar"><span style="width:${v}%;background:${color}"></span></div>
+  </div>`;
 }
 
 function pctColor(v) {
@@ -429,7 +462,7 @@ function render() {
       <td>${fmtName(r)}</td>
       <td class="sector">${r.sector || '—'}</td>
       <td class="amount" style="text-align:right">${fmtMktCap(r.market_cap)}</td>
-      <td style="text-align:center">${ratingBadge(r.rs_rating_composite)}</td>
+      <td>${compositeHero(r.rs_rating_composite)}</td>
       <td style="text-align:center">${ratingBadge(r.rs_rating_5d)}</td>
       <td class="num ${pctColor(rs5)}">${fmtPct(rs5)}</td>
       <td style="text-align:center">${ratingBadge(r.rs_rating_10d)}</td>
