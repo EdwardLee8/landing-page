@@ -732,8 +732,8 @@ section + section {
 }
 
 .about-stat-label {
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
@@ -872,11 +872,14 @@ section + section {
 }
 
 .article-excerpt {
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
   line-height: 1.8;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  /* 摘要字級由 0.82rem 放大到 0.95rem 後,兩行裁得太早(多數卡片會斷在
+     句子中間)。卡片有 min-height 245px、實際內容只用到 165px,
+     改成三行仍然有餘裕,不會撐爆版面。 */
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin-bottom: 28px;
