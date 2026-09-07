@@ -80,7 +80,7 @@ function renderAll() {
   renderHero(c.author);
   renderStory(c.story);
   renderAbout(c.about);
-  renderArticles(c.articles);
+  renderArticles(c.articles, c.articlesCta);
   renderDiscordFree(c.discordFree);
   renderDiscordPaid(c.discordPaid);
   renderTiers(c.tiers);
@@ -306,7 +306,7 @@ function renderDiscordFree(data) {
   container.append(desc, channelList, ctaWrap);
 }
 
-function renderArticles(articles) {
+function renderArticles(articles, cta) {
   const grid = document.getElementById("articles-grid");
   if (!grid) return;
   grid.textContent = "";
@@ -332,12 +332,9 @@ function renderArticles(articles) {
 
   // CTA button
   const ctaWrap = document.getElementById("articles-cta");
-  if (ctaWrap) {
+  if (ctaWrap && cta) {
     ctaWrap.className = "content-cta reveal";
-    ctaWrap.appendChild(
-      link("https://www.patreon.com/collection/503820?view=expanded",
-        { class: "btn-primary", text: "睇免費報告 →" })
-    );
+    ctaWrap.appendChild(link(cta.url, { class: "btn-primary", text: cta.text }));
   }
 }
 

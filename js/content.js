@@ -17,11 +17,11 @@ const SITE_CONTENT = {
 
   // ── 個人故事 ──────────────────────────────────────────────
   story: {
-    hook: "如果你問，大部分人在股市輸錢的原因是什麼——\n通常不是因為不努力，而是方向一開始就錯了。",
+    hook: "如果你問，大部分人在股市輸錢的原因是甚麼——\n通常不是因為不努力，而是方向一開始就錯了。",
 
     journey: [
       "我的背景，其實和很多人一樣。不是出身於中產家庭，也沒有資源或人脈。大學剛滿18歲，用自己的錢開戶入市。沒有導師，沒有圈子，只能靠書、報章、網上零碎資料自學。",
-      "2012年，我開始在Facebook建立「發掘十倍股」，持續公開記錄對港股的看法；2014年開設群組。這不只是分享——更是長達十多年的實驗，驗證哪些方法有效，哪些完全沒用。",
+      "2012年，我開始在Facebook建立「發掘十倍股」，持續公開記錄對港股的看法；2014年開設群組。這不只是分享，更是長達十多年的實驗，驗證哪些方法有效，哪些完全沒用。",
     ],
 
     turningPoint: {
@@ -29,7 +29,7 @@ const SITE_CONTENT = {
       emphasis: "大多數人關注的東西，其實都不是關鍵。",
     },
 
-    insight: "投資最難的部分，往往不是找到好股票——而是知道什麼時候該走，什麼時候該留。我能把多數虧損控制在 15% 以內，同時讓 APP 跑到 +236%、ANET 跑到 +290%。2021 年沒有跟進 meme 股，2022 年沒有跟進新電動車——不是市場沒有誘惑，而是有自己的判斷標準。",
+    insight: "投資最難的部分，往往不是找到好股票，而是知道甚麼時候該走，甚麼時候該留。我能把多數虧損控制在 15% 以內，同時讓 APP 跑到 +236%、ANET 跑到 +290%。2021 年沒有跟進 meme 股，2022 年沒有跟進新電動車。不是市場沒有誘惑，而是有自己的判斷標準。",
 
     pillars: {
       intro: "真正影響投資回報的是：",
@@ -40,29 +40,29 @@ const SITE_CONTENT = {
       ],
     },
 
-    aiNote: "AI 對我來說，只是效率器——更快篩選、更廣覆蓋。最終的判斷，仍然來自對市場的理解。",
+    aiNote: "AI 對我來說，只是效率工具：更快篩選、更廣覆蓋。最終的判斷，仍然來自對市場的理解。",
 
     valueProp: [
       "這個專欄的目的，不是提供更多資訊，而是幫你過濾掉大部分無用的資訊。",
       "你會看到的，不是事後分析，而是：哪些公司正處於動能最強的位置，哪些變化正在發生，而市場仍未完全反映——然後放在模擬倉，看著它們朝預想的方向發展。",
     ],
 
-    closingHook: "如果你想看的，不只是發生了什麼，\n而是下一步可能發生什麼——",
+    closingHook: "如果你想看的，不只是發生了甚麼，\n而是下一步可能發生甚麼——",
     cta: { text: "完整分析會在會員內容中提供", url: "https://www.patreon.com/edward10" },
   },
 
   // ── 往績數據 ──────────────────────────────────────────────
   about: {
     stats: [
-      { value: "2012",   label: "開始年份（Facebook「發掘十倍股」）" },
+      { value: "2012",   label: "公開記錄起始年" },
       { value: "19,000+", label: "Facebook 追蹤者" },
-      { value: "500+",   label: "深度分析文章" },
+      { value: "500+",   label: "分析文章" },
     ],
   },
 
   // ── 收費 Discord ──────────────────────────────────────────
   discordPaid: {
-    description: "與一群認真對待投資的人即時交流。市場訊號、操作思路、倉位更新——第一時間同步，唔再獨自摸索。",
+    description: "與一群認真對待投資的人即時交流。市場訊號、操作思路、倉位更新第一時間同步，不用再獨自摸索。",
     channels: [
       { name: "📊 選股分析", desc: "個股深度分析與入場訊號討論" },
       { name: "📰 即時新聞解讀", desc: "重要消息第一時間分析實際影響" },
@@ -76,7 +76,7 @@ const SITE_CONTENT = {
 
   // ── 免費 Discord ──────────────────────────────────────────
   discordFree: {
-    description: "先免費試試。加入後你會看到市場分析的角度有多不同——數據說話，唔係感覺說話。",
+    description: "先免費試用。加入後你會看到市場分析的角度有多不同：用數據說話，而不是用感覺說話。",
     channels: [
       { name: "📢 公告", desc: "最新文章及重要更新通知" },
       { name: "💹 市場動態", desc: "每日市場開收市簡報" },
@@ -97,21 +97,21 @@ const SITE_CONTENT = {
     },
     {
       title: "〈免費會員可享〉港股2025下半年資料庫",
-      excerpt: "呢個資料庫收錄咗 1,894 隻港股嘅2025下半年業績數據，幫助普通投資者快速篩選股票，唔需要逐隻睇業績，幾秒鐘就可以找到符合自己投資策略嘅股票。",
+      excerpt: "資料庫收錄 1,894 隻港股的 2025 下半年業績數據，幫助投資者快速篩選股票，不用逐隻翻業績，幾秒鐘就能找到符合自己策略的標的。",
       date: "2026-04-01",
       platform: "patreon",
       url: "https://www.patreon.com/posts/mian-fei-hui-ke-154513617",
     },
     {
       title: "港股 IPO：嗚嗚很忙公司介紹",
-      excerpt: "最新港股 IPO 分析，深入拆解公司背景、業務模式及上市估值，判斷值唔值得抽新股。",
+      excerpt: "最新港股 IPO 分析，拆解公司背景、業務模式及上市估值，判斷值不值得抽新股。",
       date: "2026-03-10",
       platform: "patreon",
       url: "https://www.patreon.com/posts/148744481?collection=503820",
     },
     {
       title: "2025 年白銀真的在「暴走」：到 12 月已翻倍、創歷史新高",
-      excerpt: "白銀全年升幅翻倍，背後係工業需求爆發定係資金避險？深度拆解銀價上漲邏輯及後市走向。",
+      excerpt: "白銀全年升幅翻倍，背後是工業需求爆發還是資金避險？拆解銀價上漲邏輯及後市走向。",
       date: "2025-12-20",
       platform: "patreon",
       url: "https://www.patreon.com/posts/146896511?collection=503820",
@@ -131,7 +131,7 @@ const SITE_CONTENT = {
       url: "https://www.patreon.com/posts/142328408?collection=503820",
     },
     {
-      title: "港股為什麼這麼弱？以 JS 環球生活分拆 SharkNinja 為例說明",
+      title: "港股為甚麼這麼弱？以 JS 環球生活分拆 SharkNinja 為例說明",
       excerpt: "除基本面因素外，以 JS 環球生活（1691）分拆 SharkNinja 赴美上市為例，解釋港股資金持續外流的深層原因。",
       date: "2024-10-01",
       platform: "patreon",
@@ -146,10 +146,18 @@ const SITE_CONTENT = {
     },
   ],
 
+  // 首頁只列 8 篇精選;往績寫「500+ 分析文章」,所以文章區底下要有一個
+  // 通往全部文章的出口,否則數字沒有著落。文字原本寫死在 js/main.js,
+  // 跟這裡的 tiers[0].cta 重複,改成一起由這個檔案管理。
+  articlesCta: {
+    text: "查看全部免費文章 →",
+    url: "https://www.patreon.com/collection/503820?view=expanded",
+  },
+
   // ── Patreon 訂閱 Tier ────────────────────────────────────
   tiers: [
     {
-      name: "免費跟隨",
+      name: "免費關注",
       nameEn: "Free",
       price: "免費",
       period: "",
@@ -159,7 +167,7 @@ const SITE_CONTENT = {
         "Facebook 及 Instagram 公開分析",
         "投資框架基礎知識分享",
       ],
-      cta: "睇免費報告 →",
+      cta: "查看免費報告 →",
       url: "https://www.patreon.com/collection/503820?view=expanded",
     },
     {
@@ -170,10 +178,10 @@ const SITE_CONTENT = {
       highlight: true,
       features: [
         "數據驗證選股策略（港股 + 美股）",
-        "每週市場深度回顧與走向預測",
+        "每週市場回顧與走向預測",
         "個人模擬組合持倉參考及操作理由",
-        "風險管理實操：止損設置與倉位控制",
-        "行業深度研究，捕捉結構性機會",
+        "風險管理：止蝕位與倉位控制",
+        "行業研究：捕捉結構性機會",
       ],
       cta: "成為訂閱會員 →",
       url: "https://www.patreon.com/edward10",
@@ -181,7 +189,7 @@ const SITE_CONTENT = {
     {
       name: "支持創作",
       nameEn: "Support",
-      price: "隨心支持",
+      price: "自訂金額",
       period: "",
       highlight: false,
       features: [
@@ -198,7 +206,7 @@ const SITE_CONTENT = {
   social: [
     {
       platform: "Patreon",
-      label: "訂閱 Patreon — 深度投資分析",
+      label: "訂閱 Patreon — 完整投資分析",
       url: "https://www.patreon.com/edward10",
       highlight: true,
     },
@@ -231,7 +239,7 @@ const SITE_CONTENT = {
   // ── SEO / OG ─────────────────────────────────────────────
   seo: {
     title: "Edward LEE · 發掘十倍股",
-    description: "2012年起公開記錄港股美股分析。專注業績變化、行業趨勢、資金與情緒——幫你過濾噪音，看到下一步可能發生什麼。多年來的成果得來不易。",
+    description: "2012年起公開記錄港股美股分析。專注業績變化、行業趨勢、資金與情緒——幫你過濾噪音，看到下一步可能發生甚麼。",
     ogImage: "assets/images/og-image.jpg",
     siteUrl: "https://ai10xpro.com",
   },
