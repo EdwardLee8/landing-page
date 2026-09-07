@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>投資分析 — 資料庫入口</title>
+<title>會員資料庫｜Edward LEE 發掘十倍股</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>庫</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -208,6 +208,7 @@ body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font
 </div>
 
 <script src="js/member-auth.js"></script>
+<script src="js/member-shell.js"></script>
 <script>
 // 密碼雜湊、SHA-256 與 AES-GCM 解密集中於 js/member-auth.js,
 // 避免同一段密碼學程式碼散落在十幾個頁面各自維護。
@@ -259,5 +260,6 @@ if (sessionStorage.getItem("unified_auth") === "1") {
   MemberAuth.resume().then(pw => { if (pw) showDashboard(); });
 }
 </script>
+<script>MemberShell.init({});</script>
 </body>
 </html>

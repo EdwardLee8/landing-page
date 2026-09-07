@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>美股業務最新記錄資料庫</title>
+<title>美股研究報告資料庫｜Edward LEE 發掘十倍股</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
@@ -188,6 +188,7 @@ td.mcap{color:#ccc;white-space:nowrap}
 </div>
 
 <script src="js/member-auth.js"></script>
+<script src="js/member-shell.js"></script>
 <script>
 // SHA-256 of the unified member password
 // 密碼雜湊、SHA-256 與 AES-GCM 解密集中於 js/member-auth.js,
@@ -621,5 +622,6 @@ function escHtml(s) {
   return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 }
 </script>
+<script>MemberShell.init({});</script>
 </body>
 </html>

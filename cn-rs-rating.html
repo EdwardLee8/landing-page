@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>A股相對強度評分</title>
+<title>A股相對強度評分｜Edward LEE 發掘十倍股</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/tokens.css">
@@ -114,6 +114,7 @@ td.amount{text-align:right !important;font-size:13px;color:#aaa}
 <p><b>小貼士：</b>篩選 Stage 2 配合 Composite ≥ 81，效果最佳。</p>
 </div>
 <script src="js/member-auth.js"></script>
+<script src="js/member-shell.js"></script>
 <script>
 (function(){
   const KEY = "_help_seen_rs-cn";
@@ -697,5 +698,6 @@ function updateStageBtn() {
   btn.textContent = (checked.length === 0 || checked.length === total) ? '全部 Stage ▾' : `已選 ${checked.length} Stage ▾`;
 }
 </script>
+<script>MemberShell.init({ group: "rs", market: "cn" });</script>
 </body>
 </html>
