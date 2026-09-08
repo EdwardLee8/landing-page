@@ -58,15 +58,16 @@
 
 /* Public research pages; member tools retain their existing palette. */
 .research-site {
-  --research-ink: #142426;
-  --research-muted: #52605f;
-  --research-paper: #f7f6f2;
-  --research-white: #ffffff;
-  --research-line: #d8ddd7;
-  --research-dark: #10292a;
-  --research-dark-muted: #baccc6;
-  --research-accent: #f2cb71;
-  --research-accent-ink: #79591b;
-  --research-soft: #eaf0e9;
-  --research-error: #a42c2c;
+  color-scheme: dark;
+  --research-ink: #f2eee5;
+  --research-muted: #b5afa3;
+  --research-paper: #0b0b0b;
+  --research-white: #151412;
+  --research-line: #383126;
+  --research-dark: #080808;
+  --research-dark-muted: #bdb5a6;
+  --research-accent: #e0b963;
+  --research-accent-ink: #e0b963;
+  --research-soft: #292317;
+  --research-error: #f28b82;
 }
