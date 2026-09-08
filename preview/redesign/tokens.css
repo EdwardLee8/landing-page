@@ -61,13 +61,13 @@
   color-scheme: dark;
   --research-ink: #f2eee5;
   --research-muted: #b5afa3;
-  --research-paper: #0b0b0b;
-  --research-white: #151412;
+  --research-paper: #000000;
+  --research-white: #080808;
   --research-line: #383126;
-  --research-dark: #080808;
+  --research-dark: #000000;
   --research-dark-muted: #bdb5a6;
-  --research-accent: #e0b963;
-  --research-accent-ink: #e0b963;
+  --research-accent: #ffd700;
+  --research-accent-ink: #ffd700;
   --research-soft: #292317;
   --research-error: #f28b82;
 }
