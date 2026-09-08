@@ -38,15 +38,18 @@ Disallow: /
 # Allow normal search indexing (all public pages except the paths below)
 User-agent: Googlebot
 Allow: /
+Allow: /hk-top100-reports/data/companies.json
 Disallow: /etf-report/
 Disallow: /member/
 Disallow: /*.json
 Disallow: /*.enc
 
 User-agent: *
+Allow: /hk-top100-reports/data/companies.json
 Disallow: /etf-report/
 Disallow: /*.json
 Disallow: /*.enc
 
 Sitemap: https://ai10xpro.com/sitemap.xml
 Sitemap: https://ai10xpro.com/sitemap-archive.xml
+Sitemap: https://ai10xpro.com/sitemap-research.xml
