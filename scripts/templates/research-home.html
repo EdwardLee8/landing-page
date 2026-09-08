@@ -1,0 +1,65 @@
+<section class="search-hero" id="hero">
+  <div class="shell hero-grid">
+    <div>
+      <p class="eyebrow">EDWARD LEE RESEARCH · 發掘十倍股</p>
+      <h1>你關心嘅股票，<br><span>業績有咩變化？</span></h1>
+      <p class="lead">由公司研究到行業趨勢，睇清數據背後嘅變化。先查一隻你關心嘅股票。</p>
+      <form class="search-form" id="company-search" action="/research/" method="get" role="search">
+        <label class="sr-only" for="stock-query">搜尋港股公司名稱或股份代號</label>
+        <input id="stock-query" name="q" type="search" placeholder="公司名稱或代號，例如 騰訊、700" autocomplete="off" aria-controls="search-results">
+        <button type="submit">查股票 ↗</button>
+      </form>
+      <p class="search-hint">免費查閱 {{COMPANY_COUNT}} 間港股公司報告 · 資料版本 {{AS_OF}}</p>
+      <div class="quick-search"><span>由呢度開始：</span><a href="/research/hk/00700/">騰訊 00700</a><a href="/research/hk/00005/">滙豐 00005</a><a href="/research/hk/09988/">阿里巴巴 09988</a></div>
+      <div class="search-results" id="search-results" hidden><p class="search-status" role="status"></p><div class="search-matches"></div></div>
+    </div>
+    <aside class="featured-note">
+      <p class="eyebrow">本期研究選讀 / {{FEATURE_DATE}}</p>
+      <div class="quote-rule"></div>
+      <h2>騰訊：收入之外，<br>再睇盈利結構。</h2>
+      <p>遊戲、廣告、金融科技，邊部分帶動增長？由中期業績拆解收入、毛利同經營盈利。</p>
+      <a class="text-link" href="/research/hk/00700/">閱讀免費公司報告 ↗</a>
+    </aside>
+  </div>
+</section>
+<div class="entry-bar"><div class="shell entry-grid">
+  <a class="entry" href="/research/"><span>查公司報告<small>{{COMPANY_COUNT}} 間港股 · 免費全文</small></span><span>↗</span></a>
+  <a class="entry" href="/free/stocks/hk"><span>比較業績<small>收入、毛利與行業分類</small></span><span>↗</span></a>
+  <a class="entry" href="/free/themes"><span>睇主題強弱<small>由主題追蹤相關公司</small></span><span>↗</span></a>
+</div></div>
+<div class="shell">
+  <section class="section" id="articles">
+    <div class="section-heading"><div><p class="eyebrow">RESEARCH NOTES</p><h2>由一間公司，睇懂一個變化。</h2></div><a class="text-link" href="/research/">全部公司研究 ↗</a></div>
+    <div class="cards">{{FEATURED_CARDS}}</div>
+    <p class="note">研究日期同資料期間分開列明；歷史報告唔代表即時行情或最新業績。</p>
+  </section>
+  <section class="section" id="tools">
+    <div class="section-heading"><div><p class="eyebrow">FREE RESEARCH TOOLS</p><h2>帶住問題，搵到答案。</h2></div><a class="text-link" href="/free/">六個免費工具 ↗</a></div>
+    <div class="tools-grid">
+      <article class="tool-card"><span class="tool-number">01 / 睇清業績</span><h3>收入增長，盈利有冇跟上？</h3><p>由公司報告嘅財務表開始，再用業績庫比較其他公司。</p>
+        {{FINANCIAL_PREVIEW}}
+        <p class="note">數字取自現有騰訊報告，完整口徑及來源見原文。</p><a class="text-link" href="/research/hk/00700/#report">睇數據同解讀 ↗</a>
+      </article>
+      <article class="tool-card"><span class="tool-number">02 / 追蹤主題</span><h3>由行業，搵到相關公司。</h3><p>先了解公司做緊乜，再睇同類公司嘅相對強弱。用同一個研究問題串連資料。</p>
+        <ul class="method-list"><li><a href="/research/?industry=%E4%BA%92%E8%81%AF%E7%B6%B2%EF%BC%8F%E7%A7%91%E6%8A%80">互聯網／科技公司研究 ↗</a></li><li><a href="/research/?industry=%E9%8A%80%E8%A1%8C">銀行公司研究 ↗</a></li><li><a href="/free/keywords/hk">用業務關鍵字搵公司 ↗</a></li></ul>
+        <a class="text-link" href="/free/themes">開啟主題強弱監測 ↗</a>
+      </article>
+    </div>
+  </section>
+  <section class="section" id="updates">
+    <div class="section-heading"><div><p class="eyebrow">LATEST IN THE LIBRARY</p><h2>研究庫更新</h2></div><a class="text-link" href="/research/briefing/">本期選讀與分享 ↗</a></div>
+    <div class="cards">{{LATEST_CARDS}}</div>
+  </section>
+  <section class="section" id="journey">
+    <div class="split"><div><p class="eyebrow">THE PERSON BEHIND THE RESEARCH</p><h2>數據先行，<br>判斷有跡可尋。</h2><p>我係 Edward。2012 年起公開記錄投資研究，由港股延伸到美股同宏觀分析。關心嘅一直係：邊啲變化值得跟，判斷又有冇被數據支持。</p><a class="text-link" href="/about/">我嘅故事與研究方法 ↗</a></div>
+      <ol class="method-list" id="method"><li><b>01</b>業績變化<p>拆開收入、盈利同現金流，睇清增長來源。</p></li><li><b>02</b>行業趨勢<p>將公司放返行業背景，理解變化點樣傳導。</p></li><li><b>03</b>資金與情緒<p>結合相對強弱，觀察市場有冇反映基本面。</p></li></ol>
+    </div>
+  </section>
+  <section class="section" id="newsletter">{{NEWSLETTER}}</section>
+  <section class="section membership" id="tiers">
+    <div><p class="eyebrow">GO DEEPER</p><h2>想繼續深入研究？</h2><p>免費報告可以直接閱讀。會員研究庫提供更廣覆蓋、持續更新同進階篩選。</p><a class="button" href="https://www.patreon.com/edward10" target="_blank" rel="noopener noreferrer" data-track="membership">了解會員內容與價格 ↗</a></div>
+    <div id="compare"><ul><li>港股、美股、A 股 RS 相對強度評分</li><li>會員公司前景、關鍵字與業績電話會議研究</li><li>市場回顧、模擬組合及操作理由</li></ul><p class="note">訂閱方案、價格及包含內容以 Patreon 頁面為準。</p><a class="text-link" href="/member/">已經係會員？登入研究庫 ↗</a></div>
+  </section>
+  <section class="section" id="archive"><div class="section-heading"><div><p class="eyebrow">FROM THE ARCHIVE</p><h2>歷年研究，繼續追蹤。</h2></div><a class="text-link" href="/archive/">瀏覽文章摘要庫 ↗</a></div><p>站內提供歷年文章摘要；全文連往 Patreon，閱讀權限以該篇文章為準。</p></section>
+  <section class="section split" id="community"><div id="discord-free"><h2>同其他讀者交流</h2><p>免費 Discord 提供公開內容更新同討論入口。</p><a class="text-link" href="https://discord.gg/Y8wk7DCWPR" target="_blank" rel="noopener noreferrer">加入免費 Discord ↗</a></div><div><h2>支持獨立研究</h2><p>透過 Patreon 訂閱或支持創作，繼續跟進完整分析。</p><a class="text-link" href="https://www.patreon.com/edward10" target="_blank" rel="noopener noreferrer">查看支持方式 ↗</a></div></section>
+</div>

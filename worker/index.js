@@ -23,6 +23,8 @@
  * docs/r2-data-storage.md。
  */
 
+import { RESEARCH_SYMBOLS } from './research-symbols.js';
+
 const SESSION_COOKIE = "member_session";
 const SESSION_TTL_SECONDS = 12 * 60 * 60; // 12 小時
 
@@ -178,6 +180,7 @@ function saveRateState(ctx, kv, ip, state) {
 // assets 設定了 run_worker_first,所有請求都會先到這裡,所以 _redirects
 // 不一定生效,轉址一律在這裡處理。
 const CLEAN_URLS = {
+  "/about/":                    "/about.html",
   "/member/":                   "/login.html",
   "/member/rs/hk":              "/hk-rs-rating.html",
   "/member/rs/us":              "/us-rs-rating.html",
@@ -221,6 +224,14 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    // Preserve existing shared report links while consolidating public URLs.
+    if (["/hk-top100-reports", "/hk-top100-reports/", "/hk-top100-reports/index.html"].includes(url.pathname)) {
+      const selected = (url.searchParams.get("s") || "").replace(/\.hk$/i, "").padStart(5, "0");
+      const destination = RESEARCH_SYMBOLS.has(selected) ? `/research/hk/${selected}/` : "/research/";
+      url.searchParams.delete("s");
+      return Response.redirect(new URL(destination + url.search, url).toString(), 301);
+    }
+
     // 舊的 .html 網址 → 301 到新網址
     const redirectTo = LEGACY_REDIRECTS[url.pathname];
     if (redirectTo) {
@@ -230,7 +241,10 @@ export default {
     // 乾淨網址 → 內部改抓實體檔案(網址列維持乾淨的那個)
     const target = lookupClean(url.pathname);
     if (target) {
-      const rewritten = new Request(new URL(target + url.search, url).toString(), request);
+      // Workers Assets canonicalizes *.html with a redirect. Request its extensionless
+      // alias internally so the public clean URL remains in the address bar.
+      const assetPath = target.replace(/\.html$/, "");
+      const rewritten = new Request(new URL(assetPath + url.search, url).toString(), request);
       return env.ASSETS.fetch(rewritten);
     }
 
@@ -292,10 +306,12 @@ export default {
         return json({ error: "電郵格式不正確" }, 400);
       }
       const kv = env.LOGIN_RATE_LIMIT;
-      if (kv) {
-        const writing = kv.put(subKey(email), new Date().toISOString());
-        if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(writing);
-        else await writing;
+      if (!kv) return json({ error: "研究更新登記暫未開放，請稍後再試。" }, 503);
+      try {
+        // Confirm persistence before telling a visitor their registration succeeded.
+        await kv.put(subKey(email), new Date().toISOString());
+      } catch {
+        return json({ error: "未能儲存登記，請稍後再試。" }, 503);
       }
       return json({ ok: true });
     }

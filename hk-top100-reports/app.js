@@ -58,10 +58,10 @@ function renderBrowse() {
   els.count.textContent = `顯示 ${rows.length} / ${state.companies.length} 間公司`;
   els.grid.innerHTML = "";
   rows.forEach((c) => {
-    const d = document.createElement("article");
+    const d = document.createElement("a");
     d.className = "card";
     d.innerHTML = `<div class="rank">#${c.rank}</div><h3>${c.shortName}</h3><div class="code">${c.code}</div><div class="cap">${fmtCap(c.market_cap)}</div><span class="tag">${c.industry}</span>`;
-    d.onclick = () => openArticle(c.symbol);
+    d.href = `/research/hk/${c.symbol}/`;
     els.grid.appendChild(d);
   });
 }
@@ -76,31 +76,7 @@ function syncUrl(symbol) {
 async function openArticle(symbol) {
   const c = state.companies.find((x) => x.symbol === symbol);
   if (!c) return;
-  state.active = c;
-  els.browse.classList.add("hidden");
-  els.article.classList.remove("hidden");
-  els.artTitle.textContent = c.shortName;
-  els.artMeta.textContent = `${c.code} · 市值排名 #${c.rank} · ${c.industry} · ${fmtCap(c.market_cap)}`;
-  els.viewer.textContent = "載入中…";
-  els.toc.innerHTML = "";
-  syncUrl(symbol);
-  try {
-    const res = await fetch("reports/" + c.file, { cache: "no-store" });
-    if (!res.ok) throw new Error("讀取報告失敗");
-    const md = await res.text();
-    els.viewer.innerHTML = DOMPurify.sanitize(marked.parse(md, { breaks: true, gfm: true }));
-    const heads = [...els.viewer.querySelectorAll("h2")];
-    heads.forEach((h, i) => {
-      h.id = h.id || "sec-" + i;
-      const a = document.createElement("a");
-      a.href = "#" + h.id;
-      a.textContent = h.textContent;
-      els.toc.appendChild(a);
-    });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  } catch (err) {
-    els.viewer.textContent = err.message;
-  }
+  window.location.replace(`/research/hk/${c.symbol}/`);
 }
 
 function closeArticle() {

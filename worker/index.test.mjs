@@ -253,5 +253,23 @@ check('訂閱節流每分鐘上限之內仍正常', r.status === 200, `status=${
 r = await worker.fetch(subReq('overflow@example.com', '5.5.5.7'), envSub);
 check('訂閱超過每分鐘上限回 429', r.status === 429, `status=${r.status}`);
 
+// Public research redirects preserve old shared URLs and campaign parameters.
+r = await worker.fetch(new Request(`${B}/hk-top100-reports/?s=00700&utm_source=test`), env);
+check('舊個股分享連結永久轉至對應研究頁', r.status === 301 && r.headers.get('Location') === `${B}/research/hk/00700/?utm_source=test`);
+r = await worker.fetch(new Request(`${B}/hk-top100-reports/?s=700.HK`), env);
+check('舊個股代號補零及 HK 後綴', r.headers.get('Location') === `${B}/research/hk/00700/`);
+r = await worker.fetch(new Request(`${B}/hk-top100-reports/?s=99999`), env);
+check('未收錄代號返回公司研究庫', r.headers.get('Location') === `${B}/research/`);
+r = await worker.fetch(new Request(`${B}/research/hk/00700/`), env);
+check('公司研究頁毋須會員登入', r.status === 200 && await r.text() === 'ASSET');
+r = await worker.fetch(new Request(`${B}/about/`), env);
+check('關於頁面可以讀取', r.status === 200);
+r = await worker.fetch(new Request(`${B}/about/`), { ...env, ASSETS: { fetch: async req => new Response(new URL(req.url).pathname) } });
+check('乾淨網址以無副檔名資產路徑讀取，避免平台轉址循環', await r.text() === '/about');
+r = await worker.fetch(subReq('reader@example.com', '6.6.6.6'), env);
+check('未設定名單儲存時唔會回報訂閱成功', r.status === 503);
+r = await worker.fetch(subReq('reader@example.com', '6.6.6.7'), { ...env, LOGIN_RATE_LIMIT: { put: async () => { throw new Error('storage unavailable'); } } });
+check('儲存失敗時回報可重試錯誤', r.status === 503);
+
 console.log(`\n${pass} 通過, ${fail} 失敗`);
 process.exit(fail ? 1 : 0);

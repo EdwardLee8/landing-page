@@ -55,3 +55,18 @@
   --radius-lg: 8px;
   --radius-pill: 18px;
 }
+
+/* Public research pages; member tools retain their existing palette. */
+.research-site {
+  --research-ink: #142426;
+  --research-muted: #52605f;
+  --research-paper: #f7f6f2;
+  --research-white: #ffffff;
+  --research-line: #d8ddd7;
+  --research-dark: #10292a;
+  --research-dark-muted: #baccc6;
+  --research-accent: #f2cb71;
+  --research-accent-ink: #79591b;
+  --research-soft: #eaf0e9;
+  --research-error: #a42c2c;
+}
