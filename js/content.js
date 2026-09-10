@@ -184,7 +184,7 @@ const SITE_CONTENT = {
   // 跟這裡的 tiers[0].cta 重複,改成一起由這個檔案管理。
   articlesCta: {
     text: "查看全部免費文章 →",
-    url: "https://www.patreon.com/collection/503820?view=expanded",
+    url: "/blog/",
   },
 
   // ── Patreon 訂閱 Tier ────────────────────────────────────

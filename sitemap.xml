@@ -2,6 +2,7 @@
 <!-- 只收錄公開頁面。會員頁一律 noindex,不列入此處。
      網址為 worker/index.js 的 CLEAN_URLS 對外網址,不是實體檔名。 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://ai10xpro.com/blog/</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url>
     <loc>https://ai10xpro.com/</loc>
     <lastmod>2026-09-05</lastmod>
