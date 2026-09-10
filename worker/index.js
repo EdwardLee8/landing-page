@@ -221,6 +221,30 @@ function lookupClean(pathname) {
   return CLEAN_URLS[withoutSlash] || null;
 }
 
+// Cloudflare 嘅靜態資產層自己都有一套「.html 網址 → 去掉副檔名」的自動
+// 轉址(html_handling,預設 auto-trailing-slash),同呢個檔案自己嘅
+// CLEAN_URLS/LEGACY_REDIRECTS 完全獨立、互不知道對方存在。大部分情況
+// 兩者唔會打架,但 "/blog/" 呢個乾淨網址剛好同「去掉 .blog.html 副檔名」
+// 之後嘅結果(/blog)撞埋一齊,變成:
+//   /blog → (呢個檔案)rewrite 去 /blog.html → (Cloudflare)轉址去 /blog
+//   → 又行番呢個檔案 → 又 rewrite 去 /blog.html → 無限循環,瀏覽器見到
+//   ERR_TOO_MANY_REDIRECTS。
+// 唔可以成個網站關咗 html_handling(改成 "none"):首頁 "/" 、
+// "/hk-top100-reports/" 呢啲靠 Cloudflare 自動揾 index.html 嘅目錄式網址
+// 會即刻連帶壞晒。所以喺呢度攔截:如果內部 fetch 資產返嚟嘅係轉址,
+// 我哋自己跟埋佢(伺服器端),唔會將轉址交返俾瀏覽器 —— 瀏覽器見到嘅
+// 網址永遠係原本嗰個乾淨網址,唔會再彈嚟彈去。
+async function fetchAssetFollowingRedirects(env, request) {
+  let current = request;
+  for (let hop = 0; hop < 5; hop++) {
+    const res = await env.ASSETS.fetch(current);
+    const location = res.status >= 300 && res.status < 400 ? res.headers.get("Location") : null;
+    if (!location) return res;
+    current = new Request(new URL(location, current.url).toString(), current);
+  }
+  return env.ASSETS.fetch(current);
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -238,7 +262,7 @@ export default {
     const target = lookupClean(url.pathname);
     if (target) {
       const rewritten = new Request(new URL(target + url.search, url).toString(), request);
-      return env.ASSETS.fetch(rewritten);
+      return fetchAssetFollowingRedirects(env, rewritten);
     }
 
     if (url.pathname === "/api/login") {
@@ -330,6 +354,6 @@ export default {
       return serveProtected(request, env, url.pathname);
     }
 
-    return env.ASSETS.fetch(request);
+    return fetchAssetFollowingRedirects(env, request);
   },
 };

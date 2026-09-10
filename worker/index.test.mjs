@@ -253,5 +253,60 @@ check('訂閱節流每分鐘上限之內仍正常', r.status === 200, `status=${
 r = await worker.fetch(subReq('overflow@example.com', '5.5.5.7'), envSub);
 check('訂閱超過每分鐘上限回 429', r.status === 429, `status=${r.status}`);
 
+// ── /blog 無限轉址迴圈(2026-09-11 事故) ─────────────────────────────
+// Cloudflare 嘅靜態資產層自己有一套 html_handling(預設
+// auto-trailing-slash):.html 結尾嘅網址會被佢自動 307 去掉副檔名。
+// 呢個行為同呢個檔案自己嘅 CLEAN_URLS 完全獨立,兩者夾埋喺 "/blog/"
+// 呢個個案會夾成無限循環:呢個檔案將 /blog rewrite 去 /blog.html,
+// Cloudflare 又將 /blog.html 轉去 /blog,永遠兜返轉頭。
+// 下面用假 ASSETS binding 模擬呢個 Cloudflare 行為,證明
+// fetchAssetFollowingRedirects() 會喺伺服器端自己跟晒啲轉址,
+// 瀏覽器最終只會見到一個 200,唔會再收到任何 Location header。
+function fakeAssetsWithHtmlHandling() {
+  let calls = 0;
+  return {
+    calls: () => calls,
+    fetch: async (request) => {
+      calls++;
+      const path = new URL(request.url).pathname;
+      if (path.endsWith('.html') && path !== '/index.html') {
+        return new Response(null, { status: 307, headers: { Location: path.replace(/\.html$/, '') } });
+      }
+      return new Response(`ASSET:${path}`, { status: 200 });
+    },
+  };
+}
+
+const blogEnv = { ...env, ASSETS: fakeAssetsWithHtmlHandling() };
+r = await worker.fetch(new Request(`${B}/blog`), blogEnv);
+check('/blog 唔再無限轉址(有實質回應)', r.status === 200, `status=${r.status}`);
+check('/blog 最終攞到內容,唔係轉址', (await r.text()) === 'ASSET:/blog');
+
+r = await worker.fetch(new Request(`${B}/blog/`), blogEnv);
+check('/blog/ 同樣唔再無限轉址', r.status === 200 && (await r.text()) === 'ASSET:/blog');
+
+// 保險:就算 Cloudflare 嘅行為同假設唔一致、真係循環轉址落去,
+// 都唔應該喺呢個 Worker 入面無限 loop 落去(會拖死個請求)。
+// fetchAssetFollowingRedirects 上限 5 跳,跳完就將最後嗰個回應照樣送出。
+let pingPongCalls = 0;
+const pingPongEnv = {
+  ...env,
+  ASSETS: {
+    fetch: async (request) => {
+      pingPongCalls++;
+      const path = new URL(request.url).pathname;
+      return new Response(null, { status: 307, headers: { Location: path === '/a' ? '/b' : '/a' } });
+    },
+  },
+};
+r = await worker.fetch(new Request(`${B}/a`), pingPongEnv);
+check('真正嘅循環轉址都有上限,唔會拖死請求', pingPongCalls <= 6, `calls=${pingPongCalls}`);
+check('跳完上限後照樣送出最後嗰個回應(即使係轉址)', r.status === 307);
+
+// 一般靜態資產(冇 Cloudflare 轉址嘅情況)行為不變,唔會被呢個修正影響。
+const normalHtmlHandlingEnv = { ...env, ASSETS: fakeAssetsWithHtmlHandling() };
+r = await worker.fetch(new Request(`${B}/index.html`), normalHtmlHandlingEnv);
+check('冇轉址嘅一般請求行為不變', r.status === 200 && (await r.text()) === 'ASSET:/index.html');
+
 console.log(`\n${pass} 通過, ${fail} 失敗`);
 process.exit(fail ? 1 : 0);
