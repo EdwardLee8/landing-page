@@ -261,8 +261,17 @@ export default {
     // 乾淨網址 → 內部改抓實體檔案(網址列維持乾淨的那個)
     const target = lookupClean(url.pathname);
     if (target) {
-      const rewritten = new Request(new URL(target + url.search, url).toString(), request);
-      return fetchAssetFollowingRedirects(env, rewritten);
+      const assetFor = (p) =>
+        fetchAssetFollowingRedirects(env, new Request(new URL(p + url.search, url).toString(), request));
+      // Cloudflare 資產層預設會將 /x.html 轉址去 /x(html_handling),
+      // 所以直接攞 /x 就慳返嗰一跳。萬一將來個設定改咗、/x 揾唔到,
+      // 就退回原本嘅 .html —— 唔會因為呢個優化而爆晒所有乾淨網址。
+      const bare = target.replace(/\.html$/, "");
+      if (bare !== target) {
+        const res = await assetFor(bare);
+        if (res.status !== 404) return res;
+      }
+      return assetFor(target);
     }
 
     if (url.pathname === "/api/login") {

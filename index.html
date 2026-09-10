@@ -4,6 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- 揀咗「新型探索版」嘅訪客要即刻跳去 /explore/。呢段刻意用 inline
+       而且擺喺所有 <link>/<script> 之前:如果等 js/layout-choice.js
+       (defer)先行,首頁成份 HTML 已經解析完、CSS/JS/hero 圖都落緊街,
+       跳走等於白白載咗成個首頁。判斷條件同 layout-choice.js 一致。 -->
+  <script>
+    (function () {
+      try {
+        var p = location.pathname;
+        if (p !== '/' && p !== '/index.html') return;
+        if (location.hash) return;                                     // /#tiers 之類要留喺本頁
+        if (new URLSearchParams(location.search).get('view')) return;  // ?view= 係明示選擇
+        if (history.state && history.state.layoutVisited) return;      // 唔好喺返回時再跳
+        var nav = performance.getEntriesByType('navigation')[0];
+        if (nav && nav.type === 'back_forward') return;
+        if (localStorage.getItem('edward-layout') === 'explore') location.replace('/explore/');
+      } catch (e) { /* 私隱模式讀唔到 localStorage 就當冇偏好 */ }
+    })();
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap">

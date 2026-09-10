@@ -308,5 +308,46 @@ const normalHtmlHandlingEnv = { ...env, ASSETS: fakeAssetsWithHtmlHandling() };
 r = await worker.fetch(new Request(`${B}/index.html`), normalHtmlHandlingEnv);
 check('冇轉址嘅一般請求行為不變', r.status === 200 && (await r.text()) === 'ASSET:/index.html');
 
+// ── 乾淨網址少一次資產查詢(C1) ───────────────────────────────────
+// Cloudflare 資產層會將 /x.html 轉址去 /x,所以直接攞 /x 就慳返嗰一跳。
+// 但唔可以死靠呢個行為:/x 揾唔到就要退回 .html。
+const askedFor = [];
+const bareFirstEnv = {
+  ...env,
+  ASSETS: { fetch: async (request) => {
+    const p = new URL(request.url).pathname;
+    askedFor.push(p);
+    return new Response(`ASSET:${p}`, { status: 200 });
+  } },
+};
+r = await worker.fetch(new Request(`${B}/free/`), bareFirstEnv);
+check('乾淨網址直接攞無副檔名版本', askedFor[0] === '/free-tools', `攞咗 ${askedFor[0]}`);
+check('只查一次資產', askedFor.length === 1, `查咗 ${askedFor.length} 次`);
+
+const fallbackAsked = [];
+const noBareEnv = {
+  ...env,
+  ASSETS: { fetch: async (request) => {
+    const p = new URL(request.url).pathname;
+    fallbackAsked.push(p);
+    // 模擬「html_handling 關咗」:無副檔名嘅路徑揾唔到
+    return p.endsWith('.html')
+      ? new Response(`ASSET:${p}`, { status: 200 })
+      : new Response('Not Found', { status: 404 });
+  } },
+};
+r = await worker.fetch(new Request(`${B}/free/`), noBareEnv);
+check('無副檔名揾唔到就退回 .html', r.status === 200 && (await r.text()) === 'ASSET:/free-tools.html');
+check('退回路徑順序正確', fallbackAsked.join(' → ') === '/free-tools → /free-tools.html', fallbackAsked.join(' → '));
+
+// query string 要跟埋去
+const qsAsked = [];
+const qsEnv = { ...env, ASSETS: { fetch: async (rq) => {
+  qsAsked.push(new URL(rq.url).search);
+  return new Response('ASSET', { status: 200 });
+} } };
+await worker.fetch(new Request(`${B}/member/movers?tab=us`), qsEnv);
+check('乾淨網址保留 query string', qsAsked[0] === '?tab=us', qsAsked[0]);
+
 console.log(`\n${pass} 通過, ${fail} 失敗`);
 process.exit(fail ? 1 : 0);

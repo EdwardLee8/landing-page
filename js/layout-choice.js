@@ -8,10 +8,12 @@
   let saved;
   try { saved = localStorage.getItem(key); } catch {}
   const remember = value => { try { localStorage.setItem(key, value); } catch {} };
-  if (home && !explicit && !location.hash && !visited && !returning && saved === 'explore') {
-    location.replace('/explore/');
-    return;
-  }
+  // 「揀咗探索版就自動跳去 /explore/」嗰段唔喺呢度做 —— 呢個檔案係
+  // defer,要等成份 HTML 解析完先行,即係首頁嘅 CSS/JS/hero 圖都已經
+  // 落緊街先至跳走,白白嘥晒。搬咗去 index.html <head> 最頂做一段
+  // 細細嘅 inline script,喺瀏覽器開始攞其他資源之前就決定。
+  // 判斷條件(hash、?view=、back/forward、layoutVisited)完全一樣,
+  // 改嗰度記得兩邊一齊睇。
   // History traversal restores the page; only an explicit selection changes preference.
   history.replaceState({ ...history.state, layoutVisited: true }, '');
   document.querySelectorAll('[data-layout]').forEach(link => {
