@@ -60,6 +60,14 @@
     { id: "etf",  label: "ETF",    href: "/member/#sec-etf" },
   ];
 
+  // 會員區原本淨係有會員自己嘅頁,冇任何路返免費區 —— 入咗嚟就要撳
+  // 瀏覽器返回掣或者自己打網址。呢組連結喺側邊欄同頂欄兩種模式都會出。
+  var SITE_LINKS = [
+    { label: "網站首頁", href: "/" },
+    { label: "免費文章", href: "/blog/" },
+    { label: "免費內容", href: "/free/" },
+  ];
+
   function el(tag, cls, html) {
     var n = document.createElement(tag);
     if (cls) n.className = cls;
@@ -91,6 +99,15 @@
       nav.appendChild(a);
     });
     aside.appendChild(nav);
+
+    var siteNav = el("nav", "shell-sidebar-nav shell-sidebar-site");
+    siteNav.appendChild(el("p", "shell-sidebar-grouplabel", "其他區域"));
+    SITE_LINKS.forEach(function (s) {
+      var a = el("a", "", s.label);
+      a.href = s.href;
+      siteNav.appendChild(a);
+    });
+    aside.appendChild(siteNav);
 
     var foot = el("div", "shell-sidebar-foot");
     var logout = el("a", "", "登出");
@@ -146,6 +163,21 @@
       }
       var backs = header.querySelectorAll(":scope > .back-btn");
       for (var i = 0; i < backs.length; i++) actions.appendChild(backs[i]);
+
+      if (!actions.querySelector(".shell-site-link")) {
+        // 各頁本來就寫死咗「← 返回首頁」之類的連結。SITE_LINKS 入面
+        // 同一個目的地嘅就唔再加多一次,否則頁首會有兩個「首頁」。
+        var existing = {};
+        actions.querySelectorAll("a[href]").forEach(function (a) {
+          existing[a.getAttribute("href")] = true;
+        });
+        SITE_LINKS.forEach(function (s) {
+          if (existing[s.href]) return;
+          var a = el("a", "back-btn shell-site-link", s.label);
+          a.href = s.href;
+          actions.appendChild(a);
+        });
+      }
 
       if (!actions.querySelector(".shell-logout")) {
         var out = el("a", "back-btn shell-logout", "登出");

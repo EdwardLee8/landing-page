@@ -208,6 +208,20 @@
   color: var(--gold);
   font-weight: 700;
 }
+/* 「其他區域」:會員區返免費區的出口。原本會員區完全冇路返
+   /free/ 或 /blog/,入咗就要撳瀏覽器返回掣。 */
+.shell-sidebar-site {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.shell-sidebar-grouplabel {
+  padding: 0 12px 6px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+}
+
 .shell-sidebar-foot {
   margin-top: auto;
   padding: 16px 22px 0;
@@ -241,5 +255,11 @@
   .shell-sidebar-brand { padding: 0; flex-shrink: 0; }
   .shell-sidebar-nav { flex-direction: row; padding: 0; flex-shrink: 0; }
   .shell-sidebar-nav a { white-space: nowrap; }
+  /* 橫向排時「其他區域」改用左邊分隔線,標題收起(位唔夠) */
+  .shell-sidebar-site {
+    margin-top: 0; padding-top: 0; padding-left: 14px;
+    border-top: none; border-left: 1px solid var(--line);
+  }
+  .shell-sidebar-grouplabel { display: none; }
   .shell-sidebar-foot { margin-top: 0; margin-left: auto; padding: 0; border-top: none; flex-shrink: 0; }
 }
