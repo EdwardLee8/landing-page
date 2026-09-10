@@ -55,3 +55,19 @@
   --radius-lg: 8px;
   --radius-pill: 18px;
 }
+
+
+/* Public journal: match the current classic homepage without changing member pages. */
+.blog-theme {
+  --bg: #050608;
+  --bg-panel: #0c0f12;
+  --bg-raised: #0b0d10;
+  --gold: #d8ae5b;
+  --gold-light: #edc775;
+  --gold-dim: #a9823e;
+  --gold-ghost: rgba(216,174,91,.13);
+  --text: #f5f3ee;
+  --text-muted: #a5a39d;
+  --line: rgba(255,255,255,.09);
+  --line-strong: rgba(255,255,255,.16);
+}

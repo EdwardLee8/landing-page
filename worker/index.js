@@ -23,6 +23,8 @@
  * docs/r2-data-storage.md。
  */
 
+import { handleBlog } from './blog.js';
+
 const SESSION_COOKIE = "member_session";
 const SESSION_TTL_SECONDS = 12 * 60 * 60; // 12 小時
 
@@ -178,6 +180,8 @@ function saveRateState(ctx, kv, ip, state) {
 // assets 設定了 run_worker_first,所有請求都會先到這裡,所以 _redirects
 // 不一定生效,轉址一律在這裡處理。
 const CLEAN_URLS = {
+  "/blog/":                     "/blog.html",
+  "/blog/author/":              "/blog-author.html",
   "/member/":                   "/login.html",
   "/member/rs/hk":              "/hk-rs-rating.html",
   "/member/rs/us":              "/us-rs-rating.html",
@@ -220,6 +224,9 @@ function lookupClean(pathname) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    const blogResponse = await handleBlog(request, env);
+    if (blogResponse) return blogResponse;
 
     // 舊的 .html 網址 → 301 到新網址
     const redirectTo = LEGACY_REDIRECTS[url.pathname];

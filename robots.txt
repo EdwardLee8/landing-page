@@ -40,13 +40,22 @@ User-agent: Googlebot
 Allow: /
 Disallow: /etf-report/
 Disallow: /member/
+Disallow: /api/blog/
+Disallow: /blog/author/
+Disallow: /blog-author.html
 Disallow: /*.json
 Disallow: /*.enc
 
 User-agent: *
 Disallow: /etf-report/
+Disallow: /api/blog/
+Disallow: /blog/author/
+Disallow: /blog-author.html
 Disallow: /*.json
 Disallow: /*.enc
 
 Sitemap: https://ai10xpro.com/sitemap.xml
 Sitemap: https://ai10xpro.com/sitemap-archive.xml
+
+Sitemap: https://ai10xpro.com/blog/sitemap.xml
+

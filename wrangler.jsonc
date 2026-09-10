@@ -9,6 +9,10 @@
   // 而且因為純靜態設定冇 main script,部署會連 Worker 同 secret 一併
   // 換走,所以 secret 都會唔見。合併成一個設定之後兩個問題一次過解決。
   //
+  // 作者後台另需 BLOG_ADMIN_PASSWORD（至少 16 字元，必須不同於會員密碼）。
+  // npx wrangler secret put BLOG_ADMIN_PASSWORD
+  // 文章暫用現有 LOGIN_RATE_LIMIT KV 的 blog:v1: 前綴，無 TTL。
+  // 可選擇另綁 BLOG_STORE，遷移方式見 docs/blog-author.md。
   // 三個 secret(唔會存喺 repo,用 wrangler 設定):
   //   npx wrangler secret put MEMBER_PASSWORD
   //   npx wrangler secret put MEMBER_DATA_PASSWORD
