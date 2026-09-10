@@ -274,6 +274,17 @@ function renderJourney(story) {
     }
     container.appendChild(closing);
   }
+
+  // 手機上呢一段自傳連埋收尾要碌 2.1 屏。啱啱到咗呢度嘅人多數係想
+  // 快速知你係邊個,唔係想讀完成篇 —— 預設收起,想讀嘅人自己撳開。
+  // 桌面唔受影響(CSS 只喺窄螢幕生效)。
+  container.classList.add("story-collapsible");
+  const more = el("button", { class: "story-more", type: "button", text: "繼續讀我的故事" });
+  more.addEventListener("click", () => {
+    container.classList.add("is-open");
+    more.remove();
+  });
+  container.parentNode.appendChild(more);
 }
 
 function renderAbout(about) {
@@ -395,6 +406,20 @@ function renderCommunityCol(container, data, modifier, label) {
   });
   col.appendChild(channelList);
 
+  // 手機上兩欄頻道加埋佔 2.7 屏,而頻道名一睇就明,唔需要全部攤開。
+  // 預設露頭 3 個,想睇曬先撳。桌面唔受影響(CSS 只喺窄螢幕生效)。
+  const hidden = (data.channels || []).length - 3;
+  if (hidden > 0) {
+    channelList.classList.add("channel-list--collapsible");
+    const more = el("button", { class: "channel-more", type: "button",
+      text: `睇埋其餘 ${hidden} 個頻道` });
+    more.addEventListener("click", () => {
+      const open = channelList.classList.toggle("is-open");
+      more.textContent = open ? "收起頻道" : `睇埋其餘 ${hidden} 個頻道`;
+    });
+    col.appendChild(more);
+  }
+
   if (data.cta) {
     const ctaWrap = el("div", { class: "content-cta reveal" });
     ctaWrap.appendChild(link(data.cta.url, {
@@ -422,7 +447,10 @@ function renderArticles(articles, cta) {
   if (!grid) return;
   grid.textContent = "";
 
-  articles.forEach(a => {
+  // 首頁只放 3 張。原本 8 張喺手機要碌 3.3 屏,而且 8 個出站連結
+  // 去同一個地方(Patreon),冇一個突出得起 —— 想睇曬嘅人撳下面
+  // 「查看全部免費文章」去 /blog/,嗰度有搜尋同分類。
+  articles.slice(0, 3).forEach(a => {
     const iconHtml = PLATFORM_ICONS[a.platform] || "";
 
     const platformDiv = el("div", { class: "article-platform" });

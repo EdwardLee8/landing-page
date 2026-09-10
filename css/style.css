@@ -60,13 +60,16 @@ section + section {
 }
 
 /* ── Section Header — left-aligned, architectural ─────────── */
+/* 副標原本用 flex 推去右邊、右對齊。但中文由左至右掃,右邊係盲區 ——
+   眼掃完大標就會直接落去下一段,右邊嗰句副標基本上冇人讀到。改成
+   排喺大標下面、左對齊,跟返視線路徑。 */
 .section-header {
   text-align: left;
   margin-bottom: 80px;
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .section-label {
@@ -92,8 +95,8 @@ section + section {
   font-size: 0.85rem;
   color: var(--text-muted);
   letter-spacing: 0.02em;
-  text-align: right;
-  max-width: 340px;
+  text-align: left;
+  max-width: 560px;
   line-height: 1.7;
   text-wrap: balance;
   word-break: keep-all;
@@ -597,10 +600,10 @@ section + section {
 }
 
 .story-aside {
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   color: var(--text-dim);
   line-height: 1.85;
-  max-width: 640px;
+  max-width: 600px;
   margin-bottom: 80px;
   font-style: italic;
 }
@@ -853,7 +856,7 @@ section + section {
   align-items: center;
   gap: 6px;
   color: var(--text-muted);
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -993,7 +996,7 @@ section + section {
   text-align: center;
   padding: 13px 20px;
   border: 1px solid var(--border-mid);
-  font-size: 0.72rem;
+  font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -1078,13 +1081,13 @@ footer .container {
   gap: 40px;
 }
 .footer-copy {
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   color: var(--text-dim);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 .footer-disclaimer {
-  font-size: 0.73rem;
+  font-size: 0.85rem;
   color: var(--text-dim);
   max-width: 500px;
   line-height: 1.7;

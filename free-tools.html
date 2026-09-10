@@ -31,7 +31,7 @@ body { font-family: "Noto Sans TC", system-ui, sans-serif; }
 .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding-block: 13px; }
 .brand { display: flex; align-items: baseline; gap: 9px; }
 .brand b { font-family: Manrope, sans-serif; font-size: 15px; font-weight: 800; color: var(--text-strong); letter-spacing: -.01em; }
-.brand span { font-size: 11px; color: var(--text-dim); }
+.brand span { font-size: 12px; color: var(--text-dim); }
 .brand:hover { text-decoration: none; }
 .top-actions { display: flex; gap: 8px; }
 .top-actions a { font-size: 13px; padding: 7px 14px; border-radius: var(--radius); border: 1px solid var(--line-strong); color: var(--text-muted); white-space: nowrap; }
@@ -40,46 +40,46 @@ body { font-family: "Noto Sans TC", system-ui, sans-serif; }
 
 /* ── Hero ── */
 .hero { padding: 46px 0 34px; }
-.hero .eyebrow { font-family: Manrope, sans-serif; font-size: 11px; font-weight: 700;
+.hero .eyebrow { font-family: Manrope, sans-serif; font-size: 12px; font-weight: 700;
                  letter-spacing: .19em; color: var(--gold); text-transform: uppercase; }
 .hero h1 { font-size: clamp(1.9rem, 3.4vw, 2.6rem); font-weight: 700; color: var(--text-strong);
            letter-spacing: -.03em; margin: 12px 0 12px; }
-.hero p { max-width: 640px; font-size: 14px; line-height: 1.85; color: var(--text-muted); }
+.hero p { max-width: 640px; font-size: 15px; line-height: 1.85; color: var(--text-muted); }
 
 /* ── 區塊 ── */
 .sec { padding-bottom: 34px; }
 .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 15px; }
-.sec-head h2 { font-size: 15px; font-weight: 700; color: var(--text-strong); }
+.sec-head h2 { font-size: 17px; font-weight: 700; color: var(--text-strong); }
 .sec-head .rule { flex-grow: 1; height: 1px; background: linear-gradient(90deg, var(--gold-dim), transparent); }
-.sec-head .count { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+.sec-head .count { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
 
 /* ── 卡片格 ── */
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 14px; }
 .card { background: var(--bg-panel); border: 1px solid var(--line); border-radius: 12px;
         padding: 20px 21px 18px; display: flex; flex-direction: column; gap: 10px; transition: all .18s; }
 .card:hover { border-color: var(--gold-dim); background: var(--bg-hover); text-decoration: none; transform: translateY(-2px); }
-.card .tag { align-self: flex-start; font-size: 10.5px; font-weight: 700; letter-spacing: .04em;
+.card .tag { align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: .04em;
              padding: 3px 9px; border-radius: 20px; background: var(--gold-ghost);
              border: 1px solid var(--gold-dim); color: var(--gold); }
 .card h3 { font-size: 16px; font-weight: 700; color: var(--text-strong); letter-spacing: -.01em; }
-.card p { font-size: 12.5px; line-height: 1.72; color: var(--text-muted); }
+.card p { font-size: 14px; line-height: 1.78; color: var(--text-muted); }
 .card .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
-.card .meta span { font-size: 10.5px; color: var(--text-dim); padding: 3px 8px;
+.card .meta span { font-size: 12px; color: var(--text-dim); padding: 3px 8px;
                    border: 1px solid var(--line-strong); border-radius: 5px; }
-.card .open { margin-top: auto; padding-top: 4px; font-size: 12.5px; font-weight: 600; color: var(--gold); }
+.card .open { margin-top: auto; padding-top: 4px; font-size: 13px; font-weight: 600; color: var(--gold); }
 
 /* ── 文章與社群(較小的兩張) ── */
 .subgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
 .mini { background: var(--bg-panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
 .mini h3 { font-size: 14px; font-weight: 700; color: var(--text-strong); margin-bottom: 7px; }
-.mini p { font-size: 12.5px; line-height: 1.7; color: var(--text-muted); margin-bottom: 10px; }
-.mini a { font-size: 12.5px; font-weight: 600; color: var(--gold); }
+.mini p { font-size: 14px; line-height: 1.78; color: var(--text-muted); margin-bottom: 10px; }
+.mini a { font-size: 13px; font-weight: 600; color: var(--gold); }
 
 /* ── 附註與頁尾 ── */
 .note { border: 1px solid var(--gold-dim); background: rgba(212,166,71,.05); border-radius: 10px;
-        padding: 13px 18px; font-size: 12px; line-height: 1.7; color: var(--text-muted); }
+        padding: 14px 18px; font-size: 13px; line-height: 1.75; color: var(--text-muted); }
 .footer { margin-top: 30px; border-top: 1px solid var(--line); padding: 20px 0 34px;
-          font-size: 11.5px; color: var(--text-dim); text-align: center; }
+          font-size: 12px; color: var(--text-dim); text-align: center; }
 
 @media (max-width: 620px) {
   .wrap { padding: 0 18px; }

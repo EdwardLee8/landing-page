@@ -81,7 +81,13 @@ test('Markdown and published metadata cannot inject scripts or dangerous URLs', 
   const response = await s.request(`/blog/p/${id}`); assert.match(response.headers.get('Content-Security-Policy'), /script-src 'none'/); assert.doesNotMatch(await response.text(), /<script>|<img/);
 });
 test('clean routes, legacy URLs and page metadata', async () => {
-  const s = setup(); assert.equal(await (await s.request('/blog/')).text(), '/blog.html'); assert.equal(await (await s.request('/blog/author/')).text(), '/blog-author.html'); assert.equal((await s.request('/blog.html')).status, 301);
+  // Cloudflare 資產層會將 /x.html 轉去 /x,所以 worker/index.js 直接攞
+  // 無副檔名嗰個(揾唔到先退回 .html,見 index.test.mjs 嘅 C1 測試)。
+  // 呢度只需要確認乾淨網址指去正確嗰版,唔應該綁死用邊個檔名形式。
+  const s = setup();
+  assert.match(await (await s.request('/blog/')).text(), /^\/blog(\.html)?$/);
+  assert.match(await (await s.request('/blog/author/')).text(), /^\/blog-author(\.html)?$/);
+  assert.equal((await s.request('/blog.html')).status, 301);
   assert.equal((await s.request('/blog/p/not-an-id')).status, 404);
   const publicSource = await readFile(new URL('../js/blog.js', import.meta.url), 'utf8'); assert.doesNotMatch(publicSource, /web_data|archive-grid/); assert.match(publicSource, /SITE_CONTENT\.articles/);
   const author = await readFile(new URL('../blog-author.html', import.meta.url), 'utf8'); assert.match(author, /noindex,nofollow/); assert.match(author, /\.md,.markdown,.txt/);

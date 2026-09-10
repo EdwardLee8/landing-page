@@ -11,8 +11,13 @@ function draw() {
   const ordered = [...posts].sort((a, b) => b.date.localeCompare(a.date));
   const filtered = ordered.filter(p => (source === 'all' || p.source === source) && (!category.value || p.category === category.value) && (!q || `${p.title} ${p.excerpt} ${p.category}`.toLowerCase().includes(q)));
   const feature = document.getElementById('feature');
-  feature.innerHTML = !q && !category.value && source === 'all' && ordered.length ? card(ordered.find(p => p.source === 'own') || ordered[0], true) : '';
-  grid.innerHTML = filtered.slice(0, visible).map(p => card(p)).join('') || `<div class="empty"><h2>${source === 'own' && !q && !category.value ? '首篇專欄文章，敬請期待。' : '沒有符合的文章。'}</h2><p>可以試試其他關鍵字或內容來源。</p></div>`;
+  const featured = !q && !category.value && source === 'all' && ordered.length
+    ? (ordered.find(p => p.source === 'own') || ordered[0]) : null;
+  feature.innerHTML = featured ? card(featured, true) : '';
+  // 精選嗰篇唔好喺下面個列表再出多次 —— 同一屏見到兩次同一篇文,
+  // 讀者會以為自己撳錯咗或者網站出錯。
+  const listed = featured ? filtered.filter(p => p !== featured) : filtered;
+  grid.innerHTML = listed.slice(0, visible).map(p => card(p)).join('') || `<div class="empty"><h2>${source === 'own' && !q && !category.value ? '首篇專欄文章，敬請期待。' : '沒有符合的文章。'}</h2><p>可以試試其他關鍵字或內容來源。</p></div>`;
   document.getElementById('result-count').textContent = `${filtered.length} 篇免費內容`;
   document.getElementById('more').hidden = visible >= filtered.length;
   document.querySelectorAll('[data-source]').forEach(b => b.setAttribute('aria-pressed', b.dataset.source === source));
@@ -29,4 +34,9 @@ try {
   const data = await response.json(); if (!Array.isArray(data.posts)) throw new Error();
   posts.push(...data.posts.map(p => ({ ...p, source: 'own', external: false })));
   categories(); draw(); document.getElementById('load-status').hidden = true;
-} catch { document.getElementById('load-status').textContent = '專欄文章暫時未能載入，以下仍可閱讀以往免費內容。請稍後重新整理。'; }
+} catch {
+  // 攞唔到專欄文章唔係讀者嘅事:以往免費文章照樣列曬出嚟,
+  // 唔應該喺頁面頂扔一句似出錯嘅紅字嚇親人。想睇專欄嘅人撳
+  // 「Edward 專欄」篩選,會見到「首篇專欄文章,敬請期待。」
+  document.getElementById('load-status').hidden = true;
+}

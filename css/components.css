@@ -97,7 +97,7 @@ input[type=text] { min-width: 180px; }
   margin-bottom: 14px;
 }
 .dash-section-title {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--text-strong);
 }
@@ -107,7 +107,7 @@ input[type=text] { min-width: 180px; }
   background: linear-gradient(90deg, var(--gold-dim), transparent);
 }
 .dash-section-count {
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.06em;
   color: var(--text-dim);
   white-space: nowrap;
@@ -130,11 +130,11 @@ input[type=text] { min-width: 180px; }
   min-height: 108px;
 }
 .dash-card:hover { background: var(--bg-hover); text-decoration: none; }
-.dash-card-title { font-size: 14px; font-weight: 700; color: var(--text-strong); }
-.dash-card-desc { font-size: 12px; line-height: 1.65; color: var(--text-muted); }
+.dash-card-title { font-size: 15px; font-weight: 700; color: var(--text-strong); }
+.dash-card-desc { font-size: 14px; line-height: 1.72; color: var(--text-muted); }
 .dash-card-meta {
   margin-top: auto;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--gold);
   letter-spacing: 0.03em;
 }
