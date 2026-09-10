@@ -6,11 +6,31 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   renderAll();
-  renderArchive();
+  deferArchiveUntilVisible();
   initScrollReveal();
   initScrollChevron();
   initNav();
 });
+
+// web_data.json 係 368KB(504 篇文章索引),但「Patreon文章庫」區塊喺
+// 首頁好下面。原本一 DOMContentLoaded 就抓,同 hero 圖、CSS、JS 爭頻寬,
+// 首頁載入時間有一大截係喺度等佢。改成碌到接近先至抓 —— 提早 600px
+// 開始,用戶碌到嗰陣通常已經載好,睇唔出分別。
+function deferArchiveUntilVisible() {
+  const section = document.getElementById("archive");
+  if (!section) return;
+  if (!("IntersectionObserver" in window)) { renderArchive(); return; }
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    if (!entries.some(e => e.isIntersecting)) return;
+    obs.disconnect();
+    renderArchive();
+  }, { rootMargin: "600px 0px" });
+  observer.observe(section);
+
+  // 直接開 /#archive 或者用搜尋引擎跳入嚟,唔應該等碌動先出內容
+  if (location.hash === "#archive") { observer.disconnect(); renderArchive(); }
+}
 
 // ── HTML Escape (prevent XSS in content values) ───────────
 function esc(str) {
