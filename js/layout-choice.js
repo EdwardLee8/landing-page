@@ -3,17 +3,12 @@
   const params = new URLSearchParams(location.search);
   const explicit = params.get('view');
   const home = location.pathname === '/' || location.pathname === '/index.html';
-  const visited = history.state?.layoutVisited;
-  const returning = performance.getEntriesByType('navigation')[0]?.type === 'back_forward';
-  let saved;
-  try { saved = localStorage.getItem(key); } catch {}
   const remember = value => { try { localStorage.setItem(key, value); } catch {} };
   // 「揀咗探索版就自動跳去 /explore/」嗰段唔喺呢度做 —— 呢個檔案係
   // defer,要等成份 HTML 解析完先行,即係首頁嘅 CSS/JS/hero 圖都已經
   // 落緊街先至跳走,白白嘥晒。搬咗去 index.html <head> 最頂做一段
-  // 細細嘅 inline script,喺瀏覽器開始攞其他資源之前就決定。
-  // 判斷條件(hash、?view=、back/forward、layoutVisited)完全一樣,
-  // 改嗰度記得兩邊一齊睇。
+  // 細細嘅 inline script,喺瀏覽器開始攞其他資源之前就決定;佢仍然要
+  // 睇 layoutVisited,所以下面嗰句 replaceState 照樣要留。
   // History traversal restores the page; only an explicit selection changes preference.
   history.replaceState({ ...history.state, layoutVisited: true }, '');
   document.querySelectorAll('[data-layout]').forEach(link => {
@@ -53,8 +48,14 @@
   };
   addEventListener('popstate', restore);
   addEventListener('pageshow', restore);
+  // 以前第一次入首頁會自動彈版面選擇窗。一個未知你係邊個嘅訪客,
+  // 第一件事就要答「經典定探索」—— 佢連個網站做咩都未知,兩個選項對
+  // 佢冇分別,而個窗遮住晒成個第一屏。而家淨係喺對方主動要求先彈:
+  // 頂欄嘅「切換版面」([data-layout-chooser])或者 ?view=choose。
+  // 之前揀過探索版嘅人照舊會跳去 /explore/(見 index.html 頂嗰段
+  // inline script),呢度唔變。
   if (history.state?.layoutPicker) restore();
-  else if (home && (explicit === 'choose' || (!explicit && !saved && !location.hash && !visited && !returning))) {
+  else if (home && explicit === 'choose') {
     if (explicit === 'choose') {
       const url = new URL(location.href);
       url.searchParams.delete('view');

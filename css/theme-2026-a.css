@@ -57,6 +57,7 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 .a26-title span{font-size:.48em;font-weight:500;letter-spacing:.02em;color:var(--gold);margin:0 0 .28em .06em}
 .a26-title strong{font-weight:800}
 .a26-lead{max-width:620px;font-size:clamp(1rem,1.45vw,1.18rem);line-height:1.8;color:#b8b7b2;text-wrap:pretty;word-break:keep-all}
+.a26-lead b{color:#f1efe9;font-weight:700}
 .a26-entry-group{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap}
 .a26-entry{min-width:190px;min-height:54px;padding:0 20px 0 24px;border-radius:999px;display:flex;justify-content:space-between;align-items:center;gap:30px;font-size:.88rem;font-weight:700;transition:transform var(--transition),background var(--transition),border-color var(--transition),color var(--transition)}
 .a26-entry b{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;font-size:.9rem;transition:transform var(--transition)}
