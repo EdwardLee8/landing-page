@@ -4,28 +4,28 @@
  * 原本只有會員版港股庫先有(hk-stocks-pro.html 裡面寫死一份),但最
  * 需要解說嘅係未付費、第一次入嚟嘅人 —— 佢哋見到 2,012 行 × 11 欄,
  * 欄名係「1個月vs恒指」、標籤係「投機股/困境股」,全頁冇一個字解釋。
- * 抽咗出嚟做共用元件(見 js/help-panel.js),六個免費工具都用得。
+ * 抽咗出嚟做共用元件(見 js/explain-panel.js),六個免費工具都用得。
  *
  * 六個工具嘅版面唔一樣(有啲有 .page-header、有啲淨係得 <header>),
- * 所以容器分兩種:預設自己加左右內距,.help-flush 就交返畀外層容器。
+ * 所以容器分兩種:預設自己加左右內距,.explain-flush 就交返畀外層容器。
  */
 /* 六版有啲冇設全域 box-sizing(例如 sp500 嗰版),唔自己寫死就會撐爆版面 */
-.help-wrap, .help-wrap * { box-sizing: border-box; }
-.help-wrap {
+.explain-wrap, .explain-wrap * { box-sizing: border-box; }
+.explain-wrap {
   padding: 14px 24px 0;
   font-family: inherit;
   max-width: 100%;
 }
-.help-wrap.help-flush { padding: 14px 0 0; }
-.help-wrap.help-open { padding-bottom: 4px; }
+.explain-wrap.explain-flush { padding: 14px 0 0; }
+.explain-wrap.explain-open { padding-bottom: 4px; }
 
-.help-bar {
+.explain-bar {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
 }
-.help-btn {
+.explain-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -41,18 +41,18 @@
   white-space: nowrap;
   transition: background .15s, border-color .15s;
 }
-.help-btn:hover { background: rgba(212, 166, 71, .22); border-color: #d4a647; }
+.explain-btn:hover { background: rgba(212, 166, 71, .22); border-color: #d4a647; }
 /* 收起嗰陣都見到嘅一行字 —— 面板嘅價值要喺唔使揿之前就睇得出 */
-.help-hint {
+.explain-hint {
   color: #9aa4b2;
   font-size: 13px;
   line-height: 1.5;
   cursor: pointer;
 }
-.help-hint:hover { color: #d4a647; }
-.help-wrap.help-open .help-hint { display: none; }
+.explain-hint:hover { color: #d4a647; }
+.explain-wrap.explain-open .explain-hint { display: none; }
 
-.help-panel {
+.explain-panel {
   display: none;
   background: rgba(13, 13, 20, .85);
   border: 1px solid rgba(212, 166, 71, .35);
@@ -64,8 +64,8 @@
   color: #b6bcc8;
   max-width: 860px;
 }
-.help-panel.open { display: block; }
-.help-panel h2 {
+.explain-panel.open { display: block; }
+.explain-panel h2 {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -76,7 +76,7 @@
   margin: 0 0 10px;
   line-height: 1.5;
 }
-.help-close {
+.explain-close {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, .18);
   color: #8b929e;
@@ -87,19 +87,19 @@
   cursor: pointer;
   white-space: nowrap;
 }
-.help-close:hover { border-color: #d4a647; color: #d4a647; }
-.help-panel h3 {
+.explain-close:hover { border-color: #d4a647; color: #d4a647; }
+.explain-panel h3 {
   font-size: 14px;
   font-weight: 700;
   color: #e8eef5;
   margin: 16px 0 4px;
 }
-.help-panel ul { margin: 6px 0; padding-left: 20px; }
-.help-panel li { margin: 5px 0; }
-.help-panel p { margin: 6px 0; }
-.help-panel b { color: #e8eef5; font-weight: 700; }
+.explain-panel ul { margin: 6px 0; padding-left: 20px; }
+.explain-panel li { margin: 5px 0; }
+.explain-panel p { margin: 6px 0; }
+.explain-panel b { color: #e8eef5; font-weight: 700; }
 /* 具體例子 —— 規則講完之後,用真實一行數據落地 */
-.help-panel .help-eg {
+.explain-panel .explain-eg {
   margin-top: 12px;
   padding: 10px 13px;
   border-left: 2px solid rgba(212, 166, 71, .5);
@@ -107,15 +107,15 @@
   border-radius: 0 8px 8px 0;
   font-size: 13px;
 }
-.help-panel .help-use {
+.explain-panel .explain-use {
   border-top: 1px solid rgba(255, 255, 255, .12);
   margin-top: 14px;
   padding-top: 12px;
 }
 
 @media (max-width: 900px) {
-  .help-wrap { padding: 12px 16px 0; }
-  .help-wrap.help-flush { padding: 12px 0 0; }
-  .help-panel { padding: 15px 16px 17px; font-size: 13.5px; line-height: 1.8; }
-  .help-hint { font-size: 12.5px; }
+  .explain-wrap { padding: 12px 16px 0; }
+  .explain-wrap.explain-flush { padding: 12px 0 0; }
+  .explain-panel { padding: 15px 16px 17px; font-size: 13.5px; line-height: 1.8; }
+  .explain-hint { font-size: 12.5px; }
 }

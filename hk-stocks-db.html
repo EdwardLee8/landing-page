@@ -21,7 +21,10 @@ select:focus,input[type=text]:focus{border-color:#d4a647}
 .stats-bar span b{color:#d4a647;font-size:14px}
 table{width:100%;border-collapse:collapse;min-width:960px}
 td.code{color:#d4a647;font-weight:600;font-size:15px}
-td.name{color:#fff;font-weight:600;max-width:160px;white-space:normal;word-break:break-all}
+/* min-width 係關鍵:表本身 min-width:960px,喺手機名稱欄會縮到 68px,
+   「騰訊控股」斷成兩三行,行高谷到 120px,一屏得四行。break-all 對中文
+   更加係亂斷。 */
+td.name{color:#fff;font-weight:600;min-width:110px;max-width:160px;white-space:normal;word-break:normal;overflow-wrap:anywhere}
 td.industry{color:#aaa;font-size:16px}
 td.num.pos{color:#4caf50}
 td.num.neg{color:#ef5350}
@@ -53,8 +56,8 @@ td.num.na{color:#555}
 .ms-clear{padding:7px 14px;font-size:12px;color:#888;cursor:pointer;border-top:1px solid #2a2a3e;text-align:center;transition:color .15s}
 .ms-clear:hover{color:#d4a647}
 </style>
-  <link rel="stylesheet" href="/css/help-panel.css">
-  <script src="/js/help-panel.js" defer></script>
+  <link rel="stylesheet" href="/css/explain-panel.css">
+  <script src="/js/explain-panel.js" defer></script>
 </head>
 <body>
 
@@ -62,7 +65,7 @@ td.num.na{color:#555}
 <div class="page-header">
   <a href="/free/" class="back-btn">← 免費內容中心</a>
   <div>
-    <div class="page-title">港股2025下半年資料庫</div>
+    <h1 class="page-title">港股2025下半年資料庫</h1>
     <div class="page-subtitle">2025年12月年結的港股 &middot; 共2,012隻 &middot; 數據截至2026年4月2日</div>
   </div>
 </div>
@@ -89,8 +92,7 @@ td.num.na{color:#555}
     <div class="ms-wrap" id="f-type3m"><button class="ms-btn" data-placeholder="全部">全部</button><div class="ms-dropdown"></div></div>
   </div>
   <div class="filter-actions">
-    <button class="btn btn-ghost" onclick="resetFilters()">重置</button>
-    <button class="btn btn-primary" onclick="applyFilters()">篩選</button>
+    <button class="btn btn-ghost" onclick="resetFilters()">重置全部</button>
   </div>
 </div>
 
@@ -302,7 +304,17 @@ function goPage(p) {
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
-document.getElementById('f-search').addEventListener('keydown', function(e) { if (e.key === 'Enter') applyFilters(); });
+// 打字即刻篩,唔使撳「篩選」。原本要撳掣(或者 Enter)先有反應,但
+// 輸入框旁邊冇任何提示,好多人打完字見冇嘢郁就以為部嘢壞咗。180ms
+// 防抖,2,012 筆喺手機都夠快。
+var _searchTimer = null;
+document.getElementById('f-search').addEventListener('input', function() {
+  clearTimeout(_searchTimer);
+  _searchTimer = setTimeout(applyFilters, 180);
+});
+document.getElementById('f-search').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { clearTimeout(_searchTimer); applyFilters(); }
+});
 
 function initApp() {
   filtered = [...RAW_DATA];
@@ -330,7 +342,7 @@ function msInit(wrapperId, opts) {
     label.className = 'ms-item';
     const cb = document.createElement('input');
     cb.type = 'checkbox'; cb.value = opt;
-    cb.addEventListener('change', function() { msUpdateBtn(wrap); });
+    cb.addEventListener('change', function() { msUpdateBtn(wrap); applyFilters(); });
     label.appendChild(cb);
     label.appendChild(document.createTextNode(opt));
     drop.appendChild(label);
@@ -338,7 +350,7 @@ function msInit(wrapperId, opts) {
   const clear = document.createElement('div');
   clear.className = 'ms-clear';
   clear.textContent = '清除選擇';
-  clear.addEventListener('click', function(e) { e.stopPropagation(); msClear(wrap); });
+  clear.addEventListener('click', function(e) { e.stopPropagation(); msClear(wrap); applyFilters(); });
   drop.appendChild(clear);
   btn.addEventListener('click', function(e) { e.stopPropagation(); msToggle(wrap); });
 }
@@ -384,7 +396,7 @@ document.addEventListener('click', function() {
 </script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  HelpPanel.init({
+  ExplainPanel.init({
     id: "free-hk-stocks",
     mount: ".page-header",
     title: "點解讀「港股業績資料庫」",
@@ -404,8 +416,8 @@ document.addEventListener("DOMContentLoaded", function () {
   <li><b>困境股</b> — 增長 &lt; 10% <b>+</b> 跑輸恒指<br>生意同股價都弱</li>
 </ul>
 <p>每隻股有<b>兩個分類</b>:一個按 1 個月相對表現,一個按 3 個月(表格最後兩欄)。表格上面嗰行統計數字用嘅係 <b>1 個月</b>版本。兩個分類唔同,即係股價相對恒指喺近一個月同近三個月調轉咗方向,值得睇多眼。</p>
-<p class="help-eg">例:騰訊(00700)收入 +14.0%、3 個月 vs 恒指 −16.8% → <b>價值股</b>;阿里巴巴(09988)收入 +3.1%(未夠 10%)、−15.8% → <b>困境股</b>;友邦(01299)收入 +61.8%、+8.1% → <b>成長股</b>。</p>
-<div class="help-use"><p><b>點用:</b></p>
+<p class="explain-eg">例:騰訊(00700)收入 +14.0%、3 個月 vs 恒指 −16.8% → <b>價值股</b>;阿里巴巴(09988)收入 +3.1%(未夠 10%)、−15.8% → <b>困境股</b>;友邦(01299)收入 +61.8%、+8.1% → <b>成長股</b>。</p>
+<div class="explain-use"><p><b>點用:</b></p>
 <ul>
   <li>想搵潛力股:先篩<b>中型股 + 成長股</b>,呢度最多未被大行覆蓋嘅名</li>
   <li>想搵低估:篩<b>大型股 + 價值股</b>,但要自己查下點解市場唔買</li>

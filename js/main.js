@@ -831,17 +831,43 @@ function initNav() {
     nav.classList.toggle("nav-scrolled", window.scrollY > 60);
   }, { passive: true });
 
+  // 下拉選單:撳都開得。原本 CSS 淨係寫咗 :hover,即係觸控裝置(手機
+  // 橫放、平板)撳落去淨係跳去 "#",兩個入口一世都開唔到。
+  const ddWrap = document.querySelector(".nav-dropdown-wrap");
+  const ddTrigger = ddWrap && ddWrap.querySelector(".nav-link");
+  const closeDropdown = () => {
+    if (!ddWrap) return;
+    ddWrap.classList.remove("open");
+    ddTrigger.setAttribute("aria-expanded", "false");
+  };
+  if (ddTrigger) {
+    ddTrigger.setAttribute("aria-expanded", "false");
+    ddTrigger.setAttribute("aria-haspopup", "true");
+    ddTrigger.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const open = ddWrap.classList.toggle("open");
+      ddTrigger.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    document.addEventListener("click", (e) => { if (!ddWrap.contains(e.target)) closeDropdown(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDropdown(); });
+  }
+
   // Mobile menu toggle
   if (menuBtn) {
     menuBtn.addEventListener("click", () => {
       const open = navLinks.classList.toggle("nav-links-open");
       menuBtn.classList.toggle("nav-menu-open", open);
     });
-    // Close on link click
-    links.forEach(l => l.addEventListener("click", () => {
-      navLinks.classList.remove("nav-links-open");
-      menuBtn.classList.remove("nav-menu-open");
-    }));
+    // Close on link click(下拉嗰個掣除外 —— 佢係開選單,唔係跳頁)
+    links.forEach(l => {
+      if (l === ddTrigger) return;
+      l.addEventListener("click", () => {
+        navLinks.classList.remove("nav-links-open");
+        menuBtn.classList.remove("nav-menu-open");
+        closeDropdown();
+      });
+    });
   }
 
   // Active section highlight via IntersectionObserver

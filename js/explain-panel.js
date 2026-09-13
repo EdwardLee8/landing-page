@@ -1,7 +1,7 @@
 /**
  * 「點解讀」說明面板(共用元件)。
  *
- *   HelpPanel.init({
+ *   ExplainPanel.init({
  *     id: "free-hk-stocks",        // localStorage key,每頁唔同
  *     mount: "#browse",            // 插喺邊(預設 .page-header)
  *     prepend: true,               // 插入容器最頂(預設插喺容器之後)
@@ -23,22 +23,22 @@
 
   function init(opts) {
     if (!opts || !opts.html) return;
-    var key = "_help_seen_" + (opts.id || "default");
+    var key = "_explain_seen_" + (opts.id || "default");
 
     var wrap = document.createElement("div");
-    wrap.className = "help-wrap" + (opts.flush ? " help-flush" : "");
+    wrap.className = "explain-wrap" + (opts.flush ? " explain-flush" : "");
 
     var bar = document.createElement("div");
-    bar.className = "help-bar";
+    bar.className = "explain-bar";
 
     var btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "help-btn";
+    btn.className = "explain-btn";
     bar.appendChild(btn);
 
     if (opts.hint) {
       var hint = document.createElement("span");
-      hint.className = "help-hint";
+      hint.className = "explain-hint";
       hint.textContent = opts.hint;
       hint.addEventListener("click", function () { btn.click(); });
       bar.appendChild(hint);
@@ -46,13 +46,13 @@
     wrap.appendChild(bar);
 
     var panel = document.createElement("div");
-    panel.className = "help-panel";
+    panel.className = "explain-panel";
 
     var head = document.createElement("h2");
     head.appendChild(document.createTextNode(opts.title || "點解讀"));
     var close = document.createElement("button");
     close.type = "button";
-    close.className = "help-close";
+    close.className = "explain-close";
     close.textContent = "收埋 ✕";
     head.appendChild(close);
     panel.appendChild(head);
@@ -80,7 +80,7 @@
       var open = panel.classList.contains("open");
       btn.textContent = open ? "ⓘ 收埋說明" : "ⓘ 點解讀呢個工具";
       btn.setAttribute("aria-expanded", open ? "true" : "false");
-      wrap.classList.toggle("help-open", open);
+      wrap.classList.toggle("explain-open", open);
     }
     function toggle() {
       if (!panel.classList.toggle("open")) {
@@ -93,5 +93,5 @@
     close.addEventListener("click", toggle);
   }
 
-  global.HelpPanel = { init: init };
+  global.ExplainPanel = { init: init };
 })(window);

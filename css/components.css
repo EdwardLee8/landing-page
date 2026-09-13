@@ -21,6 +21,23 @@ td.num { text-align: center !important; font-size: var(--fs-base); }
 tbody tr { border-bottom: 1px solid var(--bg-raised); transition: background .15s; }
 tbody tr:hover { background: var(--bg-raised); }
 
+/* 手機:第一欄釘住。
+   八個資料頁嘅表都闊過 960px,喺 390px 要橫捲五、六下先睇到最右嗰幾
+   欄;一捲走股票代碼就消失,剩低一堆冇主語嘅數字,睇到一半唔記得自己
+   望緊邊隻股。釘住第一欄之後,右邊點捲都仲見到代碼。 */
+@media (max-width: 900px) {
+  .table-wrap thead th:first-child,
+  .table-wrap tbody td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: var(--bg);
+    box-shadow: 1px 0 0 var(--bg-raised);
+  }
+  .table-wrap thead th:first-child { z-index: 3; background: var(--bg-panel); }
+  .table-wrap tbody tr:hover td:first-child { background: var(--bg-raised); }
+}
+
 /* 排序指示 */
 th.sort-asc  .sort-icon::after { content: " ▲"; }
 th.sort-desc .sort-icon::after { content: " ▼"; }

@@ -192,7 +192,11 @@ section + section {
   min-width: 160px;
   z-index: 200;
 }
-.nav-dropdown-wrap:hover .nav-dropdown-menu { display: block; }
+/* 原本淨係 :hover 開 —— 觸控裝置冇 hover,揸平板嘅人撳落去只會跳去
+   「#」,個選單一世都開唔到。而家撳都開得(見 js/main.js 嘅
+   initNavDropdown),滑鼠用家照舊 hover 就得。 */
+.nav-dropdown-wrap:hover .nav-dropdown-menu,
+.nav-dropdown-wrap.open .nav-dropdown-menu { display: block; }
 .nav-dropdown-menu li a {
   display: block;
   padding: 9px 18px;
