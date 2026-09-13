@@ -75,6 +75,19 @@ body { font-family: "Noto Sans TC", system-ui, sans-serif; }
 .mini p { font-size: 14px; line-height: 1.78; color: var(--text-muted); margin-bottom: 10px; }
 .mini a { font-size: 13px; font-weight: 600; color: var(--gold); }
 
+/* ── 由邊度開始(三步) ──
+   新人最大嘅卡位唔係揾唔到工具,而係唔知邊個工具答緊自己嘅問題。
+   六張卡並排嘅時候全部睇落一樣重要,結果一個都唔揀就走咗。 */
+.steps { list-style: none; display: grid; gap: 12px; counter-reset: step; }
+.steps li { display: flex; gap: 15px; background: var(--bg-panel); border: 1px solid var(--line);
+            border-radius: 12px; padding: 17px 20px 16px; }
+.steps .n { flex: none; width: 27px; height: 27px; border-radius: 50%; display: grid; place-items: center;
+            font-family: Manrope, sans-serif; font-size: 13px; font-weight: 800;
+            background: var(--gold-ghost); border: 1px solid var(--gold-dim); color: var(--gold); }
+.steps h3 { font-size: 15px; font-weight: 700; color: var(--text-strong); margin-bottom: 5px; letter-spacing: -.01em; }
+.steps p { font-size: 14px; line-height: 1.78; color: var(--text-muted); margin-bottom: 7px; }
+.steps a { font-size: 13px; font-weight: 600; color: var(--gold); }
+
 /* ── 附註與頁尾 ── */
 .note { border: 1px solid var(--gold-dim); background: rgba(212,166,71,.05); border-radius: 10px;
         padding: 14px 18px; font-size: 13px; line-height: 1.75; color: var(--text-muted); }
@@ -84,6 +97,7 @@ body { font-family: "Noto Sans TC", system-ui, sans-serif; }
 @media (max-width: 620px) {
   .wrap { padding: 0 18px; }
   .hero { padding: 30px 0 24px; }
+  .steps li { padding: 15px 16px 14px; gap: 12px; }
   .top .wrap { flex-wrap: wrap; }
 }
 </style>
@@ -105,8 +119,42 @@ body { font-family: "Noto Sans TC", system-ui, sans-serif; }
   <header class="hero">
     <div class="eyebrow">Free Research</div>
     <h1>免費內容中心</h1>
-    <p>所有免密碼資料庫、監測工具、免費文章及社群入口都集中喺呢一頁,毋須登入。想睇最新完整研究資料,可以用右上角會員入口。</p>
+    <p>六個資料庫同監測工具、免費文章同社群入口全部喺呢一頁,唔使登入、唔使電郵。<b>每個工具入面都有一個「點解讀」說明</b>,教你啲數字係咩意思、實際點樣用。想睇最新完整研究資料,可以用右上角會員入口。</p>
   </header>
+
+  <section class="sec">
+    <div class="sec-head">
+      <h2>第一次嚟?由呢三步開始</h2>
+      <div class="rule"></div>
+      <div class="count">大約 15 分鐘</div>
+    </div>
+    <ol class="steps">
+      <li>
+        <span class="n">1</span>
+        <div>
+          <h3>揀一間你識嘅公司,睇下佢實際做緊咩生意</h3>
+          <p>喺關鍵字資料庫打個股票代號(例如 <b>00700</b>),睇下佢真正嘅收入來源,同你想像嘅係咪同一回事。</p>
+          <a href="/free/keywords/hk">開啟關鍵字資料庫 →</a>
+        </div>
+      </li>
+      <li>
+        <span class="n">2</span>
+        <div>
+          <h3>睇下佢嘅業績同股價,係咪行緊同一個方向</h3>
+          <p>業績資料庫將收入增長同相對恒指表現擺埋一齊,用<b>收入增長有冇達 10%</b> × <b>有冇跑贏恒指</b>分做四類:成長股、<b>價值股</b>(增長夠但股價未追上)、投機股、困境股。</p>
+          <a href="/free/stocks/hk">開啟港股業績資料庫 →</a>
+        </div>
+      </li>
+      <li>
+        <span class="n">3</span>
+        <div>
+          <h3>讀一份完整分析,學下人哋點拆一盤生意</h3>
+          <p>Top 100 深度報告每份都有公司背景、最新業績、催化劑同風險。由你熟嗰間開始睇,最容易睇得入去。</p>
+          <a href="/hk-top100-reports/">開啟 Top 100 深度報告 →</a>
+        </div>
+      </li>
+    </ol>
+  </section>
 
   <section class="sec">
     <div class="sec-head">
@@ -119,7 +167,7 @@ body { font-family: "Noto Sans TC", system-ui, sans-serif; }
       <a class="card" href="/hk-top100-reports/">
         <span class="tag">深度報告</span>
         <h3>港股 Top 100 深度報告</h3>
-        <p>港股市值最大 100 間上市公司深度分析報告(2026 年 9 月版)。可按公司中文名、股份代號或行業搜尋,免密碼閱讀全文。</p>
+        <p><b>「一份完整嘅公司分析,應該點寫?」</b>市值最大 100 間港股,每間一份:公司背景、最新業績、未來催化劑、主要風險同買入判斷。可按中文名、股份代號或行業搜尋,免密碼睇全文。</p>
         <div class="meta"><span>100 間公司</span><span>100 份報告</span><span>行業篩選</span></div>
         <div class="open">開啟報告中心 →</div>
       </a>
@@ -127,7 +175,7 @@ body { font-family: "Noto Sans TC", system-ui, sans-serif; }
       <a class="card" href="/free/outlook-2026-archive">
         <span class="tag">歷史快照</span>
         <h3>港股 2026 中期業績前景庫</h3>
-        <p>2026 年 8 月 20 日公開版本;按公司整合所有原始業績期,提供評分、財務主線、催化劑、風險及 6–18 個月展望。</p>
+        <p><b>「當時睇好嘅公司,後來真係做到嗎?」</b>2026 年 8 月 20 日嘅公開快照:303 間港股嘅評分、財務主線、催化劑同 6–18 個月展望。攞嚟對照之後實際發生嘅事,係學睇前景最快嘅方法。</p>
         <div class="meta"><span>303 間公司</span><span>307 份記錄</span><span>29 個欄位</span></div>
         <div class="open">開啟歷史快照 →</div>
       </a>
@@ -135,23 +183,23 @@ body { font-family: "Noto Sans TC", system-ui, sans-serif; }
       <a class="card" href="/free/stocks/hk">
         <span class="tag">H2 2025</span>
         <h3>港股業績資料庫</h3>
-        <p>2025 年 12 月年結港股資料庫,整合行業分類、市值類型、收入／毛利增長及相對恒指表現。</p>
-        <div class="meta"><span>2,012 隻港股</span><span>業績與走勢</span><span>免密碼</span></div>
+        <p><b>「邊啲港股生意做大咗,但股價仲未追上?」</b>2,012 隻港股嘅收入／毛利增長同相對恒指表現擺埋一齊睇,自動分做成長股、價值股、投機股、困境股四類,可按行業同市值篩選。</p>
+        <div class="meta"><span>2,012 隻港股</span><span>四種分類</span><span>行業/市值篩選</span></div>
         <div class="open">開啟資料庫 →</div>
       </a>
 
       <a class="card" href="/free/keywords/hk">
         <span class="tag">公司業務</span>
         <h3>港股關鍵字資料庫</h3>
-        <p>用業務關鍵字尋找相關公司,或者由公司反查核心產品、服務及業務主題。</p>
-        <div class="meta"><span>關鍵字選股</span><span>公司反查</span><span>相關股票群組</span></div>
+        <p><b>「做數據中心嘅港股有邊幾間?」</b>打一個業務關鍵字就揾晒所有相關公司;或者反過來打股票代號,查一間公司實際做緊咩生意。業務相似嘅公司仲會自動歸埋一組。</p>
+        <div class="meta"><span>1,236 間公司</span><span>關鍵字選股</span><span>公司反查</span></div>
         <div class="open">開啟關鍵字工具 →</div>
       </a>
 
       <a class="card" href="/free/themes">
         <span class="tag">市場監測</span>
         <h3>主題強弱監測 Dashboard</h3>
-        <p>按相對強弱中位數觀察市場主題,快速查看最強／最弱主題,以及主題內領先或落後的公司。</p>
+        <p><b>「而家啲錢流緊入邊個板塊?」</b>按主題睇相對強弱中位數,一眼睇晒最強同最弱嘅主題,再入去睇主題入面邊幾間跑出、邊幾間跟唔上。</p>
         <div class="meta"><span>主題排名</span><span>相對強弱</span><span>公司明細</span></div>
         <div class="open">開啟監測板 →</div>
       </a>
@@ -159,7 +207,7 @@ body { font-family: "Noto Sans TC", system-ui, sans-serif; }
       <a class="card" href="/free/sp500-top20">
         <span class="tag">美股深度報告</span>
         <h3>S&amp;P 500 市值最大 18 間公司研究報告</h3>
-        <p>NVDA、GOOGL、AAPL、AMZN 等 S&amp;P 500 權重公司,逐份整理公司背景、最新業績、六個月催化劑、主要風險與買入判斷。</p>
+        <p><b>「NVDA 呢個價,仲買唔買得過?」</b>NVDA、GOOGL、AAPL、AMZN 等 S&amp;P 500 權重股,逐份整理公司背景、最新業績、六個月催化劑、主要風險同買入判斷。呢批係全球最多人分析嘅公司,最適合攞嚟學點讀一份研究。</p>
         <div class="meta"><span>18 間公司</span><span>18 份報告</span><span>免密碼</span></div>
         <div class="open">開啟報告 →</div>
       </a>
@@ -175,12 +223,12 @@ body { font-family: "Noto Sans TC", system-ui, sans-serif; }
     <div class="subgrid">
       <div class="mini">
         <h3>免費投資文章</h3>
-        <p>閱讀網站公開嘅港股／美股研究、財報解讀及市場觀察。</p>
+        <p>公開嘅港股／美股研究、財報解讀同市場觀察,唔使登入就睇到。</p>
         <a href="/blog/">查看免費文章 →</a>
       </div>
       <div class="mini">
         <h3>免費 Discord</h3>
-        <p>加入免費社群,接收公開市場資訊及內容更新。</p>
+        <p>加入免費社群,接收公開市場資訊同內容更新,有問題可以直接問。</p>
         <a href="/#discord-free">查看免費 Discord →</a>
       </div>
     </div>

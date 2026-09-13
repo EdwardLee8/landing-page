@@ -71,10 +71,36 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 .a26-proof{align-self:end;margin-bottom:42px;border:1px solid rgba(255,255,255,.14);border-radius:22px;background:rgba(10,12,15,.66);-webkit-backdrop-filter:blur(20px) saturate(135%);backdrop-filter:blur(20px) saturate(135%);box-shadow:0 30px 90px rgba(0,0,0,.36);overflow:hidden;animation:a26Rise 1s .2s cubic-bezier(.16,1,.3,1) both}
 .a26-proof-head{height:54px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.09);font-size:.75rem;font-weight:700;letter-spacing:.16em;color:#85878a}
 .a26-status{color:#b8b9b6}.a26-status i{width:5px;height:5px;background:#79b98a;box-shadow:0 0 0 4px rgba(121,185,138,.1)}
-.a26-proof-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(255,255,255,.09);border-bottom:1px solid rgba(255,255,255,.09)}
-.a26-proof-grid div{padding:25px 17px;border-right:1px solid rgba(255,255,255,.09)}.a26-proof-grid div:last-child{border-right:0}
-.a26-proof-grid b,.a26-proof-grid span{display:block}.a26-proof-grid b{font-size:1.15rem;color:#f1efe9;letter-spacing:-.04em}.a26-proof-grid span{margin-top:6px;font-size:.75rem;line-height:1.5;color:#8a8c8f}
-.a26-proof-foot{height:48px;padding:0 18px;display:flex;align-items:center;gap:7px;font-size:.75rem;letter-spacing:.12em;color:#77797c}
+/* 第一屏由「作者履歷數字」改成「資料庫真實一段」。2012 / 19,000 追蹤 /
+   500 篇係關於作者,第一次入嚟嘅人真正想知嘅係:呢度啲資料長成點、
+   對我有咩用。三行真數據(騰訊、友邦、阿里)一眼就答晒 —— 順便示範
+   咗分類邏輯,唔使睇完成頁先明。履歷數字縮落底部一行保留。 */
+.a26-proof-intro{padding:15px 20px 0;font-size:.82rem;line-height:1.7;color:#9a9c9f}
+.a26-proof-intro b{color:#d8d5cd;font-weight:700}
+.a26-sample{list-style:none;margin:0;padding:13px 14px 4px;display:grid;gap:8px}
+.a26-sample li{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 12px;
+  padding:11px 13px;border:1px solid rgba(255,255,255,.09);border-radius:12px;background:rgba(255,255,255,.025)}
+.a26-sample-co{font-size:.86rem;color:#8a8c8f;letter-spacing:.02em}
+.a26-sample-co b{color:#f1efe9;font-weight:700;margin-right:6px}
+.a26-sample-num{grid-column:1;font-size:.76rem;color:#85878a;line-height:1.5}
+.a26-sample-num i{font-style:normal;font-variant-numeric:tabular-nums}
+.a26-sample-num .pos{color:#54c08a}.a26-sample-num .neg{color:#e2706f}
+/* 阿里嗰行收入係 +3.1%,正數但未過 10% 門檻 —— 標紅會令人以為蝕錢,
+   所以留返中性色,再用一個細標籤講明點解計唔到增長。 */
+.a26-sample-num .under{color:#a8aaad}
+.a26-sample-num em{font-style:normal;margin-left:5px;padding:1px 5px;border-radius:4px;
+  font-size:.68rem;color:#9a9c9f;border:1px solid rgba(255,255,255,.13)}
+.a26-sample-tag{grid-column:2;grid-row:1/-1;align-self:center;font-size:.74rem;font-weight:700;white-space:nowrap;
+  padding:5px 10px;border-radius:20px;border:1px solid transparent}
+.a26-sample-tag.is-growth{color:#6fd6a2;background:rgba(84,192,138,.13);border-color:rgba(84,192,138,.34)}
+.a26-sample-tag.is-value{color:var(--gold);background:rgba(212,166,71,.13);border-color:rgba(212,166,71,.36)}
+.a26-sample-tag.is-trouble{color:#e2908f;background:rgba(226,112,111,.11);border-color:rgba(226,112,111,.3)}
+.a26-sample-more{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:0 14px 13px;padding:11px 13px;border-radius:12px;border:1px solid rgba(212,166,71,.34);
+  background:rgba(212,166,71,.08);color:var(--gold);font-size:.82rem;font-weight:700;
+  text-decoration:none;transition:background .16s,border-color .16s}
+.a26-sample-more:hover{background:rgba(212,166,71,.15);border-color:var(--gold);text-decoration:none}
+.a26-proof-foot{min-height:48px;padding:11px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-size:.72rem;letter-spacing:.04em;color:#77797c;border-top:1px solid rgba(255,255,255,.09)}
 .a26-proof-foot span{padding:4px 7px;border:1px solid rgba(255,255,255,.1);border-radius:5px}.a26-proof-foot em{margin-left:auto;font-style:normal;color:var(--gold)}
 .a26-scroll{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);display:flex;align-items:center;gap:12px;font-size:.72rem;letter-spacing:.17em;color:#67696c;z-index:10}.a26-scroll b{color:var(--gold);font-size:.9rem;animation:a26Bob 1.8s ease-in-out infinite}
 @keyframes a26Rise{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
@@ -234,7 +260,12 @@ footer{background:#050608}
   .about-stats{grid-template-columns:1fr 1fr}.about-stat:nth-child(n){grid-column:span 1}.about-stat{padding:24px 18px}.about-stat-value{font-size:2rem}
   #articles-grid{grid-template-columns:1fr}.article-card:nth-child(n){grid-column:1;min-height:auto}.article-card{padding:26px 22px}
   #tiers-wrap{gap:12px}#social-wrap{grid-template-columns:1fr 1fr}.social-pill{min-height:94px}
-  .a26-proof-grid span{font-size:.8rem}
+  .a26-proof-intro{font-size:.86rem}
+  .a26-sample{padding:12px 11px 3px}
+  .a26-sample li{padding:10px 11px}
+  .a26-sample-co{font-size:.88rem}
+  .a26-sample-num{font-size:.79rem}
+  .a26-sample-more{margin:0 11px 11px}
   .tools-stats{grid-template-columns:1fr 1fr}
   .compare-row{grid-template-columns:1fr;padding:12px 0}.compare-cell{padding:4px 20px}.compare-cell--label{padding-top:12px;color:var(--gold)}
   .compare-row--head{display:none}

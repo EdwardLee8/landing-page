@@ -53,6 +53,8 @@ td.num.na{color:#555}
 .ms-clear{padding:7px 14px;font-size:12px;color:#888;cursor:pointer;border-top:1px solid #2a2a3e;text-align:center;transition:color .15s}
 .ms-clear:hover{color:#d4a647}
 </style>
+  <link rel="stylesheet" href="/css/help-panel.css">
+  <script src="/js/help-panel.js" defer></script>
 </head>
 <body>
 
@@ -379,6 +381,39 @@ document.addEventListener('click', function() {
   document.querySelectorAll('.ms-wrap.open').forEach(function(w) { w.classList.remove('open'); });
 });
 
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  HelpPanel.init({
+    id: "free-hk-stocks",
+    mount: ".page-header",
+    title: "點解讀「港股業績資料庫」",
+    hint: "成長股、價值股、投機股、困境股 —— 呢四個標籤點分出嚟?",
+    html: `<p>呢個庫將 2,012 隻港股嘅<b>財務表現</b>同<b>股價表現</b>擺埋一齊睇。每隻股有:</p>
+<ul>
+  <li>下半年收入 / 毛利同比增長 —— 生意本身有冇做大</li>
+  <li>股價對比恒指(1 個月、3 個月)—— 市場有冇畀反應</li>
+  <li>市值組別(大型 / 中型 / 小型)</li>
+</ul>
+<h3>四種分類係點劃出嚟</h3>
+<p>兩條線:<b>下半年收入同比增長有冇達到 10%</b>,同埋<b>相對恒指回報係咪正數</b>。兩兩相配就係四類:</p>
+<ul>
+  <li><b>成長股</b> — 增長 ≥ 10% <b>+</b> 跑贏恒指<br>生意做大咗,市場又認,最理想</li>
+  <li><b>價值股</b> — 增長 ≥ 10% <b>+</b> 跑輸恒指<br>基本面有但股價未追上,可能被低估</li>
+  <li><b>投機股</b> — 增長 &lt; 10% <b>+</b> 跑贏恒指<br>業績唔驚人但被炒起,要小心散場</li>
+  <li><b>困境股</b> — 增長 &lt; 10% <b>+</b> 跑輸恒指<br>生意同股價都弱</li>
+</ul>
+<p>每隻股有<b>兩個分類</b>:一個按 1 個月相對表現,一個按 3 個月(表格最後兩欄)。表格上面嗰行統計數字用嘅係 <b>1 個月</b>版本。兩個分類唔同,即係股價相對恒指喺近一個月同近三個月調轉咗方向,值得睇多眼。</p>
+<p class="help-eg">例:騰訊(00700)收入 +14.0%、3 個月 vs 恒指 −16.8% → <b>價值股</b>;阿里巴巴(09988)收入 +3.1%(未夠 10%)、−15.8% → <b>困境股</b>;友邦(01299)收入 +61.8%、+8.1% → <b>成長股</b>。</p>
+<div class="help-use"><p><b>點用:</b></p>
+<ul>
+  <li>想搵潛力股:先篩<b>中型股 + 成長股</b>,呢度最多未被大行覆蓋嘅名</li>
+  <li>想搵低估:篩<b>大型股 + 價值股</b>,但要自己查下點解市場唔買</li>
+  <li>困境股一般避開;投機股要清楚自己係喺博 momentum</li>
+</ul>
+<p>分類只係起點,唔係買賣訊號 —— 揀到名之後仲要自己睇返公司。</p></div>`
+  });
+});
 </script>
 </body>
 </html>

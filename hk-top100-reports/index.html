@@ -6,6 +6,8 @@
   <title>港股市值 Top 100 深度報告</title>
   <meta name="description" content="港股市值最大 100 間上市公司深度分析，可按公司、代號、行業搜尋。" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/css/help-panel.css">
+  <script src="/js/help-panel.js" defer></script>
 </head>
 <body>
   <div id="app">
@@ -51,5 +53,24 @@
   <script src="vendor/marked.min.js"></script>
   <script src="vendor/purify.min.js"></script>
   <script src="app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  HelpPanel.init({
+    id: "free-top100",
+    mount: "#browse",
+    title: "點解讀「港股 Top 100 深度報告」",
+    hint: "100 份報告,唔知由邊份開始睇?",
+    prepend: true,
+    flush: true,
+    html: `<p>港股市值最大 100 間公司,每間一份完整分析報告,免密碼睇全文。每份包含公司背景、最新業績、催化劑、風險同判斷。</p>
+<div class="help-use"><p><b>點用:</b></p>
+<ul>
+  <li>初學者由<b>自己熟嘅公司</b>入手(例如日常用開嘅服務),對照報告點拆解一盤生意</li>
+  <li>比較同行業兩三間:睇下同一個行業,分析要睇邊幾個指標</li>
+  <li>睇完報告先去睇股價,而唔係倒轉 —— 避免先有立場再揾理由</li>
+</ul></div>`
+  });
+});
+</script>
 </body>
 </html>

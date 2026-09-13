@@ -12,6 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/css/help-panel.css">
+  <script src="/js/help-panel.js" defer></script>
 </head>
 <body>
 <div class="top"><div class="nav"><a class="btn" href="/free/">← 免費內容中心</a><div class="navlinks"><a class="btn" href="/">首頁</a><a class="btn gold" href="/member/">🔐 最新會員版</a></div></div></div>
@@ -38,5 +40,25 @@ function recordHtml(r,i,total){return '<article class="record"><div class="recor
 function openCompany(idx){const c=VIEW[idx];if(!c)return;document.getElementById('modalTitle').textContent=c.code+' '+c.name;document.getElementById('modalSub').textContent='歷史快照 · '+c.records.length+'份業績記錄';document.getElementById('modalBody').innerHTML=c.records.map((r,i)=>recordHtml(r,i,c.records.length)).join('');document.getElementById('modal').classList.add('open');document.body.style.overflow='hidden'}
 function closeModal(){document.getElementById('modal').classList.remove('open');document.body.style.overflow=''}
 ['q','industry','category','sort'].forEach(id=>document.getElementById(id).addEventListener(id==='q'?'input':'change',apply));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});init();
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  HelpPanel.init({
+    id: "free-outlook",
+    mount: "main.wrap",
+    title: "點解讀「港股業績前景庫(歷史快照)」",
+    hint: "舊快照仲有咩用?其實係學睇前景最快嘅方法。",
+    prepend: true,
+    flush: true,
+    html: `<p>2026 年 8 月 20 日嘅公開快照:303 間港股,按公司整合所有原始業績期,附評分、財務主線、催化劑、風險同 6–18 個月展望。</p>
+<p><b>注意:</b>呢個係<b>歷史快照</b>,只反映當時資料,唔代表目前最新業績。</p>
+<div class="help-use"><p><b>點用:</b></p>
+<ul>
+  <li>攞嚟<b>驗證</b>:揀幾間你熟嘅公司,睇下當時嘅展望同之後實際發生嘅事差幾遠 —— 呢個係學睇前景最快嘅方法</li>
+  <li>睇「財務主線」嗰欄,學下點樣用一兩句講清一盤生意嘅關鍵</li>
+</ul>
+<p>會員版有 801 間公司嘅最新版本。</p></div>`
+  });
+});
 </script>
 </body></html>

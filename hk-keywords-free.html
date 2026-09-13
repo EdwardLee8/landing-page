@@ -141,6 +141,8 @@ body{background:#080808;color:#e8e0d0;font-family:"Noto Sans TC",sans-serif;font
 .empty{text-align:center;padding:60px 20px;color:#555;font-size:14px}
 mark{background:#d4a64730;color:#e8bc5a;border-radius:2px;padding:0 1px}
 </style>
+  <link rel="stylesheet" href="/css/help-panel.css">
+  <script src="/js/help-panel.js" defer></script>
 </head>
 <body>
 
@@ -760,6 +762,31 @@ function escHtml(s) {
 function kwColor(w) { return w>=0.8?"kw-high":w>=0.6?"kw-mid":"kw-low"; }
 
 initApp();
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  HelpPanel.init({
+    id: "free-hk-keywords",
+    mount: ".page-header",
+    title: "點解讀「港股關鍵字資料庫」",
+    hint: "關鍵字後面嗰個權重(w)係咩意思?三個搜尋方式又點揀?",
+    html: `<p>將 1,236 間港股公司嘅業務,拆成可以搜尋嘅<b>業務關鍵字</b>。三個用法:</p>
+<ul>
+  <li><b>關鍵字 → 公司</b>:打「數據中心」、「太陽能」,揾出所有做緊呢盤生意嘅港股</li>
+  <li><b>公司 → 關鍵字</b>:打股票代號,睇佢實際做緊咩業務</li>
+  <li><b>高相關股票群組</b>:業務相似嘅公司會自動歸埋一組</li>
+</ul>
+<h3>權重(w)係咩</h3>
+<p>每個關鍵字後面嘅數字代表<b>呢項業務對該公司有幾重要</b>。0.9 以上通常係主營業務,0.5 左右可能只係其中一條產品線。</p>
+<div class="help-use"><p><b>點用:</b></p>
+<ul>
+  <li>聽到某個主題(例如 AI 電力需求),用關鍵字揾晒相關港股,再自己比較邊間最純正</li>
+  <li>反過來查一間你持有嘅公司,睇下佢實際收入來源同你想像嘅係咪同一回事</li>
+  <li>高相關群組可以用嚟揾「同類但未升」嘅替代標的</li>
+</ul>
+<p>免費版每間公司顯示權重最高嘅 8 個關鍵字;完整關鍵字同公司業務摘要喺會員版。</p></div>`
+  });
+});
 </script>
 </body>
 </html>

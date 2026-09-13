@@ -20,6 +20,8 @@ table{width:100%;border-collapse:collapse;font-size:13px} th{color:#aebdd2;text-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/css/help-panel.css">
+  <script src="/js/help-panel.js" defer></script>
 </head>
 <body>
 <header>
@@ -68,6 +70,27 @@ function renderContent(){
   document.getElementById('content').innerHTML=`<div class="grid"><section><div class="card"><div class="section-title"><h2>最強主題 Top 8</h2><span class="pill">by RS median · stocks RS 高→低</span></div></div><div style="height:12px"></div>${strong.map(c=>cardHTML(c,false)).join('')}</section><section><div class="card"><div class="section-title"><h2>最弱主題 Top 8</h2><span class="pill">by RS median · stocks RS 低→高</span></div></div><div style="height:12px"></div>${weak.map(c=>cardHTML(c,true)).join('')}</section></div>`;
 }
 renderTabs();renderMeta();renderContent();
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  HelpPanel.init({
+    id: "free-themes",
+    mount: "main",
+    title: "點解讀「主題強弱監測」",
+    hint: "相對強弱(RS)高 ≠ 升得多 —— 咁佢究竟量緊咩?",
+    prepend: true,
+    flush: true,
+    html: `<p>將港股按<b>業務主題</b>分組,計出每組嘅相對強弱中位數,睇邊啲主題資金正在流入、邊啲喺度失血。</p>
+<h3>相對強弱(RS)係咩</h3>
+<p>將一隻股喺一段時間嘅表現,同大市(恒指)比較後排名。<b>數字越高代表跑贏越多</b>,唔係代表升得多 —— 大市跌嘅時候,跌得少都可以係高分。</p>
+<div class="help-use"><p><b>點用:</b></p>
+<ul>
+  <li>由上而下:先揾強勢主題,再喺入面揀個股,順水推舟通常好過逆流</li>
+  <li>留意<b>由弱轉強</b>嘅主題 —— 排名啱啱爬上嚟嗰啲,往往仲未反映喺新聞</li>
+  <li>同一主題入面排名差距大,值得查下點解落後嗰幾間跟唔上</li>
+</ul></div>`
+  });
+});
 </script>
 </body>
 </html>
