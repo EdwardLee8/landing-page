@@ -251,10 +251,18 @@ function setMinSize(m) {
 // ── Init ──────────────────────────────────────────────────
 async function initApp() {
   try {
-    const r = await fetch("/hk_keywords_export.json");
+    // 免費版資料(scripts/build_free_keywords.py 產生):全部 1,236 間
+    // 公司、每間頭 8 個關鍵字,唔含業務摘要。舊版呢度指住
+    // /hk_keywords_export.json,但嗰個係會員版完整明文,2026-09-05
+    // 因為外洩已經封鎖,所以呢一頁曾經壞咗一段時間。
+    const r = await fetch("/hk_keywords_export_free.json");
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
     DB = await r.json();
   } catch(e) {
-    document.getElementById("stats-bar").innerHTML = `<span style="color:#ef5350">載入失敗: ${e.message}</span>`;
+    document.getElementById("stats-bar").innerHTML =
+      `<span style="color:#ef5350">資料暫時載入唔到,請重新整理頁面。</span>` +
+      `<a href="/free/" style="margin-left:12px;color:var(--gold)">返回免費內容中心 →</a>`;
+    console.error("keywords data load failed:", e);
     return;
   }
   let totalKws = 0;
