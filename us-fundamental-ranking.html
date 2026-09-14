@@ -43,6 +43,9 @@ td.chg.down{color:#e2706f}
 td.sc.up{color:#54c08a}
 td.sc.down{color:#e2706f}
 td.sc.ref{color:var(--text-dim)}
+/* 中文名做主,英文名細一行擺喺下面 —— 會員大部分係香港人,中文掃得快,
+   但美股慣常用英文名溝通,所以兩個都要見到。 */
+.coname-en{display:block;margin-top:2px;font-size:11.5px;font-weight:400;color:var(--text-dim)}
 td.conf{text-align:center}
 .conf-tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;
   border:1px solid rgba(255,255,255,.14);color:var(--text-muted)}
@@ -135,7 +138,9 @@ td.sc b{font-weight:700}
       <li>用<b>流動性 ADV20</b> 剔走買唔到或者出唔到貨嘅名</li>
       <li>排名係一個時點嘅快照，唔係買賣訊號 —— 揀到名之後仲要自己睇返公司</li>
     </ul>
-    <p class="help-note">資料源有約 44% 公司冇記低全名，名稱欄會顯示代號。
+    <p class="help-note">排名匯出檔本身有 44%（866 隻）公司只記低咗代號冇全名，
+      已經由網站其他美股資料庫夾返 865 隻；淨低 RH 一隻係因為佢真係叫「RH」。
+      中文名有 1,858 隻夾到，夾唔到嘅只顯示英文名。
       「備註」一欄有標記嘅，係資料品質提示（例如業績未發布、財務延遲），值得睇多眼。</p>
   </div>
 

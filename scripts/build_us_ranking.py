@@ -22,6 +22,7 @@
 """
 import json
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -52,10 +53,67 @@ COLMAP = [
     ("排名變動(正=上升)", "rank_change", int),
     ("備註", "note", str),
 ]
-COLUMNS = [k for _, k, _ in COLMAP]
+COLUMNS = [k for _, k, _ in COLMAP] + ["name_zh"]
 # 前言講明呢兩欄留空。確認佢哋真係空 —— 如果將來有數,要有人特登決定
 # 點用,而唔係靜靜地當 0 塞落頁面度。
 MUST_BE_BLANK = ("趨勢質素", "業績後延續")
+
+# 補公司名用嘅對照來源。排名匯出檔有 44% 公司只係重複代號(資料源冇記低
+# 全名),但同一批股喺其他會員資料庫係有名嘅 —— 唔使去外面攞,自己夾返。
+# (檔案, 取哪一層, 代號欄, 名稱欄, 落英文定中文)
+NAME_SOURCES = [
+    ("us_stocks_data.enc", None, "code", "en_name", "en"),
+    ("us_stocks_data.enc", None, "code", "name", "zh"),
+    ("us_rs_latest.enc", ["ratings"], "symbol", "name_en", "en"),
+    ("us_weinstein_latest.enc", ["stages"], "symbol", "name_en", "en"),
+    ("us_keywords_export.enc", None, "s", "n", "en"),
+    ("us_transcript_index.enc", None, "symbol", "name", "en"),
+    ("us_research_index.enc", ["tickers"], "symbol", "name_en", "en"),
+]
+
+
+def norm_symbol(s):
+    """us_stocks_data 用 EC.N / PKX.N 咁嘅格式,剝走交易所後綴先夾得返。"""
+    return re.sub(r"\.(N|O|A|P|OQ|US|K)$", "", (s or "").strip().upper())
+
+
+def name_lookup(password):
+    en, zh = {}, {}
+    for fname, path, sym_key, name_key, lang in NAME_SOURCES:
+        src = os.path.join(ROOT, fname)
+        if not os.path.exists(src):
+            continue
+        data = json.loads(enc_utils.decrypt_file(src, password))
+        for step in (path or []):
+            data = data[step]
+        target = zh if lang == "zh" else en
+        for r in data:
+            sym = norm_symbol(r.get(sym_key))
+            name = (r.get(name_key) or "").strip()
+            # 名等於代號嘅唔算「有名」,唔好攞嚟補
+            if sym and name and name.upper() != sym:
+                target.setdefault(sym, name)
+    return en, zh
+
+
+def fill_names(rows, password):
+    """只補冇名嗰啲,絕不覆蓋。
+
+    對照庫同排名檔兩邊都有名嘅有 1,120 隻,其中 772 隻寫法唔同
+    (「Inc.」對「Inc」、有冇「-A」股份類別)。排名檔自己嗰個寫得好啲,
+    所以有名嘅一律唔郁 —— 補名係補窿,唔係統一格式。
+    """
+    en, zh = name_lookup(password)
+    filled = 0
+    for r in rows:
+        r["name_zh"] = zh.get(r["ticker"], "")
+        if r["name"].strip().upper() == r["ticker"].strip().upper():
+            better = en.get(r["ticker"])
+            if better:
+                r["name"] = better
+                filled += 1
+    still = sum(1 for r in rows if r["name"].strip().upper() == r["ticker"].strip().upper())
+    return filled, still, sum(1 for r in rows if r["name_zh"])
 
 
 def validate(rows, raw_rows):
@@ -93,9 +151,10 @@ def build(src):
                 r[k] = round(r[k], 2)
     rc.check_ranking(rows)  # round 完再驗一次,確認排名仍然企得住
 
+    filled, unnamed, zh_count = fill_names(rows, password)
+
     rows.sort(key=lambda r: r["rank"])
     industries = sorted({r["industry"] for r in rows if r.get("industry")})
-    unnamed = sum(1 for r in rows if r["name"].upper() == r["ticker"].upper())
 
     payload = {
         "title": "美股業績評分資料庫",
@@ -107,6 +166,7 @@ def build(src):
         "formula": "總分 = 基本面分(指引前) + 指引修正",
         "industries": industries,
         "unnamed": unnamed,
+        "name_zh_count": zh_count,
         "ref_note": "參考 50/50 綜合分只供輔助,唔改寫正式排名。",
         "columns": COLUMNS,
         "rows": [[r.get(c) for c in COLUMNS] for r in rows],
@@ -121,7 +181,9 @@ def build(src):
     print(f"  {len(industries)} 個行業")
     print(f"  總分公式核對通過(最大誤差 {worst:.4f})、排名變動核對通過")
     print(f"  趨勢質素／業績後延續 確認留空(同前言一致)")
-    print(f"  {unnamed} 隻({unnamed / len(rows) * 100:.0f}%)資料源冇公司全名,名稱欄會顯示代號")
+    print(f"  公司名:由其他會員資料庫補返 {filled} 隻,"
+          f"仲有 {unnamed} 隻只有代號" + (" (RH 本身就係叫 RH)" if unnamed == 1 else ""))
+    print(f"  中文名:{zh_count} / {len(rows)} 隻夾得返")
     print(f"  第一名:{top['ticker']} {top['name']} {top['fundamental']:.2f}")
 
 

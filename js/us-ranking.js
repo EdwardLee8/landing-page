@@ -115,7 +115,9 @@
         + '<td class="rank' + (s.rank <= 50 ? " top" : "") + '">' + s.rank + "</td>"
         + changeCell(s.rank_change)
         + '<td class="ticker">' + s.ticker + "</td>"
-        + '<td class="coname">' + escapeHtml(s.name) + "</td>"
+        + '<td class="coname">' + escapeHtml(s.name_zh || s.name)
+          + (s.name_zh ? '<span class="coname-en">' + escapeHtml(s.name) + "</span>" : "")
+          + "</td>"
         + '<td class="ind">' + escapeHtml(s.industry || "—") + "</td>"
         + '<td class="sc mcap">' + fmtMcap(s.mcap) + "</td>"
         + '<td class="sc mcap">' + (s.adv20 == null ? "—" : Math.round(s.adv20).toLocaleString("en-US")) + "</td>"
