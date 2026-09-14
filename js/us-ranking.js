@@ -97,7 +97,8 @@
   // 美股價差中位數約 −18(兩把尺中心唔同),用 0 做界會成版標紅。
   // 所以用實際分佈嘅四分位做界:高過 p75 先當「股價行先」。
   // 參考排名:單睇個名次冇乜用,同官方排名嘅落差先係重點 —— 爬升好多
-  // 即係價格動能幫緊佢,跌好多即係股價拖住後腳。
+  // 即係價格動能幫緊佢,跌好多即係股價拖住後腳。所以要同正式排名並排:
+  // 擺喺最右嘅話,1440px 螢幕要向右捲二百幾 px 先見到,等於冇出過。
   function refRankCell(s) {
     if (s.ref_rank == null) return '<td class="refrank">—</td>';
     var d = s.rank - s.ref_rank;
@@ -124,6 +125,7 @@
       html += "<tr>"
         + '<td class="rank' + (s.rank <= 50 ? " top" : "") + '">' + s.rank + "</td>"
         + changeCell(s.rank_change)
+        + refRankCell(s)
         + '<td class="ticker">' + s.ticker + "</td>"
         + '<td class="coname">' + escapeHtml(s.name)
           + (s.name_zh ? '<span class="coname-sub">' + escapeHtml(s.name_zh) + "</span>" : "")
@@ -141,7 +143,6 @@
         + '<td class="sc">' + (s.price_momentum == null ? "—" : s.price_momentum.toFixed(1)) + "</td>"
         + gapCell(s.price_gap)
         + '<td class="sc ref">' + (s.ref_5050 == null ? "—" : s.ref_5050.toFixed(1)) + "</td>"
-        + refRankCell(s)
         + '<td class="note">' + escapeHtml(s.note || "") + "</td>"
         + "</tr>";
     });
