@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>原始資料下載｜Edward LEE 發掘十倍股</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0f'/><text y='24' x='4' font-size='22' fill='%23d4a647'>下</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/shell.css">
+<link rel="stylesheet" href="/css/components.css">
+<style>
+body{background:var(--bg);color:var(--text);font-family:"Noto Sans TC",sans-serif;min-height:100vh}
+
+/* 密碼閘 —— 同 login.html 一樣嘅樣,但收嘅係支持者密碼 */
+#pw-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.pw-box{background:var(--bg-panel);border:1px solid var(--line);border-radius:10px;padding:40px 36px;text-align:center;width:100%;max-width:400px}
+.pw-box h2{font-size:20px;font-weight:700;color:var(--text-strong);margin-bottom:6px}
+.pw-box p{font-size:13px;color:var(--text-dim);margin-bottom:22px;line-height:1.7}
+.pw-box input{width:100%;background:var(--bg-raised);border:1px solid var(--line-strong);color:var(--text);padding:12px 16px;border-radius:6px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.2em;margin-bottom:12px}
+.pw-box input:focus{border-color:var(--gold)}
+.pw-box button{width:100%;background:var(--gold);color:#080808;border:none;padding:12px;border-radius:6px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer}
+.pw-error{color:#ef5350;font-size:12px;margin-top:10px;min-height:18px;line-height:1.6}
+
+#page{display:none}
+.intro{max-width:760px;padding:18px 24px 0;font-size:14px;line-height:1.85;color:var(--text-muted)}
+.intro b{color:var(--text-strong)}
+
+/* 唔係支持者層嗰陣見到嘅嘢:講清楚點解入唔到,唔好淨係彈「冇權限」 */
+#not-supporter{display:none;margin:18px 24px;padding:20px 22px;border:1px solid var(--gold-dim);background:rgba(212,166,71,.06);border-radius:12px;max-width:760px;font-size:14px;line-height:1.85;color:var(--text-muted)}
+#not-supporter h2{font-size:16px;color:var(--gold);margin-bottom:8px}
+#not-supporter a{font-weight:700}
+
+.dl-list{display:grid;gap:10px;padding:18px 24px 48px;max-width:1000px}
+.dl-item{display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px 18px;
+  background:var(--bg-panel);border:1px solid var(--line);border-radius:12px;padding:15px 18px}
+.dl-name{font-family:Manrope,monospace;font-size:15px;font-weight:700;color:var(--text-strong)}
+.dl-desc{grid-column:1;font-size:13px;line-height:1.7;color:var(--text-muted)}
+.dl-meta{grid-column:1;font-size:12px;color:var(--text-dim);font-variant-numeric:tabular-nums}
+.dl-btn{grid-column:2;grid-row:1/-1;align-self:center;white-space:nowrap;
+  background:var(--gold-ghost);border:1px solid var(--gold-dim);color:var(--gold);
+  font-family:inherit;font-size:13px;font-weight:700;padding:9px 17px;border-radius:20px;cursor:pointer}
+.dl-btn:hover:not(:disabled){background:var(--gold);color:#080808}
+.dl-btn:disabled{opacity:.55;cursor:default}
+.dl-status{padding:0 24px;font-size:13px;color:var(--text-dim);min-height:20px}
+.dl-status.err{color:#ef5350}
+
+@media (max-width:620px){
+  .intro,#not-supporter,.dl-list,.dl-status{padding-left:16px;padding-right:16px}
+  #not-supporter{margin-left:16px;margin-right:16px}
+  .dl-item{grid-template-columns:1fr}
+  .dl-btn{grid-column:1;grid-row:auto;justify-self:start;margin-top:4px}
+}
+</style>
+</head>
+<body>
+
+<div id="pw-overlay">
+  <div class="pw-box">
+    <h2>原始資料下載</h2>
+    <p>「支持創作」層專屬。請輸入支持者密碼。</p>
+    <input type="password" id="pw-input" placeholder="密碼" autocomplete="off" maxlength="64">
+    <button id="pw-submit">進入</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<div id="page">
+  <div class="page-header">
+    <a href="/member/" class="back-btn">← 會員入口</a>
+    <div>
+      <h1 class="page-title">原始資料下載</h1>
+      <div class="page-subtitle">「支持創作」層專屬 · CSV 格式,Excel 直接開得</div>
+    </div>
+  </div>
+
+  <div id="not-supporter">
+    <h2>呢個係「支持創作」層專屬</h2>
+    <p>你而家用緊嘅係付費訂閱會員密碼,網站內容全部睇得,但原始檔下載淨係開放畀「支持創作」層。</p>
+    <p>如果你已經係支持者,請用 Patreon 嗰邊收到嘅<b>支持者密碼</b>重新登入;想升級可以去 <a href="https://www.patreon.com/edward10" target="_blank" rel="noopener">Patreon 頁面</a>。</p>
+  </div>
+
+  <div id="supporter-body" style="display:none">
+    <p class="intro">
+      網站入面全部資料庫嘅<b>原始資料</b>,CSV 格式,落你部機自己跑。
+      Excel、Numbers、Python、R 都開得(已加 UTF-8 BOM,Excel 開中文唔會亂碼)。
+      資料更新之後呢度會一齊更新。<br>
+      關鍵字庫拆咗做兩個檔:<b>公司表</b>(一行一間,有業務摘要)同<b>關鍵字長表</b>(一行一個關鍵字),
+      用 <code>symbol</code> 對返 —— 直接 VLOOKUP 或者 merge 都得。
+    </p>
+    <div class="dl-status" id="dl-status"></div>
+    <div class="dl-list" id="dl-list"></div>
+  </div>
+</div>
+
+<script src="/js/member-auth.js"></script>
+<script src="/js/member-shell.js"></script>
+<script src="/js/member-downloads.js"></script>
+<script>MemberShell.init({ sidebar: true, section: "home" });</script>
+</body>
+</html>

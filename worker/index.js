@@ -26,6 +26,8 @@
 import { handleBlog } from './blog.js';
 
 const SESSION_COOKIE = "member_session";
+const ROLE_MEMBER = "m";
+const ROLE_SUPPORTER = "s";
 const SESSION_TTL_SECONDS = 12 * 60 * 60; // 12 小時
 
 // hk-stocks-db.html 是免費頁,用頁面自帶的另一組密碼(不是會員密碼),
@@ -35,12 +37,24 @@ const PUBLIC_ENC_PATHS = new Set(["/hk_stocks_data_orig.enc"]);
 /** 需要登入才能取得的路徑。 */
 function isProtected(pathname) {
   if (PUBLIC_ENC_PATHS.has(pathname)) return false;
-  return pathname.endsWith(".enc")
+  return pathname.startsWith("/exports/")
+    || pathname.endsWith(".enc")
     || pathname.startsWith("/cn_irm_data/")
     || pathname.startsWith("/us_transcript_data/")
     || pathname.startsWith("/us_research_data/")
     || pathname.startsWith("/etf-report/data/")
     || pathname.startsWith("/hk_h1_2026_industry_top3_data/");
+}
+
+/**
+ * 只有「支持創作」層拿得到的路徑(原始 CSV 下載)。
+ *
+ * 付費訂閱同支持創作喺 Patreon 係兩個層,但網站本來只有一個會員密碼,
+ * 分唔到邊個係邊個。所以另開一個 SUPPORTER_PASSWORD:兩個密碼都登入到,
+ * 但 session token 會記住角色,只有 supporter 拎得到呢度啲檔。
+ */
+function isSupporterOnly(pathname) {
+  return pathname.startsWith("/exports/");
 }
 
 /** R2 object key = 拿掉開頭的 "/"。目錄結構原封不動搬過去。 */
@@ -85,21 +99,32 @@ function timingSafeEqual(a, b) {
   return diff === 0;
 }
 
-async function issueToken(secret) {
+async function issueToken(secret, role = ROLE_MEMBER) {
   const expiry = Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS;
-  const payload = String(expiry);
+  const payload = `${expiry}|${role}`;
   return `${payload}.${await hmac(secret, payload)}`;
 }
 
+/**
+ * 驗證 session token,回傳角色字串;無效回傳 null。
+ *
+ * 舊 token 嘅 payload 淨係一個到期時間(未有角色概念嗰陣簽嘅)。佢哋
+ * 一樣係有效簽名,當作 member —— 唔係嘅話一部署所有登入緊嘅人即刻俾
+ * 踢出去。12 小時之後全部自然過期,呢條相容路徑就冇人行。
+ */
 async function verifyToken(token, secret) {
-  if (!token) return false;
+  if (!token) return null;
   const dot = token.lastIndexOf(".");
-  if (dot < 1) return false;
+  if (dot < 1) return null;
   const payload = token.slice(0, dot);
   const signature = token.slice(dot + 1);
-  if (!timingSafeEqual(signature, await hmac(secret, payload))) return false;
-  const expiry = Number(payload);
-  return Number.isFinite(expiry) && expiry > Math.floor(Date.now() / 1000);
+  if (!timingSafeEqual(signature, await hmac(secret, payload))) return null;
+  const bar = payload.indexOf("|");
+  const expiry = Number(bar === -1 ? payload : payload.slice(0, bar));
+  if (!Number.isFinite(expiry) || expiry <= Math.floor(Date.now() / 1000)) return null;
+  if (bar === -1) return ROLE_MEMBER;
+  const role = payload.slice(bar + 1);
+  return role === ROLE_SUPPORTER || role === ROLE_MEMBER ? role : null;
 }
 
 function readCookie(request, name) {
@@ -198,6 +223,7 @@ const CLEAN_URLS = {
   "/member/transcripts":        "/us-transcript-db.html",
   "/member/research":           "/us-research-reports-db.html",
   "/member/irm":                "/cn-irm-db.html",
+  "/member/downloads":          "/member-downloads.html",
   "/free/":                     "/free-tools.html",
   "/free/stocks/hk":            "/hk-stocks-db.html",
   "/free/keywords/hk":          "/hk-keywords-free.html",
@@ -297,7 +323,13 @@ export default {
       } catch {
         return json({ error: "invalid body" }, 400);
       }
-      if (!timingSafeEqual(String(body?.password ?? ""), env.MEMBER_PASSWORD)) {
+      // 兩個密碼都登入得。兩邊都要行一次比較,唔可以夾份 short-circuit,
+      // 否則答得快慢就已經洩漏咗「你打嗰個係咪會員密碼」。
+      const supplied = String(body?.password ?? "");
+      const isMember = timingSafeEqual(supplied, env.MEMBER_PASSWORD);
+      const isSupporter = !!env.SUPPORTER_PASSWORD
+        && timingSafeEqual(supplied, env.SUPPORTER_PASSWORD);
+      if (!isMember && !isSupporter) {
         if (kv) {
           state.f += 1;
           const pending = saveRateState(ctx, kv, ip, state);
@@ -305,10 +337,13 @@ export default {
         }
         return json({ error: "密碼錯誤" }, 401);
       }
-      const token = await issueToken(env.SESSION_SECRET);
+      // 兩個密碼撞啱一樣嗰陣寧願當支持者(權限較高嗰個),唔好靜靜降級。
+      const role = isSupporter ? ROLE_SUPPORTER : ROLE_MEMBER;
+      const token = await issueToken(env.SESSION_SECRET, role);
       return json(
         // .enc 仍是加密的,前端要用這把密碼解開。它只交給已通過驗證的請求。
-        { ok: true, dataPassword: env.MEMBER_DATA_PASSWORD || env.MEMBER_PASSWORD },
+        { ok: true, supporter: role === ROLE_SUPPORTER,
+          dataPassword: env.MEMBER_DATA_PASSWORD || env.MEMBER_PASSWORD },
         200,
         { "Set-Cookie": cookieHeader(token, SESSION_TTL_SECONDS) },
       );
@@ -346,20 +381,24 @@ export default {
 
     if (url.pathname === "/api/session") {
       if (missingConfig(env)) return json({ authenticated: false }, 200);
-      const ok = await verifyToken(readCookie(request, SESSION_COOKIE), env.SESSION_SECRET);
+      const role = await verifyToken(readCookie(request, SESSION_COOKIE), env.SESSION_SECRET);
       // 已持有有效 cookie 的人本來就可以直接下載 .enc,所以一併給回解密
       // 密碼 —— 新分頁/書籤直接開內頁時就唔使再叫一次密碼。
-      if (!ok) return json({ authenticated: false });
+      if (!role) return json({ authenticated: false });
       return json({
         authenticated: true,
+        supporter: role === ROLE_SUPPORTER,
         dataPassword: env.MEMBER_DATA_PASSWORD || env.MEMBER_PASSWORD,
       });
     }
 
     if (isProtected(url.pathname)) {
       if (missingConfig(env)) return json({ error: "server not configured" }, 500);
-      const ok = await verifyToken(readCookie(request, SESSION_COOKIE), env.SESSION_SECRET);
-      if (!ok) return json({ error: "需要登入" }, 401);
+      const role = await verifyToken(readCookie(request, SESSION_COOKIE), env.SESSION_SECRET);
+      if (!role) return json({ error: "需要登入" }, 401);
+      if (isSupporterOnly(url.pathname) && role !== ROLE_SUPPORTER) {
+        return json({ error: "呢個係「支持創作」層專屬下載" }, 403);
+      }
       return serveProtected(request, env, url.pathname);
     }
 

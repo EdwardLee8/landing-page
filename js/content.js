@@ -90,6 +90,7 @@ const SITE_CONTENT = {
       { label: "RS 相對強度評分", free: "—",                   member: "港／美／A 三市場＋每日上升榜" },
       { label: "業績電話會議拆解", free: "—",                  member: "583 份（美股）" },
       { label: "Discord",       free: "公開頻道",             member: "操作思路＋倉位更新即時同步" },
+      { label: "原始資料下載",    free: "—",                   member: "17 個 CSV（「支持創作」層）" },
     ],
   },
 
@@ -207,7 +208,7 @@ const SITE_CONTENT = {
       name: "付費訂閱",
       nameEn: "Pro",
       price: "HK$300",
-      period: "/ 月",
+      period: "/ 月（約 US$38）",
       highlight: true,
       features: [
         "數據驗證選股策略（港股 + 美股）",
@@ -227,10 +228,12 @@ const SITE_CONTENT = {
       highlight: false,
       features: [
         "付費訂閱全部內容",
+        "原始資料下載：17 個 CSV，Excel 直接開得",
+        "港美 A 三市 RS 評分、Weinstein 階段、業績庫、關鍵字庫全部原始欄位",
         "支持獨立、無利益衝突的投資研究",
         "優先回覆投資相關問題",
       ],
-      cta: "了解更多",
+      cta: "了解支持者下載 →",
       url: "https://www.patreon.com/edward10",
     },
   ],

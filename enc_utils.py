@@ -54,6 +54,19 @@ def encrypt_file(src, dst, password: str) -> None:
         f.write(enc)
 
 
+def encrypt_data(data, dst, password: str) -> None:
+    """加密一段記憶體入面的資料(str 或 bytes)並寫出 .enc。
+
+    同 encrypt_file 嘅分別:來源唔使先落地做明文檔。產生會員 CSV 嘅時候
+    要用(見 scripts/build_supporter_exports.py)—— 明文一落地就有機會
+    俾人 commit 咗入 public repo,寧願佢由頭到尾唔存在。
+    """
+    if isinstance(data, str):
+        data = data.encode("utf-8")
+    with open(dst, "w", encoding="utf-8") as f:
+        f.write(encrypt_bytes(data, password))
+
+
 def decrypt_file(src, password: str) -> bytes:
     with open(src, encoding="utf-8") as f:
         return decrypt_bytes(f.read(), password)

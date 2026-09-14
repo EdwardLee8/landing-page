@@ -135,6 +135,18 @@
     return new TextDecoder().decode(plain);
   }
 
+  /**
+   * 解密為原始位元組。支持者下載嘅 CSV 係先 gzip 再加密,解出嚟係二進
+   * 位,唔可以經 TextDecoder(會整爛)。pw 省略時使用本次 session 的密碼。
+   */
+  async function decryptBytes(b64, pw, sessionKey) {
+    var raw = Uint8Array.from(atob(b64), function (c) { return c.charCodeAt(0); });
+    var salt = raw.slice(0, 16), nonce = raw.slice(16, 28), ct = raw.slice(28);
+    var key = await deriveKey(pw || password(sessionKey), salt);
+    var plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce }, key, ct);
+    return new Uint8Array(plain);
+  }
+
   /** 解密並解析為 JSON。 */
   async function decrypt(b64, pw, sessionKey) {
     return JSON.parse(await decryptText(b64, pw, sessionKey));
@@ -218,6 +230,7 @@
     deriveKey: deriveKey,
     decrypt: decrypt,
     decryptText: decryptText,
+    decryptBytes: decryptBytes,
     fetchEncrypted: fetchEncrypted,
     gate: gate
   };

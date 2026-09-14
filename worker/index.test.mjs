@@ -349,5 +349,79 @@ const qsEnv = { ...env, ASSETS: { fetch: async (rq) => {
 await worker.fetch(new Request(`${B}/member/movers?tab=us`), qsEnv);
 check('乾淨網址保留 query string', qsAsked[0] === '?tab=us', qsAsked[0]);
 
+// ── 「支持創作」層:/exports/ 只有支持者拎得到 ──────────────────
+// 包一層 block scope:呢個檔上面已經用咗好多通用名(sess、keyMat…),
+// 新加嘅變數唔應該同佢哋爭。
+{
+  const supEnv = { ...env, SUPPORTER_PASSWORD: 'supporter-only-pw' };
+  const loginAs = async (password, e = supEnv) => {
+    const res = await worker.fetch(new Request(`${B}/api/login`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
+    }), e);
+    const cookie = (res.headers.get('Set-Cookie') || '').split(';')[0];
+    return { res, cookie, body: await res.json().catch(() => ({})) };
+  };
+  const get = (path, cookie, e = supEnv) => worker.fetch(
+    new Request(`${B}${path}`, cookie ? { headers: { Cookie: cookie } } : undefined), e);
+
+  const member = await loginAs('correct-horse');
+  const supporter = await loginAs('supporter-only-pw');
+  check('會員密碼仍然登入得', member.res.status === 200, `status=${member.res.status}`);
+  check('支持者密碼登入得', supporter.res.status === 200, `status=${supporter.res.status}`);
+  check('登入回應講明係咪支持者',
+    member.body.supporter === false && supporter.body.supporter === true,
+    `member=${member.body.supporter} supporter=${supporter.body.supporter}`);
+  check('兩邊都攞到解密密碼',
+    member.body.dataPassword === 'aes-pw-xyz' && supporter.body.dataPassword === 'aes-pw-xyz');
+
+  r = await get('/exports/hk_stocks_h2_2025.csv.gz.enc', supporter.cookie);
+  check('支持者下載得 /exports/', r.status === 200, `status=${r.status}`);
+  r = await get('/exports/hk_stocks_h2_2025.csv.gz.enc', member.cookie);
+  check('普通會員下載 /exports/ 被擋 403', r.status === 403, `status=${r.status}`);
+  r = await get('/exports/hk_stocks_h2_2025.csv.gz.enc', null);
+  check('未登入攞 /exports/ 係 401(唔係 403,唔洩漏有冇呢個檔)',
+    r.status === 401, `status=${r.status}`);
+
+  // 支持者照樣拎到普通會員資料
+  r = await get('/us_rs_latest.enc', supporter.cookie);
+  check('支持者一樣拎到會員資料', r.status === 200, `status=${r.status}`);
+
+  // 未設定 SUPPORTER_PASSWORD 嗰陣:會員照登入,冇人拎到 /exports/
+  const noSup = await loginAs('correct-horse', env);
+  check('未設 SUPPORTER_PASSWORD 時會員照登入', noSup.res.status === 200);
+  r = await get('/exports/hk_stocks_h2_2025.csv.gz.enc', noSup.cookie, env);
+  check('未設 SUPPORTER_PASSWORD 時冇人拎到 /exports/', r.status === 403, `status=${r.status}`);
+  r = (await loginAs('', env)).res;
+  check('空密碼唔會因為 SUPPORTER_PASSWORD 未設而放行', r.status === 401, `status=${r.status}`);
+
+  // /api/session 要話返角色畀下載頁知
+  const supSess = await (await get("/api/session", supporter.cookie)).json();
+  check("/api/session 回報支持者身分", supSess.authenticated === true && supSess.supporter === true);
+  const memSess = await (await get('/api/session', member.cookie)).json();
+  check('/api/session 回報普通會員身分', memSess.authenticated === true && memSess.supporter === false);
+
+  // 舊 token(payload 淨係到期時間)要當 member,唔好一部署就踢晒人出去
+  const legacyPayload = String(Math.floor(Date.now() / 1000) + 3600);
+  const legacyKey = await crypto.subtle.importKey('raw',
+    new TextEncoder().encode(env.SESSION_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const sigBytes = await crypto.subtle.sign('HMAC', legacyKey, new TextEncoder().encode(legacyPayload));
+  let legacySig = ''; for (const b of new Uint8Array(sigBytes)) legacySig += String.fromCharCode(b);
+  const legacy = `member_session=${legacyPayload}.${btoa(legacySig).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')}`;
+  r = await get('/us_rs_latest.enc', legacy);
+  check('舊格式 token 仍然當會員', r.status === 200, `status=${r.status}`);
+  r = await get('/exports/hk_stocks_h2_2025.csv.gz.enc', legacy);
+  check('舊格式 token 拎唔到支持者專屬', r.status === 403, `status=${r.status}`);
+
+  // 簽名亂改一定唔收
+  r = await get('/exports/hk_stocks_h2_2025.csv.gz.enc',
+    supporter.cookie.replace(/\|s\./, '|s.x'));
+  check('改過簽名嘅 token 被拒', r.status === 401 || r.status === 403, `status=${r.status}`);
+  // 將 member token 嘅角色改做 s(簽名唔啱)一樣要拒
+  const forged = member.cookie.replace('|m.', '|s.');
+  r = await get('/exports/hk_stocks_h2_2025.csv.gz.enc', forged);
+  check('將 m 改做 s 嘅偽造 token 被拒', r.status === 401, `status=${r.status}`);
+}
+
 console.log(`\n${pass} 通過, ${fail} 失敗`);
 process.exit(fail ? 1 : 0);
