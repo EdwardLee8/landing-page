@@ -34,7 +34,7 @@ select:focus,input[type=text]:focus{border-color:var(--gold)}
 
 /* components.css 冇畀 table 定闊度,預設係 width:auto —— 八欄內容都短,
    結果成張表縮喺左邊三分二,右邊吉一大撻。 */
-#rank-table{width:100%;min-width:1360px}
+#rank-table{width:100%;min-width:1500px}
 td.ind{color:var(--text-muted);font-size:13px;white-space:nowrap}
 td.mcap{color:var(--text-muted);font-variant-numeric:tabular-nums}
 td.chg{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -43,6 +43,12 @@ td.chg.down{color:#e2706f}
 td.sc.up{color:#54c08a}
 td.sc.down{color:#e2706f}
 td.sc.ref{color:var(--text-dim)}
+/* 參考排名:同官方排名差得遠先有訊息量,所以順便標返差幾多名。
+   色用返灰系 —— 唔好搶咗正式排名嘅視覺份量。 */
+td.refrank{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--text-muted)}
+td.refrank i{font-style:normal;margin-left:6px;font-size:11.5px;color:var(--text-dim)}
+td.refrank i.up{color:#54c08a}
+td.refrank i.down{color:#e2706f}
 /* 英文名做主,中文名細一行擺喺下面 —— 美股日常都係用英文代號同英文名
    溝通(睇新聞、搵財報、落單全部係英文),中文名做輔助認人。 */
 .coname-sub{display:block;margin-top:2px;font-size:11.5px;font-weight:400;color:var(--text-dim)}
@@ -129,6 +135,9 @@ td.sc b{font-weight:700}
           價差排最尾嗰批 = 基本面同股價落差最大</li>
       <li><b>參考 50/50</b> — 基本面同價格各半嘅輔助分數。
           <b>唔係正式排名</b>，匯出檔明講佢唔改寫排名</li>
+      <li><b>參考排名</b> — 按參考 50/50 由高到低排多一次，後面嘅 ▲▼ 係同左邊正式排名嘅落差。
+          <b>▲ 大 = 價格動能幫緊佢</b>（基本面一般但股價已經跑）；
+          <b>▼ 大 = 股價拖住後腳</b>（基本面靚但市場未買）。落差細即係兩邊睇法一致</li>
     </ul>
 
     <h4>點用</h4>
@@ -220,6 +229,7 @@ td.sc b{font-weight:700}
           <th data-col="price_momentum" style="text-align:right">價格動能 <span class="sort-icon"></span></th>
           <th data-col="price_gap" style="text-align:right" title="價格動能減基本面總分。正數 = 股價行先,負數 = 基本面未反映">價差 <span class="sort-icon"></span></th>
           <th data-col="ref_5050" style="text-align:right" title="只作輔助分析,唔改寫正式排名">參考 50/50 <span class="sort-icon"></span></th>
+          <th data-col="ref_rank" title="按參考 50/50 綜合分由高到低排一次。呢個唔係正式排名,淨係攞嚟同左邊嘅排名對照">參考排名 <span class="sort-icon"></span></th>
           <th data-col="note">備註 <span class="sort-icon"></span></th>
         </tr>
       </thead>

@@ -111,6 +111,30 @@ def check_range(rows, keys, lo=0, hi=100):
             fail(f"{k} 有 {len(bad)} 筆缺失或者唔喺 {lo}–{hi}:{bad[:5]}")
 
 
+def add_ref_rank(rows, score_key="ref_5050", out_key="ref_rank"):
+    """由參考 50/50 綜合分排多一次,寫入 out_key。
+
+    兩個市場嘅匯出檔前言都明講「參考50/50只作輔助,不改寫正式排名」。
+    所以呢個係<b>另一個視角</b>,唔係第二個官方排名 —— 頁面同欄名都要
+    標住「參考」。擺喺建置度算(唔喺前端),咁支持者下載嗰份 CSV 都有,
+    而且兩邊數字一定夾得返。
+
+    同分用並列排名(1, 2, 2, 4):美股有 318 組同分,夾硬逐隻畀唔同名次
+    等於憑空作一個先後出嚟。港股冇同分,行為一樣。
+    """
+    scored = [r for r in rows if r.get(score_key) is not None]
+    for r in rows:
+        r[out_key] = None
+    for i, r in enumerate(sorted(scored, key=lambda x: -x[score_key])):
+        r[out_key] = i + 1
+    prev = None
+    for r in sorted(scored, key=lambda x: x[out_key]):
+        if prev is not None and r[score_key] == prev[score_key]:
+            r[out_key] = prev[out_key]
+        prev = r
+    return len(scored)
+
+
 def file_date(path):
     """由檔名抽 YYYYMMDD → YYYY-MM-DD。"""
     m = re.search(r"(\d{8})", path)

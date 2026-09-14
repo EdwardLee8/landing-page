@@ -83,6 +83,16 @@
       + (up ? "▲" : "▼") + Math.abs(v) + "</td>";
   }
 
+  // 參考排名:單睇個名次冇乜用,同官方排名嘅落差先係重點 —— 爬升好多
+  // 即係價格動能幫緊佢,跌好多即係股價拖住後腳。
+  function refRankCell(s) {
+    if (s.ref_rank == null) return '<td class="refrank">—</td>';
+    var d = s.rank - s.ref_rank;
+    var mark = d === 0 ? "" : '<i class="' + (d > 0 ? "up" : "down") + '">'
+      + (d > 0 ? "▲" : "▼") + Math.abs(d) + "</i>";
+    return '<td class="refrank">' + s.ref_rank + mark + "</td>";
+  }
+
   function gapCell(v) {
     if (v == null) return '<td class="sc">—</td>';
     var cls = v > 10 ? "down" : (v < -10 ? "up" : "");
@@ -115,6 +125,7 @@
         + '<td class="sc">' + (s.price_momentum == null ? "—" : s.price_momentum.toFixed(1)) + "</td>"
         + gapCell(s.price_gap)
         + '<td class="sc ref">' + (s.ref_5050 == null ? "—" : s.ref_5050.toFixed(1)) + "</td>"
+        + refRankCell(s)
         + "</tr>";
     });
     $("table-body").innerHTML = html;
@@ -226,7 +237,9 @@
       th.addEventListener("click", function () {
         var col = th.dataset.col;
         if (col === sortCol) sortDir = -sortDir;
-        else { sortCol = col; sortDir = (col === "rank" || col === "ticker" || col === "name" || col === "industry") ? 1 : -1; }
+        else { sortCol = col; // 名次同文字欄預設升序(第 1 名 / A 字頭行先),分數先至係降序
+          sortDir = (col === "rank" || col === "ref_rank" || col === "rank_prev"
+            || col === "ticker" || col === "name" || col === "industry") ? 1 : -1; }
         markSort();
         sort();
         page = 1;

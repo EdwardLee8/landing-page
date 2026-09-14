@@ -56,7 +56,7 @@ COLMAP = [
     ("V11.6舊排名", "rank_prev", int),
     ("排名變動(正=上升)", "rank_change", int),
 ]
-COLUMNS = [k for _, k, _ in COLMAP]
+COLUMNS = [k for _, k, _ in COLMAP] + ["ref_rank"]
 
 
 def validate(rows):
@@ -81,6 +81,7 @@ def build(src):
         rows = rc.parse(raw, COLMAP)
         version = "V12.3"
     worst = validate(rows)
+    rc.add_ref_rank(rows)
     rows.sort(key=lambda r: r["rank"])
 
     industries = sorted({r["industry"] for r in rows if r.get("industry")})

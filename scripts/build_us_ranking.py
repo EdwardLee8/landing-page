@@ -53,7 +53,7 @@ COLMAP = [
     ("排名變動(正=上升)", "rank_change", int),
     ("備註", "note", str),
 ]
-COLUMNS = [k for _, k, _ in COLMAP] + ["name_zh"]
+COLUMNS = [k for _, k, _ in COLMAP] + ["ref_rank", "name_zh"]
 # 前言講明呢兩欄留空。確認佢哋真係空 —— 如果將來有數,要有人特登決定
 # 點用,而唔係靜靜地當 0 塞落頁面度。
 MUST_BE_BLANK = ("趨勢質素", "業績後延續")
@@ -153,6 +153,7 @@ def build(src):
 
     filled, unnamed, zh_count = fill_names(rows, password)
 
+    rc.add_ref_rank(rows)
     rows.sort(key=lambda r: r["rank"])
     industries = sorted({r["industry"] for r in rows if r.get("industry")})
 
