@@ -69,6 +69,26 @@
       + '<span>' + v.toFixed(1) + '</span></span>';
   }
 
+  function fmtMcap(v) {
+    if (v == null) return "—";
+    return v >= 10000 ? (v / 10000).toFixed(2) + " 萬億" : Math.round(v).toLocaleString("en-US");
+  }
+
+  // 排名變動係呢版最有訊息量嘅一欄:同一把尺前後兩版比較,升得多
+  // 通常代表業績剛剛轉好,值得優先睇。
+  function changeCell(v) {
+    if (v == null || v === 0) return '<td class="chg">—</td>';
+    var up = v > 0;
+    return '<td class="chg ' + (up ? "up" : "down") + '">'
+      + (up ? "▲" : "▼") + Math.abs(v) + "</td>";
+  }
+
+  function gapCell(v) {
+    if (v == null) return '<td class="sc">—</td>';
+    var cls = v > 10 ? "down" : (v < -10 ? "up" : "");
+    return '<td class="sc ' + cls + '">' + (v > 0 ? "+" : "") + v.toFixed(1) + "</td>";
+  }
+
   function render() {
     var total = filtered.length;
     var pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -77,16 +97,24 @@
 
     var html = "";
     slice.forEach(function (s) {
-      var t = tier(s.fundamental_score);
+      var t = tier(s.fundamental);
       html += "<tr>"
         + '<td class="rank' + (s.rank <= 50 ? " top" : "") + '">' + s.rank + "</td>"
+        + changeCell(s.rank_change)
         + '<td class="ticker">' + s.ticker + "</td>"
-        + '<td class="coname">' + escapeHtml(s.company_name) + "</td>"
-        + '<td class="sc"><b>' + bar(s.fundamental_score) + "</b></td>"
-        + '<td class="sc">' + bar(s.business_score) + "</td>"
-        + '<td class="sc">' + bar(s.financial_score) + "</td>"
-        + '<td class="sc">' + bar(s.quality_risk_score) + "</td>"
+        + '<td class="coname">' + escapeHtml(s.name) + "</td>"
+        + '<td class="ind">' + escapeHtml(s.industry || "—") + "</td>"
+        + '<td class="sc mcap">' + fmtMcap(s.mcap) + "</td>"
+        + '<td class="sc mcap">' + (s.adv20 == null ? "—" : Math.round(s.adv20).toLocaleString("en-US")) + "</td>"
+        + '<td class="sc"><b>' + bar(s.fundamental) + "</b></td>"
+        + '<td class="sc">' + bar(s.business) + "</td>"
+        + '<td class="sc">' + bar(s.financial) + "</td>"
+        + '<td class="sc">' + bar(s.quality_risk) + "</td>"
         + '<td><span class="tier ' + t[0] + '">' + t[1] + "</span></td>"
+        + '<td class="sc">' + (s.rs == null ? "—" : s.rs.toFixed(1)) + "</td>"
+        + '<td class="sc">' + (s.price_momentum == null ? "—" : s.price_momentum.toFixed(1)) + "</td>"
+        + gapCell(s.price_gap)
+        + '<td class="sc ref">' + (s.ref_5050 == null ? "—" : s.ref_5050.toFixed(1)) + "</td>"
         + "</tr>";
     });
     $("table-body").innerHTML = html;
@@ -94,7 +122,7 @@
     $("rank-table").style.display = total ? "" : "none";
 
     var counts = { a: 0, b: 0, c: 0, d: 0 };
-    filtered.forEach(function (s) { counts[tier(s.fundamental_score)[0]]++; });
+    filtered.forEach(function (s) { counts[tier(s.fundamental)[0]]++; });
     $("stats-bar").innerHTML =
       "<span>共 <b>" + total.toLocaleString("en-US") + "</b> 隻</span>"
       + "<span>A 級 <b>" + counts.a + "</b></span>"
@@ -133,12 +161,19 @@
     var q = $("f-search").value.trim().toLowerCase();
     var min = parseFloat($("f-min").value) || 0;
     var topN = parseInt($("f-rank").value, 10) || 0;
+    var ind = $("f-industry").value;
+    var mcap = parseFloat($("f-mcap").value) || 0;
+    var adv = parseFloat($("f-adv").value) || 0;
 
     filtered = DATA.filter(function (s) {
       if (q && s.ticker.toLowerCase().indexOf(q) === -1
-        && s.company_name.toLowerCase().indexOf(q) === -1) return false;
-      if (min && s.fundamental_score < min) return false;
+        && s.name.toLowerCase().indexOf(q) === -1) return false;
+      if (min && s.fundamental < min) return false;
       if (topN && s.rank > topN) return false;
+      if (ind && s.industry !== ind) return false;
+      if (mcap && !(s.mcap >= mcap)) return false;
+      // ADV20 缺失嘅唔當作通過 —— 篩流動性就係為咗剔走買唔到嘅嘢
+      if (adv && !(s.adv20 >= adv)) return false;
       return true;
     });
     sort();
@@ -149,6 +184,10 @@
   function sort() {
     filtered.sort(function (a, b) {
       var x = a[sortCol], y = b[sortCol];
+      // 缺值一律排到最後(唔理升定降序)—— 當成 0 會令佢哋喺升序時霸住頭幾行
+      if (x == null && y == null) return 0;
+      if (x == null) return 1;
+      if (y == null) return -1;
       if (typeof x === "string") return sortDir * x.localeCompare(y, "zh-Hant");
       return sortDir * (x - y);
     });
@@ -157,15 +196,27 @@
   function init() {
     $("app").style.display = "block";
     $("sub").textContent = META.count.toLocaleString("en-US") + " 隻港股 · "
-      + META.version + " · 資料日期 " + META.generated;
+      + META.version + " · 評分 " + (META.generated || "—")
+      + (META.snapshot ? " · RS／價格動能快照 " + META.snapshot : "");
+
+    var sel = $("f-industry");
+    (META.industries || []).forEach(function (name) {
+      var o = document.createElement("option");
+      o.value = name; o.textContent = name;
+      sel.appendChild(o);
+    });
 
     $("f-search").addEventListener("input", debounce(apply, 180));
-    $("f-min").addEventListener("change", apply);
-    $("f-rank").addEventListener("change", apply);
+    ["f-min", "f-rank", "f-industry", "f-mcap", "f-adv"].forEach(function (id) {
+      $(id).addEventListener("change", apply);
+    });
     $("f-reset").addEventListener("click", function () {
       $("f-search").value = "";
       $("f-min").value = "0";
       $("f-rank").value = "0";
+      $("f-industry").value = "";
+      $("f-mcap").value = "0";
+      $("f-adv").value = "0";
       sortCol = "rank"; sortDir = 1;
       markSort();
       apply();
@@ -175,7 +226,7 @@
       th.addEventListener("click", function () {
         var col = th.dataset.col;
         if (col === sortCol) sortDir = -sortDir;
-        else { sortCol = col; sortDir = (col === "rank" || col === "ticker" || col === "company_name") ? 1 : -1; }
+        else { sortCol = col; sortDir = (col === "rank" || col === "ticker" || col === "name" || col === "industry") ? 1 : -1; }
         markSort();
         sort();
         page = 1;

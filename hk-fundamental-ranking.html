@@ -34,7 +34,15 @@ select:focus,input[type=text]:focus{border-color:var(--gold)}
 
 /* components.css 冇畀 table 定闊度,預設係 width:auto —— 八欄內容都短,
    結果成張表縮喺左邊三分二,右邊吉一大撻。 */
-#rank-table{width:100%;min-width:820px}
+#rank-table{width:100%;min-width:1280px}
+td.ind{color:var(--text-muted);font-size:13px;white-space:nowrap}
+td.mcap{color:var(--text-muted);font-variant-numeric:tabular-nums}
+td.chg{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.chg.up{color:#54c08a}
+td.chg.down{color:#e2706f}
+td.sc.up{color:#54c08a}
+td.sc.down{color:#e2706f}
+td.sc.ref{color:var(--text-dim)}
 td.rank{font-family:Manrope,sans-serif;font-weight:800;color:var(--text-dim);font-variant-numeric:tabular-nums}
 td.rank.top{color:var(--gold)}
 td.ticker{color:var(--gold);font-weight:600;font-variant-numeric:tabular-nums}
@@ -95,10 +103,22 @@ td.sc b{font-weight:700}
       <li><b>質素／風險分</b>（佔 20%）— 盈利質素、一次性項目、風險扣減</li>
     </ul>
     <p><b>基本面總分 = 業務 × 50% + 財務 × 30% + 質素風險 × 20%</b>，排名就係總分由高到低。</p>
+    <h4>右邊幾欄市場數據</h4>
+    <ul>
+      <li><b>變動</b> — 對比上一版（V11.6）排名。▲ 代表升咗，通常係業績啱啱轉好</li>
+      <li><b>RS</b> — 全市場相對強弱百分位，數字越高代表跑贏越多（唔等於升得多）</li>
+      <li><b>價格動能</b> — 股價本身嘅走勢分數</li>
+      <li><b>價差</b> — 價格動能減基本面總分。<b>正數 = 股價已經行先</b>（追高風險），
+          <b>負數 = 基本面未反映落股價</b>（可能被低估）</li>
+      <li><b>參考 50/50</b> — 基本面同價格各半嘅輔助分數。
+          <b>呢個唔係正式排名</b>，匯出檔明確講明佢唔改寫排名，淨係攞嚟做交叉參考</li>
+    </ul>
     <p><b>點用：</b></p>
     <ul>
       <li>先用總分篩出前 100 名，再落 <a href="/member/outlook-2026">「2026 中期業績前景庫」</a>睇返嗰幾間嘅文字分析同催化劑</li>
       <li>留意<b>三個分項唔平均</b>嗰啲：業務高但財務低 = 生意好但未賺到錢；財務高但業務低 = 賺緊錢但增長見頂</li>
+      <li>想搵未被市場發現嘅：篩<b>總分高 + 價差負數</b>；想避追高：剔走<b>價差大正數</b>嗰啲</li>
+      <li>用<b>流動性 ADV20</b> 剔走買唔到或者出唔到貨嘅細價股</li>
       <li>排名係一個時點嘅快照，唔係買賣訊號 —— 揀到名之後仲要自己睇返公司</li>
     </ul>
   </div>
@@ -127,6 +147,30 @@ td.sc b{font-weight:700}
         <option value="200">頭 200 名</option>
       </select>
     </div>
+    <div class="filter-group">
+      <span class="filter-label">行業</span>
+      <select id="f-industry"><option value="">全部行業</option></select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">市值</span>
+      <select id="f-mcap">
+        <option value="0">全部</option>
+        <option value="1000">1,000 億以上</option>
+        <option value="500">500 億以上</option>
+        <option value="100">100 億以上</option>
+        <option value="50">50 億以上</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">流動性 ADV20</span>
+      <select id="f-adv">
+        <option value="0">全部</option>
+        <option value="500">5 億以上</option>
+        <option value="100">1 億以上</option>
+        <option value="50">5,000 萬以上</option>
+        <option value="10">1,000 萬以上</option>
+      </select>
+    </div>
     <div class="filter-actions">
       <button class="btn btn-ghost" id="f-reset">重置全部</button>
     </div>
@@ -139,13 +183,21 @@ td.sc b{font-weight:700}
       <thead>
         <tr>
           <th data-col="rank">排名 <span class="sort-icon"></span></th>
+          <th data-col="rank_change" title="對比 V11.6 舊排名">變動 <span class="sort-icon"></span></th>
           <th data-col="ticker">代號 <span class="sort-icon"></span></th>
-          <th data-col="company_name">公司名稱 <span class="sort-icon"></span></th>
-          <th data-col="fundamental_score" style="text-align:right">基本面總分 <span class="sort-icon"></span></th>
-          <th data-col="business_score" style="text-align:right">業務 50% <span class="sort-icon"></span></th>
-          <th data-col="financial_score" style="text-align:right">財務 30% <span class="sort-icon"></span></th>
-          <th data-col="quality_risk_score" style="text-align:right">質素風險 20% <span class="sort-icon"></span></th>
-          <th data-col="fundamental_score">級別 <span class="sort-icon"></span></th>
+          <th data-col="name">公司名稱 <span class="sort-icon"></span></th>
+          <th data-col="industry">行業 <span class="sort-icon"></span></th>
+          <th data-col="mcap" style="text-align:right" title="億港元">市值(億) <span class="sort-icon"></span></th>
+          <th data-col="adv20" style="text-align:right" title="20 日平均成交額,百萬港元">ADV20(百萬) <span class="sort-icon"></span></th>
+          <th data-col="fundamental" style="text-align:right">基本面總分 <span class="sort-icon"></span></th>
+          <th data-col="business" style="text-align:right">業務 50% <span class="sort-icon"></span></th>
+          <th data-col="financial" style="text-align:right">財務 30% <span class="sort-icon"></span></th>
+          <th data-col="quality_risk" style="text-align:right">質素風險 20% <span class="sort-icon"></span></th>
+          <th data-col="fundamental">級別 <span class="sort-icon"></span></th>
+          <th data-col="rs" style="text-align:right" title="全市場相對強弱百分位">RS <span class="sort-icon"></span></th>
+          <th data-col="price_momentum" style="text-align:right">價格動能 <span class="sort-icon"></span></th>
+          <th data-col="price_gap" style="text-align:right" title="價格動能減基本面總分。正數 = 股價行先,負數 = 基本面未反映">價差 <span class="sort-icon"></span></th>
+          <th data-col="ref_5050" style="text-align:right" title="只作輔助分析,唔改寫正式排名">參考 50/50 <span class="sort-icon"></span></th>
         </tr>
       </thead>
       <tbody id="table-body"></tbody>
