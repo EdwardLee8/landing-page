@@ -43,9 +43,9 @@ td.chg.down{color:#e2706f}
 td.sc.up{color:#54c08a}
 td.sc.down{color:#e2706f}
 td.sc.ref{color:var(--text-dim)}
-/* 中文名做主,英文名細一行擺喺下面 —— 會員大部分係香港人,中文掃得快,
-   但美股慣常用英文名溝通,所以兩個都要見到。 */
-.coname-en{display:block;margin-top:2px;font-size:11.5px;font-weight:400;color:var(--text-dim)}
+/* 英文名做主,中文名細一行擺喺下面 —— 美股日常都係用英文代號同英文名
+   溝通(睇新聞、搵財報、落單全部係英文),中文名做輔助認人。 */
+.coname-sub{display:block;margin-top:2px;font-size:11.5px;font-weight:400;color:var(--text-dim)}
 td.conf{text-align:center}
 .conf-tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;
   border:1px solid rgba(255,255,255,.14);color:var(--text-muted)}
@@ -56,7 +56,7 @@ td.note{max-width:220px;white-space:normal;font-size:12px;line-height:1.55;color
 td.rank{font-family:Manrope,sans-serif;font-weight:800;color:var(--text-dim);font-variant-numeric:tabular-nums}
 td.rank.top{color:var(--gold)}
 td.ticker{color:var(--gold);font-weight:600;font-variant-numeric:tabular-nums}
-td.coname{color:#fff;font-weight:600;min-width:150px;max-width:260px;white-space:normal;word-break:normal;overflow-wrap:anywhere}
+td.coname{color:#fff;font-weight:600;min-width:190px;max-width:300px;white-space:normal;word-break:normal;overflow-wrap:anywhere}
 td.sc{text-align:right;font-variant-numeric:tabular-nums}
 td.sc b{font-weight:700}
 /* 分數條:淨睇數字好難一眼比較 804 隻,補一條底色橫條 */
@@ -140,7 +140,7 @@ td.sc b{font-weight:700}
     </ul>
     <p class="help-note">排名匯出檔本身有 44%（866 隻）公司只記低咗代號冇全名，
       已經由網站其他美股資料庫夾返 865 隻；淨低 RH 一隻係因為佢真係叫「RH」。
-      中文名有 1,858 隻夾到，夾唔到嘅只顯示英文名。
+中文名有 1,858 隻夾到，顯示喺英文名下面一行；夾唔到嘅只顯示英文名。
       「備註」一欄有標記嘅，係資料品質提示（例如業績未發布、財務延遲），值得睇多眼。</p>
   </div>
 

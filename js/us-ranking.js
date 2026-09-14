@@ -115,8 +115,8 @@
         + '<td class="rank' + (s.rank <= 50 ? " top" : "") + '">' + s.rank + "</td>"
         + changeCell(s.rank_change)
         + '<td class="ticker">' + s.ticker + "</td>"
-        + '<td class="coname">' + escapeHtml(s.name_zh || s.name)
-          + (s.name_zh ? '<span class="coname-en">' + escapeHtml(s.name) + "</span>" : "")
+        + '<td class="coname">' + escapeHtml(s.name)
+          + (s.name_zh ? '<span class="coname-sub">' + escapeHtml(s.name_zh) + "</span>" : "")
           + "</td>"
         + '<td class="ind">' + escapeHtml(s.industry || "—") + "</td>"
         + '<td class="sc mcap">' + fmtMcap(s.mcap) + "</td>"
