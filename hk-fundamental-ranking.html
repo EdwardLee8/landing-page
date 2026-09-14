@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>港股基本面排名｜Edward LEE 發掘十倍股</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/shell.css">
+<link rel="stylesheet" href="/css/components.css">
+<style>
+body{background:var(--bg);color:var(--text);font-family:"Noto Sans TC",sans-serif;min-height:100vh}
+
+#pw-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.pw-box{background:var(--bg-panel);border:1px solid var(--line);border-radius:10px;padding:40px 36px;text-align:center;width:100%;max-width:380px}
+.pw-box h2{font-size:20px;font-weight:700;color:var(--text-strong);margin-bottom:6px}
+.pw-box p{font-size:13px;color:var(--text-dim);margin-bottom:22px}
+.pw-box input{width:100%;background:var(--bg-raised);border:1px solid var(--line-strong);color:var(--text);padding:12px 16px;border-radius:6px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.2em;margin-bottom:12px}
+.pw-box input:focus{border-color:var(--gold)}
+.pw-box button{width:100%;background:var(--gold);color:#080808;border:none;padding:12px;border-radius:6px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer}
+.pw-error{color:#ef5350;font-size:12px;margin-top:10px;min-height:18px}
+
+#app{display:none}
+.back-btn{color:var(--gold);font-size:13px;border:1px solid var(--gold-dim);padding:6px 14px;border-radius:4px}
+.filter-bar{background:var(--bg-panel);border-bottom:1px solid var(--line);padding:16px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+select,input[type=text]{background:var(--bg-raised);border:1px solid var(--line-strong);color:var(--text);padding:8px 11px;border-radius:4px;font-size:13px;font-family:inherit;min-width:130px;outline:none}
+select:focus,input[type=text]:focus{border-color:var(--gold)}
+.stats-bar{padding:10px 24px;background:#0a0a12;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-dim);display:flex;gap:18px;flex-wrap:wrap}
+.stats-bar b{color:var(--gold);font-size:14px}
+
+/* components.css 冇畀 table 定闊度,預設係 width:auto —— 八欄內容都短,
+   結果成張表縮喺左邊三分二,右邊吉一大撻。 */
+#rank-table{width:100%;min-width:820px}
+td.rank{font-family:Manrope,sans-serif;font-weight:800;color:var(--text-dim);font-variant-numeric:tabular-nums}
+td.rank.top{color:var(--gold)}
+td.ticker{color:var(--gold);font-weight:600;font-variant-numeric:tabular-nums}
+td.coname{color:#fff;font-weight:600;min-width:150px;max-width:260px;white-space:normal;word-break:normal;overflow-wrap:anywhere}
+td.sc{text-align:right;font-variant-numeric:tabular-nums}
+td.sc b{font-weight:700}
+/* 分數條:淨睇數字好難一眼比較 804 隻,補一條底色橫條 */
+.bar{position:relative;display:block;min-width:74px;height:20px;border-radius:4px;background:var(--bg-raised);overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;display:block;background:linear-gradient(90deg,#8a6a12,#d4a647);opacity:.55}
+.bar span{position:relative;display:block;padding:2px 7px;font-size:12.5px;text-align:right}
+.tier{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.tier.a{color:#6fd6a2;background:rgba(84,192,138,.14);border:1px solid rgba(84,192,138,.34)}
+.tier.b{color:var(--gold);background:rgba(212,166,71,.13);border:1px solid rgba(212,166,71,.34)}
+.tier.c{color:#9aa4b2;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.13)}
+.tier.d{color:#e2908f;background:rgba(226,112,111,.11);border:1px solid rgba(226,112,111,.3)}
+
+.pagination{display:flex;justify-content:center;align-items:center;gap:8px;padding:18px;flex-wrap:wrap}
+.pagination button{background:var(--bg-panel);border:1px solid var(--line-strong);color:var(--text);border-radius:6px;padding:8px 13px;font-family:inherit;font-size:13px;cursor:pointer}
+.pagination button:disabled{opacity:.35;cursor:default}
+.pagination span{font-size:13px;color:var(--text-dim)}
+
+@media (max-width:900px){
+  .filter-bar,.stats-bar{padding-left:16px;padding-right:16px}
+  td.coname{min-width:120px}
+}
+</style>
+</head>
+<body>
+
+<div id="pw-overlay">
+  <div class="pw-box">
+    <h2>港股基本面排名</h2>
+    <p>會員專屬。請輸入會員密碼。</p>
+    <input type="password" id="pw-input" placeholder="密碼" autocomplete="off" maxlength="64">
+    <button id="pw-submit">進入</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="page-header">
+    <a href="/member/" class="back-btn">← 會員入口</a>
+    <div>
+      <h1 class="page-title">港股基本面排名</h1>
+      <div class="page-subtitle" id="sub">載入中…</div>
+    </div>
+  </div>
+
+  <button class="help-btn" onclick="_toggleHelp()">ⓘ 點解讀</button>
+  <div class="help-panel" id="_help_panel">
+    <h3>點解讀「港股基本面排名」<button class="help-close" onclick="_toggleHelp()">收埋 ✕</button></h3>
+    <p>全港股用<b>同一把尺</b>由頭到尾排一次。同「2026 中期業績前景庫」唔同 ——
+       嗰邊係逐間公司寫文字分析，呢邊係全市場單一分數排名，攞嚟快速篩名單。</p>
+    <h4>三個分項點合成</h4>
+    <ul>
+      <li><b>業務分</b>（佔 50%）— 生意本身：增長、規模、行業位置</li>
+      <li><b>財務分</b>（佔 30%）— 盈利能力、現金流、資產負債表</li>
+      <li><b>質素／風險分</b>（佔 20%）— 盈利質素、一次性項目、風險扣減</li>
+    </ul>
+    <p><b>基本面總分 = 業務 × 50% + 財務 × 30% + 質素風險 × 20%</b>，排名就係總分由高到低。</p>
+    <p><b>點用：</b></p>
+    <ul>
+      <li>先用總分篩出前 100 名，再落 <a href="/member/outlook-2026">「2026 中期業績前景庫」</a>睇返嗰幾間嘅文字分析同催化劑</li>
+      <li>留意<b>三個分項唔平均</b>嗰啲：業務高但財務低 = 生意好但未賺到錢；財務高但業務低 = 賺緊錢但增長見頂</li>
+      <li>排名係一個時點嘅快照，唔係買賣訊號 —— 揀到名之後仲要自己睇返公司</li>
+    </ul>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-group">
+      <span class="filter-label">搜尋</span>
+      <input type="text" id="f-search" placeholder="股票代號 / 公司名稱">
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">基本面總分</span>
+      <select id="f-min">
+        <option value="0">全部</option>
+        <option value="80">80 分以上</option>
+        <option value="70">70 分以上</option>
+        <option value="60">60 分以上</option>
+        <option value="50">50 分以上</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">排名範圍</span>
+      <select id="f-rank">
+        <option value="0">全部</option>
+        <option value="50">頭 50 名</option>
+        <option value="100">頭 100 名</option>
+        <option value="200">頭 200 名</option>
+      </select>
+    </div>
+    <div class="filter-actions">
+      <button class="btn btn-ghost" id="f-reset">重置全部</button>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="stats-bar"></div>
+
+  <div class="table-wrap">
+    <table id="rank-table">
+      <thead>
+        <tr>
+          <th data-col="rank">排名 <span class="sort-icon"></span></th>
+          <th data-col="ticker">代號 <span class="sort-icon"></span></th>
+          <th data-col="company_name">公司名稱 <span class="sort-icon"></span></th>
+          <th data-col="fundamental_score" style="text-align:right">基本面總分 <span class="sort-icon"></span></th>
+          <th data-col="business_score" style="text-align:right">業務 50% <span class="sort-icon"></span></th>
+          <th data-col="financial_score" style="text-align:right">財務 30% <span class="sort-icon"></span></th>
+          <th data-col="quality_risk_score" style="text-align:right">質素風險 20% <span class="sort-icon"></span></th>
+          <th data-col="fundamental_score">級別 <span class="sort-icon"></span></th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div class="empty" id="empty-state" style="display:none">
+      <div class="empty-icon">&#128269;</div>
+      <div>揾唔到符合條件嘅股票</div>
+    </div>
+  </div>
+
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<script src="/js/member-auth.js"></script>
+<script src="/js/member-shell.js"></script>
+<script src="/js/hk-ranking.js"></script>
+<script>MemberShell.init({ section: "hk" });</script>
+</body>
+</html>

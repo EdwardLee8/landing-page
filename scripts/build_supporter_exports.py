@@ -42,6 +42,8 @@ TABLES = [
      "(單純 vs 恒指正負),同標籤唔一定夾"),
     ("us_stocks", "us_stocks_data.enc", None,
      "美股業績資料庫:收入／毛利增長、相對大市表現"),
+    ("hk_fundamental_ranking", "hk_fundamental_ranking.enc", ["rows"],
+     "港股基本面排名(V12.3):全市場同一把尺,業務 50% + 財務 30% + 質素風險 20%"),
     ("hk_rs_ratings", "hk_rs_latest.enc", ["ratings"],
      "港股相對強弱評分:5/10/20/30/50/100/200/365 日八個時間框 + 綜合評分"),
     ("us_rs_ratings", "us_rs_latest.enc", ["ratings"],
@@ -108,11 +110,19 @@ def to_csv(rows):
 
 
 def load(password, source, path):
-    data = json.loads(enc_utils.decrypt_file(os.path.join(ROOT, source), password))
+    payload = json.loads(enc_utils.decrypt_file(os.path.join(ROOT, source), password))
+    data = payload
     for step in (path or []):
         data = data[step]
     if not isinstance(data, list):
         raise SystemExit(f"{source}{path} 唔係 list,係 {type(data).__name__}")
+    # 有啲檔用 columnar(rows 係一個個 list,欄名喺隔籬嘅 columns)——
+    # 例如基本面排名,804 × 7 咁攤開做物件會大成倍。呢度砌返做物件。
+    if data and isinstance(data[0], list):
+        cols = payload.get("columns") if isinstance(payload, dict) else None
+        if not cols:
+            raise SystemExit(f"{source} 係 columnar 但揾唔到 columns")
+        return [dict(zip(cols, row)) for row in data]
     return data
 
 

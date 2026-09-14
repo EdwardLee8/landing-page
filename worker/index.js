@@ -217,6 +217,7 @@ const CLEAN_URLS = {
   "/member/keywords/us":        "/us-keywords.html",
   "/member/keywords/cn":        "/cn-keywords.html",
   "/member/stocks/hk":          "/hk-stocks-pro.html",
+  "/member/ranking":            "/hk-fundamental-ranking.html",
   "/member/stocks/us":          "/us-stocks-db.html",
   "/member/outlook-2026":       "/hk-h1-2026-db.html",
   "/member/outlook-2026/top3":  "/hk-h1-2026-industry-top3.html",

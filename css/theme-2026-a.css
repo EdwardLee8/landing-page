@@ -153,7 +153,7 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 .btn-primary{border-radius:999px;background:transparent;border-color:var(--gold);color:var(--gold)}.btn-primary:hover{background:var(--gold);color:#090a0b}
 #archive{background:#050608}.archive-search{border-radius:12px;background:#0c0f12}.archive-card{border-radius:14px;background:#0b0e11}.archive-card:hover{background:#101419}.archive-stock-tag{background:rgba(255,255,255,.055)}
 
-/* 研究工具:21 個資料庫的統計卡,證明呢個網站唔止得一個專欄。 */
+/* 研究工具:22 個資料庫的統計卡,證明呢個網站唔止得一個專欄。 */
 #tools{background:#07090b}
 .tools-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:28px}
 .tools-stat{padding:26px 20px;border:1px solid var(--border);border-radius:16px;background:#0c0f12;transition:transform var(--transition),border-color var(--transition),background var(--transition)}
