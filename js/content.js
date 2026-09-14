@@ -206,8 +206,8 @@ const SITE_CONTENT = {
     {
       name: "付費訂閱",
       nameEn: "Pro",
-      price: "查看 Patreon",
-      period: "",
+      price: "HK$300",
+      period: "/ 月",
       highlight: true,
       features: [
         "數據驗證選股策略（港股 + 美股）",
