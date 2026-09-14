@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>美股 2026Q2 業績評分資料庫｜Edward LEE 發掘十倍股</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/shell.css">
+<link rel="stylesheet" href="/css/components.css">
+<style>
+body{background:var(--bg);color:var(--text);font-family:"Noto Sans TC",sans-serif;min-height:100vh}
+
+#pw-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.pw-box{background:var(--bg-panel);border:1px solid var(--line);border-radius:10px;padding:40px 36px;text-align:center;width:100%;max-width:380px}
+.pw-box h2{font-size:20px;font-weight:700;color:var(--text-strong);margin-bottom:6px}
+.pw-box p{font-size:13px;color:var(--text-dim);margin-bottom:22px}
+.pw-box input{width:100%;background:var(--bg-raised);border:1px solid var(--line-strong);color:var(--text);padding:12px 16px;border-radius:6px;font-size:15px;font-family:inherit;outline:none;text-align:center;letter-spacing:.2em;margin-bottom:12px}
+.pw-box input:focus{border-color:var(--gold)}
+.pw-box button{width:100%;background:var(--gold);color:#080808;border:none;padding:12px;border-radius:6px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer}
+.pw-error{color:#ef5350;font-size:12px;margin-top:10px;min-height:18px}
+
+#app{display:none}
+.back-btn{color:var(--gold);font-size:13px;border:1px solid var(--gold-dim);padding:6px 14px;border-radius:4px}
+.filter-bar{background:var(--bg-panel);border-bottom:1px solid var(--line);padding:16px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+select,input[type=text]{background:var(--bg-raised);border:1px solid var(--line-strong);color:var(--text);padding:8px 11px;border-radius:4px;font-size:13px;font-family:inherit;min-width:130px;outline:none}
+select:focus,input[type=text]:focus{border-color:var(--gold)}
+.stats-bar{padding:10px 24px;background:#0a0a12;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-dim);display:flex;gap:18px;flex-wrap:wrap}
+.stats-bar b{color:var(--gold);font-size:14px}
+
+/* components.css 冇畀 table 定闊度,預設係 width:auto —— 八欄內容都短,
+   結果成張表縮喺左邊三分二,右邊吉一大撻。 */
+#rank-table{width:100%;min-width:1360px}
+td.ind{color:var(--text-muted);font-size:13px;white-space:nowrap}
+td.mcap{color:var(--text-muted);font-variant-numeric:tabular-nums}
+td.chg{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.chg.up{color:#54c08a}
+td.chg.down{color:#e2706f}
+td.sc.up{color:#54c08a}
+td.sc.down{color:#e2706f}
+td.sc.ref{color:var(--text-dim)}
+td.conf{text-align:center}
+.conf-tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;
+  border:1px solid rgba(255,255,255,.14);color:var(--text-muted)}
+.conf-tag.hi{color:#6fd6a2;border-color:rgba(84,192,138,.34)}
+td.note{max-width:220px;white-space:normal;font-size:12px;line-height:1.55;color:var(--text-dim)}
+.help-panel .help-note{border-left:2px solid rgba(212,166,71,.5);background:rgba(212,166,71,.06);
+  border-radius:0 8px 8px 0;padding:9px 12px;margin:10px 0;font-size:13.5px}
+td.rank{font-family:Manrope,sans-serif;font-weight:800;color:var(--text-dim);font-variant-numeric:tabular-nums}
+td.rank.top{color:var(--gold)}
+td.ticker{color:var(--gold);font-weight:600;font-variant-numeric:tabular-nums}
+td.coname{color:#fff;font-weight:600;min-width:150px;max-width:260px;white-space:normal;word-break:normal;overflow-wrap:anywhere}
+td.sc{text-align:right;font-variant-numeric:tabular-nums}
+td.sc b{font-weight:700}
+/* 分數條:淨睇數字好難一眼比較 804 隻,補一條底色橫條 */
+.bar{position:relative;display:block;min-width:74px;height:20px;border-radius:4px;background:var(--bg-raised);overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;display:block;background:linear-gradient(90deg,#8a6a12,#d4a647);opacity:.55}
+.bar span{position:relative;display:block;padding:2px 7px;font-size:12.5px;text-align:right}
+.tier{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.tier.a{color:#6fd6a2;background:rgba(84,192,138,.14);border:1px solid rgba(84,192,138,.34)}
+.tier.b{color:var(--gold);background:rgba(212,166,71,.13);border:1px solid rgba(212,166,71,.34)}
+.tier.c{color:#9aa4b2;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.13)}
+.tier.d{color:#e2908f;background:rgba(226,112,111,.11);border:1px solid rgba(226,112,111,.3)}
+
+.pagination{display:flex;justify-content:center;align-items:center;gap:8px;padding:18px;flex-wrap:wrap}
+.pagination button{background:var(--bg-panel);border:1px solid var(--line-strong);color:var(--text);border-radius:6px;padding:8px 13px;font-family:inherit;font-size:13px;cursor:pointer}
+.pagination button:disabled{opacity:.35;cursor:default}
+.pagination span{font-size:13px;color:var(--text-dim)}
+
+@media (max-width:900px){
+  .filter-bar,.stats-bar{padding-left:16px;padding-right:16px}
+  td.coname{min-width:120px}
+}
+</style>
+</head>
+<body>
+
+<div id="pw-overlay">
+  <div class="pw-box">
+    <h2>美股業績評分資料庫</h2>
+    <p>會員專屬。請輸入會員密碼。</p>
+    <input type="password" id="pw-input" placeholder="密碼" autocomplete="off" maxlength="64">
+    <button id="pw-submit">進入</button>
+    <div class="pw-error" id="pw-error"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="page-header">
+    <a href="/member/" class="back-btn">← 會員入口</a>
+    <div>
+      <h1 class="page-title">美股 2026Q2 業績評分資料庫</h1>
+      <div class="page-subtitle" id="sub">載入中…</div>
+    </div>
+  </div>
+
+  <button class="help-btn" onclick="_toggleHelp()">ⓘ 點解讀</button>
+  <div class="help-panel" id="_help_panel">
+    <h3>點解讀「美股業績評分資料庫」<button class="help-close" onclick="_toggleHelp()">收埋 ✕</button></h3>
+    <p>全美股 1,986 隻用<b>同一把尺</b>由頭到尾排一次，量緊嘅係<b>最近一期業績嘅動能</b>，
+       唔係「邊間公司好」。所以成熟巨企排得後好正常 —— 佢哋增長慢，唔代表質素差。</p>
+
+    <h4>總分點嚟</h4>
+    <p><b>總分 = 基本面分（指引前）＋ 指引修正</b></p>
+    <ul>
+      <li><b>基本面分（指引前）</b> — 未計管理層指引之前，淨睇已公布業績嘅評分</li>
+      <li><b>指引修正</b> — 管理層指引帶嚟嘅加減（範圍 ±5）。
+          約八成公司係 0，即係指引冇明顯改變睇法</li>
+      <li><b>分類信心</b> — 資料完整度嘅三級標籤（90 / 97 / 99），
+          <b>唔計入總分</b>。99 = 資料最齊，90 = 有欄位要靠推算</li>
+    </ul>
+    <p class="help-note">同港股嗰個資料庫用緊唔同模型：港股係「業務 50% ＋ 財務 30% ＋ 質素風險 20%」，
+      美股改用原生可核對欄位，避免硬套。兩邊分數<b>唔可以直接比較</b>。</p>
+
+    <h4>右邊幾欄市場數據</h4>
+    <ul>
+      <li><b>變動</b> — 對比上一版（V11.4）排名。▲ 代表升咗，通常係業績啱啱轉好</li>
+      <li><b>RS</b> — 全市場相對強弱百分位，數字越高代表跑贏越多（唔等於升得多）</li>
+      <li><b>價格動能</b> — 股價本身嘅走勢分數</li>
+      <li><b>價差</b> — 價格動能減總分。留意呢欄喺美股<b>大部分都係負數</b>（中位數約 −18），
+          因為兩把尺嘅中心唔同。所以<b>唔好睇絕對正負，要同其他股比較</b>：
+          價差排最尾嗰批 = 基本面同股價落差最大</li>
+      <li><b>參考 50/50</b> — 基本面同價格各半嘅輔助分數。
+          <b>唔係正式排名</b>，匯出檔明講佢唔改寫排名</li>
+    </ul>
+
+    <h4>點用</h4>
+    <ul>
+      <li>用<b>行業</b>篩返同一個板塊再比較 —— 跨行業比總分意義有限</li>
+      <li>想搵未被市場發現嘅：篩<b>總分高</b>再按<b>價差</b>由低到高排</li>
+      <li>用<b>流動性 ADV20</b> 剔走買唔到或者出唔到貨嘅名</li>
+      <li>排名係一個時點嘅快照，唔係買賣訊號 —— 揀到名之後仲要自己睇返公司</li>
+    </ul>
+    <p class="help-note">資料源有約 44% 公司冇記低全名，名稱欄會顯示代號。
+      「備註」一欄有標記嘅，係資料品質提示（例如業績未發布、財務延遲），值得睇多眼。</p>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-group">
+      <span class="filter-label">搜尋</span>
+      <input type="text" id="f-search" placeholder="股票代號 / 公司名稱">
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">總分</span>
+      <select id="f-min">
+        <option value="0">全部</option>
+        <option value="80">80 分以上</option>
+        <option value="75">75 分以上</option>
+        <option value="70">70 分以上</option>
+        <option value="60">60 分以上</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">排名範圍</span>
+      <select id="f-rank">
+        <option value="0">全部</option>
+        <option value="50">頭 50 名</option>
+        <option value="100">頭 100 名</option>
+        <option value="200">頭 200 名</option>
+        <option value="500">頭 500 名</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">行業</span>
+      <select id="f-industry"><option value="">全部行業</option></select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">市值(十億美元)</span>
+      <select id="f-mcap">
+        <option value="0">全部</option>
+        <option value="200">200B 以上</option>
+        <option value="50">50B 以上</option>
+        <option value="10">10B 以上</option>
+        <option value="2">2B 以上</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">流動性 ADV20(百萬美元)</span>
+      <select id="f-adv">
+        <option value="0">全部</option>
+        <option value="500">500M 以上</option>
+        <option value="100">100M 以上</option>
+        <option value="50">50M 以上</option>
+        <option value="10">10M 以上</option>
+      </select>
+    </div>
+    <div class="filter-actions">
+      <button class="btn btn-ghost" id="f-reset">重置全部</button>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="stats-bar"></div>
+
+  <div class="table-wrap">
+    <table id="rank-table">
+      <thead>
+        <tr>
+          <th data-col="rank">排名 <span class="sort-icon"></span></th>
+          <th data-col="rank_change" title="對比 V11.6 舊排名">變動 <span class="sort-icon"></span></th>
+          <th data-col="ticker">代號 <span class="sort-icon"></span></th>
+          <th data-col="name">公司名稱 <span class="sort-icon"></span></th>
+          <th data-col="industry">行業 <span class="sort-icon"></span></th>
+          <th data-col="mcap" style="text-align:right" title="十億美元">市值(B) <span class="sort-icon"></span></th>
+          <th data-col="adv20" style="text-align:right" title="20 日平均成交額,百萬美元">ADV20(M) <span class="sort-icon"></span></th>
+          <th data-col="fundamental" style="text-align:right">總分 <span class="sort-icon"></span></th>
+          <th data-col="base" style="text-align:right" title="未計管理層指引之前嘅評分">基本面(指引前) <span class="sort-icon"></span></th>
+          <th data-col="guidance" style="text-align:right" title="管理層指引帶嚟嘅加減,範圍 ±5">指引修正 <span class="sort-icon"></span></th>
+          <th data-col="confidence" title="資料完整度三級標籤,唔計入總分">信心 <span class="sort-icon"></span></th>
+          <th data-col="fundamental">級別 <span class="sort-icon"></span></th>
+          <th data-col="rs" style="text-align:right" title="全市場相對強弱百分位">RS <span class="sort-icon"></span></th>
+          <th data-col="price_momentum" style="text-align:right">價格動能 <span class="sort-icon"></span></th>
+          <th data-col="price_gap" style="text-align:right" title="價格動能減基本面總分。正數 = 股價行先,負數 = 基本面未反映">價差 <span class="sort-icon"></span></th>
+          <th data-col="ref_5050" style="text-align:right" title="只作輔助分析,唔改寫正式排名">參考 50/50 <span class="sort-icon"></span></th>
+          <th data-col="note">備註 <span class="sort-icon"></span></th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div class="empty" id="empty-state" style="display:none">
+      <div class="empty-icon">&#128269;</div>
+      <div>揾唔到符合條件嘅股票</div>
+    </div>
+  </div>
+
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<script src="/js/member-auth.js"></script>
+<script src="/js/member-shell.js"></script>
+<script src="/js/us-ranking.js"></script>
+<script>MemberShell.init({ section: "us" });</script>
+</body>
+</html>

@@ -44,6 +44,9 @@ TABLES = [
      "美股業績資料庫:收入／毛利增長、相對大市表現"),
     ("hk_fundamental_ranking", "hk_fundamental_ranking.enc", ["rows"],
      "港股基本面排名(V12.3):全市場同一把尺,業務 50% + 財務 30% + 質素風險 20%"),
+    ("us_fundamental_ranking", "us_fundamental_ranking.enc", ["rows"],
+     "美股業績評分資料庫(V11.5):總分 = 基本面分(指引前) + 指引修正;"
+     "分類信心係資料完整度三級標籤,唔計入總分"),
     ("hk_rs_ratings", "hk_rs_latest.enc", ["ratings"],
      "港股相對強弱評分:5/10/20/30/50/100/200/365 日八個時間框 + 綜合評分"),
     ("us_rs_ratings", "us_rs_latest.enc", ["ratings"],
